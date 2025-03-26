@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
@@ -12,13 +13,16 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 
+import java.util.List;
+
 public class Robot {
     HardwareMap hardwareMap;
     LinearOpMode opMode;
 
     public static class HardwareDevices {
+        public static List<LynxModule> allHubs;
+
         public static IMU imu;
-        public static VoltageSensor voltageSensor;
         public static Limelight3A limelight;
         public static RevColorSensorV3 flashLight;
 
@@ -38,6 +42,11 @@ public class Robot {
         this.opMode = opMode;
         this.hardwareMap = opMode.hardwareMap;
 
+        HardwareDevices.allHubs = hardwareMap.getAll(LynxModule.class);
+        for (LynxModule hub : HardwareDevices.allHubs) {
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+        }
+
         HardwareDevices.imu = hardwareMap.get(IMU.class, HardwareDevices.imu.getDeviceName());
             BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
             parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
@@ -46,8 +55,6 @@ public class Robot {
             parameters.loggingEnabled      = true;
             parameters.loggingTag          = "IMU";
             parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-
-        HardwareDevices.voltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
 
         HardwareDevices.limelight = hardwareMap.get(Limelight3A.class, "limeLight");
             HardwareDevices.flashLight = hardwareMap.get(RevColorSensorV3.class, "flashLight");
@@ -65,6 +72,12 @@ public class Robot {
         for (int i = 0; i < HardwareDevices.swerveAnalogs.length; i++) {
             HardwareDevices.analogNames[i] = "swerveAnalog" + (i);
             HardwareDevices.swerveAnalogs[i] = hardwareMap.get(AnalogInput.class, HardwareDevices.analogNames[i]);
+        }
+    }
+
+    public void refreshData() {
+        for (LynxModule hub : HardwareDevices.allHubs) {
+            hub.clearBulkCache();
         }
     }
     public SwerveBase swerveBase = new SwerveBase(this);

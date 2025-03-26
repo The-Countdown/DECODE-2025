@@ -10,16 +10,17 @@ public class SwerveBase extends Robot.HardwareDevices {
         this.robot = robot;
     }
 
-    //Gets the positions in degrees of the swerve module servos
+    //Gets the positions in degrees of the swerve module servos, 0 being forwards
     public double[] getSwerveServoAngles() {
         double[] positions = new double[4];
         for (int i = 0; i < positions.length; i++) {
-            positions[i] = swerveAnalogs[i].getVoltage() / 3.3 * 360 + swerveServoAngleOffset[5] + swerveServoAngleOffset[i + 1];
+            positions[i] = swerveAnalogs[i].getVoltage() / 3.3 * 360 + swerveServoAngleOffset[4] + swerveServoAngleOffset[i + 1];
         }
 
         return positions;
     }
 
+    //Sets the positions in degrees of the swerve module servos, 0 being forwards
     public void setServoAngles(double[] servoPositions) {
         for (int i = 0; i < servoPositions.length; i++) {
             swerveServos[i].setPower(servoPositions[i]);
