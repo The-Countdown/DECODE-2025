@@ -1,13 +1,11 @@
 package org.firstinspires.ftc.teamcode;
 
-public class SwerveBase extends Robot.HardwareDevices {
+public class Drivetrain extends Robot.HardwareDevices {
     private Robot robot;
 
-    //5 is global, and the rest are in order
-    public static double[] swerveServoAngleOffset = {0, 0, 0, 0, 0};
-    public static double[] swerveStopFormation = {0, 0, 0, 0};
 
-    public SwerveBase(Robot robot) {
+
+    public Drivetrain(Robot robot) {
         this.robot = robot;
     }
 
