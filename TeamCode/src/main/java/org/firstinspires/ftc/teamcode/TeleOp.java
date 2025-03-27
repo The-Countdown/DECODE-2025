@@ -13,11 +13,12 @@ public class TeleOp extends OpMode {
 
     @Override
     public void init() {
+        robot.running = true;
     }
 
     @Override
     public void init_loop() {
-
+        robot.refreshData();
     }
 
     @Override
@@ -27,17 +28,11 @@ public class TeleOp extends OpMode {
 
     @Override
     public void loop() {
-        for (LynxModule hub : Robot.HardwareDevices.allHubs) {
-            voltage = hub.getInputVoltage(VoltageUnit.VOLTS);
-        }
-
-        for (LynxModule hub : Robot.HardwareDevices.allHubs) {
-            current = hub.getCurrent(CurrentUnit.MILLIAMPS);
-        }
+        robot.refreshData();
     }
 
     @Override
     public void stop() {
-        robot.swerveBase.servo.setTargetServoAngles();
+        robot.running = false;
     }
 }

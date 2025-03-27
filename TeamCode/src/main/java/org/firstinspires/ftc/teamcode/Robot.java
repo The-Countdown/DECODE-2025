@@ -5,20 +5,25 @@ import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.VoltageSensor;
+
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
 
 import java.util.List;
 
 public class Robot {
     HardwareMap hardwareMap;
     OpMode opMode;
+    public boolean running = false;
+    public SwerveModule[] swerveModules = new SwerveModule[4];
+    public SwerveServoPIDF[] swerveServosPIDF = new SwerveServoPIDF[HardwareDevices.swerveServos.length];
+    private DrivetrainThread drivetrainThread;
 
     public static class HardwareDevices {
         public static List<LynxModule> allHubs;
@@ -27,8 +32,8 @@ public class Robot {
         public static Limelight3A limelight;
         public static RevColorSensorV3 flashLight;
 
-        //Like a coordinate plane https://www.mathplanet.com/education/algebra-1/visualizing-linear-functions/the-coordinate-plane,
-        // the first quadrant is 0, the second is 1, etc. relating to the positions of the modules on the robot
+        /*Like a coordinate plane https://www.mathplanet.com/education/algebra-1/visualizing-linear-functions/the-coordinate-plane,
+         the first quadrant is 0, the second is 1, etc. relating to the positions of the modules on the robot */
         public static DcMotorEx[] swerveMotors = new DcMotorEx[4];
             public static String[] motorNames = new String[4];
 
@@ -74,6 +79,21 @@ public class Robot {
             HardwareDevices.analogNames[i] = "swerveAnalog" + (i);
             HardwareDevices.swerveAnalogs[i] = hardwareMap.get(AnalogInput.class, HardwareDevices.analogNames[i]);
         }
+
+        for (int i = 0; i < swerveModules.length; i++) {
+            swerveModules[i] = new SwerveModule(this,
+                    HardwareDevices.swerveMotors[i],
+                    HardwareDevices.swerveServos[i],
+                    HardwareDevices.swerveAnalogs[i],
+                    i);
+        }
+
+        for (int i = 0; i < swerveServosPIDF.length; i++) {
+            swerveServosPIDF[i] = new SwerveServoPIDF(this, i, HardwareDevices.swerveServos[i]);
+        }
+
+        drivetrainThread = new DrivetrainThread(this);
+        drivetrainThread.start();
     }
 
     public void refreshData() {
@@ -81,5 +101,24 @@ public class Robot {
             hub.clearBulkCache();
         }
     }
-    public SwerveBase swerveBase = new SwerveBase(this);
+
+    public double getVoltage() {
+        double voltage = -1;
+        for (LynxModule hub : Robot.HardwareDevices.allHubs) {
+            refreshData();
+            voltage = hub.getInputVoltage(VoltageUnit.VOLTS);
+        }
+
+        return voltage;
+    }
+
+    public double getCurrent() {
+        double current = -1;
+        for (LynxModule hub : Robot.HardwareDevices.allHubs) {
+            refreshData();
+            current = hub.getCurrent(CurrentUnit.MILLIAMPS);
+        }
+
+        return current;
+    }
 }
