@@ -6,6 +6,7 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -17,7 +18,7 @@ import java.util.List;
 
 public class Robot {
     HardwareMap hardwareMap;
-    LinearOpMode opMode;
+    OpMode opMode;
 
     public static class HardwareDevices {
         public static List<LynxModule> allHubs;
@@ -38,7 +39,7 @@ public class Robot {
             public static String[] analogNames = new String[4];
     }
 
-    public Robot(LinearOpMode opMode) {
+    public Robot(OpMode opMode) {
         this.opMode = opMode;
         this.hardwareMap = opMode.hardwareMap;
 
