@@ -1,9 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
-public class DrivetrainThread extends Thread {
+public class ThreadPIDF extends Thread {
     private Robot robot;
 
-    public DrivetrainThread(Robot robot) {
+    public ThreadPIDF(Robot robot) {
         this.robot = robot;
     }
 

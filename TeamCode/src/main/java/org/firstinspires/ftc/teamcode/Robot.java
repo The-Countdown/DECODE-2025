@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.os.Looper;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -16,14 +18,17 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
 
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.logging.Handler;
 
 public class Robot {
     HardwareMap hardwareMap;
     OpMode opMode;
     public boolean running = false;
+    private static final Handler handler = new Handler(Looper.getMainLooper());
     public SwerveModule[] swerveModules = new SwerveModule[4];
     public SwerveServoPIDF[] swerveServosPIDF = new SwerveServoPIDF[HardwareDevices.swerveServos.length];
-    private DrivetrainThread drivetrainThread;
+    private ThreadPIDF threadPIDF;
 
     public static class HardwareDevices {
         public static List<LynxModule> allHubs;
@@ -92,8 +97,33 @@ public class Robot {
             swerveServosPIDF[i] = new SwerveServoPIDF(this, i, HardwareDevices.swerveServos[i]);
         }
 
-        drivetrainThread = new DrivetrainThread(this);
-        drivetrainThread.start();
+        threadPIDF = new ThreadPIDF(this);
+        threadPIDF.start();
+    }
+
+    public static void runActionSequence(List<Consumer<Void>> actions, List<Long> delays) {
+        if (actions.size() != delays.size()) {
+            throw new IllegalArgumentException("Actions and delays must have the same length.");
+        }
+
+        // Run actions one by one with delays
+        runActionWithDelay(actions, delays, 0);
+    }
+
+    private static void runActionWithDelay(List<Consumer<Void>> actions, List<Long> delays, int index) {
+        if (index >= actions.size()) return; // End condition
+
+        Consumer<Void> action = actions.get(index);
+        long delay = delays.get(index);
+
+        // Perform the action and schedule the next
+        action.accept(null);
+        sleepNonBlocking(delay, () -> runActionWithDelay(actions, delays, index + 1)); // Recurse for the next action
+    }
+
+    // Non-blocking sleep function
+    public static void sleepNonBlocking(long delayMillis, Runnable task) {
+        new Handler(Looper.getMainLooper()).postDelayed(task, delayMillis);
     }
 
     public void refreshData() {

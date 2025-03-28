@@ -24,5 +24,4 @@ public class Constants {
     public static double WHEEL_RADIUS_MM = 62;
 
     public static int WHEEL_CALCULATED_MAX_RPM = 861;
-
 }

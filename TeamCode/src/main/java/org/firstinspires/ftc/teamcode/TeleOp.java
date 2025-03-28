@@ -8,8 +8,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
 
 public class TeleOp extends OpMode {
     private Robot robot = new Robot(this);
-    public double voltage;
-    public double current;
 
     @Override
     public void init() {
