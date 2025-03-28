@@ -18,8 +18,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
 
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.logging.Handler;
+import android.os.Handler;
 
 public class Robot {
     HardwareMap hardwareMap;
@@ -28,7 +27,7 @@ public class Robot {
     private static final Handler handler = new Handler(Looper.getMainLooper());
     public SwerveModule[] swerveModules = new SwerveModule[4];
     public SwerveServoPIDF[] swerveServosPIDF = new SwerveServoPIDF[HardwareDevices.swerveServos.length];
-    private ThreadPIDF threadPIDF;
+    private final ThreadPIDF threadPIDF;
 
     public static class HardwareDevices {
         public static List<LynxModule> allHubs;
@@ -101,29 +100,15 @@ public class Robot {
         threadPIDF.start();
     }
 
-    public static void runActionSequence(List<Consumer<Void>> actions, List<Long> delays) {
+    public void runActionSequence(List<Runnable> actions, List<Long> delays, int index) {
         if (actions.size() != delays.size()) {
             throw new IllegalArgumentException("Actions and delays must have the same length.");
         }
+        if (index >= actions.size()) return;
 
-        // Run actions one by one with delays
-        runActionWithDelay(actions, delays, 0);
-    }
+        actions.get(index).run();
 
-    private static void runActionWithDelay(List<Consumer<Void>> actions, List<Long> delays, int index) {
-        if (index >= actions.size()) return; // End condition
-
-        Consumer<Void> action = actions.get(index);
-        long delay = delays.get(index);
-
-        // Perform the action and schedule the next
-        action.accept(null);
-        sleepNonBlocking(delay, () -> runActionWithDelay(actions, delays, index + 1)); // Recurse for the next action
-    }
-
-    // Non-blocking sleep function
-    public static void sleepNonBlocking(long delayMillis, Runnable task) {
-        new Handler(Looper.getMainLooper()).postDelayed(task, delayMillis);
+        handler.postDelayed(() -> runActionSequence(actions, delays, index + 1), delays.get(index));
     }
 
     public void refreshData() {

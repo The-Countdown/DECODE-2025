@@ -5,12 +5,12 @@ import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 public class SwerveModule {
-    private Robot robot;
-    private DcMotorEx drivingMotor;
-    private CRServoImplEx turningServo;
-    private AnalogInput analogEncoder;
-    private int module;
-    private SwerveServoPIDF servoPIDF;
+    private final Robot robot;
+    private final DcMotorEx drivingMotor;
+    private final CRServoImplEx turningServo;
+    private final AnalogInput analogEncoder;
+    private final int module;
+    private final SwerveServoPIDF servoPIDF;
 
     public SwerveModule(Robot robot, DcMotorEx motor, CRServoImplEx turningServo, AnalogInput analogEncoder, int module) {
         this.robot = robot;
@@ -22,9 +22,8 @@ public class SwerveModule {
     }
 
     public class Servo {
-        //Gets the position in degrees of the swerve module servo ranging from -180 to 180, 0 being forwards
+        // Gets the position in degrees of the swerve module servo ranging from -180 to 180, 0 being forwards
         public double getAngle() {
-            robot.refreshData();
             double angle = analogEncoder.getVoltage() / ((Constants.ANALOG_MAX_VOLTAGE * 360) + Constants.SWERVE_SERVO_ANGLE_OFFSET[4] + Constants.SWERVE_SERVO_ANGLE_OFFSET[module]);
 
             if (angle > 180) {
@@ -34,15 +33,21 @@ public class SwerveModule {
             return angle;
         }
 
-        public void setAngle(double angle) {
+        public void setTargetAngle(double angle) {
             servoPIDF.setTargetAngle(angle);
+        }
+
+        public void setPower(double power) {
+            turningServo.setPower(power);
         }
     }
 
     public class Motor {
-      public void setMotorPower(double power) {
+      public void setPower(double power) {
           drivingMotor.setPower(power);
       }
     }
-    Servo servo = new Servo();
+
+    public final Servo servo = new Servo();
+    public final Motor motor = new Motor();
 }

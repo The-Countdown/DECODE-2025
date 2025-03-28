@@ -29,6 +29,16 @@ public class SwerveServoPIDF {
         this.targetAngle = targetAngle;
     }
 
+    public double getTargetAngle() {
+        return targetAngle;
+    }
+    public double getError() {
+        double error = robot.swerveModules[module].servo.getAngle() - robot.swerveServosPIDF[module].getTargetAngle();
+        error = ((error + 180) % 360 + 360) % 360 - 180;
+
+        return error;
+    }
+
     public double calculate() {
         double currentAngle = robot.swerveModules[module].servo.getAngle();
         double error = targetAngle - currentAngle;

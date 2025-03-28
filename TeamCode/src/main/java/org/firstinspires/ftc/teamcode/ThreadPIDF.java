@@ -9,17 +9,30 @@ public class ThreadPIDF extends Thread {
 
     @Override
     public void run() {
+        robot.refreshData();
+        boolean skip = false;
         while (robot.running) {
             for (int i = 0; i < robot.swerveModules.length; i++) {
-                SwerveModule module = robot.swerveModules[i];
                 if (!robot.running) {
                     break;
                 }
-                robot.swerveServosPIDF[i].calculate();
+
+                if (robot.swerveServosPIDF[i].getError() <= 2) {
+                    Status.SERVO_TARGET_REACHED[i] = true;
+                    skip = true;
+                    break;
+                }
+                Status.SERVO_TARGET_REACHED[i] = false;
+
+                robot.swerveModules[i].servo.setPower(robot.swerveServosPIDF[i].calculate());
             }
 
             try {
-                Thread.sleep(10); // prevent CPU strain
+                robot.refreshData();
+
+                if (!skip) {
+                    Thread.sleep(10); // prevent CPU strain
+                }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
