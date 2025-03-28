@@ -27,7 +27,7 @@ public class Robot {
     private static final Handler handler = new Handler(Looper.getMainLooper());
     public SwerveModule[] swerveModules = new SwerveModule[4];
     public SwerveServoPIDF[] swerveServosPIDF = new SwerveServoPIDF[HardwareDevices.swerveServos.length];
-    private final ThreadPIDF threadPIDF;
+    private final ThreadedPIDF threadedPIDF;
 
     public static class HardwareDevices {
         public static List<LynxModule> allHubs;
@@ -96,8 +96,8 @@ public class Robot {
             swerveServosPIDF[i] = new SwerveServoPIDF(this, i, HardwareDevices.swerveServos[i]);
         }
 
-        threadPIDF = new ThreadPIDF(this);
-        threadPIDF.start();
+        threadedPIDF = new ThreadedPIDF(this);
+        threadedPIDF.start();
     }
 
     public void runActionSequence(List<Runnable> actions, List<Long> delays, int index) {
