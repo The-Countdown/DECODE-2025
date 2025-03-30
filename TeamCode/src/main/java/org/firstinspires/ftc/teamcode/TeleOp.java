@@ -2,8 +2,9 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+@SuppressWarnings("all")
 public class TeleOp extends OpMode {
-    private Robot robot = new Robot(this);
+    private final Robot robot = new Robot(this);
 
     @Override
     public void init() {

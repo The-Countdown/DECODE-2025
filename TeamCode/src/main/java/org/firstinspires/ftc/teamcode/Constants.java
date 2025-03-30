@@ -6,6 +6,8 @@ import com.acmerobotics.dashboard.config.Config;
  * The `Constants` class provides a centralized location for all the fixed values and
  * configurations used throughout the robot's code.
  */
+
+@SuppressWarnings("all")
 @Config
 public class Constants {
     public static final int NUM_SWERVE_MOTORS = 4;

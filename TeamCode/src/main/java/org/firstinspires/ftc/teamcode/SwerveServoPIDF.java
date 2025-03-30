@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 /**
  * A PIDF controller for a swerve module's servo.
  */
+
+@SuppressWarnings("all")
 public class SwerveServoPIDF {
     private final Robot robot;
     private final CRServoImplEx servo;

@@ -8,8 +8,10 @@ package org.firstinspires.ftc.teamcode;
  * control loop by only calculating and updating the servo power if the error is outside of the set threshold,
  * improving efficiency.
  */
+
+@SuppressWarnings("all")
 public class ThreadedPIDF extends Thread {
-    private Robot robot;
+    private final Robot robot;
 
     public ThreadedPIDF(Robot robot) {
         this.robot = robot;

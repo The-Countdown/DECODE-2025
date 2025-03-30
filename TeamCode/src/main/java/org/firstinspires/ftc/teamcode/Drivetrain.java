@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 @SuppressWarnings("all")
 public class Drivetrain extends Robot.HardwareDevices {
-    private Robot robot;
+    private final Robot robot;
     /**
      * Constructor for the Drivetrain class.
      * @param robot The Robot object that contains all hardware devices.

@@ -29,6 +29,8 @@ import android.os.Handler;
  * This class acts as the main interface for controlling the robot, offering a structured and organized
  * approach to managing complex robotic systems.
  */
+
+@SuppressWarnings("all")
 public class Robot {
     HardwareMap hardwareMap;
     OpMode opMode;

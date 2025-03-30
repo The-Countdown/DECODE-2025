@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 /**
  * Represents a single Swerve Drive Module, encapsulating its motor and servo controls, as well as sensor data.
  */
+
+@SuppressWarnings("all")
 public class SwerveModule {
     private final Robot robot;
     private final DcMotorEx drivingMotor;

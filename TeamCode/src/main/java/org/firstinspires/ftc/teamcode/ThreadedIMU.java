@@ -2,8 +2,9 @@ package org.firstinspires.ftc.teamcode;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
+@SuppressWarnings("all")
 public class ThreadedIMU extends Thread {
-    private Robot robot;
+    private final Robot robot;
     public static double currentYaw = 0;
 
     /**
