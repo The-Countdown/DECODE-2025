@@ -3,17 +3,21 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+/**
+ * A PIDF controller for a swerve module's servo.
+ */
 public class SwerveServoPIDF {
-    private Robot robot;
-    private CRServoImplEx servo;
-    private int module;
+    private final Robot robot;
+    private final CRServoImplEx servo;
+    private final int module;
     private double targetAngle;
-    private ElapsedTime timer;
-    private double integral, lastError;
-    private double p;
-    private double i;
-    private double d;
-    private double ff;
+    private final ElapsedTime timer;
+    private double integral;
+    private double lastError;
+    public double p;
+    public double i;
+    public double d;
+    public double ff;
 
     public SwerveServoPIDF(Robot robot, int module, CRServoImplEx servo) {
         this.robot = robot;
@@ -32,13 +36,18 @@ public class SwerveServoPIDF {
     public double getTargetAngle() {
         return targetAngle;
     }
+
     public double getError() {
         double error = robot.swerveModules[module].servo.getAngle() - robot.swerveServosPIDF[module].getTargetAngle();
-        error = ((error + 180) % 360 + 360) % 360 - 180;
+        error = robot.drivetrain.normalizeAngle(error);
 
         return error;
     }
 
+    /**
+     * Calculates the PIDF output for the servo.
+     * @return The calculated PIDF output.
+     */
     public double calculate() {
         double currentAngle = robot.swerveModules[module].servo.getAngle();
         double error = targetAngle - currentAngle;

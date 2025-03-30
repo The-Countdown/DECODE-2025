@@ -4,27 +4,44 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
+/**
+ * Represents a single Swerve Drive Module, encapsulating its motor and servo controls, as well as sensor data.
+ */
 public class SwerveModule {
     private final Robot robot;
     private final DcMotorEx drivingMotor;
     private final CRServoImplEx turningServo;
     private final AnalogInput analogEncoder;
-    private final int module;
+    private final int moduleIndex;
     private final SwerveServoPIDF servoPIDF;
 
-    public SwerveModule(Robot robot, DcMotorEx motor, CRServoImplEx turningServo, AnalogInput analogEncoder, int module) {
+    /**
+     * Constructor for the SwerveModule class.
+     *
+     * @param robot         The Robot instance.
+     * @param motor         The driving motor of the module.
+     * @param turningServo  The servo responsible for turning the module.
+     * @param analogEncoder The analog encoder for reading the module's angle.
+     * @param moduleIndex   The index of the module (e.g., 0 for front-left, 1 for front-right, etc.).
+     */
+    public SwerveModule(Robot robot, DcMotorEx motor, CRServoImplEx turningServo, AnalogInput analogEncoder, int moduleIndex) {
         this.robot = robot;
         this.drivingMotor = motor;
         this.turningServo = turningServo;
         this.analogEncoder = analogEncoder;
-        this.module = module;
-        this.servoPIDF = new SwerveServoPIDF(robot, module, turningServo);
+        this.moduleIndex = moduleIndex;
+        this.servoPIDF = new SwerveServoPIDF(robot, moduleIndex, turningServo);
     }
 
     public class Servo {
-        // Gets the position in degrees of the swerve module servo ranging from -180 to 180, 0 being forwards
+
+        /**
+         * Gets the current angle of the module using the Axon analog encoder and converting the voltage to degrees.
+         * Adds an offset to the angle based on the module's index.
+         * @return The current angle of the module in degrees, normalized at -180 to 180.
+         */
         public double getAngle() {
-            double angle = analogEncoder.getVoltage() / ((Constants.ANALOG_MAX_VOLTAGE * 360) + Constants.SWERVE_SERVO_ANGLE_OFFSET[4] + Constants.SWERVE_SERVO_ANGLE_OFFSET[module]);
+            double angle = analogEncoder.getVoltage() / ((Constants.ANALOG_MAX_VOLTAGE * 360) + Constants.SWERVE_SERVO_ANGLE_OFFSET[4] + Constants.SWERVE_SERVO_ANGLE_OFFSET[moduleIndex]);
 
             if (angle > 180) {
                 angle -= 360;

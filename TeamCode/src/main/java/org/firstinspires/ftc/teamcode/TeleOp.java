@@ -1,22 +1,18 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-
-import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
 
 public class TeleOp extends OpMode {
     private Robot robot = new Robot(this);
 
     @Override
     public void init() {
-        robot.running = true;
+        robot.isRunning = true;
+        robot.refreshData();
     }
 
     @Override
     public void init_loop() {
-        robot.refreshData();
     }
 
     @Override
@@ -26,11 +22,17 @@ public class TeleOp extends OpMode {
 
     @Override
     public void loop() {
-        robot.refreshData();
+        robot.drivetrain.driverControl(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x, false);
+
+        telemetry.addData("Voltage", robot.getVoltage());
+        telemetry.addData("Current", robot.getCurrent());
+        telemetry.addData("Robot Yaw", ThreadedIMU.currentYaw);
+        telemetry.update();
     }
 
     @Override
     public void stop() {
-        robot.running = false;
+        robot.drivetrain.drivetrainInput(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
+        robot.isRunning = false;
     }
 }
