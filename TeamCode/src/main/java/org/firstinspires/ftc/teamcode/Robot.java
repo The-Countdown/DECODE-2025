@@ -14,8 +14,12 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
+import org.firstinspires.ftc.robotcore.internal.opmode.TelemetryImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import android.os.Handler;
@@ -29,12 +33,14 @@ import android.os.Handler;
  * This class acts as the main interface for controlling the robot, offering a structured and organized
  * approach to managing complex robotic systems.
  */
-
 @SuppressWarnings("all")
 public class Robot {
-    HardwareMap hardwareMap;
     OpMode opMode;
+    HardwareMap hardwareMap;
+    Telemetry telemetry;
+    TelemetryImpl telemetryPermanent;
     public boolean isRunning = false;
+    private static final Logger log = LoggerFactory.getLogger(Robot.class);
     private Handler handler = new Handler(Looper.getMainLooper());
     public final SwerveModule[] swerveModules = new SwerveModule[4];
     public SwerveServoPIDF[] swerveServosPIDF = new SwerveServoPIDF[HardwareDevices.swerveServos.length];
@@ -47,8 +53,6 @@ public class Robot {
         public static Limelight3A limelight;
         public static RevColorSensorV3 flashLight;
 
-        /*Like a coordinate plane https://www.mathplanet.com/education/algebra-1/visualizing-linear-functions/the-coordinate-plane,
-         the first quadrant is 0, the second is 1, etc. relating to the positions of the modules on the robot */
         public static DcMotorEx[] swerveMotors = new DcMotorEx[4];
             public static String[] motorNames = new String[4];
 
@@ -62,11 +66,14 @@ public class Robot {
     public Robot(OpMode opMode) {
         this.opMode = opMode;
         this.hardwareMap = opMode.hardwareMap;
+        this.telemetry = opMode.telemetry;
 
         HardwareDevices.allHubs = hardwareMap.getAll(LynxModule.class);
         for (LynxModule hub : HardwareDevices.allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }
+
+        telemetryPermanent.setAutoClear(false);
 
         HardwareDevices.imu = hardwareMap.get(IMU.class, HardwareDevices.imu.getDeviceName());
             BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -106,6 +113,27 @@ public class Robot {
         for (int i = 0; i < swerveServosPIDF.length; i++) {
             swerveServosPIDF[i] = new SwerveServoPIDF(this, i, HardwareDevices.swerveServos[i]);
         }
+
+        for (int i = 0; i < HardwareDevices.swerveMotors.length; i++) {
+            int portNumber = HardwareDevices.swerveMotors[i].getPortNumber();
+            if (portNumber != i) {
+                telemetryPermanent.addLine("WARNING: Swerve Motor " + i + " is connected to port " + portNumber + ", should be port " + i);
+            }
+        }
+        for (int i = 0; i < HardwareDevices.swerveServos.length; i++) {
+            int portNumber = HardwareDevices.swerveServos[i].getPortNumber();
+            if (portNumber != i) {
+                telemetryPermanent.addLine("WARNING: Swerve Servo " + i + " is connected to port " + portNumber + ", should be port " + i);
+            }
+        }
+        for (int i = 0; i < HardwareDevices.swerveAnalogs.length; i++) {
+            // Get the port number (last character) from the connection info string.
+            int portNumber = Character.getNumericValue(HardwareDevices.swerveAnalogs[i].getConnectionInfo().charAt(HardwareDevices.swerveAnalogs[i].getConnectionInfo().length() - 1));
+            if (portNumber != i) {
+                telemetryPermanent.addLine("WARNING: Swerve Analog Encoder " + i + " is connected to port " + portNumber + ", should be port " + i);
+            }
+        }
+        telemetryPermanent.update();
 
         threadedPIDF = new ThreadedPIDF(this);
         threadedPIDF.start();
@@ -174,7 +202,7 @@ public class Robot {
     }
 
     public double getVoltage() {
-        // Sets the voltage to -1 in case it is not set by the LynxModule
+        // Sets the voltage to -1 in case it is not set by the LynxModule, makes for easy debugging
         double voltage = -1;
         for (LynxModule hub : Robot.HardwareDevices.allHubs) {
             voltage = hub.getInputVoltage(VoltageUnit.VOLTS);
@@ -184,7 +212,7 @@ public class Robot {
     }
 
     public double getCurrent() {
-        // Sets the current to -1 in case it is not set by the LynxModule
+        // Sets the current to -1 in case it is not set by the LynxModule, makes for easy debugging
         double current = -1;
         for (LynxModule hub : Robot.HardwareDevices.allHubs) {
             current = hub.getCurrent(CurrentUnit.MILLIAMPS);

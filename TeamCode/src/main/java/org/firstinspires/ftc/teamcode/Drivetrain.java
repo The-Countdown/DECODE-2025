@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
+/**
+ * This class handles the control and calculations for the robot's drivetrain, including swerve drive functionality.
+ */
 @SuppressWarnings("all")
 public class Drivetrain extends Robot.HardwareDevices {
     private final Robot robot;

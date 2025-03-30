@@ -6,7 +6,6 @@ import com.acmerobotics.dashboard.config.Config;
  * The `Constants` class provides a centralized location for all the fixed values and
  * configurations used throughout the robot's code.
  */
-
 @SuppressWarnings("all")
 @Config
 public class Constants {
@@ -16,7 +15,7 @@ public class Constants {
 
     /**
      * The angle offset for each swerve servo, used to correct any mechanical misalignments.
-     * Index 5 is global, and the rest are in order (module 0, 1, 2, 3).
+     * Index 4 is global, and the rest are in order (module 0, 1, 2, 3) @see {@link SwerveModule}.
      */
     public static final double[] SWERVE_SERVO_ANGLE_OFFSET = {0, 0, 0, 0, 0};
 
@@ -45,7 +44,7 @@ public class Constants {
     /**
      * The degree tolerance allowed for the PIDF controllers.
      */
-    public static final double PIDF_TOLERANCE_DEGREES = 2;
+    public static final double PIDF_TOLERANCE_DEGREES = 1;
 
     public static final int SWERVE_MOTOR_RPM_CALCULATED_MAX = 5800;
 

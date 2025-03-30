@@ -18,13 +18,17 @@ android {
         buildConfig = true
     }
 
-    compileSdkVersion 30
+    compileSdkVersion 35
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
     namespace = 'com.qualcomm.ftcrobotcontroller'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs.addAll(["-Xlint:-options", "-Xlint:-deprecation"])
 }
 
 apply from: '../build.dependencies.gradle'

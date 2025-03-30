@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 @SuppressWarnings("all")
 public class TeleOp extends OpMode {
     private final Robot robot = new Robot(this);
+    public static boolean fieldOriented = false;
 
     @Override
     public void init() {
@@ -23,12 +24,12 @@ public class TeleOp extends OpMode {
 
     @Override
     public void loop() {
-        robot.drivetrain.driverControl(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x, false);
+        robot.drivetrain.driverControl(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x, fieldOriented);
 
-        telemetry.addData("Voltage", robot.getVoltage());
-        telemetry.addData("Current", robot.getCurrent());
-        telemetry.addData("Robot Yaw", ThreadedIMU.currentYaw);
-        telemetry.update();
+        robot.opMode.telemetry.addData("Voltage", robot.getVoltage());
+        robot.opMode.telemetry.addData("Current", robot.getCurrent());
+        robot.opMode.telemetry.addData("Robot Yaw", ThreadedIMU.currentYaw);
+        robot.opMode.telemetry.update();
     }
 
     @Override

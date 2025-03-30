@@ -6,8 +6,22 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 /**
  * Represents a single Swerve Drive Module, encapsulating its motor and servo controls, as well as sensor data.
+ *
+ *
+ * <pre>
+ *      Quadrant 2    |   Quadrant 1
+ *                    |
+ *      ------------------------
+ *                    |
+ *      Quadrant 3    |   Quadrant 4
+ *
+ *  Like a coordinate plane, the first quadrant is 0, the second is 1, etc.
+ *  This is relating to the positions of the modules on the robot
+ *
+ *  When indexing from ANY ARRAY IN THIS CODEBASE:
+ *  0 - front right, 1 - front left, 2 - back left, 3 - back right
+ * </pre>
  */
-
 @SuppressWarnings("all")
 public class SwerveModule {
     private final Robot robot;
@@ -24,7 +38,7 @@ public class SwerveModule {
      * @param motor         The driving motor of the module.
      * @param turningServo  The servo responsible for turning the module.
      * @param analogEncoder The analog encoder for reading the module's angle.
-     * @param moduleIndex   The index of the module (e.g., 0 for front-left, 1 for front-right, etc.).
+     * @param moduleIndex   The index of the module.
      */
     public SwerveModule(Robot robot, DcMotorEx motor, CRServoImplEx turningServo, AnalogInput analogEncoder, int moduleIndex) {
         this.robot = robot;
