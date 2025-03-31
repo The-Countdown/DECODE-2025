@@ -2,9 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
-@SuppressWarnings("all")
 public class ThreadedIMU extends Thread {
-    private final Robot robot;
+    private final RobotManager robotManager;
     public static double currentYaw = 0;
 
     /**
@@ -12,8 +11,8 @@ public class ThreadedIMU extends Thread {
      * Polling the IMU directly on the main thread would introduce significant latency.
      * To mitigate this, we utilize a dedicated thread for IMU data acquisition, allowing the main thread to continue without interruption.
      */
-    public ThreadedIMU(Robot robot) {
-        this.robot = robot;
+    public ThreadedIMU(RobotManager robotManager) {
+        this.robotManager = robotManager;
         // Set the thread to be a daemon thread so that it will not prevent the program from exiting.
         setDaemon(true);
         setName("ThreadedIMU");
@@ -21,7 +20,7 @@ public class ThreadedIMU extends Thread {
 
     @Override
     public void run() {
-        currentYaw = Robot.HardwareDevices.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+        currentYaw = RobotManager.HardwareDevices.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
         try {
             Thread.sleep(5);
         } catch (InterruptedException e) {

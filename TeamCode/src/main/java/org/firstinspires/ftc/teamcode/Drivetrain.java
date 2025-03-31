@@ -3,15 +3,16 @@ package org.firstinspires.ftc.teamcode;
 /**
  * This class handles the control and calculations for the robot's drivetrain, including swerve drive functionality.
  */
-@SuppressWarnings("all")
-public class Drivetrain extends Robot.HardwareDevices {
-    private final Robot robot;
+public class Drivetrain extends RobotManager.HardwareDevices {
+    private final RobotManager robotManager;
+    private boolean rotationWasZero = false;
+    private double holdingRotation;
     /**
      * Constructor for the Drivetrain class.
-     * @param robot The Robot object that contains all hardware devices.
+     * @param robotManager The Robot object that contains all hardware devices.
      */
-    public Drivetrain(Robot robot) {
-        this.robot = robot;
+    public Drivetrain(RobotManager robotManager) {
+        this.robotManager = robotManager;
     }
 
     /**
@@ -32,18 +33,28 @@ public class Drivetrain extends Robot.HardwareDevices {
 
         double rotationalMagnitude = Math.abs(rX);
         // Determine the rotational direction based on the sign of rX.
-        int rotationalDirection = rX > 0 ? 1 : -1;
+        int rotationalDirection = rX >= 0 ? 1 : -1;
 
-        double heading = ThreadedIMU.currentYaw;
+        if (rX == 0) {
+            if (!rotationWasZero) {
+                robotManager.headingHoldPID.setTargetHeading(ThreadedIMU.currentYaw);
+                rotationWasZero = true;
+            }
+            rotationalMagnitude = robotManager.headingHoldPID.calculate(ThreadedIMU.currentYaw);
+        } else {
+            rotationWasZero = false;
+        }
+
+        double currentHeading = ThreadedIMU.currentYaw;
         // Adjust the translational angle for field-oriented driving if enabled.
-        translationalAngle = fieldOriented ? translationalAngle - heading : translationalAngle;
+        translationalAngle = fieldOriented ? translationalAngle - currentHeading : translationalAngle;
         translationalAngle = normalizeAngle(translationalAngle);
 
-        double[] calculatedAngles = new double[4];
-        double[] calculatedPowers = new double[4];
+        double[] calculatedAngles = new double[robotManager.swerveModules.length];
+        double[] calculatedPowers = new double[robotManager.swerveModules.length];
 
         // Iterate through each swerve module to calculate its target angle and power.
-        for (int i = 0; i < robot.swerveModules.length; i++) {
+        for (int i = 0; i < robotManager.swerveModules.length; i++) {
             // Calculate the x and y components of translational movement.
             double translationalX = translationalMagnitude * Math.cos(translationalAngle) * translationalDirection;
             double translationalY = translationalMagnitude * Math.sin(translationalAngle) * translationalDirection;
@@ -76,7 +87,7 @@ public class Drivetrain extends Robot.HardwareDevices {
     public void drivetrainInput(double[] targetAngles, double[] targetPowers) {
         targetPowers = scalePowers(targetPowers);
         for (int i = 0; i < swerveServos.length; i++) {
-            double currentAngle = robot.swerveModules[i].servo.getAngle();
+            double currentAngle = robotManager.swerveModules[i].servo.getAngle();
             double error = targetAngles[i] - currentAngle;
             error = normalizeAngle(error);
 
@@ -89,12 +100,12 @@ public class Drivetrain extends Robot.HardwareDevices {
              */
             if (Math.abs(error) > 90) {
                 targetAngles[i] = normalizeAngle(targetAngles[i] + 180);
-                robot.swerveModules[i].motor.setPower(-targetPowers[i]);
+                robotManager.swerveModules[i].motor.setPower(-targetPowers[i]);
             } else {
-                robot.swerveModules[i].motor.setPower(targetPowers[i]);
+                robotManager.swerveModules[i].motor.setPower(targetPowers[i]);
             }
 
-            robot.swerveModules[i].servo.setTargetAngle(targetAngles[i]);
+            robotManager.swerveModules[i].servo.setTargetAngle(targetAngles[i]);
         }
     }
 

@@ -2,15 +2,15 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-@SuppressWarnings("all")
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "TeleOp")
 public class TeleOp extends OpMode {
-    private final Robot robot = new Robot(this);
+    private final RobotManager robotManager = new RobotManager(this);
     public static boolean fieldOriented = false;
 
     @Override
     public void init() {
-        robot.isRunning = true;
-        robot.refreshData();
+        robotManager.isRunning = true;
+        robotManager.refreshData();
     }
 
     @Override
@@ -24,17 +24,19 @@ public class TeleOp extends OpMode {
 
     @Override
     public void loop() {
-        robot.drivetrain.driverControl(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x, fieldOriented);
+        robotManager.loopTime.reset();
+        robotManager.drivetrain.driverControl(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x, fieldOriented);
 
-        robot.opMode.telemetry.addData("Voltage", robot.getVoltage());
-        robot.opMode.telemetry.addData("Current", robot.getCurrent());
-        robot.opMode.telemetry.addData("Robot Yaw", ThreadedIMU.currentYaw);
-        robot.opMode.telemetry.update();
+        robotManager.opMode.telemetry.addData("Voltage", robotManager.getVoltage());
+        robotManager.opMode.telemetry.addData("Current", robotManager.getCurrent());
+        robotManager.opMode.telemetry.addData("Robot Yaw", ThreadedIMU.currentYaw);
+        robotManager.opMode.telemetry.addData("Loop Time:", robotManager.loopTime.milliseconds());
+        robotManager.opMode.telemetry.update();
     }
 
     @Override
     public void stop() {
-        robot.drivetrain.drivetrainInput(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
-        robot.isRunning = false;
+        robotManager.drivetrain.drivetrainInput(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
+        robotManager.isRunning = false;
     }
 }

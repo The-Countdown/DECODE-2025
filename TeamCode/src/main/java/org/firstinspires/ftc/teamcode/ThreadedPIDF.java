@@ -8,12 +8,11 @@ package org.firstinspires.ftc.teamcode;
  * control loop by only calculating and updating the servo power if the error is outside of the set threshold,
  * improving efficiency.
  */
-@SuppressWarnings("all")
 public class ThreadedPIDF extends Thread {
-    private final Robot robot;
+    private final RobotManager robotManager;
 
-    public ThreadedPIDF(Robot robot) {
-        this.robot = robot;
+    public ThreadedPIDF(RobotManager robotManager) {
+        this.robotManager = robotManager;
         // Set the thread to be a daemon thread so that it will not prevent the program from exiting.
         setDaemon(true);
         setName("ThreadedPIDF");
@@ -21,29 +20,29 @@ public class ThreadedPIDF extends Thread {
 
     @Override
     public void run() {
-        robot.refreshData();
+        robotManager.refreshData();
         boolean skip = false;
-        while (robot.isRunning) {
-            for (int i = 0; i < robot.swerveModules.length; i++) {
-                if (!robot.isRunning) {
+        while (robotManager.isRunning) {
+            for (int i = 0; i < robotManager.swerveModules.length; i++) {
+                if (!robotManager.isRunning) {
                     break;
                 }
 
-                if (robot.swerveServosPIDF[i].getError() <= Constants.PIDF_TOLERANCE_DEGREES) {
-                    Status.SERVO_TARGET_REACHED[i] = true;
+                if (robotManager.swerveServosPIDF[i].getError() <= Constants.SWERVE_SERVO_PIDF_TOLERANCE_DEGREES) {
+                    Status.swerveServoStatus.put(i, Status.ServoStatus.TARGET_REACHED);
                     skip = true;
                     break;
                 }
-                Status.SERVO_TARGET_REACHED[i] = false;
+                Status.swerveServoStatus.put(i, Status.ServoStatus.MOVING);
 
-                robot.swerveModules[i].servo.setPower(robot.swerveServosPIDF[i].calculate());
+                robotManager.swerveModules[i].servo.setPower(robotManager.swerveServosPIDF[i].calculate());
             }
 
             try {
-                robot.refreshData();
+                robotManager.refreshData();
 
                 if (!skip) {
-                    Thread.sleep(10); // prevent CPU strain
+                    Thread.sleep(5); // prevent CPU strain
                 }
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();

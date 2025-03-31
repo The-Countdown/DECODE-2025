@@ -6,7 +6,6 @@ import com.acmerobotics.dashboard.config.Config;
  * The `Constants` class provides a centralized location for all the fixed values and
  * configurations used throughout the robot's code.
  */
-@SuppressWarnings("all")
 @Config
 public class Constants {
     public static final int NUM_SWERVE_MOTORS = 4;
@@ -22,12 +21,12 @@ public class Constants {
     /**
      * The desired servo angles for the swerve modules when in the stop formation.
      */
-    public static final double[] SWERVE_STOP_FORMATION = {45, -45, 45, -45};
+    public static final double[] SWERVE_STOP_FORMATION = {47.8901, -47.8901, 47.8901, -47.8901};
     /**
-     * The desired servo angles for the swerve modules when in the rotation formation.
+     * The desired servo angles for the swerve modules when in the rotation formation
+     * These values are not exactly 45 degrees because the drivebase is not a perfect square
      */
-    public static final double[] SWERVE_ROTATION_FORMATION = {-45, 45, -45, 45};
-
+    public static final double[] SWERVE_ROTATION_FORMATION = {-47.8901, 47.8901, -47.8901, 47.8901};
     /**
      * An array of power values for each swerve motor that sets them to no power.
      */
@@ -37,14 +36,14 @@ public class Constants {
      * PIDF values for the swerve drive servos.
      * These values will need to be tuned for the specific robot.
      */
-    public static final double kP = 0, kI = 0, kD = 0, kF = 0;
+    public static final double SWERVE_SERVO_KP = 0, SWERVE_SERVO_KI = 0, SWERVE_SERVO_KD = 0, SWERVE_SERVO_KF = 0;
+    public static final double HEADING_KP = 0, HEADING_KI = 0, HEADING_KD = 0, HEADING_KF = 0;
 
     public static final double ANALOG_MAX_VOLTAGE = 3.3;
 
-    /**
-     * The degree tolerance allowed for the PIDF controllers.
-     */
-    public static final double PIDF_TOLERANCE_DEGREES = 1;
+    public static final double HEADING_PIDF_TOLERANCE_DEGREES = 3;
+
+    public static final double SWERVE_SERVO_PIDF_TOLERANCE_DEGREES = 1;
 
     public static final int SWERVE_MOTOR_RPM_CALCULATED_MAX = 5800;
 

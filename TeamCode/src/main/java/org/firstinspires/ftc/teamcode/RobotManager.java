@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.os.Handler;
 import android.os.Looper;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
@@ -13,16 +14,14 @@ import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
 import org.firstinspires.ftc.robotcore.internal.opmode.TelemetryImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import android.os.Handler;
 
 /**
  * The Robot class serves as the central manager for all robot hardware and high-level operations.
@@ -33,15 +32,14 @@ import android.os.Handler;
  * This class acts as the main interface for controlling the robot, offering a structured and organized
  * approach to managing complex robotic systems.
  */
-@SuppressWarnings("all")
-public class Robot {
+public class RobotManager {
     OpMode opMode;
     HardwareMap hardwareMap;
     Telemetry telemetry;
     TelemetryImpl telemetryPermanent;
     public boolean isRunning = false;
-    private static final Logger log = LoggerFactory.getLogger(Robot.class);
-    private Handler handler = new Handler(Looper.getMainLooper());
+    public static ElapsedTime loopTime = new ElapsedTime();
+    private final Handler handler = new Handler(Looper.getMainLooper());
     public final SwerveModule[] swerveModules = new SwerveModule[4];
     public SwerveServoPIDF[] swerveServosPIDF = new SwerveServoPIDF[HardwareDevices.swerveServos.length];
     private ThreadedPIDF threadedPIDF;
@@ -53,17 +51,17 @@ public class Robot {
         public static Limelight3A limelight;
         public static RevColorSensorV3 flashLight;
 
-        public static DcMotorEx[] swerveMotors = new DcMotorEx[4];
-            public static String[] motorNames = new String[4];
+        public static DcMotorEx[] swerveMotors = new DcMotorEx[Constants.NUM_SWERVE_MOTORS];
+            public static String[] motorNames = new String[Constants.NUM_SWERVE_MOTORS];
 
-        public static CRServoImplEx[] swerveServos = new CRServoImplEx[4];
-            public static String[] servoNames = new String[4];
+        public static CRServoImplEx[] swerveServos = new CRServoImplEx[Constants.NUM_SWERVE_SERVOS];
+            public static String[] servoNames = new String[Constants.NUM_SWERVE_SERVOS];
 
-        public static AnalogInput[] swerveAnalogs = new AnalogInput[4];
-            public static String[] analogNames = new String[4];
+        public static AnalogInput[] swerveAnalogs = new AnalogInput[Constants.NUM_SWERVE_ANALOGS];
+            public static String[] analogNames = new String[Constants.NUM_SWERVE_ANALOGS];
     }
 
-    public Robot(OpMode opMode) {
+    public RobotManager(OpMode opMode) {
         this.opMode = opMode;
         this.hardwareMap = opMode.hardwareMap;
         this.telemetry = opMode.telemetry;
@@ -204,7 +202,7 @@ public class Robot {
     public double getVoltage() {
         // Sets the voltage to -1 in case it is not set by the LynxModule, makes for easy debugging
         double voltage = -1;
-        for (LynxModule hub : Robot.HardwareDevices.allHubs) {
+        for (LynxModule hub : RobotManager.HardwareDevices.allHubs) {
             voltage = hub.getInputVoltage(VoltageUnit.VOLTS);
         }
 
@@ -214,7 +212,7 @@ public class Robot {
     public double getCurrent() {
         // Sets the current to -1 in case it is not set by the LynxModule, makes for easy debugging
         double current = -1;
-        for (LynxModule hub : Robot.HardwareDevices.allHubs) {
+        for (LynxModule hub : RobotManager.HardwareDevices.allHubs) {
             current = hub.getCurrent(CurrentUnit.MILLIAMPS);
         }
 
@@ -222,4 +220,5 @@ public class Robot {
     }
 
     public Drivetrain drivetrain = new Drivetrain(this);
+    public HeadingHoldPID headingHoldPID = new HeadingHoldPID(this);
 }
