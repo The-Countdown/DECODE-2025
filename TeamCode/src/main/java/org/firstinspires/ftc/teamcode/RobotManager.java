@@ -43,7 +43,7 @@ public class RobotManager {
     public ElapsedTime loopTime = new ElapsedTime();
     private final Handler handler = new Handler(Looper.getMainLooper());
     public final SwerveModule[] swerveModules = new SwerveModule[Constants.NUM_SWERVE_MOTORS];
-    public SwerveServoPIDF[] swerveServosPIDF = new SwerveServoPIDF[Constants.NUM_SWERVE_SERVOS];
+    public SwervePIDF[] swerveServosPIDF = new SwervePIDF[Constants.NUM_SWERVE_SERVOS];
     private DrivetrainUpdater drivetrainUpdater;
 
     public static class HardwareDevices {
@@ -120,7 +120,7 @@ public class RobotManager {
         }
 
         for (int i = 0; i < swerveServosPIDF.length; i++) {
-            swerveServosPIDF[i] = new SwerveServoPIDF(this, i, HardwareDevices.swerveServos[i]);
+            swerveServosPIDF[i] = new SwervePIDF(this, i, HardwareDevices.swerveServos[i]);
         }
 
         for (int i = 0; i < HardwareDevices.swerveMotors.length; i++) {

@@ -14,7 +14,7 @@ public class HeadingPID {
     private double i;
     private double d;
 
-    HeadingPID(RobotManager robotManager) {
+    public HeadingPID(RobotManager robotManager) {
         this.robotManager = robotManager;
     }
 
@@ -28,13 +28,23 @@ public class HeadingPID {
      * @return The calculated PID output.
      */
     public double calculate(double heading) {
-        double error = targetHeading - heading;
+        double error = robotManager.drivetrain.normalizeAngle(targetHeading - heading);
         double currentTime = timer.seconds();
         timer.reset();
         if (currentTime < 1e-6) currentTime = 1e-6;
 
         p = Constants.HEADING_KP * error;
-        i += Constants.HEADING_KI * error * currentTime;
+        double newI = Math.max(-Constants.HEADING_I_MAX, Math.min(Constants.HEADING_I_MAX,  // Prevent integral windup
+                i + Constants.HEADING_KI * error * currentTime));
+
+            if (Math.abs(p + newI + d) < 1) {
+                i = newI; // Only allow integration if output is within limits
+            }
+
+            // Decay integral if error changes sign
+            if (Math.signum(error) != Math.signum(lastError)) {
+                i *= 0.9;
+            }
         d = Constants.HEADING_KD * (error - lastError) / currentTime;
 
         lastError = error;

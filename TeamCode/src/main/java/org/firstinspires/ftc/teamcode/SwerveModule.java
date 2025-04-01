@@ -28,7 +28,7 @@ public class SwerveModule {
     private final CRServoImplEx turningServo;
     private final AnalogInput analogEncoder;
     private final int moduleIndex;
-    private final SwerveServoPIDF servoPIDF;
+    private final SwervePIDF servoPIDF;
 
     /**
      * Constructor for the SwerveModulePosition class.
@@ -45,7 +45,7 @@ public class SwerveModule {
         this.turningServo = turningServo;
         this.analogEncoder = analogEncoder;
         this.moduleIndex = moduleIndex;
-        this.servoPIDF = new SwerveServoPIDF(robotManager, moduleIndex, turningServo);
+        this.servoPIDF = new SwervePIDF(robotManager, moduleIndex, turningServo);
     }
 
     public class Servo {
@@ -77,9 +77,14 @@ public class SwerveModule {
     }
 
     public class Motor {
-      public void setPower(double power) {
+        public double targetPower;
+        public void setPower(double power) {
           drivingMotor.setPower(power);
-      }
+        }
+
+        public void setTargetPower(double power) {
+            targetPower = power;
+        }
     }
 
     public final Servo servo = new Servo();

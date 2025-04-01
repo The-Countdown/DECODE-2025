@@ -45,12 +45,14 @@ public class Constants {
     public static final double
             SWERVE_SERVO_KP = 0,
             SWERVE_SERVO_KI = 0,
+                SWERVE_SERVO_I_MAX = 0,
             SWERVE_SERVO_KD = 0,
             SWERVE_SERVO_KF = 0;
     // TODO: Tune
     public static final double
             HEADING_KP = 0,
             HEADING_KI = 0,
+                HEADING_I_MAX = 0,
             HEADING_KD = 0;
 
     // TODO: Find these values

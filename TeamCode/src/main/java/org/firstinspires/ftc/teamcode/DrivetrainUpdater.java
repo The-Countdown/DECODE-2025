@@ -20,22 +20,21 @@ public class DrivetrainUpdater extends Thread {
 
     @Override
     public void run() {
-        robotManager.refreshData();
-        boolean skip = false;
         while (robotManager.isRunning) {
+            robotManager.refreshData();
             for (int i = 0; i < robotManager.swerveModules.length; i++) {
-                // Likely redundant
-                if (!robotManager.isRunning) {
-                    break;
-                }
-
                 if (robotManager.swerveServosPIDF[i].getError() <= Constants.SWERVE_SERVO_PIDF_TOLERANCE_DEGREES) {
                     Status.swerveServoStatus.put(i, Status.ServoStatus.TARGET_REACHED);
-                    break;
-                }
-                Status.swerveServoStatus.put(i, Status.ServoStatus.MOVING);
+                    robotManager.swerveModules[i].motor.setPower(robotManager.swerveModules[i].motor.targetPower);
+                } else {
+                    robotManager.swerveModules[i].servo.setPower(robotManager.swerveServosPIDF[i].calculate());
+                    Status.swerveServoStatus.put(i, Status.ServoStatus.MOVING);
 
-                robotManager.swerveModules[i].servo.setPower(robotManager.swerveServosPIDF[i].calculate());
+                    robotManager.swerveModules[i].motor.setPower(
+                            robotManager.swerveModules[i].motor.targetPower *
+                                    Math.abs(Math.cos(Math.toRadians(robotManager.swerveServosPIDF[i].getError())))
+                    );
+                }
             }
         }
     }
