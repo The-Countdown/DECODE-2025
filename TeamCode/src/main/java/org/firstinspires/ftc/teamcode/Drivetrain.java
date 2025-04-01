@@ -16,14 +16,14 @@ public class Drivetrain extends RobotManager.HardwareDevices {
     }
 
     /**
-     * This method calculates and sets the target angles and powers for each swerve module based on driver inputs.
+     * This method calculates and sets the target angles and powers for each swerve module based on directional inputs.
      *
-     * @param x             The x-axis translational input from the driver.
-     * @param y             The y-axis translational input from the driver.
-     * @param rX            The rotational input from the driver.
+     * @param x             The x-axis translational input from -1 to 1.
+     * @param y             The y-axis translational input from -1 to 1.
+     * @param rX            The rotational input from -1 to 1.
      * @param fieldOriented A boolean indicating whether to use field-oriented driving.
      */
-    public void driverControl(double x, double y, double rX, boolean fieldOriented) {
+    public void drivetrainDirectionalInput(double x, double y, double rX, boolean fieldOriented) {
         // Calculate the magnitude of translational movement.
         double translationalMagnitude = Math.sqrt(x * x + y * y);
         // Calculate the angle of translational movement.
@@ -37,15 +37,15 @@ public class Drivetrain extends RobotManager.HardwareDevices {
 
         if (rX == 0) {
             if (!rotationWasZero) {
-                robotManager.headingHoldPID.setTargetHeading(ThreadedIMU.currentYaw);
+                robotManager.headingPID.setTargetHeading(PinpointUpdater.currentHeading);
                 rotationWasZero = true;
             }
-            rotationalMagnitude = robotManager.headingHoldPID.calculate(ThreadedIMU.currentYaw);
+            rotationalMagnitude = robotManager.headingPID.calculate(PinpointUpdater.currentHeading);
         } else {
             rotationWasZero = false;
         }
 
-        double currentHeading = ThreadedIMU.currentYaw;
+        double currentHeading = PinpointUpdater.currentHeading;
         // Adjust the translational angle for field-oriented driving if enabled.
         translationalAngle = fieldOriented ? translationalAngle - currentHeading : translationalAngle;
         translationalAngle = normalizeAngle(translationalAngle);
@@ -76,7 +76,7 @@ public class Drivetrain extends RobotManager.HardwareDevices {
             calculatedPowers[i] = vectorMagnitude;
         }
 
-        drivetrainInput(calculatedAngles, scalePowers(calculatedPowers));
+        drivetrainSetTargets(calculatedAngles, scalePowers(calculatedPowers));
     }
 
     /**
@@ -84,7 +84,7 @@ public class Drivetrain extends RobotManager.HardwareDevices {
      * @param targetAngles An array of target angles for each swerve module.
      * @param targetPowers An array of target powers for each swerve module.
      */
-    public void drivetrainInput(double[] targetAngles, double[] targetPowers) {
+    public void drivetrainSetTargets(double[] targetAngles, double[] targetPowers) {
         targetPowers = scalePowers(targetPowers);
         for (int i = 0; i < swerveServos.length; i++) {
             double currentAngle = robotManager.swerveModules[i].servo.getAngle();

@@ -28,4 +28,6 @@ public class Status {
         TARGET_REACHED,
         MOVING
     }
+
+    // TODO: Add more status variables as needed
 }

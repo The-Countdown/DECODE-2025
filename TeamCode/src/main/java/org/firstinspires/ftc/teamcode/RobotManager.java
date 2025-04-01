@@ -14,10 +14,12 @@ import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
 import org.firstinspires.ftc.robotcore.internal.opmode.TelemetryImpl;
 
@@ -38,18 +40,20 @@ public class RobotManager {
     Telemetry telemetry;
     TelemetryImpl telemetryPermanent;
     public boolean isRunning = false;
-    public static ElapsedTime loopTime = new ElapsedTime();
+    public ElapsedTime loopTime = new ElapsedTime();
     private final Handler handler = new Handler(Looper.getMainLooper());
-    public final SwerveModule[] swerveModules = new SwerveModule[4];
-    public SwerveServoPIDF[] swerveServosPIDF = new SwerveServoPIDF[HardwareDevices.swerveServos.length];
-    private ThreadedPIDF threadedPIDF;
+    public final SwerveModule[] swerveModules = new SwerveModule[Constants.NUM_SWERVE_MOTORS];
+    public SwerveServoPIDF[] swerveServosPIDF = new SwerveServoPIDF[Constants.NUM_SWERVE_SERVOS];
+    private DrivetrainUpdater drivetrainUpdater;
 
     public static class HardwareDevices {
         public static List<LynxModule> allHubs;
-
         public static IMU imu;
+
+        public static GoBildaPinpoint pinpoint;
         public static Limelight3A limelight;
-        public static RevColorSensorV3 flashLight;
+        public static RevColorSensorV3 flashlight;
+        public static ServoImplEx indicatorLight;
 
         public static DcMotorEx[] swerveMotors = new DcMotorEx[Constants.NUM_SWERVE_MOTORS];
             public static String[] motorNames = new String[Constants.NUM_SWERVE_MOTORS];
@@ -73,7 +77,7 @@ public class RobotManager {
 
         telemetryPermanent.setAutoClear(false);
 
-        HardwareDevices.imu = hardwareMap.get(IMU.class, HardwareDevices.imu.getDeviceName());
+        HardwareDevices.imu = hardwareMap.get(IMU.class, "imu");
             BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
             parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
             parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -82,8 +86,15 @@ public class RobotManager {
             parameters.loggingTag          = "IMU";
             parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
 
-        HardwareDevices.limelight = hardwareMap.get(Limelight3A.class, "limeLight");
-            HardwareDevices.flashLight = hardwareMap.get(RevColorSensorV3.class, "flashLight");
+            HardwareDevices.pinpoint = hardwareMap.get(GoBildaPinpoint.class, "pinpoint");
+                HardwareDevices.pinpoint.setOffsets(Constants.PINPOINT_X_OFFSET_MM, Constants.PINPOINT_Y_OFFSET_MM, DistanceUnit.MM);
+                HardwareDevices.pinpoint.setEncoderResolution(Constants.PINPOINT_ODOM_POD);
+                HardwareDevices.pinpoint.setEncoderDirections(Constants.PINPOINT_X_ENCODER_DIRECTION, Constants.PINPOINT_Y_ENCODER_DIRECTION);
+
+            HardwareDevices.limelight = hardwareMap.get(Limelight3A.class, "limelight");
+            HardwareDevices.flashlight = hardwareMap.get(RevColorSensorV3.class, "flashlight");
+
+            HardwareDevices.indicatorLight = hardwareMap.get(ServoImplEx.class, "indicatorLight");
 
         for (int i = 0; i < HardwareDevices.swerveMotors.length; i++) {
             HardwareDevices.motorNames[i] = "swerveMotor" + (i);
@@ -133,8 +144,8 @@ public class RobotManager {
         }
         telemetryPermanent.update();
 
-        threadedPIDF = new ThreadedPIDF(this);
-        threadedPIDF.start();
+        drivetrainUpdater = new DrivetrainUpdater(this);
+        drivetrainUpdater.start();
     }
 
     /**
@@ -220,5 +231,6 @@ public class RobotManager {
     }
 
     public Drivetrain drivetrain = new Drivetrain(this);
-    public HeadingHoldPID headingHoldPID = new HeadingHoldPID(this);
+    public HeadingPID headingPID = new HeadingPID(this);
+    public IndicatorLight indicatorLight = new IndicatorLight(this);
 }

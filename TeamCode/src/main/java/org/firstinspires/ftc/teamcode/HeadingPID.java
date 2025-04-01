@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 /**
  * A PID controller for maintaining a specific heading.
  */
-public class HeadingHoldPID {
+public class HeadingPID {
     private final RobotManager robotManager;
     private double targetHeading = 0;
     private final ElapsedTime timer = new ElapsedTime();
@@ -14,7 +14,7 @@ public class HeadingHoldPID {
     private double i;
     private double d;
 
-    HeadingHoldPID(RobotManager robotManager) {
+    HeadingPID(RobotManager robotManager) {
         this.robotManager = robotManager;
     }
 
