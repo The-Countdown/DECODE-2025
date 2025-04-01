@@ -81,6 +81,9 @@ public class Constants {
 
     public static final int WHEEL_CALCULATED_MAX_RPM = 861;
 
+    // TODO: Tune if needed
+    public static final double JOYSTICK_SCALER_EXPONENT = 1.33;
+
     public enum LED_COLOR {
         OFF,
         RED,

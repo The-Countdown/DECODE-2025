@@ -8,7 +8,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 public class TeleOp extends OpMode {
     private final RobotManager robotManager = new RobotManager(this);
     public static boolean fieldOriented = false;
-
     public static double CURRENT_LOOP_TIME_MS;
 
     @Override
@@ -17,7 +16,7 @@ public class TeleOp extends OpMode {
         robotManager.indicatorLight.setColor(Constants.LED_COLOR.RED);
         robotManager.refreshData();
         RobotManager.HardwareDevices.imu.resetYaw();
-        RobotManager.HardwareDevices.pinpoint.resetPosAndIMU(); // run at start of auto instead
+        RobotManager.HardwareDevices.pinpoint.resetPosAndIMU(); // TODO: Run at start of auto instead
         robotManager.drivetrain.drivetrainSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
         robotManager.opMode.telemetry.addLine("TeleOp Initialized");
         robotManager.opMode.telemetry.update();
@@ -40,7 +39,13 @@ public class TeleOp extends OpMode {
     public void loop() {
         resetRuntime();
         robotManager.refreshData();
-        robotManager.drivetrain.drivetrainDirectionalInput(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x, fieldOriented);
+
+        robotManager.drivetrain.drivetrainDirectionalInput(
+                robotManager.drivetrain.joystickScaler(gamepad1.left_stick_x),
+                robotManager.drivetrain.joystickScaler(gamepad1.left_stick_y),
+                robotManager.drivetrain.joystickScaler(gamepad1.right_stick_x),
+                fieldOriented
+        );
 
         robotManager.opMode.telemetry.addData("Voltage:", robotManager.getVoltage() + "V");
         robotManager.opMode.telemetry.addData("Current:", robotManager.getCurrent() + "A");
@@ -51,7 +56,9 @@ public class TeleOp extends OpMode {
         robotManager.opMode.telemetry.addLine();
         robotManager.opMode.telemetry.addData("Loop Time:", getRuntime() * 1000 + "ms");
         robotManager.opMode.telemetry.update();
+
         RobotManager.HardwareDevices.pinpoint.update();
+
         CURRENT_LOOP_TIME_MS = getRuntime() * 1000;
     }
 

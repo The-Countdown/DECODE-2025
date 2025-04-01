@@ -162,4 +162,14 @@ public class Drivetrain extends RobotManager.HardwareDevices {
 
         return normalizedAngle;
     }
+
+    /**
+     * This funciton scales the power of the joystick to follow a curve, so that it allows for finer adjustments.
+     * It is clamped between -1 and 1 out of caution, although it doesn't need it, it allows for changes to the curve.
+     * @param input
+     * @return
+     */
+    public double joystickScaler(double input) {
+        return Math.max(-1, Math.min(1, Math.pow(Math.abs(input), Constants.JOYSTICK_SCALER_EXPONENT) * input));
+    }
 }
