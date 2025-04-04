@@ -5,7 +5,6 @@ import com.acmerobotics.dashboard.config.Config;
 import java.util.HashMap;
 
 /**
-import java.util.Map;
  * The `Constants` class provides a centralized location for all the fixed values and
  * configurations used throughout the robot's code.
  */
@@ -16,22 +15,42 @@ public class Constants {
             NUM_SWERVE_SERVOS = 4,
             NUM_SWERVE_ANALOGS = 4;
 
+    public static final double
+            WHEELBASE_WIDTH_MM = 320,
+            WHEELBASE_LENGTH_MM = 285.68668;
+
+    public static final double
+            WHEELBASE_ICR_X = WHEELBASE_LENGTH_MM / 2,
+            WHEELBASE_ICR_Y = WHEELBASE_WIDTH_MM / 2;
+
     /**
      * The angle offset for each swerve servo, used to correct any mechanical misalignments.
-     * Index 4 is global, and the rest are in order (module 0, 1, 2, 3) @see {@link SwerveModule}.
+     * Index 4 is global, and the rest are in order (module 0, 1, 2, 3) see {@link SwerveModule}.
      */
     // TODO: Tune if needed
     public static final double[] SWERVE_SERVO_ANGLE_OFFSET = {0, 0, 0, 0, 0};
 
     /**
-     * The desired servo angles for the swerve modules when in the stop formation.
-     */
-    public static final double[] SWERVE_STOP_FORMATION = {47.8901, -47.8901, 47.8901, -47.8901};
-    /**
      * The desired servo angles for the swerve modules when in the rotation formation
      * These values are not exactly 45 degrees because the drivebase is not a perfect square
      */
-    public static final double[] SWERVE_ROTATION_FORMATION = {-47.8901, 47.8901, -47.8901, 47.8901};
+    public static final double[] SWERVE_ROTATION_FORMATION = {
+            normalizeAngle(Math.atan2(WHEELBASE_ICR_Y, WHEELBASE_ICR_X)),
+            normalizeAngle(Math.atan2(-WHEELBASE_ICR_Y, WHEELBASE_ICR_X)),
+            normalizeAngle(Math.atan2(-WHEELBASE_ICR_Y, -WHEELBASE_ICR_X)),
+            normalizeAngle(Math.atan2(WHEELBASE_ICR_Y, -WHEELBASE_ICR_X))
+    };
+
+    /**
+     * The desired servo angles for the swerve modules when in the stop formation.
+     */
+    public static final double[] SWERVE_STOP_FORMATION = {
+            180 - SWERVE_ROTATION_FORMATION[0],
+            180 - SWERVE_ROTATION_FORMATION[1],
+            180 - SWERVE_ROTATION_FORMATION[2],
+            180 - SWERVE_ROTATION_FORMATION[3]
+    };
+
     /**
      * An array of power values for each swerve motor that sets them to no power.
      */
@@ -48,6 +67,7 @@ public class Constants {
                 SWERVE_SERVO_I_MAX = 0,
             SWERVE_SERVO_KD = 0,
             SWERVE_SERVO_KF = 0;
+
     // TODO: Tune
     public static final double
             HEADING_KP = 0,
@@ -59,8 +79,10 @@ public class Constants {
     public static final double
             PINPOINT_X_OFFSET_MM = 0,
             PINPOINT_Y_OFFSET_MM = 0;
+
     public static final GoBildaPinpoint.GoBildaOdometryPods
             PINPOINT_ODOM_POD = GoBildaPinpoint.GoBildaOdometryPods.goBILDA_SWINGARM_POD;
+
     public static final GoBildaPinpoint.EncoderDirection
             PINPOINT_X_ENCODER_DIRECTION = GoBildaPinpoint.EncoderDirection.FORWARD,
             PINPOINT_Y_ENCODER_DIRECTION = GoBildaPinpoint.EncoderDirection.FORWARD;
@@ -117,5 +139,36 @@ public class Constants {
         public LED_COLOR_VALUES(int MICROSECONDS, double ANALOG) {
             this.MICROSECONDS = MICROSECONDS; this.ANALOG = ANALOG;
         }
+    }
+
+    /**
+     * Normalizes an angle to the range [-180, 180).
+     *
+     * (This is duplicated from {@link Drivetrain} because I wanted the constants class to be
+     * isolated from the rest of the codebase)
+     *
+     * @param angle The angle to normalize.
+     * @return The normalized angle.
+     */
+    private static double normalizeAngle(double angle) {
+        // Check if the angle is already in the desired range.
+        if (angle >= -180 && angle < 180) {
+            return angle;
+        }
+
+        // Normalize the angle to the range [0, 360).
+        double normalizedAngle = angle % 360;
+
+        // If the result was negative, shift it to the range [0, 360).
+        if (normalizedAngle < 0) {
+            normalizedAngle += 360;
+        }
+
+        // If the angle is in the range [180, 360), shift it to [-180, 0).
+        if (normalizedAngle >= 180) {
+            normalizedAngle -= 360;
+        }
+
+        return normalizedAngle;
     }
 }
