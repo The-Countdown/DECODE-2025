@@ -11,7 +11,7 @@ import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorImplEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
@@ -55,7 +55,7 @@ public class RobotManager {
         public static RevColorSensorV3 flashlight;
         public static ServoImplEx indicatorLight;
 
-        public static DcMotorEx[] swerveMotors = new DcMotorEx[Constants.NUM_SWERVE_MOTORS];
+        public static DcMotorImplEx[] swerveMotors = new DcMotorImplEx[Constants.NUM_SWERVE_MOTORS];
             public static String[] motorNames = new String[Constants.NUM_SWERVE_MOTORS];
 
         public static CRServoImplEx[] swerveServos = new CRServoImplEx[Constants.NUM_SWERVE_SERVOS];
@@ -98,7 +98,7 @@ public class RobotManager {
 
         for (int i = 0; i < HardwareDevices.swerveMotors.length; i++) {
             HardwareDevices.motorNames[i] = "swerveMotor" + (i);
-            HardwareDevices.swerveMotors[i] = hardwareMap.get(DcMotorEx.class, HardwareDevices.motorNames[i]);
+            HardwareDevices.swerveMotors[i] = hardwareMap.get(DcMotorImplEx.class, HardwareDevices.motorNames[i]);
         }
 
         for (int i = 0; i < HardwareDevices.swerveServos.length; i++) {

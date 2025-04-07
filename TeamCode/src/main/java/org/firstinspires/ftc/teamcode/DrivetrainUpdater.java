@@ -15,7 +15,7 @@ public class DrivetrainUpdater extends Thread {
         this.robotManager = robotManager;
         // Set the thread to be a daemon thread so that it will not prevent the program from exiting.
         setDaemon(true);
-        setName("ThreadedPIDF");
+        setName("DrivetrainUpdater");
     }
 
     @Override

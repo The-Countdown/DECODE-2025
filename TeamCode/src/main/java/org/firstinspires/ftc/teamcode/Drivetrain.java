@@ -6,7 +6,7 @@ package org.firstinspires.ftc.teamcode;
 public class Drivetrain extends RobotManager.HardwareDevices {
     private final RobotManager robotManager;
     private boolean rotationWasZero = false;
-    private double holdingRotation;
+
     /**
      * Constructor for the Drivetrain class.
      * @param robotManager The Robot object that contains all hardware devices.

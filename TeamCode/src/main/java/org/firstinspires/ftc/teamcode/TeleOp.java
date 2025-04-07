@@ -8,7 +8,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 public class TeleOp extends OpMode {
     private final RobotManager robotManager = new RobotManager(this);
     public static boolean fieldOriented = false;
-    public static double CURRENT_LOOP_TIME_MS;
+    public static double CURRENT_LOOP_TIME_MS = 0;
 
     @Override
     public void init() {
@@ -54,7 +54,7 @@ public class TeleOp extends OpMode {
         robotManager.opMode.telemetry.addData("Pinpoint Y:", PinpointUpdater.currentPose.getY(DistanceUnit.CM) + "cm");
         robotManager.opMode.telemetry.addData("Pinpoint Heading:", PinpointUpdater.currentHeading + "°");
         robotManager.opMode.telemetry.addLine();
-        robotManager.opMode.telemetry.addData("Loop Time:", getRuntime() * 1000 + "ms");
+        robotManager.opMode.telemetry.addData("Loop Time:", CURRENT_LOOP_TIME_MS + "ms");
         robotManager.opMode.telemetry.update();
 
         RobotManager.HardwareDevices.pinpoint.update();
