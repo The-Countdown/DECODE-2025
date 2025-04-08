@@ -24,7 +24,7 @@ public class Status {
         swerveServoStatus.put(3, ServoStatus.TARGET_REACHED);
     }
 
-    enum ServoStatus {
+    public enum ServoStatus {
         TARGET_REACHED,
         MOVING
     }

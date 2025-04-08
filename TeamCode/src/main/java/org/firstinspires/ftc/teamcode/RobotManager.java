@@ -15,13 +15,17 @@ import com.qualcomm.robotcore.hardware.DcMotorImplEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
 import org.firstinspires.ftc.robotcore.internal.opmode.TelemetryImpl;
+import org.firstinspires.ftc.teamcode.drivetrain.Drivetrain;
+import org.firstinspires.ftc.teamcode.drivetrain.DrivetrainUpdater;
+import org.firstinspires.ftc.teamcode.drivetrain.HeadingPID;
+import org.firstinspires.ftc.teamcode.drivetrain.SwerveModule;
+import org.firstinspires.ftc.teamcode.drivetrain.SwervePIDF;
 
 import java.util.List;
 
@@ -40,11 +44,10 @@ public class RobotManager {
     Telemetry telemetry;
     TelemetryImpl telemetryPermanent;
     public boolean isRunning = false;
-    public ElapsedTime loopTime = new ElapsedTime();
     private final Handler handler = new Handler(Looper.getMainLooper());
     public final SwerveModule[] swerveModules = new SwerveModule[Constants.NUM_SWERVE_MOTORS];
     public SwervePIDF[] swerveServosPIDF = new SwervePIDF[Constants.NUM_SWERVE_SERVOS];
-    private DrivetrainUpdater drivetrainUpdater;
+    public DrivetrainUpdater drivetrainUpdater = new DrivetrainUpdater(this);
 
     public static class HardwareDevices {
         public static List<LynxModule> allHubs;
@@ -53,11 +56,15 @@ public class RobotManager {
         public static GoBildaPinpoint pinpoint;
         public static Limelight3A limelight;
         public static RevColorSensorV3 flashlight;
+
+        // Gobilda RGB indicator light
         public static ServoImplEx indicatorLight;
 
+        // Gobilda 5000 Series
         public static DcMotorImplEx[] swerveMotors = new DcMotorImplEx[Constants.NUM_SWERVE_MOTORS];
             public static String[] motorNames = new String[Constants.NUM_SWERVE_MOTORS];
 
+        // Axon Mini+
         public static CRServoImplEx[] swerveServos = new CRServoImplEx[Constants.NUM_SWERVE_SERVOS];
             public static String[] servoNames = new String[Constants.NUM_SWERVE_SERVOS];
 
@@ -144,7 +151,6 @@ public class RobotManager {
         }
         telemetryPermanent.update();
 
-        drivetrainUpdater = new DrivetrainUpdater(this);
         drivetrainUpdater.start();
     }
 

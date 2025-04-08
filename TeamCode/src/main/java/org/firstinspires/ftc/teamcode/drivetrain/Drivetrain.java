@@ -1,4 +1,8 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.drivetrain;
+
+import org.firstinspires.ftc.teamcode.Constants;
+import org.firstinspires.ftc.teamcode.PinpointUpdater;
+import org.firstinspires.ftc.teamcode.RobotManager;
 
 /**
  * This class handles the control and calculations for the robot's drivetrain, including swerve drive functionality.

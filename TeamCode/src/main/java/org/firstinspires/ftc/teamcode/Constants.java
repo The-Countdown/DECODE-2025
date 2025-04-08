@@ -2,6 +2,9 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
 
+import org.firstinspires.ftc.teamcode.drivetrain.Drivetrain;
+import org.firstinspires.ftc.teamcode.drivetrain.SwerveModule;
+
 import java.util.HashMap;
 
 /**
