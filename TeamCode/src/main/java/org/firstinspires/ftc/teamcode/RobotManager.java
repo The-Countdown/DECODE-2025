@@ -26,6 +26,7 @@ import org.firstinspires.ftc.teamcode.drivetrain.DrivetrainUpdater;
 import org.firstinspires.ftc.teamcode.drivetrain.HeadingPID;
 import org.firstinspires.ftc.teamcode.drivetrain.SwerveModule;
 import org.firstinspires.ftc.teamcode.drivetrain.SwervePIDF;
+import org.firstinspires.ftc.teamcode.turret.Turret;
 
 import java.util.List;
 
@@ -239,4 +240,5 @@ public class RobotManager {
     public Drivetrain drivetrain = new Drivetrain(this);
     public HeadingPID headingPID = new HeadingPID(this);
     public IndicatorLight indicatorLight = new IndicatorLight(this);
+    public Turret turret = new Turret(this);
 }
