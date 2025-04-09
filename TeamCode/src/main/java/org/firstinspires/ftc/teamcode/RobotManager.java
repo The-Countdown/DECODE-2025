@@ -71,6 +71,21 @@ public class RobotManager {
 
         public static AnalogInput[] swerveAnalogs = new AnalogInput[Constants.NUM_SWERVE_ANALOGS];
             public static String[] analogNames = new String[Constants.NUM_SWERVE_ANALOGS];
+
+        //turret loosi
+        public static DcMotorImplEx turretFlywheelMaster;
+        public static DcMotorImplEx turretFlywheelSlave;
+        public static DcMotorImplEx turretRotation;
+        public static DcMotorImplEx turretIntakeMotor;
+        public static CRServoImplEx turretIntakeServo;
+        public static CRServoImplEx lateralConveyorServo;
+        public static CRServoImplEx longitudinalConveyorServo;
+        public static ServoImplEx turretArcServo;
+
+        //public static REVEncoder turretEncoder;
+
+        //            - A REV Absolute Encoder (idk what type)
+
     }
 
     public RobotManager(OpMode opMode) {
@@ -118,6 +133,16 @@ public class RobotManager {
             HardwareDevices.analogNames[i] = "swerveAnalog" + (i);
             HardwareDevices.swerveAnalogs[i] = hardwareMap.get(AnalogInput.class, HardwareDevices.analogNames[i]);
         }
+
+        //turret loosi hardware maps
+        HardwareDevices.turretFlywheelMaster = hardwareMap.get(DcMotorImplEx.class, "turretFlywheelMaster");
+        HardwareDevices.turretFlywheelSlave = hardwareMap.get(DcMotorImplEx.class, "turretFlywheelSlave");
+        HardwareDevices.turretRotation = hardwareMap.get(DcMotorImplEx.class, "turretRotation");
+        HardwareDevices.turretIntakeMotor = hardwareMap.get(DcMotorImplEx.class, "turretIntakeMotor");
+        HardwareDevices.turretArcServo = hardwareMap.get(ServoImplEx.class, "turretArcServo");
+        HardwareDevices.turretIntakeServo = hardwareMap.get(CRServoImplEx.class, "turretIntakeServo");
+        HardwareDevices.lateralConveyorServo = hardwareMap.get(CRServoImplEx.class, "lateralConveyorServo");
+        HardwareDevices.longitudinalConveyorServo = hardwareMap.get(CRServoImplEx.class, "longitudinalConveyorServo");
 
         for (int i = 0; i < swerveModules.length; i++) {
             swerveModules[i] = new SwerveModule(this,

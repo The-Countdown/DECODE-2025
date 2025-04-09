@@ -63,4 +63,4 @@
 
     4. If you want to use the indicator light then you can use that and have it be a color when something happens
 
-    5. The final step is limelight, we can talk about that later
+    5. The final step is limelight, we can talk about that later<3
