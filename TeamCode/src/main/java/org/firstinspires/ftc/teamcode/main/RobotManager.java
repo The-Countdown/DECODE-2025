@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.main;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -26,7 +26,10 @@ import org.firstinspires.ftc.teamcode.drivetrain.DrivetrainUpdater;
 import org.firstinspires.ftc.teamcode.drivetrain.HeadingPID;
 import org.firstinspires.ftc.teamcode.drivetrain.SwerveModule;
 import org.firstinspires.ftc.teamcode.drivetrain.SwervePIDF;
-import org.firstinspires.ftc.teamcode.turret.Turret;
+import org.firstinspires.ftc.teamcode.subsystems.Turret;
+import org.firstinspires.ftc.teamcode.other.GoBildaPinpoint;
+import org.firstinspires.ftc.teamcode.other.IndicatorLight;
+import org.firstinspires.ftc.teamcode.util.LinkedMotor;
 
 import java.util.List;
 
@@ -40,10 +43,10 @@ import java.util.List;
  * approach to managing complex robotic systems.
  */
 public class RobotManager {
-    OpMode opMode;
-    HardwareMap hardwareMap;
-    Telemetry telemetry;
-    TelemetryImpl telemetryPermanent;
+    public OpMode opMode;
+    public HardwareMap hardwareMap;
+    public Telemetry telemetry;
+    public TelemetryImpl telemetryPermanent;
     public boolean isRunning = false;
     private final Handler handler = new Handler(Looper.getMainLooper());
     public final SwerveModule[] swerveModules = new SwerveModule[Constants.NUM_SWERVE_MOTORS];
@@ -81,11 +84,7 @@ public class RobotManager {
         public static CRServoImplEx lateralConveyorServo;
         public static CRServoImplEx longitudinalConveyorServo;
         public static ServoImplEx turretArcServo;
-
-        //public static REVEncoder turretEncoder;
-
-        //            - A REV Absolute Encoder (idk what type)
-
+        public static AnalogInput turretEncoder;
     }
 
     public RobotManager(OpMode opMode) {
@@ -266,4 +265,5 @@ public class RobotManager {
     public HeadingPID headingPID = new HeadingPID(this);
     public IndicatorLight indicatorLight = new IndicatorLight(this);
     public Turret turret = new Turret(this);
+    public LinkedMotor turretFlywheel = new LinkedMotor(HardwareDevices.turretFlywheelMaster, HardwareDevices.turretFlywheelSlave);
 }

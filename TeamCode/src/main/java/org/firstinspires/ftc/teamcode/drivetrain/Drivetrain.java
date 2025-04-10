@@ -1,23 +1,23 @@
 package org.firstinspires.ftc.teamcode.drivetrain;
 
-import org.firstinspires.ftc.teamcode.Constants;
-import org.firstinspires.ftc.teamcode.PinpointUpdater;
-import org.firstinspires.ftc.teamcode.RobotManager;
+import org.firstinspires.ftc.teamcode.main.Constants;
+import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
+import org.firstinspires.ftc.teamcode.other.PinpointUpdater;
+import org.firstinspires.ftc.teamcode.main.RobotManager;
 
 /**
  * This class handles the control and calculations for the robot's drivetrain, including swerve drive functionality.
  */
 public class Drivetrain extends RobotManager.HardwareDevices {
     private final RobotManager robotManager;
+    private final GamepadWrapper.ButtonReader rXtoggle = new GamepadWrapper.ButtonReader();
     private boolean rotationWasZero = false;
 
     /**
      * Constructor for the Drivetrain class.
      * @param robotManager The Robot object that contains all hardware devices.
      */
-    public Drivetrain(RobotManager robotManager) {
-        this.robotManager = robotManager;
-    }
+    public Drivetrain(RobotManager robotManager) { this.robotManager = robotManager; }
 
     /**
      * This method calculates and sets the target angles and powers for each swerve module based on directional inputs.
@@ -39,14 +39,13 @@ public class Drivetrain extends RobotManager.HardwareDevices {
         // Determine the rotational direction based on the sign of rX.
         int rotationalDirection = rX >= 0 ? 1 : -1;
 
-        if (rX == 0) {
-            if (!rotationWasZero) {
+        boolean noRotationInput = rX == 0;
+        rXtoggle.update(!noRotationInput);
+        if (noRotationInput) {
+            if (rXtoggle.wasJustReleased()) {
                 robotManager.headingPID.setTargetHeading(PinpointUpdater.currentHeading);
-                rotationWasZero = true;
             }
             rotationalMagnitude = robotManager.headingPID.calculate(PinpointUpdater.currentHeading);
-        } else {
-            rotationWasZero = false;
         }
 
         double currentHeading = PinpointUpdater.currentHeading;
@@ -151,7 +150,7 @@ public class Drivetrain extends RobotManager.HardwareDevices {
             return angle;
         }
 
-        // Normalize the angle to the range [0, 360).
+        // Normalize the angle to the range [-360, 360).
         double normalizedAngle = angle % 360;
 
         // If the result was negative, shift it to the range [0, 360).

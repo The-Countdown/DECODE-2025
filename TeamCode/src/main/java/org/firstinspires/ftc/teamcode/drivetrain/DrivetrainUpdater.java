@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.drivetrain;
 
-import org.firstinspires.ftc.teamcode.Constants;
-import org.firstinspires.ftc.teamcode.RobotManager;
-import org.firstinspires.ftc.teamcode.Status;
+import org.firstinspires.ftc.teamcode.main.Constants;
+import org.firstinspires.ftc.teamcode.main.RobotManager;
+import org.firstinspires.ftc.teamcode.main.Status;
 
 /**
  * The `ThreadedPIDF` class is responsible for managing the Proportional-Integral-Derivative-Feedforward (PIDF)

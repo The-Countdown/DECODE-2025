@@ -2,8 +2,8 @@ package org.firstinspires.ftc.teamcode.drivetrain;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Constants;
-import org.firstinspires.ftc.teamcode.RobotManager;
+import org.firstinspires.ftc.teamcode.main.Constants;
+import org.firstinspires.ftc.teamcode.main.RobotManager;
 
 /**
  * A PID controller for maintaining a specific heading.
@@ -17,13 +17,9 @@ public class HeadingPID {
     private double i;
     private double d;
 
-    public HeadingPID(RobotManager robotManager) {
-        this.robotManager = robotManager;
-    }
+    public HeadingPID(RobotManager robotManager) { this.robotManager = robotManager; }
 
-    public void setTargetHeading(double targetHeading) {
-        this.targetHeading = targetHeading;
-    }
+    public void setTargetHeading(double targetHeading) { this.targetHeading = targetHeading; }
 
     /**
      * Calculates the PID output for the servo.

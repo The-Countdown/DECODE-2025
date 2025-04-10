@@ -3,8 +3,8 @@ package org.firstinspires.ftc.teamcode.drivetrain;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Constants;
-import org.firstinspires.ftc.teamcode.RobotManager;
+import org.firstinspires.ftc.teamcode.main.Constants;
+import org.firstinspires.ftc.teamcode.main.RobotManager;
 
 /**
  * A PIDF controller for a swerve module's servo.
@@ -29,13 +29,9 @@ public class SwervePIDF {
         this.timer = new ElapsedTime();
     }
 
-    public void setTargetAngle(double targetAngle) {
-        this.targetAngle = targetAngle;
-    }
+    public void setTargetAngle(double targetAngle) { this.targetAngle = targetAngle; }
 
-    public double getTargetAngle() {
-        return targetAngle;
-    }
+    public double getTargetAngle() { return targetAngle; }
 
     public double getError() {
         double error = robotManager.swerveModules[module].servo.getAngle() - robotManager.swerveServosPIDF[module].getTargetAngle();

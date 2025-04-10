@@ -46,7 +46,7 @@
             - setPower(power)
 
         Intake:
-            - intake(power)
+            - intake(power) DONE
 
         ConveyerBelts:
             - setLateralPower(power)

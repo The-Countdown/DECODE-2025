@@ -1,12 +1,19 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.main.Constants;
+import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
+import org.firstinspires.ftc.teamcode.other.GoBildaPinpoint;
+import org.firstinspires.ftc.teamcode.other.PinpointUpdater;
+import org.firstinspires.ftc.teamcode.main.RobotManager;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "TeleOp")
 public class TeleOp extends OpMode {
     private final RobotManager robotManager = new RobotManager(this);
+    public final GamepadWrapper gamepadEx1 = new GamepadWrapper(gamepad1);
+    public final GamepadWrapper gamepadEx2 = new GamepadWrapper(gamepad2);
     public static boolean fieldOriented = false;
     public static double CURRENT_LOOP_TIME_MS = 0;
 
@@ -39,6 +46,8 @@ public class TeleOp extends OpMode {
     public void loop() {
         resetRuntime();
         robotManager.refreshData();
+        gamepadEx1.update();
+        gamepadEx2.update();
 
         robotManager.drivetrain.drivetrainDirectionalInput(
                 robotManager.drivetrain.joystickScaler(gamepad1.left_stick_x),
