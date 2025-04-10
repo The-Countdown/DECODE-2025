@@ -39,18 +39,18 @@
     2. Function suggestions:
         Turret:
             - rotateTo(degrees) // Clockwise should be positive, use the absolute encoder
-            - intake(power)
-            - setArcAngle(degrees)
+            - intake(power) DONE
+            - setArcAngle(degrees) DONE
 
         TurretFlywheel:
-            - setPower(power)
+            - setPower(power) DONE
 
         Intake:
             - intake(power) DONE
 
         ConveyerBelts:
-            - setLateralPower(power)
-            - setLongitudinalPower(power)
+            - setLateralPower(power) DONE
+            - setLongitudinalPower(power) DONE
 
 ## Final touches
     1. When making these, you should need to add variables. If there are constant values that are being used,

@@ -10,7 +10,12 @@ public class Intake extends RobotManager.HardwareDevices {
     public void setPower(double power) { RobotManager.HardwareDevices.turretIntakeMotor.setPower(power); }
 
     public class ConveyorBelts {
-
+        public void setLateralPower(double power) {
+            RobotManager.HardwareDevices.lateralConveyorServo.setPower(power);
+        }
+        public void setLongitudinalPower(double power) {
+            RobotManager.HardwareDevices.longitudinalConveyorServo.setPower(power);
+        }
     }
 
 }
