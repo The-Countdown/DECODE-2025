@@ -29,7 +29,7 @@ import org.firstinspires.ftc.teamcode.drivetrain.SwervePIDF;
 import org.firstinspires.ftc.teamcode.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.other.GoBildaPinpoint;
 import org.firstinspires.ftc.teamcode.other.IndicatorLight;
-import org.firstinspires.ftc.teamcode.util.LinkedMotor;
+import org.firstinspires.ftc.teamcode.util.LinkedMotors;
 
 import java.util.List;
 
@@ -265,5 +265,5 @@ public class RobotManager {
     public HeadingPID headingPID = new HeadingPID(this);
     public IndicatorLight indicatorLight = new IndicatorLight(this);
     public Turret turret = new Turret(this);
-    public LinkedMotor turretFlywheel = new LinkedMotor(HardwareDevices.turretFlywheelMaster, HardwareDevices.turretFlywheelSlave);
+    public LinkedMotors turretFlywheel = new LinkedMotors(HardwareDevices.turretFlywheelMaster, HardwareDevices.turretFlywheelSlave);
 }
