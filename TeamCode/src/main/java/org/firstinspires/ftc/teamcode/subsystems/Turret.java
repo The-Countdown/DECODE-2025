@@ -8,12 +8,10 @@ public class Turret extends RobotManager.HardwareDevices {
     //        Turret:
     //            - rotateTo(degrees) // Clockwise should be positive, use the absolute encoder
 
-    public void setIntakePower(double intakePower) {
-        RobotManager.HardwareDevices.turretIntakeServo.setPower(intakePower);
-    }
-    public void setArcAngle(double degrees) {
-        RobotManager.HardwareDevices.turretArcServo.setPosition(degrees);
-    }
+    public void setIntakePower(double intakePower) { RobotManager.HardwareDevices.turretIntakeServo.setPower(intakePower);  }
+
+    // the input is 0-1 not degrees, unless you convert it
+    public void setArcAngle(double degrees) { RobotManager.HardwareDevices.turretArcServo.setPosition(degrees); }
     public class Flywheel {
         public void setPower(double power) { robotManager.turretFlywheel.setPower(power); }
     }

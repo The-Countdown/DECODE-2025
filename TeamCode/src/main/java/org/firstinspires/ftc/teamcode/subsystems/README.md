@@ -39,6 +39,15 @@
     2. Function suggestions:
         Turret:
             - rotateTo(degrees) // Clockwise should be positive, use the absolute encoder
+                Convert the analog input into degrees using the analog max voltage in constants
+                and take 3.3/the analog value * 360, and normalize the angle if you want to
+                That can be the getAngle() function in the turret class, but then you need to set the angle,
+                which is going to need to use a PID loop, because you are going to make it so that it sets the power
+                of the motor to a value depending on the error between the target angle and the current angle until it 
+                gets to the targeted angle. You will have to make sure that it is able to rotate in the correct direction,
+                based off of whether it should go clockwise or counterclockwise. You should add another thread
+                so that it can calculate how much power to give the motor and then setting it repeatedly
+                in a loop seperate from all the other code so that it does not block anything from running.
             - intake(power) DONE
             - setArcAngle(degrees) DONE
 
