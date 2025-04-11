@@ -29,9 +29,13 @@ public class SwervePIDF {
         this.timer = new ElapsedTime();
     }
 
-    public void setTargetAngle(double targetAngle) { this.targetAngle = targetAngle; }
+    public void setTargetAngle(double targetAngle) {
+        this.targetAngle = targetAngle;
+    }
 
-    public double getTargetAngle() { return targetAngle; }
+    public double getTargetAngle() {
+        return targetAngle;
+    }
 
     public double getError() {
         double error = robotManager.swerveModules[module].servo.getAngle() - robotManager.swerveServosPIDF[module].getTargetAngle();

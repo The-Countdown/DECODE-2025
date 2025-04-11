@@ -17,7 +17,9 @@ public class Drivetrain extends RobotManager.HardwareDevices {
      * Constructor for the Drivetrain class.
      * @param robotManager The Robot object that contains all hardware devices.
      */
-    public Drivetrain(RobotManager robotManager) { this.robotManager = robotManager; }
+    public Drivetrain(RobotManager robotManager) {
+        this.robotManager = robotManager;
+    }
 
     /**
      * This method calculates and sets the target angles and powers for each swerve module based on directional inputs.

@@ -70,16 +70,24 @@ public class SwerveModule {
             return angle;
         }
 
-        public void setTargetAngle(double angle) { servoPIDF.setTargetAngle(angle); }
+        public void setTargetAngle(double angle) {
+            servoPIDF.setTargetAngle(angle);
+        }
 
-        public void setPower(double power) { turningServo.setPower(power); }
+        public void setPower(double power) {
+            turningServo.setPower(power);
+        }
     }
 
     public class Motor {
         public double targetPower;
-        public void setPower(double power) { drivingMotor.setPower(power); }
+        public void setPower(double power) {
+            drivingMotor.setPower(power);
+        }
 
-        public void setTargetPower(double power) { targetPower = power; }
+        public void setTargetPower(double power) {
+            targetPower = power;
+        }
     }
 
     public final Servo servo = new Servo();

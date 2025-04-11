@@ -17,9 +17,13 @@ public class HeadingPID {
     private double i;
     private double d;
 
-    public HeadingPID(RobotManager robotManager) { this.robotManager = robotManager; }
+    public HeadingPID(RobotManager robotManager) {
+        this.robotManager = robotManager;
+    }
 
-    public void setTargetHeading(double targetHeading) { this.targetHeading = targetHeading; }
+    public void setTargetHeading(double targetHeading) {
+        this.targetHeading = targetHeading;
+    }
 
     /**
      * Calculates the PID output for the servo.

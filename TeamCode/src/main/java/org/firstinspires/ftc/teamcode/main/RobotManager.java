@@ -80,6 +80,7 @@ public class RobotManager {
         public static DcMotorImplEx turretFlywheelSlave;
         public static DcMotorImplEx turretRotation;
         public static DcMotorImplEx turretIntakeMotor;
+        public static DcMotorImplEx intakeMotor;
         public static CRServoImplEx turretIntakeServo;
         public static CRServoImplEx lateralConveyorServo;
         public static CRServoImplEx longitudinalConveyorServo;
