@@ -7,11 +7,11 @@ import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
 import org.firstinspires.ftc.teamcode.other.GoBildaPinpoint;
 import org.firstinspires.ftc.teamcode.other.PinpointUpdater;
-import org.firstinspires.ftc.teamcode.main.RobotManager;
+import org.firstinspires.ftc.teamcode.main.RobotContainer;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "TeleOp")
 public class TeleOp extends OpMode {
-    private final RobotManager robotManager = new RobotManager(this);
+    private final RobotContainer robotManager = new RobotContainer(this);
     public final GamepadWrapper gamepadEx1 = new GamepadWrapper(gamepad1);
     public final GamepadWrapper gamepadEx2 = new GamepadWrapper(gamepad2);
     public static boolean fieldOriented = false;
@@ -22,8 +22,8 @@ public class TeleOp extends OpMode {
         robotManager.isRunning = true;
         robotManager.indicatorLight.setColor(Constants.LED_COLOR.RED);
         robotManager.refreshData();
-        RobotManager.HardwareDevices.imu.resetYaw();
-        RobotManager.HardwareDevices.pinpoint.resetPosAndIMU(); // TODO: Run at start of auto instead
+        RobotContainer.HardwareDevices.imu.resetYaw();
+        RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU(); // TODO: Run at start of auto instead
         robotManager.drivetrain.drivetrainSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
         robotManager.opMode.telemetry.addLine("TeleOp Initialized");
         robotManager.opMode.telemetry.update();
@@ -37,8 +37,8 @@ public class TeleOp extends OpMode {
 
     @Override
     public void start() {
-        if (RobotManager.HardwareDevices.pinpoint.getDeviceStatus() != GoBildaPinpoint.DeviceStatus.READY) {
-            robotManager.telemetryPermanent.addData("WARNING, PINPOINT STATUS:", RobotManager.HardwareDevices.pinpoint.getDeviceStatus());
+        if (RobotContainer.HardwareDevices.pinpoint.getDeviceStatus() != GoBildaPinpoint.DeviceStatus.READY) {
+            robotManager.telemetryPermanent.addData("WARNING, PINPOINT STATUS:", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
         }
     }
 
@@ -66,7 +66,7 @@ public class TeleOp extends OpMode {
         robotManager.opMode.telemetry.addData("Loop Time:", CURRENT_LOOP_TIME_MS + "ms");
         robotManager.opMode.telemetry.update();
 
-        RobotManager.HardwareDevices.pinpoint.update();
+        RobotContainer.HardwareDevices.pinpoint.update();
 
         CURRENT_LOOP_TIME_MS = getRuntime() * 1000;
     }

@@ -1,23 +1,23 @@
 package org.firstinspires.ftc.teamcode.other;
 
 import org.firstinspires.ftc.teamcode.main.Constants;
-import org.firstinspires.ftc.teamcode.main.RobotManager;
+import org.firstinspires.ftc.teamcode.main.RobotContainer;
 
 import java.util.Objects;
 
-public class IndicatorLight extends RobotManager.HardwareDevices {
-    private final RobotManager robotManager;
+public class IndicatorLight extends RobotContainer.HardwareDevices {
+    private final RobotContainer robotManager;
 
-    public IndicatorLight(RobotManager robotManager) {
+    public IndicatorLight(RobotContainer robotManager) {
         this.robotManager = robotManager;
     }
 
     public void setColor(Constants.LED_COLOR color) {
-        RobotManager.HardwareDevices.indicatorLight.setPosition(Objects.requireNonNull(Constants.LED_COLOR_MAP.get(color)).ANALOG);
+        RobotContainer.HardwareDevices.indicatorLight.setPosition(Objects.requireNonNull(Constants.LED_COLOR_MAP.get(color)).ANALOG);
     }
 
     public void off() {
-        RobotManager.HardwareDevices.indicatorLight.setPosition(Objects.requireNonNull(Constants.LED_COLOR_MAP.get(Constants.LED_COLOR.OFF)).ANALOG);
+        RobotContainer.HardwareDevices.indicatorLight.setPosition(Objects.requireNonNull(Constants.LED_COLOR_MAP.get(Constants.LED_COLOR.OFF)).ANALOG);
     }
 
 

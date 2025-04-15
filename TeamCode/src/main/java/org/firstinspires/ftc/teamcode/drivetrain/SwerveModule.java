@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.main.Constants;
-import org.firstinspires.ftc.teamcode.main.RobotManager;
+import org.firstinspires.ftc.teamcode.main.RobotContainer;
 
 /**
  * Represents a single Swerve Drive Module, encapsulating its motor and servo controls, as well as sensor data.
@@ -26,7 +26,7 @@ import org.firstinspires.ftc.teamcode.main.RobotManager;
  * </pre>
  */
 public class SwerveModule {
-    private final RobotManager robotManager;
+    private final RobotContainer robotManager;
     private final DcMotorEx drivingMotor;
     private final CRServoImplEx turningServo;
     private final AnalogInput analogEncoder;
@@ -42,7 +42,7 @@ public class SwerveModule {
      * @param analogEncoder The analog encoder for reading the module's angle.
      * @param moduleIndex   The index of the module.
      */
-    public SwerveModule(RobotManager robotManager, DcMotorEx motor, CRServoImplEx turningServo, AnalogInput analogEncoder, int moduleIndex) {
+    public SwerveModule(RobotContainer robotManager, DcMotorEx motor, CRServoImplEx turningServo, AnalogInput analogEncoder, int moduleIndex) {
         this.robotManager = robotManager;
         this.drivingMotor = motor;
         this.turningServo = turningServo;

@@ -1,24 +1,24 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import org.firstinspires.ftc.teamcode.main.RobotManager;
+import org.firstinspires.ftc.teamcode.main.RobotContainer;
 
-public class Intake extends RobotManager.HardwareDevices {
-    private final RobotManager robotManager;
+public class Intake extends RobotContainer.HardwareDevices {
+    private final RobotContainer robotManager;
 
-    public Intake(RobotManager robotManager) {
+    public Intake(RobotContainer robotManager) {
         this.robotManager = robotManager;
     }
 
     public void setPower(double power) {
-        RobotManager.HardwareDevices.intakeMotor.setPower(power);
+        RobotContainer.HardwareDevices.intakeMotor.setPower(power);
     }
 
     public class ConveyorBelts {
         public void setLateralPower(double power) {
-            RobotManager.HardwareDevices.lateralConveyorServo.setPower(power);
+            RobotContainer.HardwareDevices.lateralConveyorServo.setPower(power);
         }
         public void setLongitudinalPower(double power) {
-            RobotManager.HardwareDevices.longitudinalConveyorServo.setPower(power);
+            RobotContainer.HardwareDevices.longitudinalConveyorServo.setPower(power);
         }
     }
 

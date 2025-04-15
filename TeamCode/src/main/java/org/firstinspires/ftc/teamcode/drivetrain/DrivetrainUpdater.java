@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.drivetrain;
 
 import org.firstinspires.ftc.teamcode.main.Constants;
-import org.firstinspires.ftc.teamcode.main.RobotManager;
+import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 
 /**
@@ -13,9 +13,9 @@ import org.firstinspires.ftc.teamcode.main.Status;
  * improving efficiency.
  */
 public class DrivetrainUpdater extends Thread {
-    private final RobotManager robotManager;
+    private final RobotContainer robotManager;
 
-    public DrivetrainUpdater(RobotManager robotManager) {
+    public DrivetrainUpdater(RobotContainer robotManager) {
         this.robotManager = robotManager;
         // Set the thread to be a daemon thread so that it will not prevent the program from exiting.
         setDaemon(true);

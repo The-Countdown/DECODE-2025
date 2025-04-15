@@ -4,13 +4,13 @@ import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.main.Constants;
-import org.firstinspires.ftc.teamcode.main.RobotManager;
+import org.firstinspires.ftc.teamcode.main.RobotContainer;
 
 /**
  * A PIDF controller for a swerve module's servo.
  */
 public class SwervePIDF {
-    private final RobotManager robotManager;
+    private final RobotContainer robotManager;
     private final CRServoImplEx servo;
     private final int module;
     private double targetAngle;
@@ -21,7 +21,7 @@ public class SwervePIDF {
     public double d;
     public double ff;
 
-    public SwervePIDF(RobotManager robotManager, int module, CRServoImplEx servo) {
+    public SwervePIDF(RobotContainer robotManager, int module, CRServoImplEx servo) {
         this.robotManager = robotManager;
         this.servo = servo;
         this.module = module;

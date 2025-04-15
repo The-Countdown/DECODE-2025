@@ -3,13 +3,13 @@ package org.firstinspires.ftc.teamcode.drivetrain;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
 import org.firstinspires.ftc.teamcode.other.PinpointUpdater;
-import org.firstinspires.ftc.teamcode.main.RobotManager;
+import org.firstinspires.ftc.teamcode.main.RobotContainer;
 
 /**
  * This class handles the control and calculations for the robot's drivetrain, including swerve drive functionality.
  */
-public class Drivetrain extends RobotManager.HardwareDevices {
-    private final RobotManager robotManager;
+public class Drivetrain extends RobotContainer.HardwareDevices {
+    private final RobotContainer robotManager;
     private final GamepadWrapper.ButtonReader rXtoggle = new GamepadWrapper.ButtonReader();
     private boolean rotationWasZero = false;
 
@@ -17,7 +17,7 @@ public class Drivetrain extends RobotManager.HardwareDevices {
      * Constructor for the Drivetrain class.
      * @param robotManager The Robot object that contains all hardware devices.
      */
-    public Drivetrain(RobotManager robotManager) {
+    public Drivetrain(RobotContainer robotManager) {
         this.robotManager = robotManager;
     }
 

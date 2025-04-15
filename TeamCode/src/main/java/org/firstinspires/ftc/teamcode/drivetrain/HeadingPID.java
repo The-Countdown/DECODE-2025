@@ -3,13 +3,13 @@ package org.firstinspires.ftc.teamcode.drivetrain;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.main.Constants;
-import org.firstinspires.ftc.teamcode.main.RobotManager;
+import org.firstinspires.ftc.teamcode.main.RobotContainer;
 
 /**
  * A PID controller for maintaining a specific heading.
  */
 public class HeadingPID {
-    private final RobotManager robotManager;
+    private final RobotContainer robotManager;
     private double targetHeading = 0;
     private final ElapsedTime timer = new ElapsedTime();
     private double lastError = 0;
@@ -17,7 +17,7 @@ public class HeadingPID {
     private double i;
     private double d;
 
-    public HeadingPID(RobotManager robotManager) {
+    public HeadingPID(RobotContainer robotManager) {
         this.robotManager = robotManager;
     }
 
