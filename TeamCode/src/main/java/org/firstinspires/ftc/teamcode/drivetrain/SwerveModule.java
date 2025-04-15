@@ -26,7 +26,7 @@ import org.firstinspires.ftc.teamcode.main.RobotContainer;
  * </pre>
  */
 public class SwerveModule {
-    private final RobotContainer robotManager;
+    private final RobotContainer robotContainer;
     private final DcMotorEx drivingMotor;
     private final CRServoImplEx turningServo;
     private final AnalogInput analogEncoder;
@@ -36,19 +36,19 @@ public class SwerveModule {
     /**
      * Constructor for the SwerveModulePosition class.
      *
-     * @param robotManager         The Robot instance.
+     * @param robotContainer         The Robot instance.
      * @param motor         The driving motor of the module.
      * @param turningServo  The servo responsible for turning the module.
      * @param analogEncoder The analog encoder for reading the module's angle.
      * @param moduleIndex   The index of the module.
      */
-    public SwerveModule(RobotContainer robotManager, DcMotorEx motor, CRServoImplEx turningServo, AnalogInput analogEncoder, int moduleIndex) {
-        this.robotManager = robotManager;
+    public SwerveModule(RobotContainer robotContainer, DcMotorEx motor, CRServoImplEx turningServo, AnalogInput analogEncoder, int moduleIndex) {
+        this.robotContainer = robotContainer;
         this.drivingMotor = motor;
         this.turningServo = turningServo;
         this.analogEncoder = analogEncoder;
         this.moduleIndex = moduleIndex;
-        this.servoPIDF = new SwervePIDF(robotManager, moduleIndex, turningServo);
+        this.servoPIDF = new SwervePIDF(robotContainer, moduleIndex, turningServo);
     }
 
     public class Servo {

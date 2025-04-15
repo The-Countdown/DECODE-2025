@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.main;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.teamcode.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.drivetrain.SwerveModule;
@@ -14,6 +16,13 @@ import java.util.HashMap;
  */
 @Config
 public class Constants {
+    public static final IMU.Parameters imuParameters = new IMU.Parameters(
+            new RevHubOrientationOnRobot(
+                    RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+                    RevHubOrientationOnRobot.UsbFacingDirection.UP
+            )
+    );
+
     public static final int
             NUM_SWERVE_MOTORS = 4,
             NUM_SWERVE_SERVOS = 4,

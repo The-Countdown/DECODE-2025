@@ -27,26 +27,26 @@ public class GamepadWrapper {
 
     private final Gamepad gamepad;
 
-    public final ButtonReader a = new ButtonReader();
-    public final ButtonReader b = new ButtonReader();
-    public final ButtonReader x = new ButtonReader();
-    public final ButtonReader y = new ButtonReader();
+    private final ButtonReader a = new ButtonReader();
+    private final ButtonReader b = new ButtonReader();
+    private final ButtonReader x = new ButtonReader();
+    private final ButtonReader y = new ButtonReader();
 
-    public final ButtonReader dpadUp = new ButtonReader();
-    public final ButtonReader dpadDown = new ButtonReader();
-    public final ButtonReader dpadLeft = new ButtonReader();
-    public final ButtonReader dpadRight = new ButtonReader();
+    private final ButtonReader dpadUp = new ButtonReader();
+    private final ButtonReader dpadDown = new ButtonReader();
+    private final ButtonReader dpadLeft = new ButtonReader();
+    private final ButtonReader dpadRight = new ButtonReader();
 
-    public final ButtonReader leftBumper = new ButtonReader();
-    public final ButtonReader rightBumper = new ButtonReader();
+    private final ButtonReader leftBumper = new ButtonReader();
+    private final ButtonReader rightBumper = new ButtonReader();
 
-    public final ButtonReader leftTrigger = new ButtonReader();
-    public final ButtonReader rightTrigger = new ButtonReader();
+    private final ButtonReader leftTrigger = new ButtonReader();
+    private final ButtonReader rightTrigger = new ButtonReader();
 
-    public final ButtonReader leftStickX = new ButtonReader();
-    public final ButtonReader leftStickY = new ButtonReader();
-    public final ButtonReader rightStickX = new ButtonReader();
-    public final ButtonReader rightStickY = new ButtonReader();
+    private final ButtonReader leftStickX = new ButtonReader();
+    private final ButtonReader leftStickY = new ButtonReader();
+    private final ButtonReader rightStickX = new ButtonReader();
+    private final ButtonReader rightStickY = new ButtonReader();
 
     public GamepadWrapper(Gamepad gamepad) {
         this.gamepad = gamepad;

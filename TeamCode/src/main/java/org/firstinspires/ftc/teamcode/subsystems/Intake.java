@@ -3,10 +3,10 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 
 public class Intake extends RobotContainer.HardwareDevices {
-    private final RobotContainer robotManager;
+    private final RobotContainer robotContainer;
 
-    public Intake(RobotContainer robotManager) {
-        this.robotManager = robotManager;
+    public Intake(RobotContainer robotContainer) {
+        this.robotContainer = robotContainer;
     }
 
     public void setPower(double power) {

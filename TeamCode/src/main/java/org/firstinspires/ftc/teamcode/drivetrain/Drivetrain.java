@@ -1,24 +1,24 @@
 package org.firstinspires.ftc.teamcode.drivetrain;
 
 import org.firstinspires.ftc.teamcode.main.Constants;
-import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
-import org.firstinspires.ftc.teamcode.other.PinpointUpdater;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
+import org.firstinspires.ftc.teamcode.other.PinpointUpdater;
+import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
 
 /**
  * This class handles the control and calculations for the robot's drivetrain, including swerve drive functionality.
  */
 public class Drivetrain extends RobotContainer.HardwareDevices {
-    private final RobotContainer robotManager;
+    private final RobotContainer robotContainer;
     private final GamepadWrapper.ButtonReader rXtoggle = new GamepadWrapper.ButtonReader();
     private boolean rotationWasZero = false;
 
     /**
      * Constructor for the Drivetrain class.
-     * @param robotManager The Robot object that contains all hardware devices.
+     * @param robotContainer The Robot object that contains all hardware devices.
      */
-    public Drivetrain(RobotContainer robotManager) {
-        this.robotManager = robotManager;
+    public Drivetrain(RobotContainer robotContainer) {
+        this.robotContainer = robotContainer;
     }
 
     /**
@@ -45,9 +45,9 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
         rXtoggle.update(!noRotationInput);
         if (noRotationInput) {
             if (rXtoggle.wasJustReleased()) {
-                robotManager.headingPID.setTargetHeading(PinpointUpdater.currentHeading);
+                robotContainer.headingPID.setTargetHeading(PinpointUpdater.currentHeading);
             }
-            rotationalMagnitude = robotManager.headingPID.calculate(PinpointUpdater.currentHeading);
+            rotationalMagnitude = robotContainer.headingPID.calculate(PinpointUpdater.currentHeading);
         }
 
         double currentHeading = PinpointUpdater.currentHeading;
@@ -55,11 +55,11 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
         translationalAngle = fieldOriented ? translationalAngle - currentHeading : translationalAngle;
         translationalAngle = normalizeAngle(translationalAngle);
 
-        double[] calculatedAngles = new double[robotManager.swerveModules.length];
-        double[] calculatedPowers = new double[robotManager.swerveModules.length];
+        double[] calculatedAngles = new double[robotContainer.swerveModules.length];
+        double[] calculatedPowers = new double[robotContainer.swerveModules.length];
 
         // Iterate through each swerve module to calculate its target angle and power.
-        for (int i = 0; i < robotManager.swerveModules.length; i++) {
+        for (int i = 0; i < robotContainer.swerveModules.length; i++) {
             // Calculate the x and y components of translational movement.
             double translationalX = translationalMagnitude * Math.cos(translationalAngle) * translationalDirection;
             double translationalY = translationalMagnitude * Math.sin(translationalAngle) * translationalDirection;
@@ -92,7 +92,7 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
     public void drivetrainSetTargets(double[] targetAngles, double[] targetPowers) {
         targetPowers = scalePowers(targetPowers);
         for (int i = 0; i < swerveServos.length; i++) {
-            double currentAngle = robotManager.swerveModules[i].servo.getAngle();
+            double currentAngle = robotContainer.swerveModules[i].servo.getAngle();
             double error = targetAngles[i] - currentAngle;
             error = normalizeAngle(error);
 
@@ -105,12 +105,12 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
              */
             if (Math.abs(error) > 90) {
                 targetAngles[i] = normalizeAngle(targetAngles[i] + 180);
-                robotManager.swerveModules[i].motor.setPower(-targetPowers[i]);
+                robotContainer.swerveModules[i].motor.setPower(-targetPowers[i]);
             } else {
-                robotManager.swerveModules[i].motor.setPower(targetPowers[i]);
+                robotContainer.swerveModules[i].motor.setPower(targetPowers[i]);
             }
 
-            robotManager.swerveModules[i].servo.setTargetAngle(targetAngles[i]);
+            robotContainer.swerveModules[i].servo.setTargetAngle(targetAngles[i]);
         }
     }
 

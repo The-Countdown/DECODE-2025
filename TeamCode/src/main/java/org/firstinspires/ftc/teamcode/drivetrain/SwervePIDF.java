@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.main.RobotContainer;
  * A PIDF controller for a swerve module's servo.
  */
 public class SwervePIDF {
-    private final RobotContainer robotManager;
+    private final RobotContainer robotContainer;
     private final CRServoImplEx servo;
     private final int module;
     private double targetAngle;
@@ -21,8 +21,8 @@ public class SwervePIDF {
     public double d;
     public double ff;
 
-    public SwervePIDF(RobotContainer robotManager, int module, CRServoImplEx servo) {
-        this.robotManager = robotManager;
+    public SwervePIDF(RobotContainer robotContainer, int module, CRServoImplEx servo) {
+        this.robotContainer = robotContainer;
         this.servo = servo;
         this.module = module;
         this.targetAngle = Constants.SWERVE_STOP_FORMATION[module];
@@ -38,8 +38,8 @@ public class SwervePIDF {
     }
 
     public double getError() {
-        double error = robotManager.swerveModules[module].servo.getAngle() - robotManager.swerveServosPIDF[module].getTargetAngle();
-        error = robotManager.drivetrain.normalizeAngle(error);
+        double error = robotContainer.swerveModules[module].servo.getAngle() - robotContainer.swerveServosPIDF[module].getTargetAngle();
+        error = robotContainer.drivetrain.normalizeAngle(error);
 
         return error;
     }
@@ -49,8 +49,8 @@ public class SwervePIDF {
      * @return The calculated PIDF output.
      */
     public double calculate() {
-        double currentAngle = robotManager.swerveModules[module].servo.getAngle();
-        double error = robotManager.drivetrain.normalizeAngle(targetAngle - currentAngle);
+        double currentAngle = robotContainer.swerveModules[module].servo.getAngle();
+        double error = robotContainer.drivetrain.normalizeAngle(targetAngle - currentAngle);
         double currentTime = timer.seconds();
         timer.reset();
         if (currentTime < 1e-6) currentTime = 1e-6;

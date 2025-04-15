@@ -6,10 +6,10 @@ import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import java.util.Objects;
 
 public class IndicatorLight extends RobotContainer.HardwareDevices {
-    private final RobotContainer robotManager;
+    private final RobotContainer robotContainer;
 
-    public IndicatorLight(RobotContainer robotManager) {
-        this.robotManager = robotManager;
+    public IndicatorLight(RobotContainer robotContainer) {
+        this.robotContainer = robotContainer;
     }
 
     public void setColor(Constants.LED_COLOR color) {

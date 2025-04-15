@@ -13,10 +13,10 @@ import org.firstinspires.ftc.teamcode.main.Status;
  * improving efficiency.
  */
 public class DrivetrainUpdater extends Thread {
-    private final RobotContainer robotManager;
+    private final RobotContainer robotContainer;
 
-    public DrivetrainUpdater(RobotContainer robotManager) {
-        this.robotManager = robotManager;
+    public DrivetrainUpdater(RobotContainer robotContainer) {
+        this.robotContainer = robotContainer;
         // Set the thread to be a daemon thread so that it will not prevent the program from exiting.
         setDaemon(true);
         setName("DrivetrainUpdater");
@@ -24,19 +24,19 @@ public class DrivetrainUpdater extends Thread {
 
     @Override
     public void run() {
-        while (robotManager.isRunning) {
-            robotManager.refreshData();
-            for (int i = 0; i < robotManager.swerveModules.length; i++) {
-                if (robotManager.swerveServosPIDF[i].getError() <= Constants.SWERVE_SERVO_PIDF_TOLERANCE_DEGREES) {
+        while (robotContainer.isRunning) {
+            robotContainer.refreshData();
+            for (int i = 0; i < robotContainer.swerveModules.length; i++) {
+                if (robotContainer.swerveServosPIDF[i].getError() <= Constants.SWERVE_SERVO_PIDF_TOLERANCE_DEGREES) {
                     Status.swerveServoStatus.put(i, Status.ServoStatus.TARGET_REACHED);
-                    robotManager.swerveModules[i].motor.setPower(robotManager.swerveModules[i].motor.targetPower);
+                    robotContainer.swerveModules[i].motor.setPower(robotContainer.swerveModules[i].motor.targetPower);
                 } else {
-                    robotManager.swerveModules[i].servo.setPower(robotManager.swerveServosPIDF[i].calculate());
+                    robotContainer.swerveModules[i].servo.setPower(robotContainer.swerveServosPIDF[i].calculate());
                     Status.swerveServoStatus.put(i, Status.ServoStatus.MOVING);
 
-                    robotManager.swerveModules[i].motor.setPower(
-                            robotManager.swerveModules[i].motor.targetPower *
-                                    Math.abs(Math.cos(Math.toRadians(robotManager.swerveServosPIDF[i].getError())))
+                    robotContainer.swerveModules[i].motor.setPower(
+                            robotContainer.swerveModules[i].motor.targetPower *
+                                    Math.abs(Math.cos(Math.toRadians(robotContainer.swerveServosPIDF[i].getError())))
                     );
                 }
             }

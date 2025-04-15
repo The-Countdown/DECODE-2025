@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.main.RobotContainer;
  * A PID controller for maintaining a specific heading.
  */
 public class HeadingPID {
-    private final RobotContainer robotManager;
+    private final RobotContainer robotContainer;
     private double targetHeading = 0;
     private final ElapsedTime timer = new ElapsedTime();
     private double lastError = 0;
@@ -17,8 +17,8 @@ public class HeadingPID {
     private double i;
     private double d;
 
-    public HeadingPID(RobotContainer robotManager) {
-        this.robotManager = robotManager;
+    public HeadingPID(RobotContainer robotContainer) {
+        this.robotContainer = robotContainer;
     }
 
     public void setTargetHeading(double targetHeading) {
@@ -31,7 +31,7 @@ public class HeadingPID {
      * @return The calculated PID output.
      */
     public double calculate(double heading) {
-        double error = robotManager.drivetrain.normalizeAngle(targetHeading - heading);
+        double error = robotContainer.drivetrain.normalizeAngle(targetHeading - heading);
         double currentTime = timer.seconds();
         timer.reset();
         if (currentTime < 1e-6) currentTime = 1e-6;

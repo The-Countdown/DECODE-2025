@@ -3,9 +3,9 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 
 public class Turret extends RobotContainer.HardwareDevices {
-    private final RobotContainer robotManager;
-    public Turret(RobotContainer robotManager) {
-        this.robotManager = robotManager;
+    private final RobotContainer robotContainer;
+    public Turret(RobotContainer robotContainer) {
+        this.robotContainer = robotContainer;
     }
     //        Turret:
     //            - rotateTo(degrees) // Clockwise should be positive, use the absolute encoder
@@ -20,7 +20,7 @@ public class Turret extends RobotContainer.HardwareDevices {
 
     public class Flywheel {
         public void setPower(double power) {
-            robotManager.turretFlywheel.setPower(power);
+            robotContainer.turretFlywheel.setPower(power);
         }
     }
 }

@@ -3,8 +3,6 @@ package org.firstinspires.ftc.teamcode.main;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
@@ -18,6 +16,7 @@ import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
 import org.firstinspires.ftc.robotcore.internal.opmode.TelemetryImpl;
 import org.firstinspires.ftc.teamcode.drivetrain.Drivetrain;
@@ -25,13 +24,14 @@ import org.firstinspires.ftc.teamcode.drivetrain.DrivetrainUpdater;
 import org.firstinspires.ftc.teamcode.drivetrain.HeadingPID;
 import org.firstinspires.ftc.teamcode.drivetrain.SwerveModule;
 import org.firstinspires.ftc.teamcode.drivetrain.SwervePIDF;
-import org.firstinspires.ftc.teamcode.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.other.GoBildaPinpoint;
 import org.firstinspires.ftc.teamcode.other.IndicatorLight;
+import org.firstinspires.ftc.teamcode.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.util.LinkedMotors;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Map;
 
 /**
  * The Robot class serves as the central manager for all robot hardware and high-level operations.
@@ -46,8 +46,8 @@ public class RobotContainer {
     public OpMode opMode;
     public HardwareMap hardwareMap;
     public Telemetry telemetry;
-    public TelemetryImpl telemetryPermanent;
     public boolean isRunning = false;
+    private final Map<String, Telemetry.Item> retainedItems = new HashMap<>();
     private final Handler handler = new Handler(Looper.getMainLooper());
     public final SwerveModule[] swerveModules = new SwerveModule[Constants.NUM_SWERVE_MOTORS];
     public SwervePIDF[] swerveServosPIDF = new SwervePIDF[Constants.NUM_SWERVE_SERVOS];
@@ -77,7 +77,6 @@ public class RobotContainer {
 
         // Turret
         public static DcMotorImplEx turretFlywheelMaster;
-        //public static HardwareDevice<DcMotorImplEx> turretFlywheelMaster;
         public static DcMotorImplEx turretFlywheelSlave;
         public static DcMotorImplEx turretRotation;
         public static DcMotorImplEx turretIntakeMotor;
@@ -94,50 +93,40 @@ public class RobotContainer {
         this.hardwareMap = opMode.hardwareMap;
         this.telemetry = opMode.telemetry;
 
-        //HardwareDevices.allHubs = hardwareMap.getAll(LynxModule.class);
-        //for (LynxModule hub : HardwareDevices.allHubs) {
-        //    hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
-        //}
+        telemetry.setAutoClear(false);
 
-        //telemetryPermanent.setAutoClear(false);
+        HardwareDevices.imu = getHardwareDevice(IMU.class, "imu");
+        HardwareDevices.imu.initialize(Constants.imuParameters);
 
-        // Is there a way to check what the IMU is and change it accordingly?
-//        HardwareDevices.imu = hardwareMap.get(IMU.class, "imu");
-//            BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-//            parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-//            parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-//            parameters.calibrationDataFile = "BNO055IMUCalibration.json";
-//            parameters.loggingEnabled      = true;
-//            parameters.loggingTag          = "IMU";
-//            parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+        HardwareDevices.pinpoint = getHardwareDevice(GoBildaPinpoint.class, "pinpoint");
+                HardwareDevices.pinpoint.setOffsets(Constants.PINPOINT_X_OFFSET_MM, Constants.PINPOINT_Y_OFFSET_MM, DistanceUnit.MM);
+                HardwareDevices.pinpoint.setEncoderResolution(Constants.PINPOINT_ODOM_POD);
+                HardwareDevices.pinpoint.setEncoderDirections(Constants.PINPOINT_X_ENCODER_DIRECTION, Constants.PINPOINT_Y_ENCODER_DIRECTION);
 
-            // Setup GoBuilda pinpoint Odometry.
-        //    HardwareDevices.pinpoint = hardwareMap.get(GoBildaPinpoint.class, "pinpoint");
-        //    HardwareDevices.pinpoint.setOffsets(Constants.PINPOINT_X_OFFSET_MM, Constants.PINPOINT_Y_OFFSET_MM, DistanceUnit.MM);
-        //    HardwareDevices.pinpoint.setEncoderResolution(Constants.PINPOINT_ODOM_POD);
-        //    HardwareDevices.pinpoint.setEncoderDirections(Constants.PINPOINT_X_ENCODER_DIRECTION, Constants.PINPOINT_Y_ENCODER_DIRECTION);
-        //
-        //    HardwareDevices.limelight = hardwareMap.get(Limelight3A.class, "limelight");
-        //    HardwareDevices.flashlight = hardwareMap.get(RevColorSensorV3.class, "flashlight");
-        //
-        //    HardwareDevices.indicatorLight = hardwareMap.get(ServoImplEx.class, "indicatorLight");
-        //
-        //for (int i = 0; i < HardwareDevices.swerveMotors.length; i++) {
-        //    HardwareDevices.motorNames[i] = "swerveMotor" + (i);
-        //    HardwareDevices.swerveMotors[i] = hardwareMap.get(DcMotorImplEx.class, HardwareDevices.motorNames[i]);
-        //}
-        //
-        //for (int i = 0; i < HardwareDevices.swerveServos.length; i++) {
-        //    HardwareDevices.servoNames[i] = "swerveServo" + (i);
+        HardwareDevices.limelight = getHardwareDevice(Limelight3A.class, "limelight");
+        HardwareDevices.flashlight = getHardwareDevice(RevColorSensorV3.class, "flashlight");
+
+        HardwareDevices.indicatorLight = getHardwareDevice(ServoImplEx.class, "indicatorLight");
+
+        for (int i = 0; i < HardwareDevices.swerveMotors.length; i++) {
+            HardwareDevices.motorNames[i] = "swerveMotor" + (i);
+            HardwareDevices.swerveMotors[i] = getHardwareDevice(DcMotorImplEx.class, HardwareDevices.motorNames[i]);
+            if (i == 0 || i == 2) { // TODO: Find which motors to reverse
+                HardwareDevices.swerveMotors[i].setDirection(DcMotorImplEx.Direction.REVERSE);
+            }
+            HardwareDevices.swerveMotors[i].setZeroPowerBehavior(DcMotorImplEx.ZeroPowerBehavior.BRAKE);
+        }
+
+        for (int i = 0; i < HardwareDevices.swerveServos.length; i++) {
+            HardwareDevices.servoNames[i] = "swerveServo" + (i);
             HardwareDevices.swerveServos[i] = getHardwareDevice(CRServoImplEx.class, HardwareDevices.servoNames[i]);
-        //}
-        //
-        //for (int i = 0; i < HardwareDevices.swerveAnalogs.length; i++) {
-        //    HardwareDevices.analogNames[i] = "swerveAnalog" + (i);
-            HardwareDeives.swerveAnalogs[i] = getHardwareDevice(AnalogInput.class, HardwareDevices.analogNames[i]);
-        //}
+        }
 
-        // Turret hardware maps
+        for (int i = 0; i < HardwareDevices.swerveAnalogs.length; i++) {
+            HardwareDevices.analogNames[i] = "swerveAnalog" + (i);
+            HardwareDevices.swerveAnalogs[i] = getHardwareDevice(AnalogInput.class, HardwareDevices.analogNames[i]);
+        }
+
         HardwareDevices.turretFlywheelMaster = getHardwareDevice(DcMotorImplEx.class, "turretFlywheelMaster");
         HardwareDevices.turretFlywheelSlave = getHardwareDevice(DcMotorImplEx.class, "turretFlywheelSlave");
         HardwareDevices.turretRotation = getHardwareDevice(DcMotorImplEx.class, "turretRotation");
@@ -146,49 +135,89 @@ public class RobotContainer {
         HardwareDevices.turretIntakeServo = getHardwareDevice(CRServoImplEx.class, "turretIntakeServo");
         HardwareDevices.lateralConveyorServo = getHardwareDevice(CRServoImplEx.class, "lateralConveyorServo");
         HardwareDevices.longitudinalConveyorServo = getHardwareDevice(CRServoImplEx.class, "longitudinalConveyorServo");
-        //
-        //for (int i = 0; i < swerveModules.length; i++) {
-        //    swerveModules[i] = new SwerveModule(this,
-        //            HardwareDevices.swerveMotors[i],
-        //            HardwareDevices.swerveServos[i],
-        //            HardwareDevices.swerveAnalogs[i],
-        //            i);
-        //}
-        //
-        //for (int i = 0; i < swerveServosPIDF.length; i++) {
-        //    swerveServosPIDF[i] = new SwervePIDF(this, i, HardwareDevices.swerveServos[i]);
-        //}
-        //
-        //for (int i = 0; i < HardwareDevices.swerveMotors.length; i++) {
-        //    int portNumber = HardwareDevices.swerveMotors[i].getPortNumber();
-        //    if (portNumber != i) {
-        //        telemetryPermanent.addLine("WARNING: Swerve Motor " + i + " is connected to port " + portNumber + ", should be port " + i);
-        //    }
-        //}
-        //for (int i = 0; i < HardwareDevices.swerveServos.length; i++) {
-        //    int portNumber = HardwareDevices.swerveServos[i].getPortNumber();
-        //    if (portNumber != i) {
-        //        telemetryPermanent.addLine("WARNING: Swerve Servo " + i + " is connected to port " + portNumber + ", should be port " + i);
-        //    }
-        //}
-        //for (int i = 0; i < HardwareDevices.swerveAnalogs.length; i++) {
-        //    // Get the port number (last character) from the connection info string.
-        //    int portNumber = Character.getNumericValue(HardwareDevices.swerveAnalogs[i].getConnectionInfo().charAt(HardwareDevices.swerveAnalogs[i].getConnectionInfo().length() - 1));
-        //    if (portNumber != i) {
-        //        telemetryPermanent.addLine("WARNING: Swerve Analog Encoder " + i + " is connected to port " + portNumber + ", should be port " + i);
-        //    }
-        //}
-        //telemetryPermanent.update();
-        //
-        //drivetrainUpdater.start();
+        HardwareDevices.turretEncoder = getHardwareDevice(AnalogInput.class, "turretEncoder");
+
+        for (int i = 0; i < swerveModules.length; i++) {
+            swerveModules[i] = new SwerveModule(this,
+                    HardwareDevices.swerveMotors[i],
+                    HardwareDevices.swerveServos[i],
+                    HardwareDevices.swerveAnalogs[i],
+                    i);
+        }
+
+        for (int i = 0; i < swerveServosPIDF.length; i++) {
+            swerveServosPIDF[i] = new SwervePIDF(this, i, HardwareDevices.swerveServos[i]);
+        }
+
+        for (int i = 0; i < HardwareDevices.swerveMotors.length; i++) {
+            int portNumber = HardwareDevices.swerveMotors[i].getPortNumber();
+            if (portNumber != i) {
+                addRetained("WARNING: Swerve Motor " + i + " is connected to port " + portNumber + ", should be port " + i, null);
+            }
+        }
+        for (int i = 0; i < HardwareDevices.swerveServos.length; i++) {
+            int portNumber = HardwareDevices.swerveServos[i].getPortNumber();
+            if (portNumber != i) {
+                addRetained("WARNING: Swerve Servo " + i + " is connected to port " + portNumber + ", should be port " + i, null);
+            }
+        }
+        for (int i = 0; i < HardwareDevices.swerveAnalogs.length; i++) {
+            // Get the port number (last character) from the connection info string.
+            int portNumber = Character.getNumericValue(HardwareDevices.swerveAnalogs[i].getConnectionInfo().charAt(HardwareDevices.swerveAnalogs[i].getConnectionInfo().length() - 1));
+            if (portNumber != i) {
+                addRetained("WARNING: Swerve Analog Encoder " + i + " is connected to port " + portNumber + ", should be port " + i, null);
+            }
+        }
+
+        drivetrainUpdater.start();
     }
 
+    public void init() {
+        HardwareDevices.allHubs = hardwareMap.getAll(LynxModule.class);
+        for (LynxModule hub : HardwareDevices.allHubs) {
+            hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
+        }
+    }
+
+    /**
+     * Retrieves a hardware device from the hardware map.
+     *
+     * This method attempts to retrieve a specific hardware device from the hardware map,
+     * based on the provided class type and device name. If the device is found, it is
+     * returned; otherwise, an error message is added to the telemetry, and null is returned.
+     *
+     * @param <T>           The type of the hardware device being requested.
+     * @param hardwareClass The class of the hardware device (e.g., DcMotor.class, Servo.class).
+     * @param name          The name of the hardware device as configured in the Robot Controller app.
+     * @return The requested hardware device if found; null otherwise.
+     */
     public <T> T getHardwareDevice(Class<T> hardwareClass, String name) {
         try {
             return hardwareMap.get(hardwareClass, name);
         } catch (Exception e) {
             telemetry.addLine("Error: " + e.getMessage());
             return null; // or throw the exception if you prefer
+        }
+    }
+
+    /**
+     * Add or update a retained line.
+     * Calling this with the same caption again will just change its value.
+     */
+    public void addRetained(String caption, Object value) {
+        Telemetry.Item item = retainedItems.get(caption);
+        if (item == null) {
+            if (value == null) {
+                item = (Telemetry.Item) telemetry.addLine(caption);
+            } else {
+                item = telemetry.addData(caption, value);
+            }
+            item.setRetained(true);
+            retainedItems.put(caption, item);
+        } else {
+            if (value != null) {
+                item.setValue(value);
+            }
         }
     }
 

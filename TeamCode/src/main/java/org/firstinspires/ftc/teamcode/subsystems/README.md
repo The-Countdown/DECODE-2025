@@ -19,7 +19,7 @@
     2. Write a constrtuctor inside that class that takes in the RobotManager class so that you can use other functions from the codebase
 
     3. Add the class to the bottom of the RobotManager class in the same format of the other subsystems that were added,
-    this will create the class as an object so that you will be able to refrence it in other classes through robotManager.turret
+    this will create the class as an object so that you will be able to refrence it in other classes through robotContainer.turret
 
 ## Create an intake class
     1. Follow the same instructions as above, this will contain the intake motor and conveyer servos
