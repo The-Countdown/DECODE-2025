@@ -147,29 +147,15 @@ public class RobotContainer {
                     HardwareDevices.swerveServos[i],
                     HardwareDevices.swerveAnalogs[i],
                     i);
-        }
 
-        for (int i = 0; i < swerveServosPIDF.length; i++) {
             swerveServosPIDF[i] = new SwervePIDF(this, i, HardwareDevices.swerveServos[i]);
-        }
 
-        for (int i = 0; i < HardwareDevices.swerveMotors.length; i++) {
-            int portNumber = HardwareDevices.swerveMotors[i].getPortNumber();
-            if (portNumber != i) {
-                addRetained("WARNING: Swerve Motor " + i + " is connected to port " + portNumber + ", should be port " + i, null);
+            // Check port numbers (can be simplified since there's a 1:1 correspondence)
+            if (HardwareDevices.swerveMotors[i].getPortNumber() != i) {
+                addRetained("WARNING: Swerve Motor " + i + " is connected to port " + HardwareDevices.swerveMotors[i].getPortNumber() + ", should be port " + i, null);
             }
-        }
-        for (int i = 0; i < HardwareDevices.swerveServos.length; i++) {
-            int portNumber = HardwareDevices.swerveServos[i].getPortNumber();
-            if (portNumber != i) {
-                addRetained("WARNING: Swerve Servo " + i + " is connected to port " + portNumber + ", should be port " + i, null);
-            }
-        }
-        for (int i = 0; i < HardwareDevices.swerveAnalogs.length; i++) {
-            // Get the port number (last character) from the connection info string.
-            int portNumber = Character.getNumericValue(HardwareDevices.swerveAnalogs[i].getConnectionInfo().charAt(HardwareDevices.swerveAnalogs[i].getConnectionInfo().length() - 1));
-            if (portNumber != i) {
-                addRetained("WARNING: Swerve Analog Encoder " + i + " is connected to port " + portNumber + ", should be port " + i, null);
+            if (HardwareDevices.swerveServos[i].getPortNumber() != i) {
+                addRetained("WARNING: Swerve Servo " + i + " is connected to port " + HardwareDevices.swerveServos[i].getPortNumber() + ", should be port " + i, null);
             }
         }
 
@@ -202,7 +188,7 @@ public class RobotContainer {
             return hardwareMap.get(hardwareClass, name);
         } catch (Exception e) {
             telemetry.addLine("Error: " + e.getMessage());
-            return null; // or throw the exception if you prefer
+            return null; // Or throw the exception if you prefer
         }
     }
 
