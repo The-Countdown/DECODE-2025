@@ -11,11 +11,12 @@ import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "TeleOp")
 public class TeleOp extends OpMode {
+    public static double CURRENT_LOOP_TIME_AVG_MS;
     private RobotContainer robotContainer;
     public GamepadWrapper gamepadEx1;
     public GamepadWrapper gamepadEx2;
     public static boolean fieldOriented = false;
-    public static double CURRENT_LOOP_TIME_MS = 0;
+    public static double CURRENT_LOOP_TIME_MS;
 
     @Override
     public void init() {
@@ -48,7 +49,7 @@ public class TeleOp extends OpMode {
 
     @Override
     public void loop() {
-        resetRuntime();
+        CURRENT_LOOP_TIME_MS = robotContainer.updateLoopTimeTracking();
         robotContainer.refreshData();
         gamepadEx1.update();
         gamepadEx2.update();
@@ -60,11 +61,13 @@ public class TeleOp extends OpMode {
                 fieldOriented
         );
 
-        RobotContainer.HardwareDevices.indicatorLight.setPosition(gamepadEx1.rightTriggerRaw());
+        RobotContainer.HardwareDevices.indicatorLight.setPosition(robotContainer.indicatorLight.scalePosition(gamepadEx1.rightTriggerRaw()));
 
         robotContainer.opMode.telemetry.clear();
-        robotContainer.opMode.telemetry.addData("Voltage:", robotContainer.getVoltage() + "V");
-        robotContainer.opMode.telemetry.addData("Current:", robotContainer.getCurrent() + "A");
+        robotContainer.opMode.telemetry.addData("Control Hub Voltage:", robotContainer.getVoltage(Constants.CONTROL_HUB_INDEX) + "V");
+        robotContainer.opMode.telemetry.addData("Expansion Hub Voltage:", robotContainer.getVoltage(Constants.EXPANSION_HUB_INDEX) + "V");
+        robotContainer.opMode.telemetry.addData("Control Hub Current:", robotContainer.getCurrent(Constants.CONTROL_HUB_INDEX) + "A");
+        robotContainer.opMode.telemetry.addData("Expansion Hub Current:", robotContainer.getCurrent(Constants.EXPANSION_HUB_INDEX) + "A");
         robotContainer.opMode.telemetry.addLine();
         robotContainer.opMode.telemetry.addData("Pinpoint X:", PinpointUpdater.currentPose.getX(DistanceUnit.CM) + "cm");
         robotContainer.opMode.telemetry.addData("Pinpoint Y:", PinpointUpdater.currentPose.getY(DistanceUnit.CM) + "cm");
@@ -75,7 +78,7 @@ public class TeleOp extends OpMode {
 
         RobotContainer.HardwareDevices.pinpoint.update();
 
-        CURRENT_LOOP_TIME_MS = getRuntime() * 1000;
+        CURRENT_LOOP_TIME_AVG_MS = robotContainer.getRollingAverageLoopTime();
     }
 
     @Override

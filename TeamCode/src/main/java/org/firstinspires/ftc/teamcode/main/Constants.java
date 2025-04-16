@@ -24,6 +24,12 @@ public class Constants {
     );
 
     public static final int
+            CONTROL_HUB_INDEX = 0,
+            EXPANSION_HUB_INDEX = 1;
+
+    public static final int LOOP_AVERAGE_WINDOW_SIZE = 10;
+
+    public static final int
             NUM_SWERVE_MOTORS = 4,
             NUM_SWERVE_SERVOS = 4,
             NUM_SWERVE_ANALOGS = 4;
@@ -132,7 +138,7 @@ public class Constants {
         BLUE,
         INDIGO,
         VIOLET,
-        WHITE;
+        WHITE
     }
 
     public static final HashMap<LED_COLOR, LED_COLOR_VALUES> LED_COLOR_MAP = new HashMap<LED_COLOR, LED_COLOR_VALUES>() {{

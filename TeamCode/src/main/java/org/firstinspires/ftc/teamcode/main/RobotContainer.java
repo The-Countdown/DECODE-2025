@@ -18,7 +18,6 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
-import org.firstinspires.ftc.robotcore.internal.opmode.TelemetryImpl;
 import org.firstinspires.ftc.teamcode.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.drivetrain.DrivetrainUpdater;
 import org.firstinspires.ftc.teamcode.drivetrain.HeadingPID;
@@ -30,6 +29,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.util.LinkedMotors;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +47,8 @@ public class RobotContainer {
     public HardwareMap hardwareMap;
     public Telemetry telemetry;
     public boolean isRunning = false;
+    public double previousLoopTime = 0;
+    public final LinkedList<Double> loopTimes = new LinkedList<>();
     private final Map<String, Telemetry.Item> retainedItems = new HashMap<>();
     private final Handler handler = new Handler(Looper.getMainLooper());
     public final SwerveModule[] swerveModules = new SwerveModule[Constants.NUM_SWERVE_MOTORS];
@@ -55,6 +57,8 @@ public class RobotContainer {
 
     public static class HardwareDevices {
         public static List<LynxModule> allHubs;
+        public static LynxModule controlHub;
+        public static LynxModule expansionHub;
         public static IMU imu;
 
         public static GoBildaPinpoint pinpoint;
@@ -174,6 +178,8 @@ public class RobotContainer {
 
     public void init() {
         HardwareDevices.allHubs = hardwareMap.getAll(LynxModule.class);
+        HardwareDevices.controlHub = hardwareMap.get(LynxModule.class, "Control Hub");
+        HardwareDevices.expansionHub = hardwareMap.get(LynxModule.class, "Expansion Hub 2");
         for (LynxModule hub : HardwareDevices.allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }
@@ -283,27 +289,100 @@ public class RobotContainer {
         }
     }
 
-    public double getVoltage() {
-        // Sets the voltage to -1 in case it is not set by the LynxModule, makes for easy debugging
-        double voltage = -1;
-        for (LynxModule hub : RobotContainer.HardwareDevices.allHubs) {
-            voltage = hub.getInputVoltage(VoltageUnit.VOLTS);
+    public double getVoltage(int hubIndex) {
+        LynxModule selectedHub;
+
+        // Determine which hub to use based on hubIndex
+        switch (hubIndex) {
+            case 0:
+                selectedHub = HardwareDevices.controlHub;
+                break;
+            case 1:
+                selectedHub = HardwareDevices.expansionHub;
+                break;
+            default:
+                // Invalid index
+                opMode.telemetry.addLine("ERROR: Invalid hub index");
+                opMode.telemetry.update();
+                return -1; // Or throw an exception
         }
 
-        return voltage;
+        if (selectedHub == null) {
+            opMode.telemetry.addLine("ERROR: Hub not found");
+            opMode.telemetry.update();
+            return -1;
+        }
+
+        return selectedHub.getInputVoltage(VoltageUnit.VOLTS);
     }
 
-    public double getCurrent() {
-        // Sets the current to -1 in case it is not set by the LynxModule, makes for easy debugging
-        double current = -1;
-        for (LynxModule hub : RobotContainer.HardwareDevices.allHubs) {
-            current = hub.getCurrent(CurrentUnit.MILLIAMPS);
+    public double getCurrent(int hubIndex) {
+        LynxModule selectedHub;
+
+        // Determine which hub to use based on hubIndex
+        switch (hubIndex) {
+            case 0:
+                selectedHub = HardwareDevices.controlHub;
+                break;
+            case 1:
+                selectedHub = HardwareDevices.expansionHub;
+                break;
+            default:
+                // Invalid index
+                addRetained("ERROR", "Invalid hub index");
+                return -1; // Or throw an exception
         }
 
-        return current;
+        if (selectedHub == null) {
+            addRetained("ERROR", "Hub not found");
+            return -1;
+        }
+
+        return selectedHub.getCurrent(CurrentUnit.AMPS);
+    }
+
+    /**
+     * Updates the loop time tracking with the current loop time.
+     * Should be ran at the start of the loop
+     * This method:
+     *   - Calculates the current loop time.
+     *   - Maintains the rolling average.
+     *   - Resets the loop timer.
+     * @return The time taken for the current loop (in milliseconds).
+     */
+    public double updateLoopTimeTracking() {
+        double currentLoopTime = opMode.getRuntime() * 1000;
+        double loopTime = currentLoopTime - previousLoopTime;
+
+        loopTimes.add(loopTime);
+        if (loopTimes.size() > Constants.LOOP_AVERAGE_WINDOW_SIZE) {
+            loopTimes.removeFirst();
+        }
+
+        previousLoopTime = currentLoopTime;
+        opMode.resetRuntime();
+
+        return loopTime;
+    }
+
+    /**
+     * Returns the rolling average loop time in milliseconds.
+     * Call at the end of the loop
+     * @return The rolling average loop time.
+     */
+    public double getRollingAverageLoopTime() {
+        if (loopTimes.isEmpty()) {
+            return 0;
+        }
+        double sum = 0;
+        for (double time : loopTimes) {
+            sum += time;
+        }
+        return sum / loopTimes.size();
     }
 
     public Drivetrain drivetrain = new Drivetrain(this);
+
     public HeadingPID headingPID = new HeadingPID(this);
     public IndicatorLight indicatorLight = new IndicatorLight(this);
     public Turret turret = new Turret(this);

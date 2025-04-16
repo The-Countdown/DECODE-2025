@@ -20,5 +20,11 @@ public class IndicatorLight extends RobotContainer.HardwareDevices {
         RobotContainer.HardwareDevices.indicatorLight.setPosition(Objects.requireNonNull(Constants.LED_COLOR_MAP.get(Constants.LED_COLOR.OFF)).ANALOG);
     }
 
-
+    public double scalePosition(double position) {
+        return (
+                position *
+                        (Constants.LED_COLOR_MAP.get(Constants.LED_COLOR.VIOLET).ANALOG -
+                                Constants.LED_COLOR_MAP.get(Constants.LED_COLOR.RED).ANALOG)) +
+                Constants.LED_COLOR_MAP.get(Constants.LED_COLOR.RED).ANALOG;
+    }
 }
