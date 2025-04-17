@@ -1,15 +1,25 @@
 package org.firstinspires.ftc.teamcode.util;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class GamepadWrapper {
     public static class ButtonReader {
         private boolean prevState = false;
         private boolean currState = false;
+        private ElapsedTime holdDuration = new ElapsedTime();
+        private boolean isTiming = false;
 
         public void update(boolean newState) {
             prevState = currState;
             currState = newState;
+
+            if(wasJustPressed()){
+                holdDuration.reset();
+                isTiming = true;
+            } else if(wasJustReleased()){
+                isTiming = false;
+            }
         }
 
         public boolean wasJustPressed() {
@@ -22,6 +32,18 @@ public class GamepadWrapper {
 
         public boolean isHeld() {
             return currState;
+        }
+
+        /**
+         * Checks if the button has been held down for at least the specified number of seconds.
+         * @param seconds The number of seconds to check for.
+         * @return True if the button has been held for at least the specified number of seconds, false otherwise.
+         */
+        public boolean isHeldFor(double seconds) {
+            if(isTiming){ // if we are timing
+                return holdDuration.seconds() >= seconds; // return if the timer is greater than the specified amount of time
+            }
+            return false; // else return false
         }
     }
 

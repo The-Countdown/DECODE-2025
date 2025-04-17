@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotorImplEx;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.main.Constants;
@@ -27,7 +28,8 @@ public class TeleOp extends OpMode {
         robotContainer.refreshData();
         RobotContainer.HardwareDevices.imu.resetYaw();
         RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU(); // TODO: Run at start of auto instead
-        robotContainer.drivetrain.drivetrainSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
+        robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
+        RobotContainer.HardwareDevices.turretRotation.setZeroPowerBehavior(DcMotorImplEx.ZeroPowerBehavior.BRAKE);
         robotContainer.opMode.telemetry.addLine("TeleOp Initialized");
         robotContainer.opMode.telemetry.update();
         robotContainer.indicatorLight.setColor(Constants.LED_COLOR.GREEN);
@@ -54,12 +56,36 @@ public class TeleOp extends OpMode {
         gamepadEx1.update();
         gamepadEx2.update();
 
-        robotContainer.drivetrain.drivetrainDirectionalInput(
+        robotContainer.drivetrain.swerveDirectionalInput(
                 robotContainer.drivetrain.joystickScaler(gamepad1.left_stick_x),
                 robotContainer.drivetrain.joystickScaler(gamepad1.left_stick_y),
                 robotContainer.drivetrain.joystickScaler(gamepad1.right_stick_x),
                 fieldOriented
         );
+
+        robotContainer.drivetrain.mecanumDrive(
+                robotContainer.drivetrain.joystickScaler(gamepad1.left_stick_y),
+                robotContainer.drivetrain.joystickScaler(gamepad1.left_stick_x),
+                robotContainer.drivetrain.joystickScaler(gamepad1.right_stick_x),
+                gamepad1.right_trigger,
+                gamepad1.left_trigger
+        );
+
+        if (gamepad1.right_bumper) {
+            robotContainer.turret.setTurretSpinPower(0.6);
+        } else if (gamepad1.left_bumper) {
+            robotContainer.turret.setTurretSpinPower(-0.6);
+        } else {
+            robotContainer.turret.setTurretSpinPower(0);
+        }
+
+        if (gamepad1.cross) {
+            robotContainer.intake.setPower(1);
+        } else if (gamepad1.circle) {
+            robotContainer.intake.setPower(-1);
+        } else {
+            robotContainer.intake.setPower(0);
+        }
 
         RobotContainer.HardwareDevices.indicatorLight.setPosition(robotContainer.indicatorLight.scalePosition(gamepadEx1.rightTriggerRaw()));
 
@@ -83,7 +109,7 @@ public class TeleOp extends OpMode {
 
     @Override
     public void stop() {
-        robotContainer.drivetrain.drivetrainSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
+        robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
         robotContainer.isRunning = false;
     }
 }

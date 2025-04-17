@@ -18,10 +18,12 @@ import java.util.HashMap;
 public class Constants {
     public static final IMU.Parameters imuParameters = new IMU.Parameters(
             new RevHubOrientationOnRobot(
-                    RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+                    RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
                     RevHubOrientationOnRobot.UsbFacingDirection.UP
             )
     );
+
+    public static boolean MECANUM_ACTIVE = true;
 
     public static final int
             CONTROL_HUB_INDEX = 0,

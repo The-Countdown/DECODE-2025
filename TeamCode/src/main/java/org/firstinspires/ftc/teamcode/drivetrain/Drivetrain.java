@@ -11,7 +11,6 @@ import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
 public class Drivetrain extends RobotContainer.HardwareDevices {
     private final RobotContainer robotContainer;
     private final GamepadWrapper.ButtonReader rXtoggle = new GamepadWrapper.ButtonReader();
-    private boolean rotationWasZero = false;
 
     /**
      * Constructor for the Drivetrain class.
@@ -29,7 +28,11 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
      * @param rX            The rotational input from -1 to 1.
      * @param fieldOriented A boolean indicating whether to use field-oriented driving.
      */
-    public void drivetrainDirectionalInput(double x, double y, double rX, boolean fieldOriented) {
+    public void swerveDirectionalInput(double x, double y, double rX, boolean fieldOriented) {
+        if (Constants.MECANUM_ACTIVE) {
+            return;
+        }
+
         // Calculate the magnitude of translational movement.
         double translationalMagnitude = Math.sqrt(x * x + y * y);
         // Calculate the angle of translational movement.
@@ -81,7 +84,7 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
             calculatedPowers[i] = vectorMagnitude;
         }
 
-        drivetrainSetTargets(calculatedAngles, scalePowers(calculatedPowers));
+        swerveSetTargets(calculatedAngles, scalePowers(calculatedPowers));
     }
 
     /**
@@ -89,7 +92,10 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
      * @param targetAngles An array of target angles for each swerve module.
      * @param targetPowers An array of target powers for each swerve module.
      */
-    public void drivetrainSetTargets(double[] targetAngles, double[] targetPowers) {
+    public void swerveSetTargets(double[] targetAngles, double[] targetPowers) {
+        if (Constants.MECANUM_ACTIVE) {
+            return;
+        }
         targetPowers = scalePowers(targetPowers);
         for (int i = 0; i < swerveServos.length; i++) {
             double currentAngle = robotContainer.swerveModules[i].servo.getAngle();
@@ -113,6 +119,36 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
             robotContainer.swerveModules[i].servo.setTargetAngle(targetAngles[i]);
         }
     }
+
+    public void mecanumDrive(double x, double y, double rX, double rT, double lT) {
+        if (!Constants.MECANUM_ACTIVE) {
+            return;
+        }
+        double yStickLMulti = 0.8;
+        double xStickLMulti = 0.4;
+        double xStickRMulti = 0.4;
+        double[] powers = new double[4];
+
+        double xStickR;
+        double xStickL;
+        double yStickL;
+
+        xStickR = rX * (xStickRMulti + (rT * 0.45) - (lT * 0.1));
+        xStickL = x * (xStickLMulti + (rT * 0.5) - (lT * 0.2));
+        yStickL = y * (-(yStickLMulti + (rT * 0.5) - (lT * 0.2)));
+
+        powers[1] = yStickL + xStickL + xStickR;
+        powers[2] = yStickL - xStickL + xStickR;
+        powers[0] = yStickL - xStickL - xStickR;
+        powers[3] = yStickL + xStickL - xStickR;
+
+        powers = scalePowers(powers);
+
+        RobotContainer.HardwareDevices.driveMotors[1].setPower(powers[1]);
+        RobotContainer.HardwareDevices.driveMotors[2].setPower(powers[2]);
+        RobotContainer.HardwareDevices.driveMotors[0].setPower(powers[0]);
+        RobotContainer.HardwareDevices.driveMotors[3].setPower(powers[3]);
+        }
 
     /**
      * This function scales all the powers to ensure they are within the -1 and 1 ranges.
