@@ -48,7 +48,7 @@ public class RobotContainer {
     public HardwareMap hardwareMap;
     public Telemetry telemetry;
     public boolean isRunning = false;
-    public double previousLoopTime = 0;
+    private long lastLoopTimeNs = System.nanoTime();
     public final LinkedList<Double> loopTimes = new LinkedList<>();
     private final Map<String, Telemetry.Item> retainedItems = new HashMap<>();
     private final Handler handler = new Handler(Looper.getMainLooper());
@@ -355,16 +355,14 @@ public class RobotContainer {
      * @return The time taken for the current loop (in milliseconds).
      */
     public double updateLoopTimeTracking() {
-        double currentLoopTime = opMode.getRuntime() * 1000;
-        double loopTime = currentLoopTime - previousLoopTime;
+        long now = System.nanoTime();
+        double loopTime = (now - lastLoopTimeNs) / 1e6;
+        lastLoopTimeNs = now;
 
         loopTimes.add(loopTime);
         if (loopTimes.size() > Constants.LOOP_AVERAGE_WINDOW_SIZE) {
             loopTimes.removeFirst();
         }
-
-        previousLoopTime = currentLoopTime;
-        opMode.resetRuntime();
 
         return loopTime;
     }

@@ -87,7 +87,7 @@ public class TeleOp extends OpMode {
             robotContainer.intake.setPower(0);
         }
 
-        RobotContainer.HardwareDevices.indicatorLight.setPosition(robotContainer.indicatorLight.scalePosition(gamepadEx1.rightTriggerRaw()));
+        robotContainer.indicatorLight.rainbow();
 
         robotContainer.opMode.telemetry.clear();
         robotContainer.opMode.telemetry.addData("Control Hub Voltage:", robotContainer.getVoltage(Constants.CONTROL_HUB_INDEX) + "V");
