@@ -67,10 +67,10 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
             double translationalX = translationalMagnitude * Math.cos(translationalAngle) * translationalDirection;
             double translationalY = translationalMagnitude * Math.sin(translationalAngle) * translationalDirection;
 
-            double rotationalAngle = Math.toRadians(Constants.SWERVE_ROTATION_FORMATION[i]);
+            double rotationalAngle = Constants.SWERVE_ROTATION_FORMATION_RADIANS[i];
             // Calculate the x and y components of rotational movement.
-            double rotationalX = rotationalMagnitude * Math.cos(rotationalAngle) * rotationalDirection;
-            double rotationalY = rotationalMagnitude * Math.sin(rotationalAngle) * rotationalDirection;
+            double rotationalX = rotationalMagnitude * Constants.SWERVE_ROTATION_FORMATION_COSINES_RADIANS[i] * rotationalDirection;
+            double rotationalY = rotationalMagnitude * Constants.SWERVE_ROTATION_FORMATION_SINES_RADIANS[i] * rotationalDirection;
 
             // Combine the translational and rotational components into a single vector.
             double vectorX = translationalX + rotationalX;
@@ -84,7 +84,7 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
             calculatedPowers[i] = vectorMagnitude;
         }
 
-        swerveSetTargets(calculatedAngles, scalePowers(calculatedPowers));
+        swerveSetTargets(calculatedAngles, calculatedPowers);
     }
 
     /**
@@ -102,7 +102,7 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
             double error = targetAngles[i] - currentAngle;
             error = normalizeAngle(error);
 
-            /**
+            /*
              * if the error is greater than 90 the direction of the wheel needs to be flipped, so we add 180 to the target angle
              * and we invert the powers.
              *

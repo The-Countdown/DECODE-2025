@@ -30,6 +30,8 @@ public class TeleOp extends OpMode {
         RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU(); // TODO: Run at start of auto instead
         robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
         RobotContainer.HardwareDevices.turretRotation.setZeroPowerBehavior(DcMotorImplEx.ZeroPowerBehavior.BRAKE);
+        robotContainer.opMode.telemetry.setMsTransmissionInterval(200);
+        robotContainer.opMode.telemetry.speak("TeleOp Initialized", "en", "GB");
         robotContainer.opMode.telemetry.addLine("TeleOp Initialized");
         robotContainer.opMode.telemetry.update();
         robotContainer.indicatorLight.setColor(Constants.LED_COLOR.GREEN);
@@ -56,20 +58,22 @@ public class TeleOp extends OpMode {
         gamepadEx1.update();
         gamepadEx2.update();
 
-        robotContainer.drivetrain.swerveDirectionalInput(
-                robotContainer.drivetrain.joystickScaler(gamepad1.left_stick_x),
-                robotContainer.drivetrain.joystickScaler(gamepad1.left_stick_y),
-                robotContainer.drivetrain.joystickScaler(gamepad1.right_stick_x),
-                fieldOriented
-        );
-
-        robotContainer.drivetrain.mecanumDrive(
-                robotContainer.drivetrain.joystickScaler(gamepad1.left_stick_y),
-                robotContainer.drivetrain.joystickScaler(gamepad1.left_stick_x),
-                robotContainer.drivetrain.joystickScaler(gamepad1.right_stick_x),
-                gamepad1.right_trigger,
-                gamepad1.left_trigger
-        );
+        if (Constants.MECANUM_ACTIVE) {
+            robotContainer.drivetrain.mecanumDrive(
+                    robotContainer.drivetrain.joystickScaler(gamepad1.left_stick_y),
+                    robotContainer.drivetrain.joystickScaler(gamepad1.left_stick_x),
+                    robotContainer.drivetrain.joystickScaler(gamepad1.right_stick_x),
+                    gamepad1.right_trigger,
+                    gamepad1.left_trigger
+            );
+        } else {
+            robotContainer.drivetrain.swerveDirectionalInput(
+                    robotContainer.drivetrain.joystickScaler(gamepad1.left_stick_x),
+                    robotContainer.drivetrain.joystickScaler(gamepad1.left_stick_y),
+                    robotContainer.drivetrain.joystickScaler(gamepad1.right_stick_x),
+                    fieldOriented
+            );
+        }
 
         if (gamepad1.right_bumper) {
             robotContainer.turret.setTurretSpinPower(0.6);

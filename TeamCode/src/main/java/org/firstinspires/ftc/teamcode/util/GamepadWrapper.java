@@ -40,10 +40,10 @@ public class GamepadWrapper {
          * @return True if the button has been held for at least the specified number of seconds, false otherwise.
          */
         public boolean isHeldFor(double seconds) {
-            if(isTiming){ // if we are timing
-                return holdDuration.seconds() >= seconds; // return if the timer is greater than the specified amount of time
+            if(isTiming){
+                return holdDuration.seconds() >= seconds;
             }
-            return false; // else return false
+            return false;
         }
     }
 

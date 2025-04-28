@@ -55,21 +55,42 @@ public class Constants {
      * The desired servo angles for the swerve modules when in the rotation formation
      * These values are not exactly 45 degrees because the drivebase is not a perfect square
      */
-    public static final double[] SWERVE_ROTATION_FORMATION = {
-            normalizeAngle(Math.atan2(WHEELBASE_ICR_Y, WHEELBASE_ICR_X)),
-            normalizeAngle(Math.atan2(-WHEELBASE_ICR_Y, WHEELBASE_ICR_X)),
-            normalizeAngle(Math.atan2(-WHEELBASE_ICR_Y, -WHEELBASE_ICR_X)),
-            normalizeAngle(Math.atan2(WHEELBASE_ICR_Y, -WHEELBASE_ICR_X))
+    public static final double[] SWERVE_ROTATION_FORMATION_DEGREES = {
+            normalizeAngle(Math.toDegrees(Math.atan2(WHEELBASE_ICR_Y, WHEELBASE_ICR_X))),
+            normalizeAngle(Math.toDegrees(Math.atan2(-WHEELBASE_ICR_Y, WHEELBASE_ICR_X))),
+            normalizeAngle(Math.toDegrees(Math.atan2(-WHEELBASE_ICR_Y, -WHEELBASE_ICR_X))),
+            normalizeAngle(Math.toDegrees(Math.atan2(WHEELBASE_ICR_Y, -WHEELBASE_ICR_X)))
+    };
+
+    public static final double[] SWERVE_ROTATION_FORMATION_RADIANS = {
+            Math.atan2(WHEELBASE_ICR_Y, WHEELBASE_ICR_X),
+            Math.atan2(-WHEELBASE_ICR_Y, WHEELBASE_ICR_X),
+            Math.atan2(-WHEELBASE_ICR_Y, -WHEELBASE_ICR_X),
+            Math.atan2(WHEELBASE_ICR_Y, -WHEELBASE_ICR_X)
+    };
+
+    public static final double[] SWERVE_ROTATION_FORMATION_COSINES_RADIANS = {
+            Math.cos(SWERVE_ROTATION_FORMATION_RADIANS[0]),
+            Math.cos(SWERVE_ROTATION_FORMATION_RADIANS[1]),
+            Math.cos(SWERVE_ROTATION_FORMATION_RADIANS[2]),
+            Math.cos(SWERVE_ROTATION_FORMATION_RADIANS[3])
+    };
+
+    public static final double[] SWERVE_ROTATION_FORMATION_SINES_RADIANS = {
+            Math.sin(SWERVE_ROTATION_FORMATION_RADIANS[0]),
+            Math.sin(SWERVE_ROTATION_FORMATION_RADIANS[1]),
+            Math.sin(SWERVE_ROTATION_FORMATION_RADIANS[2]),
+            Math.sin(SWERVE_ROTATION_FORMATION_RADIANS[3])
     };
 
     /**
      * The desired servo angles for the swerve modules when in the stop formation.
      */
     public static final double[] SWERVE_STOP_FORMATION = {
-            180 - SWERVE_ROTATION_FORMATION[0],
-            180 - SWERVE_ROTATION_FORMATION[1],
-            180 - SWERVE_ROTATION_FORMATION[2],
-            180 - SWERVE_ROTATION_FORMATION[3]
+            180 - SWERVE_ROTATION_FORMATION_DEGREES[0],
+            180 - SWERVE_ROTATION_FORMATION_DEGREES[1],
+            180 - SWERVE_ROTATION_FORMATION_DEGREES[2],
+            180 - SWERVE_ROTATION_FORMATION_DEGREES[3]
     };
 
     /**
