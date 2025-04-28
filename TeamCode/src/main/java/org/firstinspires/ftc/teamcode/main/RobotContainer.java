@@ -107,9 +107,9 @@ public class RobotContainer {
         HardwareDevices.imu.initialize(Constants.imuParameters);
 
         HardwareDevices.pinpoint = getHardwareDevice(GoBildaPinpoint.class, "pinpoint");
-                HardwareDevices.pinpoint.setOffsets(Constants.PINPOINT_X_OFFSET_MM, Constants.PINPOINT_Y_OFFSET_MM, DistanceUnit.MM);
-                HardwareDevices.pinpoint.setEncoderResolution(Constants.PINPOINT_ODOM_POD);
-                HardwareDevices.pinpoint.setEncoderDirections(Constants.PINPOINT_X_ENCODER_DIRECTION, Constants.PINPOINT_Y_ENCODER_DIRECTION);
+        HardwareDevices.pinpoint.setOffsets(Constants.PINPOINT_X_OFFSET_MM, Constants.PINPOINT_Y_OFFSET_MM, DistanceUnit.MM);
+        HardwareDevices.pinpoint.setEncoderResolution(Constants.PINPOINT_ODOM_POD);
+        HardwareDevices.pinpoint.setEncoderDirections(Constants.PINPOINT_X_ENCODER_DIRECTION, Constants.PINPOINT_Y_ENCODER_DIRECTION);
 
         HardwareDevices.limelight = getHardwareDevice(Limelight3A.class, "limelight");
         HardwareDevices.flashlight = getHardwareDevice(RevColorSensorV3.class, "flashlight");
@@ -140,40 +140,29 @@ public class RobotContainer {
                 HardwareDevices.motorNames[i] = "swerveMotor" + (i);
                 HardwareDevices.swerveMotors[i] = getHardwareDevice(DcMotorImplEx.class, HardwareDevices.motorNames[i]);
                 if (i == 0 || i == 2) { // TODO: Find which motors to reverse
-                HardwareDevices.swerveMotors[i].setDirection(DcMotorImplEx.Direction.REVERSE);
+                    HardwareDevices.swerveMotors[i].setDirection(DcMotorImplEx.Direction.REVERSE);
                 }
-            HardwareDevices.swerveMotors[i].setZeroPowerBehavior(DcMotorImplEx.ZeroPowerBehavior.BRAKE);
-            }
-
-            for (int i = 0; i < HardwareDevices.swerveServos.length; i++) {
-                HardwareDevices.servoNames[i] = "swerveServo" + (i);
-                HardwareDevices.swerveServos[i] = getHardwareDevice(CRServoImplEx.class, HardwareDevices.servoNames[i]);
-            }
-
-            for (int i = 0; i < HardwareDevices.swerveAnalogs.length; i++) {
-                HardwareDevices.analogNames[i] = "swerveAnalog" + (i);
-                HardwareDevices.swerveAnalogs[i] = getHardwareDevice(AnalogInput.class, HardwareDevices.analogNames[i]);
+                HardwareDevices.swerveMotors[i].setZeroPowerBehavior(DcMotorImplEx.ZeroPowerBehavior.BRAKE);
             }
 
             for (int i = 0; i < swerveModules.length; i++) {
-                swerveModules[i] = new SwerveModule(this,
-                        HardwareDevices.swerveMotors[i],
-                        HardwareDevices.swerveServos[i],
-                        HardwareDevices.swerveAnalogs[i],
-                        i);
-
+                HardwareDevices.servoNames[i] = "swerveServo" + (i);
+                HardwareDevices.swerveServos[i] = getHardwareDevice(CRServoImplEx.class, HardwareDevices.servoNames[i]);
+                HardwareDevices.analogNames[i] = "swerveAnalog" + (i);
+                HardwareDevices.swerveAnalogs[i] = getHardwareDevice(AnalogInput.class, HardwareDevices.analogNames[i]);
+                swerveModules[i] = new SwerveModule(this, HardwareDevices.swerveMotors[i], HardwareDevices.swerveServos[i], HardwareDevices.swerveAnalogs[i], i);
                 swerveServosPIDF[i] = new SwervePIDF(this, i, HardwareDevices.swerveServos[i]);
 
-            int analogPortNumber = Character.getNumericValue(HardwareDevices.swerveAnalogs[i].getConnectionInfo().charAt(HardwareDevices.swerveAnalogs[i].getConnectionInfo().length() - 1));
-            if (analogPortNumber != i) {
-                addRetained("WARNING: Swerve Analog Encoder " + i + " is connected to port " + analogPortNumber + ", should be port " + i, null);
-            }
-            if (HardwareDevices.swerveMotors[i].getPortNumber() != i) {
-                addRetained("WARNING: Swerve Motor " + i + " is connected to port " + HardwareDevices.swerveMotors[i].getPortNumber() + ", should be port " + i, null);
-            }
-            if (HardwareDevices.swerveServos[i].getPortNumber() != i) {
-                addRetained("WARNING: Swerve Servo " + i + " is connected to port " + HardwareDevices.swerveServos[i].getPortNumber() + ", should be port " + i, null);
-            }
+                int analogPortNumber = Character.getNumericValue(HardwareDevices.swerveAnalogs[i].getConnectionInfo().charAt(HardwareDevices.swerveAnalogs[i].getConnectionInfo().length() - 1));
+                if (analogPortNumber != i) {
+                    addRetained("WARNING: Swerve Analog Encoder " + i + " is connected to port " + analogPortNumber + ", should be port " + i, null);
+                }
+                if (HardwareDevices.swerveMotors[i].getPortNumber() != i) {
+                    addRetained("WARNING: Swerve Motor " + i + " is connected to port " + HardwareDevices.swerveMotors[i].getPortNumber() + ", should be port " + i, null);
+                }
+                if (HardwareDevices.swerveServos[i].getPortNumber() != i) {
+                    addRetained("WARNING: Swerve Servo " + i + " is connected to port " + HardwareDevices.swerveServos[i].getPortNumber() + ", should be port " + i, null);
+                }
             }
 
             drivetrainUpdater.start();
