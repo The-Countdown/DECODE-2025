@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorImplEx;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.main.Constants;
@@ -18,6 +19,8 @@ public class TeleOp extends OpMode {
     public GamepadWrapper gamepadEx2;
     public static boolean fieldOriented = false;
     public static double CURRENT_LOOP_TIME_MS;
+    public static boolean isRunning = false;
+    private static ElapsedTime turretAccelerationTimer = new ElapsedTime();
 
     @Override
     public void init() {
@@ -46,6 +49,7 @@ public class TeleOp extends OpMode {
     public void start() {
         gamepadEx1 = new GamepadWrapper(gamepad1);
         gamepadEx2 = new GamepadWrapper(gamepad2);
+        isRunning = true;
         if (RobotContainer.HardwareDevices.pinpoint.getDeviceStatus() != GoBildaPinpoint.DeviceStatus.READY) {
             robotContainer.addRetained("WARNING, PINPOINT STATUS:", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
         }
@@ -84,11 +88,21 @@ public class TeleOp extends OpMode {
         }
 
         if (gamepad1.cross) {
-            robotContainer.intake.setPower(1);
+            robotContainer.turret.flywheel.setPower(1);
         } else if (gamepad1.circle) {
-            robotContainer.intake.setPower(-1);
+            robotContainer.turret.flywheel.setPower(-1);
         } else {
-            robotContainer.intake.setPower(0);
+            robotContainer.turret.flywheel.setPower(0);
+        }
+
+        if (gamepadEx1.b.wasJustPressed()) {
+            turretAccelerationTimer.reset();
+        }
+        if (gamepadEx1.b.isHeld()) {
+            robotContainer.turret.flywheel.setPower(
+                    turretAccelerationTimer.nanoseconds()
+                    * 3.333333333333333e-10
+            );
         }
 
         robotContainer.indicatorLight.rainbow();

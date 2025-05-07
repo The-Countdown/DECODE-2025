@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.drivetrain;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
+import org.firstinspires.ftc.teamcode.opmodes.teleop.TeleOp;
 
 /**
  * The `ThreadedPIDF` class is responsible for managing the Proportional-Integral-Derivative-Feedforward (PIDF)
@@ -24,7 +25,7 @@ public class DrivetrainUpdater extends Thread {
 
     @Override
     public void run() {
-        while (robotContainer.isRunning) {
+        while (TeleOp.isRunning) {
             robotContainer.refreshData();
             for (int i = 0; i < robotContainer.swerveModules.length; i++) {
                 if (robotContainer.swerveServosPIDF[i].getError() <= Constants.SWERVE_SERVO_PIDF_TOLERANCE_DEGREES) {

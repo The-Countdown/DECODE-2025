@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import org.firstinspires.ftc.teamcode.drivetrain.SwerveModule;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 
 public class Turret extends RobotContainer.HardwareDevices {
@@ -26,4 +27,6 @@ public class Turret extends RobotContainer.HardwareDevices {
             robotContainer.turretFlywheel.setPower(power);
         }
     }
+
+    public final Flywheel flywheel = new Flywheel();
 }
