@@ -1,6 +1,10 @@
 package org.firstinspires.ftc.teamcode.util;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotorImplEx;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,6 +29,13 @@ public class LinkedMotors {
         masterMotor.setPower(power);
         for (DcMotorImplEx slaveMotor : slaveMotors) {
             slaveMotor.setPower(power);
+        }
+    }
+
+    public void setVelocity(double velocity) {
+        masterMotor.setVelocity(velocity);
+        for (DcMotorImplEx slaveMotor : slaveMotors) {
+            slaveMotor.setVelocity(velocity);
         }
     }
 

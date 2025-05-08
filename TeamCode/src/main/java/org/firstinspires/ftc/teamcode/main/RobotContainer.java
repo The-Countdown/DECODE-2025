@@ -9,6 +9,7 @@ import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorImplEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -118,6 +119,8 @@ public class RobotContainer {
 
         HardwareDevices.turretFlywheelMaster = getHardwareDevice(DcMotorImplEx.class, "turretFlywheelMaster");
         HardwareDevices.turretFlywheelSlave = getHardwareDevice(DcMotorImplEx.class, "turretFlywheelSlave");
+        HardwareDevices.turretFlywheelMaster.setMode(DcMotorImplEx.RunMode.RUN_USING_ENCODER);
+        HardwareDevices.turretFlywheelSlave.setMode(DcMotorImplEx.RunMode.RUN_USING_ENCODER);
         HardwareDevices.turretRotation = getHardwareDevice(DcMotorImplEx.class, "turretRotation");
         HardwareDevices.turretIntakeMotor = getHardwareDevice(DcMotorImplEx.class, "turretIntakeMotor");
         HardwareDevices.intakeMotor = getHardwareDevice(DcMotorImplEx.class, "intakeMotor");
