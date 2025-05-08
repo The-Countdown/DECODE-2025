@@ -9,7 +9,6 @@ import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorImplEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -30,10 +29,9 @@ import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.util.LinkedMotors;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * The Robot class serves as the central manager for all robot hardware and high-level operations.
@@ -49,9 +47,10 @@ public class RobotContainer {
     public HardwareMap hardwareMap;
     public Telemetry telemetry;
     public boolean isRunning = false;
-    private long lastLoopTimeNs = System.nanoTime();
+    public long lastLoopTimeNs = 0;
     public final LinkedList<Double> loopTimes = new LinkedList<>();
-    private final Map<String, Telemetry.Item> retainedItems = new HashMap<>();
+    private final ArrayList<String> retainedTelemetryCaptions = new ArrayList<>();
+    private final ArrayList<Object> retainedTelemetryValues = new ArrayList<>();
     private final Handler handler = new Handler(Looper.getMainLooper());
     public final SwerveModule[] swerveModules = new SwerveModule[Constants.NUM_SWERVE_MOTORS];
     public SwervePIDF[] swerveServosPIDF = new SwervePIDF[Constants.NUM_SWERVE_SERVOS];
@@ -101,8 +100,6 @@ public class RobotContainer {
         this.opMode = opMode;
         this.hardwareMap = opMode.hardwareMap;
         this.telemetry = opMode.telemetry;
-
-        telemetry.setAutoClear(false);
 
         HardwareDevices.imu = getHardwareDevice(IMU.class, "imu");
         HardwareDevices.imu.initialize(Constants.imuParameters);
@@ -158,13 +155,13 @@ public class RobotContainer {
 
                 int analogPortNumber = Character.getNumericValue(HardwareDevices.swerveAnalogs[i].getConnectionInfo().charAt(HardwareDevices.swerveAnalogs[i].getConnectionInfo().length() - 1));
                 if (analogPortNumber != i) {
-                    addRetained("WARNING: Swerve Analog Encoder " + i + " is connected to port " + analogPortNumber + ", should be port " + i, null);
+                    addRetainedTelemetry("WARNING: Swerve Analog Encoder " + i + " is connected to port " + analogPortNumber + ", should be port " + i, null);
                 }
                 if (HardwareDevices.swerveMotors[i].getPortNumber() != i) {
-                    addRetained("WARNING: Swerve Motor " + i + " is connected to port " + HardwareDevices.swerveMotors[i].getPortNumber() + ", should be port " + i, null);
+                    addRetainedTelemetry("WARNING: Swerve Motor " + i + " is connected to port " + HardwareDevices.swerveMotors[i].getPortNumber() + ", should be port " + i, null);
                 }
                 if (HardwareDevices.swerveServos[i].getPortNumber() != i) {
-                    addRetained("WARNING: Swerve Servo " + i + " is connected to port " + HardwareDevices.swerveServos[i].getPortNumber() + ", should be port " + i, null);
+                    addRetainedTelemetry("WARNING: Swerve Servo " + i + " is connected to port " + HardwareDevices.swerveServos[i].getPortNumber() + ", should be port " + i, null);
                 }
             }
 
@@ -203,23 +200,16 @@ public class RobotContainer {
     }
 
     /**
-     * Add or update a retained line.
-     * Calling this with the same caption again will just change its value.
+     * Add or update a retained line of telemetry.
      */
-    public void addRetained(String caption, Object value) {
-        Telemetry.Item item = retainedItems.get(caption);
-        if (item == null) {
-            if (value == null) {
-                item = (Telemetry.Item) telemetry.addLine(caption);
-            } else {
-                item = telemetry.addData(caption, value);
-            }
-            item.setRetained(true);
-            retainedItems.put(caption, item);
-        } else {
-            if (value != null) {
-                item.setValue(value);
-            }
+    public void addRetainedTelemetry(String caption, Object value) {
+        retainedTelemetryCaptions.add(caption);
+        retainedTelemetryValues.add(value);
+    }
+
+    public void displayRetainedTelemetry() {
+        for (int i = 0; i < retainedTelemetryCaptions.size(); i++) {
+            telemetry.addData(retainedTelemetryCaptions.get(i), retainedTelemetryValues.get(i));
         }
     }
 
@@ -325,12 +315,12 @@ public class RobotContainer {
                 break;
             default:
                 // Invalid index
-                addRetained("ERROR", "Invalid hub index");
+                addRetainedTelemetry("ERROR", "Invalid hub index");
                 return -1; // Or throw an exception
         }
 
         if (selectedHub == null) {
-            addRetained("ERROR", "Hub not found");
+            addRetainedTelemetry("ERROR", "Hub not found");
             return -1;
         }
 

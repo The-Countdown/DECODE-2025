@@ -20,7 +20,7 @@ public class TeleOp extends OpMode {
     public static boolean fieldOriented = false;
     public static double CURRENT_LOOP_TIME_MS;
     public static boolean isRunning = false;
-    private static ElapsedTime turretAccelerationTimer = new ElapsedTime();
+    private static final ElapsedTime turretAccelerationTimer = new ElapsedTime();
 
     @Override
     public void init() {
@@ -34,7 +34,7 @@ public class TeleOp extends OpMode {
         robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
         RobotContainer.HardwareDevices.turretRotation.setZeroPowerBehavior(DcMotorImplEx.ZeroPowerBehavior.BRAKE);
         robotContainer.opMode.telemetry.setMsTransmissionInterval(200);
-        robotContainer.opMode.telemetry.speak("TeleOp Initialized", "en", "GB");
+//        robotContainer.opMode.telemetry.speak("TeleOp Initialized", "en", "GB");
         robotContainer.opMode.telemetry.addLine("TeleOp Initialized");
         robotContainer.opMode.telemetry.update();
         robotContainer.indicatorLight.setColor(Constants.LED_COLOR.GREEN);
@@ -50,8 +50,9 @@ public class TeleOp extends OpMode {
         gamepadEx1 = new GamepadWrapper(gamepad1);
         gamepadEx2 = new GamepadWrapper(gamepad2);
         isRunning = true;
+        robotContainer.lastLoopTimeNs = System.nanoTime();
         if (RobotContainer.HardwareDevices.pinpoint.getDeviceStatus() != GoBildaPinpoint.DeviceStatus.READY) {
-            robotContainer.addRetained("WARNING, PINPOINT STATUS:", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
+            robotContainer.addRetainedTelemetry("WARNING, PINPOINT STATUS:", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
         }
     }
 
@@ -104,7 +105,6 @@ public class TeleOp extends OpMode {
 
         robotContainer.indicatorLight.rainbow();
 
-        robotContainer.opMode.telemetry.clear();
         robotContainer.opMode.telemetry.addData("Control Hub Voltage:", robotContainer.getVoltage(Constants.CONTROL_HUB_INDEX) + "V");
         robotContainer.opMode.telemetry.addData("Expansion Hub Voltage:", robotContainer.getVoltage(Constants.EXPANSION_HUB_INDEX) + "V");
         robotContainer.opMode.telemetry.addData("Control Hub Current:", robotContainer.getCurrent(Constants.CONTROL_HUB_INDEX) + "A");
@@ -114,7 +114,9 @@ public class TeleOp extends OpMode {
         robotContainer.opMode.telemetry.addData("Pinpoint Y:", PinpointUpdater.currentPose.getY(DistanceUnit.CM) + "cm");
         robotContainer.opMode.telemetry.addData("Pinpoint Heading:", PinpointUpdater.currentHeading + "°");
         robotContainer.opMode.telemetry.addLine();
+        robotContainer.opMode.telemetry.addData("Avg Loop Time:", CURRENT_LOOP_TIME_AVG_MS + "ms");
         robotContainer.opMode.telemetry.addData("Loop Time:", CURRENT_LOOP_TIME_MS + "ms");
+        robotContainer.displayRetainedTelemetry();
         robotContainer.opMode.telemetry.update();
 
         RobotContainer.HardwareDevices.pinpoint.update();
@@ -125,6 +127,7 @@ public class TeleOp extends OpMode {
     @Override
     public void stop() {
         robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
+        isRunning = false;
         robotContainer.isRunning = false;
     }
 }
