@@ -87,22 +87,13 @@ public class TeleOp extends OpMode {
             robotContainer.turret.setTurretSpinPower(0);
         }
 
-        if (gamepad1.cross) {
-            robotContainer.turret.flywheel.setPower(1);
-        } else if (gamepad1.circle) {
-            robotContainer.turret.flywheel.setPower(-1);
-        } else {
-            robotContainer.turret.flywheel.setPower(0);
-        }
-
         if (gamepadEx1.b.wasJustPressed()) {
             turretAccelerationTimer.reset();
         }
         if (gamepadEx1.b.isHeld()) {
-            robotContainer.turret.flywheel.setPower(
-                    turretAccelerationTimer.nanoseconds()
-                    * 3.333333333333333e-10
-            );
+            robotContainer.turret.flywheel.setPower(turretAccelerationTimer.nanoseconds() * 3.333333333333333e-10);
+        } else {
+            robotContainer.turret.flywheel.setPower(0);
         }
 
         robotContainer.indicatorLight.rainbow();

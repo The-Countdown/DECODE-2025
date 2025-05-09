@@ -28,8 +28,19 @@ public class LinkedMotors {
         }
     }
 
+    // Get the power output of only the master motor.
     public double getPower() {
         return masterMotor.getPower();
+    }
+
+    // Get the rough average power output of all motors that are linked.
+    public double getAveragePower() {
+        double power;
+        power = masterMotor.getPower();
+        for (DcMotorImplEx slaveMotor : slaveMotors) {
+            power += masterMotor.getPower();
+            power = power / 2;
+        }
     }
 
     public void setDirection(DcMotorImplEx.Direction direction) {
