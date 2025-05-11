@@ -50,7 +50,7 @@ public class TeleOp extends OpMode {
         gamepadEx1 = new GamepadWrapper(gamepad1);
         gamepadEx2 = new GamepadWrapper(gamepad2);
         isRunning = true;
-        robotContainer.lastLoopTimeNs = System.nanoTime();
+        robotContainer.loopTimer.reset();
         if (RobotContainer.HardwareDevices.pinpoint.getDeviceStatus() != GoBildaPinpoint.DeviceStatus.READY) {
             robotContainer.addRetainedTelemetry("WARNING, PINPOINT STATUS:", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
         }
@@ -59,6 +59,7 @@ public class TeleOp extends OpMode {
     @Override
     public void loop() {
         CURRENT_LOOP_TIME_MS = robotContainer.updateLoopTimeTracking();
+        CURRENT_LOOP_TIME_AVG_MS = robotContainer.getRollingAverageLoopTime();
         robotContainer.refreshData();
         gamepadEx1.update();
         gamepadEx2.update();
@@ -92,12 +93,12 @@ public class TeleOp extends OpMode {
             turretAccelerationTimer.reset();
         }
         if (gamepadEx1.a.isHeld()) {
-            robotContainer.turret.flywheel.setPower(
+            robotContainer.turret.flywheel.setVelocity(
                     turretAccelerationTimer.nanoseconds()
                     * Constants.TURRET_ACCELERATION_MULTIPLIER_NANO
             );
         } else if (gamepadEx1.b.isHeld()) {
-            robotContainer.turret.flywheel.setPower(
+            robotContainer.turret.flywheel.setVelocity(
                     -turretAccelerationTimer.nanoseconds()
                     * Constants.TURRET_ACCELERATION_MULTIPLIER_NANO
             );
@@ -120,8 +121,6 @@ public class TeleOp extends OpMode {
         robotContainer.opMode.telemetry.update();
 
         RobotContainer.HardwareDevices.pinpoint.update();
-
-        CURRENT_LOOP_TIME_AVG_MS = robotContainer.getRollingAverageLoopTime();
     }
 
     @Override

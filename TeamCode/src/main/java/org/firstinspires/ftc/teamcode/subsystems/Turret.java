@@ -27,8 +27,8 @@ public class Turret extends RobotContainer.HardwareDevices {
             robotContainer.turretFlywheel.setPower(power);
         }
 
-        public void setVelocity(int velocity) {
-            
+        public void setVelocity(double velocity) {
+            robotContainer.turretFlywheel.setVelocity(velocity);
         }
     }
 

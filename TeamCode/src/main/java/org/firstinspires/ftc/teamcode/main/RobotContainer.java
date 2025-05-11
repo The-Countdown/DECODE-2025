@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.hardware.DcMotorImplEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
@@ -49,6 +50,7 @@ public class RobotContainer {
     public boolean isRunning = false;
     public long lastLoopTimeNs = 0;
     public final LinkedList<Double> loopTimes = new LinkedList<>();
+    public final ElapsedTime loopTimer = new ElapsedTime();
     private final ArrayList<String> retainedTelemetryCaptions = new ArrayList<>();
     private final ArrayList<Object> retainedTelemetryValues = new ArrayList<>();
     private final Handler handler = new Handler(Looper.getMainLooper());
@@ -337,16 +339,15 @@ public class RobotContainer {
      * @return The time taken for the current loop (in milliseconds).
      */
     public double updateLoopTimeTracking() {
-        long now = System.nanoTime();
-        double loopTime = (now - lastLoopTimeNs) / 1e6;
-        lastLoopTimeNs = now;
+        double loopTimeMs = loopTimer.milliseconds();
+        loopTimer.reset();
 
-        loopTimes.add(loopTime);
+        loopTimes.add(loopTimeMs);
         if (loopTimes.size() > Constants.LOOP_AVERAGE_WINDOW_SIZE) {
             loopTimes.removeFirst();
         }
 
-        return loopTime;
+        return loopTimeMs;
     }
 
     /**

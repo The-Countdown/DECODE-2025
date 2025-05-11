@@ -1,10 +1,6 @@
 package org.firstinspires.ftc.teamcode.util;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotorImplEx;
-
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,6 +37,16 @@ public class LinkedMotors {
 
     public double getPower() {
         return masterMotor.getPower();
+    }
+
+    public double getAveragePower() {
+        double totalPower;
+        totalPower = masterMotor.getPower();
+        for (DcMotorImplEx slaveMotor : slaveMotors) {
+            totalPower += slaveMotor.getPower();
+        }
+        int motorCount = 1 + slaveMotors.size();
+        return totalPower / motorCount;
     }
 
     public void setDirection(DcMotorImplEx.Direction direction) {

@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
 public class Drivetrain extends RobotContainer.HardwareDevices {
     private final RobotContainer robotContainer;
     private final GamepadWrapper.ButtonReader rXtoggle = new GamepadWrapper.ButtonReader();
+    public static boolean accelerationEnabled = false;
 
     /**
      * Constructor for the Drivetrain class.
@@ -84,6 +85,7 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
             calculatedPowers[i] = vectorMagnitude;
         }
 
+        accelerationEnabled = true;
         swerveSetTargets(calculatedAngles, calculatedPowers);
     }
 
@@ -111,9 +113,9 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
              */
             if (Math.abs(error) > 90) {
                 targetAngles[i] = normalizeAngle(targetAngles[i] + 180);
-                robotContainer.swerveModules[i].motor.setPower(-targetPowers[i]);
+                robotContainer.swerveModules[i].motor.setTargetPower(-targetPowers[i]);
             } else {
-                robotContainer.swerveModules[i].motor.setPower(targetPowers[i]);
+                robotContainer.swerveModules[i].motor.setTargetPower(targetPowers[i]);
             }
 
             robotContainer.swerveModules[i].servo.setTargetAngle(targetAngles[i]);
