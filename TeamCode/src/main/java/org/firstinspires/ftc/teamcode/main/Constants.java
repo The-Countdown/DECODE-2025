@@ -132,7 +132,7 @@ public class Constants {
     public static final double ANALOG_MAX_VOLTAGE = 3.3;
 
     // TODO: Tune if needed
-    public static final double HEADING_PIDF_TOLERANCE_DEGREES = 3;
+    public static final double HEADING_PID_TOLERANCE_DEGREES = 2;
 
     // TODO: Tune if needed
     public static final double SWERVE_SERVO_PIDF_TOLERANCE_DEGREES = 1;

@@ -29,5 +29,7 @@ public class Status {
         MOVING
     }
 
+    public static boolean robotHeadingTargetReached = false;
+
     // TODO: Add more status variables as needed
 }
