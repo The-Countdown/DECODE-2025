@@ -49,7 +49,7 @@ public class Constants {
      * Index 4 is global, and the rest are in order (module 0, 1, 2, 3) see {@link SwerveModule}.
      */
     // TODO: Tune if needed
-    public static final double[] SWERVE_SERVO_ANGLE_OFFSET = {0, 0, 0, 0, 0};
+    public static double[] SWERVE_SERVO_ANGLE_OFFSET = {0, 0, 0, 0, 0};
 
     /**
      * The desired servo angles for the swerve modules when in the rotation formation
@@ -103,7 +103,7 @@ public class Constants {
      * These values will need to be tuned.
      */
     // TODO: Tune
-    public static final double
+    public static double
             SWERVE_SERVO_KP = 0,
             SWERVE_SERVO_KI = 0,
                 SWERVE_SERVO_I_MAX = 0,
@@ -111,7 +111,7 @@ public class Constants {
             SWERVE_SERVO_KF = 0;
 
     // TODO: Tune
-    public static final double
+    public static double
             HEADING_KP = 0,
             HEADING_KI = 0,
                 HEADING_I_MAX = 0,
@@ -132,10 +132,10 @@ public class Constants {
     public static final double ANALOG_MAX_VOLTAGE = 3.3;
 
     // TODO: Tune if needed
-    public static final double HEADING_PID_TOLERANCE_DEGREES = 2;
+    public static double HEADING_PID_TOLERANCE_DEGREES = 2;
 
     // TODO: Tune if needed
-    public static final double SWERVE_SERVO_PIDF_TOLERANCE_DEGREES = 1;
+    public static double SWERVE_SERVO_PIDF_TOLERANCE_DEGREES = 1;
 
     public static final int SWERVE_MOTOR_RPM_CALCULATED_MAX = 5800;
 
@@ -148,14 +148,15 @@ public class Constants {
     public static final int WHEEL_CALCULATED_MAX_RPM = 861;
 
     // TODO: Tune if needed
-    public static final double JOYSTICK_SCALER_EXPONENT = 1.33;
+    public static double JOYSTICK_SCALER_EXPONENT = 1.33;
 
     //power per second
-    public static final double MAX_DRIVE_ACCELERATION = 1;
+    public static double MAX_DRIVE_ACCELERATION = 1;
 
-    public static final double TURRET_ACCELERATION_TIME_SECONDS = 3;
+    public static double TURRET_ACCELERATION_TIME_SECONDS = 3;
 
-    public static final double TURRET_ACCELERATION_MULTIPLIER_NANO = TURRET_ACCELERATION_TIME_SECONDS * 1e9 * 2781;
+    // will not update if TURRET_ACCELERATION_TIME_SECONDS is changed in ftc dashboard
+    public static double TURRET_ACCELERATION_MULTIPLIER_NANO = TURRET_ACCELERATION_TIME_SECONDS * 1e9 * 2781;
 
     public enum LED_COLOR {
         OFF,
@@ -192,7 +193,7 @@ public class Constants {
 
     /**
      * Normalizes an angle to the range [-180, 180).
-     *
+     * <p>
      * (This is duplicated from {@link Drivetrain} because I wanted the constants class to be
      * isolated from the rest of the codebase)
      *

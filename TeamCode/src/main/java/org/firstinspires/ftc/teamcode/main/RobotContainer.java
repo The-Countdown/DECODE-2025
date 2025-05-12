@@ -121,6 +121,7 @@ public class RobotContainer {
         HardwareDevices.turretFlywheelMaster.setMode(DcMotorImplEx.RunMode.RUN_USING_ENCODER);
         HardwareDevices.turretFlywheelSlave.setMode(DcMotorImplEx.RunMode.RUN_USING_ENCODER);
         HardwareDevices.turretRotation = getHardwareDevice(DcMotorImplEx.class, "turretRotation");
+        HardwareDevices.turretRotation.setZeroPowerBehavior(DcMotorImplEx.ZeroPowerBehavior.BRAKE);
         HardwareDevices.turretIntakeMotor = getHardwareDevice(DcMotorImplEx.class, "turretIntakeMotor");
         HardwareDevices.intakeMotor = getHardwareDevice(DcMotorImplEx.class, "intakeMotor");
         HardwareDevices.turretArcServo = getHardwareDevice(ServoImplEx.class, "turretArcServo");
