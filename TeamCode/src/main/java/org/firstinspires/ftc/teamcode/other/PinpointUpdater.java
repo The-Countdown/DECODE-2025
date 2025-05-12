@@ -23,6 +23,7 @@ public class PinpointUpdater extends Thread {
 
     @Override
     public void run() {
+        RobotContainer.HardwareDevices.pinpoint.update();
         currentPose = RobotContainer.HardwareDevices.pinpoint.getPosition();
         currentHeading = currentPose.getHeading(AngleUnit.DEGREES); // TODO: Invert if needed (could be increasing when going counter-clockwise)
     }

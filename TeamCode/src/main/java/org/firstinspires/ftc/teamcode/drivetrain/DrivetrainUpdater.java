@@ -19,16 +19,17 @@ public class DrivetrainUpdater extends Thread {
     private final RobotContainer robotContainer;
     private final double[] currentPowers = new double[4];
     private double lastTimestamp = -1;
-    private ElapsedTime deltaTimer = new ElapsedTime();
-
-    // power per second
-    private static final double maxAccel = 1;
+    private final ElapsedTime deltaTimer = new ElapsedTime();
 
     public DrivetrainUpdater(RobotContainer robotContainer) {
         this.robotContainer = robotContainer;
         // Set the thread to be a daemon thread so that it will not prevent the program from exiting.
         setDaemon(true);
         setName("DrivetrainUpdater");
+
+        for (int i = 0; i < robotContainer.swerveModules.length; i++) {
+            currentPowers[i] = RobotContainer.HardwareDevices.driveMotors[i].getPower();
+        }
     }
 
     @Override
@@ -45,10 +46,9 @@ public class DrivetrainUpdater extends Thread {
             lastTimestamp = now;
 
             for (int i = 0; i < robotContainer.swerveModules.length; i++) {
-                currentPowers[i] = RobotContainer.HardwareDevices.driveMotors[i].getPower();
                 double target = robotContainer.swerveModules[i].motor.targetPower;
 
-                double maxDelta = maxAccel * deltaTime;
+                double maxDelta = Constants.MAX_DRIVE_ACCELERATION * deltaTime;
                 double error = target - currentPowers[i];
                 double delta = Math.signum(error) * Math.min(Math.abs(error), maxDelta);
 

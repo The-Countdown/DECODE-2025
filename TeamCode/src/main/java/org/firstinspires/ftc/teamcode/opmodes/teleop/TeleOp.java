@@ -33,7 +33,7 @@ public class TeleOp extends OpMode {
         RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU(); // TODO: Run at start of auto instead
         robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
         RobotContainer.HardwareDevices.turretRotation.setZeroPowerBehavior(DcMotorImplEx.ZeroPowerBehavior.BRAKE);
-        robotContainer.opMode.telemetry.setMsTransmissionInterval(200);
+        robotContainer.opMode.telemetry.setMsTransmissionInterval(500);
 //        robotContainer.opMode.telemetry.speak("TeleOp Initialized", "en", "GB");
         robotContainer.opMode.telemetry.addLine("TeleOp Initialized");
         robotContainer.opMode.telemetry.update();
@@ -119,8 +119,6 @@ public class TeleOp extends OpMode {
         robotContainer.opMode.telemetry.addData("Loop Time:", CURRENT_LOOP_TIME_MS + "ms");
         robotContainer.displayRetainedTelemetry();
         robotContainer.opMode.telemetry.update();
-
-        RobotContainer.HardwareDevices.pinpoint.update();
     }
 
     @Override

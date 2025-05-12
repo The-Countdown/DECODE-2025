@@ -68,7 +68,6 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
             double translationalX = translationalMagnitude * Math.cos(translationalAngle) * translationalDirection;
             double translationalY = translationalMagnitude * Math.sin(translationalAngle) * translationalDirection;
 
-            double rotationalAngle = Constants.SWERVE_ROTATION_FORMATION_RADIANS[i];
             // Calculate the x and y components of rotational movement.
             double rotationalX = rotationalMagnitude * Constants.SWERVE_ROTATION_FORMATION_COSINES_RADIANS[i] * rotationalDirection;
             double rotationalY = rotationalMagnitude * Constants.SWERVE_ROTATION_FORMATION_SINES_RADIANS[i] * rotationalDirection;
@@ -209,8 +208,8 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
     /**
      * This funciton scales the power of the joystick to follow a curve, so that it allows for finer adjustments.
      * It is clamped between -1 and 1 out of caution, although it doesn't need it, it allows for changes to the curve.
-     * @param input
-     * @return
+     * @param input the input from the joystick
+     * @return the scaled power
      */
     public double joystickScaler(double input) {
         return Math.max(-1, Math.min(1, Math.pow(Math.abs(input), Constants.JOYSTICK_SCALER_EXPONENT) * input));

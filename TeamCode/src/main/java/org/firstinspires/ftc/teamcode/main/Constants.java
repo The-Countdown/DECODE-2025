@@ -150,6 +150,9 @@ public class Constants {
     // TODO: Tune if needed
     public static final double JOYSTICK_SCALER_EXPONENT = 1.33;
 
+    //power per second
+    public static final double MAX_DRIVE_ACCELERATION = 1;
+
     public static final double TURRET_ACCELERATION_TIME_SECONDS = 3;
 
     public static final double TURRET_ACCELERATION_MULTIPLIER_NANO = TURRET_ACCELERATION_TIME_SECONDS * 1e9 * 2781;
