@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
+import org.firstinspires.ftc.teamcode.main.Status;
 
 /**
  * A PID controller for maintaining a specific heading.
@@ -25,6 +26,10 @@ public class HeadingPID {
         this.targetHeading = targetHeading;
     }
 
+    public double getTargetHeading() {
+        return targetHeading;
+    }
+
     /**
      * Calculates the PID output for the servo.
      * @param heading The current heading of the robot.
@@ -32,9 +37,16 @@ public class HeadingPID {
      */
     public double calculate(double heading) {
         double error = robotContainer.drivetrain.normalizeAngle(targetHeading - heading);
+
         double currentTime = timer.seconds();
         timer.reset();
         if (currentTime < 1e-6) currentTime = 1e-6;
+
+        if (Math.abs(error) < Constants.HEADING_PID_TOLERANCE_DEGREES) {
+            lastError = error;
+            Status.robotHeadingTargetReached = true;
+            return 0;
+        }
 
         p = Constants.HEADING_KP * error;
         double newI = Math.max(-Constants.HEADING_I_MAX, Math.min(Constants.HEADING_I_MAX,  // Prevent integral windup

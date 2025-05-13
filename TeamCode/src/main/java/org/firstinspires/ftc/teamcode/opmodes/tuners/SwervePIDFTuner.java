@@ -1,7 +1,6 @@
-package org.firstinspires.ftc.teamcode.opmodes.teleop;
+package org.firstinspires.ftc.teamcode.opmodes.tuners;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DcMotorImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -11,16 +10,16 @@ import org.firstinspires.ftc.teamcode.other.GoBildaPinpoint;
 import org.firstinspires.ftc.teamcode.other.PinpointUpdater;
 import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "TeleOp")
-public class TeleOp extends OpMode {
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "SwervePIDFTuner", group = "TeleOp")
+public class SwervePIDFTuner extends OpMode {
     public static double CURRENT_LOOP_TIME_AVG_MS;
     private RobotContainer robotContainer;
     public GamepadWrapper gamepadEx1;
     public GamepadWrapper gamepadEx2;
-    public static boolean fieldOriented = false;
     public static double CURRENT_LOOP_TIME_MS;
+    private final ElapsedTime targetTimer = new ElapsedTime();
     public static boolean isRunning = false;
-    private static final ElapsedTime turretAccelerationTimer = new ElapsedTime();
+    private int currentServo = -1;
 
     @Override
     public void init() {
@@ -31,8 +30,7 @@ public class TeleOp extends OpMode {
         robotContainer.refreshData();
         RobotContainer.HardwareDevices.imu.resetYaw();
         RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU(); // TODO: Run at start of auto instead
-        robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
-        robotContainer.opMode.telemetry.setMsTransmissionInterval(500);
+        robotContainer.opMode.telemetry.setMsTransmissionInterval(200);
         robotContainer.opMode.telemetry.addLine("OpMode Initialized");
         robotContainer.opMode.telemetry.update();
         robotContainer.indicatorLight.setColor(Constants.LED_COLOR.GREEN);
@@ -52,6 +50,7 @@ public class TeleOp extends OpMode {
         if (RobotContainer.HardwareDevices.pinpoint.getDeviceStatus() != GoBildaPinpoint.DeviceStatus.READY) {
             robotContainer.addRetainedTelemetry("WARNING, PINPOINT STATUS:", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
         }
+        targetTimer.reset();
     }
 
     @Override
@@ -62,54 +61,17 @@ public class TeleOp extends OpMode {
         gamepadEx1.update();
         gamepadEx2.update();
 
-        if (Constants.MECANUM_ACTIVE) {
-            robotContainer.drivetrain.mecanumDrive(
-                    robotContainer.drivetrain.joystickScaler(gamepad1.left_stick_y),
-                    robotContainer.drivetrain.joystickScaler(gamepad1.left_stick_x),
-                    robotContainer.drivetrain.joystickScaler(gamepad1.right_stick_x),
-                    gamepad1.right_trigger,
-                    gamepad1.left_trigger
-            );
-        } else {
-            robotContainer.drivetrain.swerveDirectionalInput(
-                    robotContainer.drivetrain.joystickScaler(gamepad1.left_stick_x),
-                    robotContainer.drivetrain.joystickScaler(gamepad1.left_stick_y),
-                    robotContainer.drivetrain.joystickScaler(gamepad1.right_stick_x),
-                    fieldOriented
-            );
-        }
 
-        if (gamepad1.right_bumper) {
-            robotContainer.turret.setTurretSpinPower(0.6);
-        } else if (gamepad1.left_bumper) {
-            robotContainer.turret.setTurretSpinPower(-0.6);
+        if (targetTimer.seconds() < 5) {
+            for (int i = 0; i < Constants.NUM_SWERVE_SERVOS; i++) {
+                robotContainer.swerveModules[currentServo].servo.setTargetAngle(90);
+            }
+        } else if (targetTimer.seconds() >= 5 && targetTimer.seconds() < 10) {
+            for (int i = 0; i < Constants.NUM_SWERVE_SERVOS; i++) {
+                robotContainer.swerveModules[currentServo].servo.setTargetAngle(-90);
+            }
         } else {
-            robotContainer.turret.setTurretSpinPower(0);
-        }
-
-        if (gamepadEx1.b.wasJustPressed()) {
-            turretAccelerationTimer.reset();
-        }
-        if (gamepadEx1.b.isHeld()) {
-            robotContainer.turret.flywheel.setPower(turretAccelerationTimer.nanoseconds() * 3.333333333333333e-10);
-        } else {
-            robotContainer.turret.flywheel.setPower(0);
-        }
-
-        if (gamepadEx1.a.wasJustPressed() || gamepadEx1.b.wasJustPressed()) {
-            turretAccelerationTimer.reset();
-        }
-        if (gamepadEx1.a.isHeld()) {
-            robotContainer.turret.flywheel.setVelocity(
-                    turretAccelerationTimer.nanoseconds()
-                    * Constants.TURRET_ACCELERATION_MULTIPLIER_NANO
-            );
-        } else if (gamepadEx1.b.isHeld()) {
-            robotContainer.turret.flywheel.setVelocity(
-                    -turretAccelerationTimer.nanoseconds()
-                    * Constants.TURRET_ACCELERATION_MULTIPLIER_NANO
-            );
->>>>>>> ef4f9bf24154387c9669b4bad402aec0f1c3a437
+            targetTimer.reset();
         }
 
         robotContainer.indicatorLight.rainbow();
@@ -133,7 +95,6 @@ public class TeleOp extends OpMode {
 
     @Override
     public void stop() {
-        robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
         isRunning = false;
         robotContainer.isRunning = false;
     }

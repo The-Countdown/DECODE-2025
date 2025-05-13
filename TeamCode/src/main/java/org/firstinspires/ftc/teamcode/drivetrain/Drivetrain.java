@@ -2,8 +2,11 @@ package org.firstinspires.ftc.teamcode.drivetrain;
 
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
+import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.other.PinpointUpdater;
 import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
+
+import java.util.Arrays;
 
 /**
  * This class handles the control and calculations for the robot's drivetrain, including swerve drive functionality.
@@ -33,16 +36,7 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
             return;
         }
 
-        // Calculate the magnitude of translational movement.
-        double translationalMagnitude = Math.sqrt(x * x + y * y);
-        // Calculate the angle of translational movement.
-        double translationalAngle = Math.atan2(y, x);
-        // Set the initial translational direction to forward.
-        int translationalDirection = 1;
-
         double rotationalMagnitude = Math.abs(rX);
-        // Determine the rotational direction based on the sign of rX.
-        int rotationalDirection = rX >= 0 ? 1 : -1;
 
         boolean noRotationInput = rX == 0;
         rXtoggle.update(!noRotationInput);
@@ -52,6 +46,21 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
             }
             rotationalMagnitude = robotContainer.headingPID.calculate(PinpointUpdater.currentHeading);
         }
+
+        if (Status.robotHeadingTargetReached && x == 0 && y == 0) {
+            swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
+            return;
+        }
+
+        // Determine the rotational direction based on the sign of rX.
+        int rotationalDirection = rX >= 0 ? 1 : -1;
+
+        // Calculate the magnitude of translational movement.
+        double translationalMagnitude = Math.sqrt(x * x + y * y);
+        // Calculate the angle of translational movement.
+        double translationalAngle = Math.atan2(y, x);
+        // Set the initial translational direction to forward.
+        int translationalDirection = 1;
 
         double currentHeading = PinpointUpdater.currentHeading;
         // Adjust the translational angle for field-oriented driving if enabled.
@@ -67,7 +76,6 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
             double translationalX = translationalMagnitude * Math.cos(translationalAngle) * translationalDirection;
             double translationalY = translationalMagnitude * Math.sin(translationalAngle) * translationalDirection;
 
-            double rotationalAngle = Constants.SWERVE_ROTATION_FORMATION_RADIANS[i];
             // Calculate the x and y components of rotational movement.
             double rotationalX = rotationalMagnitude * Constants.SWERVE_ROTATION_FORMATION_COSINES_RADIANS[i] * rotationalDirection;
             double rotationalY = rotationalMagnitude * Constants.SWERVE_ROTATION_FORMATION_SINES_RADIANS[i] * rotationalDirection;
@@ -96,7 +104,11 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
         if (Constants.MECANUM_ACTIVE) {
             return;
         }
-        targetPowers = scalePowers(targetPowers);
+
+        if (!Arrays.stream(targetPowers).allMatch(v -> v == 0)) {
+            targetPowers = scalePowers(targetPowers);
+        }
+
         for (int i = 0; i < swerveServos.length; i++) {
             double currentAngle = robotContainer.swerveModules[i].servo.getAngle();
             double error = targetAngles[i] - currentAngle;
@@ -111,9 +123,9 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
              */
             if (Math.abs(error) > 90) {
                 targetAngles[i] = normalizeAngle(targetAngles[i] + 180);
-                robotContainer.swerveModules[i].motor.setPower(-targetPowers[i]);
+                robotContainer.swerveModules[i].motor.setTargetPower(-targetPowers[i]);
             } else {
-                robotContainer.swerveModules[i].motor.setPower(targetPowers[i]);
+                robotContainer.swerveModules[i].motor.setTargetPower(targetPowers[i]);
             }
 
             robotContainer.swerveModules[i].servo.setTargetAngle(targetAngles[i]);
@@ -207,8 +219,8 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
     /**
      * This funciton scales the power of the joystick to follow a curve, so that it allows for finer adjustments.
      * It is clamped between -1 and 1 out of caution, although it doesn't need it, it allows for changes to the curve.
-     * @param input
-     * @return
+     * @param input the input from the joystick
+     * @return the scaled power
      */
     public double joystickScaler(double input) {
         return Math.max(-1, Math.min(1, Math.pow(Math.abs(input), Constants.JOYSTICK_SCALER_EXPONENT) * input));
