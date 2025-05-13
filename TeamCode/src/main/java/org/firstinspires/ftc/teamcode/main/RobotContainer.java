@@ -183,7 +183,7 @@ public class RobotContainer {
 
     /**
      * Retrieves a hardware device from the hardware map.
-     *
+     * <p>
      * This method attempts to retrieve a specific hardware device from the hardware map,
      * based on the provided class type and device name. If the device is found, it is
      * returned; otherwise, an error message is added to the telemetry, and null is returned.
@@ -256,19 +256,19 @@ public class RobotContainer {
 
     /**
      * Refreshes the data from all Lynx Modules (hubs) by clearing their bulk data cache.
-     *
+     * <p>
      * This method is crucial for ensuring that the robot is operating with the most up-to-date
      * sensor and motor data. The Lynx Modules use a bulk data cache to optimize data transfer.
      * However, if data in this cache becomes stale, the robot's actions might be based on
      * outdated information.
-     *
+     * <p>
      * This method should be called periodically or whenever you suspect that the data in the
      * bulk cache might be outdated. Common scenarios include:
      * - At the start of a new control loop iteration in teleop or autonomous.
      * - After a significant delay or pause in the robot's operation.
      * - Before reading critical sensor values that need to be absolutely current.
      * - If there is a change in the bulk caching mode.
-     *
+     * <p>
      * Calling this method ensures that the next time you read data from the hubs, the latest
      * information will be fetched, rather than possibly outdated cached data.
      */

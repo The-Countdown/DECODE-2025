@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.other;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
-import org.firstinspires.ftc.teamcode.main.Constants;
 
+import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 
 import java.util.Objects;
