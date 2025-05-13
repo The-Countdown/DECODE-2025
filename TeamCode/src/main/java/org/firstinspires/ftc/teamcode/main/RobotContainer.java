@@ -370,7 +370,7 @@ public class RobotContainer {
     public Drivetrain drivetrain = new Drivetrain(this);
 
     public HeadingPID headingPID = new HeadingPID(this);
-    public IndicatorLight indicatorLight = new IndicatorLight(this);
+    public IndicatorLight indicatorLight = new IndicatorLight();
     public Turret turret = new Turret(this);
     public LinkedMotors turretFlywheel = new LinkedMotors(HardwareDevices.turretFlywheelMaster, HardwareDevices.turretFlywheelSlave);
     public Intake intake = new Intake(this);

@@ -13,7 +13,7 @@ public class PinpointUpdater extends Thread {
      * The pinpoint takes more time than a normal device, however, I don't know how much that is,
      * so I put it into a thread to be safe.
      */
-    public PinpointUpdater(RobotContainer robotContainer) {
+    public PinpointUpdater() {
         // Set the thread to be a daemon thread so that it will not prevent the program from exiting.
         setDaemon(true);
         setName("PinpointUpdater");

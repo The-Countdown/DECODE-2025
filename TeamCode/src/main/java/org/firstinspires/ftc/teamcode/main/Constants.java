@@ -123,7 +123,7 @@ public class Constants {
             PINPOINT_Y_OFFSET_MM = 0;
 
     public static final GoBildaPinpoint.GoBildaOdometryPods
-            PINPOINT_ODOM_POD = GoBildaPinpoint.GoBildaOdometryPods.goBILDA_SWINGARM_POD;
+            PINPOINT_ODOM_POD = GoBildaPinpoint.GoBildaOdometryPods.goBILDA_4_BAR_POD;
 
     public static final GoBildaPinpoint.EncoderDirection
             PINPOINT_X_ENCODER_DIRECTION = GoBildaPinpoint.EncoderDirection.FORWARD,

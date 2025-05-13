@@ -11,9 +11,6 @@ public class IndicatorLight extends RobotContainer.HardwareDevices {
     private double rainbowValue = 0;
     private final ElapsedTime rainbowTimer = new ElapsedTime();
 
-    public IndicatorLight(RobotContainer robotContainer) {
-    }
-
     public void setColor(Constants.LED_COLOR color) {
         RobotContainer.HardwareDevices.indicatorLight.setPosition(Objects.requireNonNull(Constants.LED_COLOR_MAP.get(color)).ANALOG);
     }
