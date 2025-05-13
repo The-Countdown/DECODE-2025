@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.tuners;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.main.Constants;
@@ -92,6 +91,7 @@ public class SwerveAnalogServoZeroer extends OpMode {
         robotContainer.opMode.telemetry.addData("Loop Time:", CURRENT_LOOP_TIME_MS + "ms");
         robotContainer.opMode.telemetry.addLine();
         robotContainer.opMode.telemetry.addData("Selected Servo:", currentServo);
+        robotContainer.opMode.telemetry.addData("Servo Angle:", robotContainer.swerveModules[currentServo].servo.getAngle());
         robotContainer.displayRetainedTelemetry();
         robotContainer.opMode.telemetry.update();
 

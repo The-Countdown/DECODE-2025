@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.other;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
-import org.firstinspires.ftc.teamcode.main.Constants;
 
+import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 
 import java.util.Objects;
@@ -10,7 +10,7 @@ import java.util.Objects;
 public class IndicatorLight extends RobotContainer.HardwareDevices {
     private final RobotContainer robotContainer;
     private double rainbowValue = 0;
-    private ElapsedTime rainbowTimer = new ElapsedTime();
+    private final ElapsedTime rainbowTimer = new ElapsedTime();
 
     public IndicatorLight(RobotContainer robotContainer) {
         this.robotContainer = robotContainer;

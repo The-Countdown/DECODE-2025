@@ -19,7 +19,6 @@ public class SwervePIDFTuner extends OpMode {
     public static double CURRENT_LOOP_TIME_MS;
     private final ElapsedTime targetTimer = new ElapsedTime();
     public static boolean isRunning = false;
-    private int currentServo = -1;
 
     @Override
     public void init() {
@@ -64,11 +63,11 @@ public class SwervePIDFTuner extends OpMode {
 
         if (targetTimer.seconds() < 5) {
             for (int i = 0; i < Constants.NUM_SWERVE_SERVOS; i++) {
-                robotContainer.swerveModules[currentServo].servo.setTargetAngle(90);
+                robotContainer.swerveModules[i].servo.setTargetAngle(90);
             }
         } else if (targetTimer.seconds() >= 5 && targetTimer.seconds() < 10) {
             for (int i = 0; i < Constants.NUM_SWERVE_SERVOS; i++) {
-                robotContainer.swerveModules[currentServo].servo.setTargetAngle(-90);
+                robotContainer.swerveModules[i].servo.setTargetAngle(-90);
             }
         } else {
             targetTimer.reset();
