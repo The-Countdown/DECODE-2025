@@ -109,7 +109,6 @@ public class TeleOp extends OpMode {
                     -turretAccelerationTimer.nanoseconds()
                     * Constants.TURRET_ACCELERATION_MULTIPLIER_NANO
             );
->>>>>>> ef4f9bf24154387c9669b4bad402aec0f1c3a437
         }
 
         robotContainer.indicatorLight.rainbow();

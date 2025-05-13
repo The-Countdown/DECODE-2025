@@ -39,7 +39,7 @@ public class LinkedMotors {
     public double getPower() {
         return masterMotor.getPower();
     }
-    
+
     // Get the rough average power output of all motors that are linked.
     public double getAveragePower() {
         double totalPower;

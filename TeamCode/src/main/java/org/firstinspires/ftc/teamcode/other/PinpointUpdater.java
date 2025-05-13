@@ -12,7 +12,7 @@ public class PinpointUpdater extends Thread {
 
     /**
      * The pinpoint takes more time than a normal device, however, I don't know how much that is,
-     * so I put it into a thread to be safe
+     * so I put it into a thread to be safe.
      */
     public PinpointUpdater(RobotContainer robotContainer) {
         this.robotContainer = robotContainer;
