@@ -8,12 +8,10 @@ import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import java.util.Objects;
 
 public class IndicatorLight extends RobotContainer.HardwareDevices {
-    private final RobotContainer robotContainer;
     private double rainbowValue = 0;
-    private ElapsedTime rainbowTimer = new ElapsedTime();
+    private final ElapsedTime rainbowTimer = new ElapsedTime();
 
     public IndicatorLight(RobotContainer robotContainer) {
-        this.robotContainer = robotContainer;
     }
 
     public void setColor(Constants.LED_COLOR color) {
