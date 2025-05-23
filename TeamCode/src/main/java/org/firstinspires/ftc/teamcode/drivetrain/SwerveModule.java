@@ -12,11 +12,11 @@ import org.firstinspires.ftc.teamcode.main.RobotContainer;
  *
  *
  * <pre>
- *      Quadrant 2    |   Quadrant 1
+ *      Quadrant 1    |   Quadrant 0
  *                    |
  *      ------------------------
  *                    |
- *      Quadrant 3    |   Quadrant 4
+ *      Quadrant 2    |   Quadrant 3
  *
  *  Like a coordinate plane, the first quadrant is 0, the second is 1, etc.
  *  This is relating to the positions of the modules on the robot
@@ -59,6 +59,11 @@ public class SwerveModule {
          * @return The current angle of the module in degrees, normalized at -180 to 180.
          */
         public double getAngle() {
+            if (
+                    !Constants.SERVO_ANALOG_ACTIVE) {
+                return 0;
+            }
+
             double angle = analogEncoder.getVoltage() / Constants.ANALOG_MAX_VOLTAGE * 360;
 
             angle += Constants.SWERVE_SERVO_ANGLE_OFFSET[4] + Constants.SWERVE_SERVO_ANGLE_OFFSET[moduleIndex];

@@ -78,29 +78,31 @@ public class TeleOp extends OpMode {
             );
         }
 
-        if (gamepad1.right_bumper) {
-            robotContainer.turret.setTurretSpinPower(0.6);
-        } else if (gamepad1.left_bumper) {
-            robotContainer.turret.setTurretSpinPower(-0.6);
-        } else {
-            robotContainer.turret.setTurretSpinPower(0);
-        }
+        if (Constants.TURRET_ACTIVE) {
+            if (gamepad1.right_bumper) {
+                robotContainer.turret.setTurretSpinPower(0.6);
+            } else if (gamepad1.left_bumper) {
+                robotContainer.turret.setTurretSpinPower(-0.6);
+            } else {
+                robotContainer.turret.setTurretSpinPower(0);
+            }
 
-        if (gamepadEx1.a.wasJustPressed() || gamepadEx1.b.wasJustPressed()) {
-            turretAccelerationTimer.reset();
-        }
-        if (gamepadEx1.a.isHeld()) {
-            robotContainer.turret.flywheel.setVelocity(
-                    turretAccelerationTimer.nanoseconds()
-                    * Constants.TURRET_ACCELERATION_MULTIPLIER_NANO
-            );
-        } else if (gamepadEx1.b.isHeld()) {
-            robotContainer.turret.flywheel.setVelocity(
-                    -turretAccelerationTimer.nanoseconds()
-                    * Constants.TURRET_ACCELERATION_MULTIPLIER_NANO
-            );
-        } else {
-            robotContainer.turret.flywheel.setPower(0);
+            if (gamepadEx1.a.wasJustPressed() || gamepadEx1.b.wasJustPressed()) {
+                turretAccelerationTimer.reset();
+            }
+            if (gamepadEx1.a.isHeld()) {
+                robotContainer.turret.flywheel.setVelocity(
+                        turretAccelerationTimer.nanoseconds()
+                                * Constants.TURRET_ACCELERATION_MULTIPLIER_NANO
+                );
+            } else if (gamepadEx1.b.isHeld()) {
+                robotContainer.turret.flywheel.setVelocity(
+                        -turretAccelerationTimer.nanoseconds()
+                                * Constants.TURRET_ACCELERATION_MULTIPLIER_NANO
+                );
+            } else {
+                robotContainer.turret.flywheel.setPower(0);
+            }
         }
 
         robotContainer.indicatorLight.rainbow();

@@ -116,19 +116,21 @@ public class RobotContainer {
 
         HardwareDevices.indicatorLight = getHardwareDevice(ServoImplEx.class, "indicatorLight");
 
-        HardwareDevices.turretFlywheelMaster = getHardwareDevice(DcMotorImplEx.class, "turretFlywheelMaster");
-        HardwareDevices.turretFlywheelSlave = getHardwareDevice(DcMotorImplEx.class, "turretFlywheelSlave");
-        HardwareDevices.turretFlywheelMaster.setMode(DcMotorImplEx.RunMode.RUN_USING_ENCODER);
-        HardwareDevices.turretFlywheelSlave.setMode(DcMotorImplEx.RunMode.RUN_USING_ENCODER);
-        HardwareDevices.turretRotation = getHardwareDevice(DcMotorImplEx.class, "turretRotation");
-        HardwareDevices.turretRotation.setZeroPowerBehavior(DcMotorImplEx.ZeroPowerBehavior.BRAKE);
-        HardwareDevices.turretIntakeMotor = getHardwareDevice(DcMotorImplEx.class, "turretIntakeMotor");
-        HardwareDevices.intakeMotor = getHardwareDevice(DcMotorImplEx.class, "intakeMotor");
-        HardwareDevices.turretArcServo = getHardwareDevice(ServoImplEx.class, "turretArcServo");
-        HardwareDevices.turretIntakeServo = getHardwareDevice(CRServoImplEx.class, "turretIntakeServo");
-        HardwareDevices.lateralConveyorServo = getHardwareDevice(CRServoImplEx.class, "lateralConveyorServo");
-        HardwareDevices.longitudinalConveyorServo = getHardwareDevice(CRServoImplEx.class, "longitudinalConveyorServo");
-        HardwareDevices.turretEncoder = getHardwareDevice(AnalogInput.class, "turretEncoder");
+        if (Constants.TURRET_ACTIVE) {
+            HardwareDevices.turretFlywheelMaster = getHardwareDevice(DcMotorImplEx.class, "turretFlywheelMaster");
+            HardwareDevices.turretFlywheelSlave = getHardwareDevice(DcMotorImplEx.class, "turretFlywheelSlave");
+            HardwareDevices.turretFlywheelMaster.setMode(DcMotorImplEx.RunMode.RUN_USING_ENCODER);
+            HardwareDevices.turretFlywheelSlave.setMode(DcMotorImplEx.RunMode.RUN_USING_ENCODER);
+            HardwareDevices.turretRotation = getHardwareDevice(DcMotorImplEx.class, "turretRotation");
+            HardwareDevices.turretRotation.setZeroPowerBehavior(DcMotorImplEx.ZeroPowerBehavior.BRAKE);
+            HardwareDevices.turretIntakeMotor = getHardwareDevice(DcMotorImplEx.class, "turretIntakeMotor");
+            HardwareDevices.intakeMotor = getHardwareDevice(DcMotorImplEx.class, "intakeMotor");
+            HardwareDevices.turretArcServo = getHardwareDevice(ServoImplEx.class, "turretArcServo");
+            HardwareDevices.turretIntakeServo = getHardwareDevice(CRServoImplEx.class, "turretIntakeServo");
+            HardwareDevices.lateralConveyorServo = getHardwareDevice(CRServoImplEx.class, "lateralConveyorServo");
+            HardwareDevices.longitudinalConveyorServo = getHardwareDevice(CRServoImplEx.class, "longitudinalConveyorServo");
+            HardwareDevices.turretEncoder = getHardwareDevice(AnalogInput.class, "turretEncoder");
+        }
 
         if (Constants.MECANUM_ACTIVE) {
             for (int i = 0; i < HardwareDevices.driveMotors.length; i++) {
@@ -155,10 +157,11 @@ public class RobotContainer {
                 HardwareDevices.swerveAnalogs[i] = getHardwareDevice(AnalogInput.class, HardwareDevices.analogNames[i]);
                 swerveModules[i] = new SwerveModule(this, HardwareDevices.swerveMotors[i], HardwareDevices.swerveServos[i], HardwareDevices.swerveAnalogs[i], i);
                 swerveServosPIDF[i] = new SwervePIDF(this, i, HardwareDevices.swerveServos[i]);
-
-                int analogPortNumber = Character.getNumericValue(HardwareDevices.swerveAnalogs[i].getConnectionInfo().charAt(HardwareDevices.swerveAnalogs[i].getConnectionInfo().length() - 1));
-                if (analogPortNumber != i) {
-                    addRetainedTelemetry("WARNING: Swerve Analog Encoder " + i + " is connected to port " + analogPortNumber + ", should be port " + i, null);
+                if (Constants.SERVO_ANALOG_ACTIVE) {
+                    int analogPortNumber = Character.getNumericValue(HardwareDevices.swerveAnalogs[i].getConnectionInfo().charAt(HardwareDevices.swerveAnalogs[i].getConnectionInfo().length() - 1));
+                    if (analogPortNumber != i) {
+                        addRetainedTelemetry("WARNING: Swerve Analog Encoder " + i + " is connected to port " + analogPortNumber + ", should be port " + i, null);
+                    }
                 }
                 if (HardwareDevices.swerveMotors[i].getPortNumber() != i) {
                     addRetainedTelemetry("WARNING: Swerve Motor " + i + " is connected to port " + HardwareDevices.swerveMotors[i].getPortNumber() + ", should be port " + i, null);
@@ -175,7 +178,7 @@ public class RobotContainer {
     public void init() {
         HardwareDevices.allHubs = hardwareMap.getAll(LynxModule.class);
         HardwareDevices.controlHub = hardwareMap.get(LynxModule.class, "Control Hub");
-        HardwareDevices.expansionHub = hardwareMap.get(LynxModule.class, "Expansion Hub 2");
+        HardwareDevices.expansionHub = hardwareMap.get(LynxModule.class, "Expansion Hub 1");
         for (LynxModule hub : HardwareDevices.allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }

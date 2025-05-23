@@ -26,14 +26,14 @@ public class DrivetrainUpdater extends Thread {
         // Set the thread to be a daemon thread so that it will not prevent the program from exiting.
         setDaemon(true);
         setName("DrivetrainUpdater");
-
-        for (int i = 0; i < robotContainer.swerveModules.length; i++) {
-            currentPowers[i] = RobotContainer.HardwareDevices.driveMotors[i].getPower();
-        }
     }
 
     @Override
     public void run() {
+        while (!TeleOp.isRunning);
+        for (int i = 0; i < robotContainer.swerveModules.length; i++) {
+            currentPowers[i] = RobotContainer.HardwareDevices.driveMotors[i].getPower();
+        }
         while (TeleOp.isRunning) {
             robotContainer.refreshData();
 

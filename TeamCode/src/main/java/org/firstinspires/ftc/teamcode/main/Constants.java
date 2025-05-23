@@ -23,7 +23,9 @@ public class Constants {
             )
     );
 
-    public static boolean MECANUM_ACTIVE = true;
+    public static boolean MECANUM_ACTIVE = false;
+    public static boolean TURRET_ACTIVE = false;
+    public static boolean SERVO_ANALOG_ACTIVE = false;
 
     public static final int
             CONTROL_HUB_INDEX = 0,
