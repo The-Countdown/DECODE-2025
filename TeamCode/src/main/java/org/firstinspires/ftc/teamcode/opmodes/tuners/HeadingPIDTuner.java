@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
+import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.other.GoBildaPinpoint;
 import org.firstinspires.ftc.teamcode.other.PinpointUpdater;
 import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
@@ -18,7 +19,6 @@ public class HeadingPIDTuner extends OpMode {
     public GamepadWrapper gamepadEx2;
     public static double CURRENT_LOOP_TIME_MS;
     private final ElapsedTime targetTimer = new ElapsedTime();
-    public static boolean isRunning = false;
 
     @Override
     public void init() {
@@ -44,7 +44,7 @@ public class HeadingPIDTuner extends OpMode {
     public void start() {
         gamepadEx1 = new GamepadWrapper(gamepad1);
         gamepadEx2 = new GamepadWrapper(gamepad2);
-        isRunning = true;
+        Status.setOpModeActive(true);
         robotContainer.loopTimer.reset();
         if (RobotContainer.HardwareDevices.pinpoint.getDeviceStatus() != GoBildaPinpoint.DeviceStatus.READY) {
             robotContainer.addRetainedTelemetry("WARNING, PINPOINT STATUS:", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
@@ -89,7 +89,7 @@ public class HeadingPIDTuner extends OpMode {
 
     @Override
     public void stop() {
-        isRunning = false;
+        Status.setOpModeActive(false);
         robotContainer.isRunning = false;
     }
 }

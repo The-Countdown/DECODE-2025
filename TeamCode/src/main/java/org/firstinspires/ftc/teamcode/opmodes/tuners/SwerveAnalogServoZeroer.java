@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
+import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.other.GoBildaPinpoint;
 import org.firstinspires.ftc.teamcode.other.PinpointUpdater;
 import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
@@ -16,7 +17,6 @@ public class SwerveAnalogServoZeroer extends OpMode {
     public GamepadWrapper gamepadEx1;
     public GamepadWrapper gamepadEx2;
     public static double CURRENT_LOOP_TIME_MS;
-    public static boolean isRunning = false;
     private int currentServo = -1;
 
     @Override
@@ -43,7 +43,7 @@ public class SwerveAnalogServoZeroer extends OpMode {
     public void start() {
         gamepadEx1 = new GamepadWrapper(gamepad1);
         gamepadEx2 = new GamepadWrapper(gamepad2);
-        isRunning = true;
+        Status.setOpModeActive(true);
         robotContainer.loopTimer.reset();
         if (RobotContainer.HardwareDevices.pinpoint.getDeviceStatus() != GoBildaPinpoint.DeviceStatus.READY) {
             robotContainer.addRetainedTelemetry("WARNING, PINPOINT STATUS:", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
@@ -91,7 +91,9 @@ public class SwerveAnalogServoZeroer extends OpMode {
         robotContainer.opMode.telemetry.addData("Loop Time:", CURRENT_LOOP_TIME_MS + "ms");
         robotContainer.opMode.telemetry.addLine();
         robotContainer.opMode.telemetry.addData("Selected Servo:", currentServo);
-        robotContainer.opMode.telemetry.addData("Servo Angle:", robotContainer.swerveModules[currentServo].servo.getAngle());
+        if (currentServo >= 0) {
+            robotContainer.opMode.telemetry.addData("Servo Angle:", robotContainer.swerveModules[currentServo].servo.getAngle());
+        }
         robotContainer.displayRetainedTelemetry();
         robotContainer.opMode.telemetry.update();
 
@@ -100,7 +102,7 @@ public class SwerveAnalogServoZeroer extends OpMode {
 
     @Override
     public void stop() {
-        isRunning = false;
+        Status.setOpModeActive(false);
         robotContainer.isRunning = false;
     }
 }

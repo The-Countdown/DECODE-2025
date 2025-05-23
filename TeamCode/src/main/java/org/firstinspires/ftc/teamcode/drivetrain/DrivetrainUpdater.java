@@ -30,11 +30,12 @@ public class DrivetrainUpdater extends Thread {
 
     @Override
     public void run() {
-        while (!TeleOp.isRunning);
+        while (!Status.isOpModeActive());
+        robotContainer.refreshData();
         for (int i = 0; i < robotContainer.swerveModules.length; i++) {
-            currentPowers[i] = RobotContainer.HardwareDevices.driveMotors[i].getPower();
+            currentPowers[i] = RobotContainer.HardwareDevices.swerveMotors[i].getPower();
         }
-        while (TeleOp.isRunning) {
+        while (Status.isOpModeActive()) {
             robotContainer.refreshData();
 
             double now = deltaTimer.seconds();

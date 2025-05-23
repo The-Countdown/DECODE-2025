@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
+import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.other.GoBildaPinpoint;
 import org.firstinspires.ftc.teamcode.other.PinpointUpdater;
 import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
@@ -18,7 +19,6 @@ public class TeleOp extends OpMode {
     public GamepadWrapper gamepadEx2;
     public static boolean fieldOriented = false;
     public static double CURRENT_LOOP_TIME_MS;
-    public static boolean isRunning = false;
     private static final ElapsedTime turretAccelerationTimer = new ElapsedTime();
 
     @Override
@@ -46,8 +46,9 @@ public class TeleOp extends OpMode {
     public void start() {
         gamepadEx1 = new GamepadWrapper(gamepad1);
         gamepadEx2 = new GamepadWrapper(gamepad2);
-        isRunning = true;
+        Status.setOpModeActive(true);
         robotContainer.loopTimer.reset();
+        turretAccelerationTimer.reset();
         if (RobotContainer.HardwareDevices.pinpoint.getDeviceStatus() != GoBildaPinpoint.DeviceStatus.READY) {
             robotContainer.addRetainedTelemetry("WARNING, PINPOINT STATUS:", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
         }
@@ -127,7 +128,7 @@ public class TeleOp extends OpMode {
     @Override
     public void stop() {
         robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
-        isRunning = false;
+        Status.setOpModeActive(false);
         robotContainer.isRunning = false;
     }
 }

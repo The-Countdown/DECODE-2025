@@ -9,6 +9,7 @@ import java.util.Objects;
 
 public class IndicatorLight extends RobotContainer.HardwareDevices {
     private double rainbowValue = 0;
+    private int rainbowSign = 1;
     private final ElapsedTime rainbowTimer = new ElapsedTime();
 
     public void setColor(Constants.LED_COLOR color) {
@@ -17,10 +18,12 @@ public class IndicatorLight extends RobotContainer.HardwareDevices {
 
     public void rainbow() {
         if (rainbowTimer.milliseconds() >= 2) {
-            rainbowValue += 0.001;
+            rainbowValue += (0.001 * rainbowSign);
             rainbowTimer.reset();
             if (rainbowValue >= 1) {
-                rainbowValue = 0;
+                rainbowSign = -1;
+            } else if (rainbowValue <= 0) {
+                rainbowSign = 1;
             }
         }
 
