@@ -31,20 +31,22 @@ public class Status {
 
     public static boolean robotHeadingTargetReached = false;
 
-    private static boolean opModeIsActive = false;
-    private static final Object opModeLock = new Object();
+    public static boolean opModeIsActive = false;
 
-    public static boolean isOpModeActive() {
-        synchronized (opModeLock) {
-            return opModeIsActive;
-        }
-    }
-
-    public static void setOpModeActive(boolean active) {
-        synchronized (opModeLock) {
-            opModeIsActive = active;
-        }
-    }
+//    private static volatile boolean opModeIsActive = false;
+//    private static final Object opModeLock = new Object();
+//
+//    public static boolean isOpModeActive() {
+//        synchronized (opModeLock) {
+//            return opModeIsActive;
+//        }
+//    }
+//
+//    public static void setOpModeActive(boolean active) {
+//        synchronized (opModeLock) {
+//            opModeIsActive = active;
+//        }
+//    }
 
     // TODO: Add more status variables as needed
 }

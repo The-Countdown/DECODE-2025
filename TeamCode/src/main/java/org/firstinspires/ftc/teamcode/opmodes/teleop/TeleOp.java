@@ -20,6 +20,7 @@ public class TeleOp extends OpMode {
     public static boolean fieldOriented = false;
     public static double CURRENT_LOOP_TIME_MS;
     private static final ElapsedTime turretAccelerationTimer = new ElapsedTime();
+    private int currentServo = -1;
 
     @Override
     public void init() {
@@ -46,7 +47,7 @@ public class TeleOp extends OpMode {
     public void start() {
         gamepadEx1 = new GamepadWrapper(gamepad1);
         gamepadEx2 = new GamepadWrapper(gamepad2);
-        Status.setOpModeActive(true);
+        Status.opModeIsActive = true;
         robotContainer.loopTimer.reset();
         turretAccelerationTimer.reset();
         if (RobotContainer.HardwareDevices.pinpoint.getDeviceStatus() != GoBildaPinpoint.DeviceStatus.READY) {
@@ -61,6 +62,16 @@ public class TeleOp extends OpMode {
         robotContainer.refreshData();
         gamepadEx1.update();
         gamepadEx2.update();
+
+        if (gamepad1.dpad_up) {
+            currentServo = 0;
+        } else if (gamepad1.dpad_right) {
+            currentServo = 1;
+        } else if (gamepad1.dpad_down) {
+            currentServo = 2;
+        } else if (gamepad1.dpad_left) {
+            currentServo = 3;
+        }
 
         if (Constants.MECANUM_ACTIVE) {
             robotContainer.drivetrain.mecanumDrive(
@@ -106,19 +117,29 @@ public class TeleOp extends OpMode {
             }
         }
 
-        robotContainer.indicatorLight.rainbow();
+        robotContainer.indicatorLight.off();
 
         robotContainer.opMode.telemetry.addData("Control Hub Voltage:", robotContainer.getVoltage(Constants.CONTROL_HUB_INDEX) + "V");
         robotContainer.opMode.telemetry.addData("Expansion Hub Voltage:", robotContainer.getVoltage(Constants.EXPANSION_HUB_INDEX) + "V");
         robotContainer.opMode.telemetry.addData("Control Hub Current:", robotContainer.getCurrent(Constants.CONTROL_HUB_INDEX) + "A");
         robotContainer.opMode.telemetry.addData("Expansion Hub Current:", robotContainer.getCurrent(Constants.EXPANSION_HUB_INDEX) + "A");
         robotContainer.opMode.telemetry.addLine();
-        robotContainer.opMode.telemetry.addData("Pinpoint X:", PinpointUpdater.currentPose.getX(DistanceUnit.CM) + "cm");
-        robotContainer.opMode.telemetry.addData("Pinpoint Y:", PinpointUpdater.currentPose.getY(DistanceUnit.CM) + "cm");
-        robotContainer.opMode.telemetry.addData("Pinpoint Heading:", PinpointUpdater.currentHeading + "°");
+        robotContainer.opMode.telemetry.addData("Pinpoint X", PinpointUpdater.currentPose.getX(DistanceUnit.CM) + "cm");
+        robotContainer.opMode.telemetry.addData("Pinpoint Y", PinpointUpdater.currentPose.getY(DistanceUnit.CM) + "cm");
+        robotContainer.opMode.telemetry.addData("Pinpoint Heading", PinpointUpdater.currentHeading + "°");
         robotContainer.opMode.telemetry.addLine();
-        robotContainer.opMode.telemetry.addData("Avg Loop Time:", CURRENT_LOOP_TIME_AVG_MS + "ms");
-        robotContainer.opMode.telemetry.addData("Loop Time:", CURRENT_LOOP_TIME_MS + "ms");
+        robotContainer.opMode.telemetry.addData("Avg Loop Time", CURRENT_LOOP_TIME_AVG_MS + "ms");
+        robotContainer.opMode.telemetry.addData("Loop Time", CURRENT_LOOP_TIME_MS + "ms");
+        if (currentServo >= 0) {
+            robotContainer.opMode.telemetry.addLine();
+            robotContainer.opMode.telemetry.addData("Selected Servo", currentServo);
+            robotContainer.opMode.telemetry.addData("Servo Angle", robotContainer.swerveModules[currentServo].servo.getAngle());
+            robotContainer.opMode.telemetry.addData("Servo Target", robotContainer.swerveServosPIDF[currentServo].getTargetAngle());
+            robotContainer.opMode.telemetry.addData("Servo Set Power", robotContainer.swerveServosPIDF[currentServo].calculate());
+            robotContainer.opMode.telemetry.addData("Servo Error", robotContainer.swerveServosPIDF[currentServo].getError());
+            robotContainer.opMode.telemetry.addData("Motor Target Power", robotContainer.swerveModules[currentServo].motor.targetPower);
+            robotContainer.opMode.telemetry.addData("Motor Current Power", RobotContainer.HardwareDevices.swerveMotors[currentServo].getPower());
+        }
         robotContainer.displayRetainedTelemetry();
         robotContainer.opMode.telemetry.update();
 
@@ -128,7 +149,7 @@ public class TeleOp extends OpMode {
     @Override
     public void stop() {
         robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
-        Status.setOpModeActive(false);
+        Status.opModeIsActive = false;
         robotContainer.isRunning = false;
     }
 }

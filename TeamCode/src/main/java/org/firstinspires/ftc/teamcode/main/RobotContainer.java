@@ -48,7 +48,6 @@ public class RobotContainer {
     public HardwareMap hardwareMap;
     public Telemetry telemetry;
     public boolean isRunning = false;
-    public long lastLoopTimeNs = 0;
     public final LinkedList<Double> loopTimes = new LinkedList<>();
     public final ElapsedTime loopTimer = new ElapsedTime();
     private final ArrayList<String> retainedTelemetryCaptions = new ArrayList<>();
@@ -155,8 +154,8 @@ public class RobotContainer {
                 HardwareDevices.swerveServos[i] = getHardwareDevice(CRServoImplEx.class, HardwareDevices.servoNames[i]);
                 HardwareDevices.analogNames[i] = "swerveAnalog" + (i);
                 HardwareDevices.swerveAnalogs[i] = getHardwareDevice(AnalogInput.class, HardwareDevices.analogNames[i]);
-                swerveModules[i] = new SwerveModule(this, HardwareDevices.swerveMotors[i], HardwareDevices.swerveServos[i], HardwareDevices.swerveAnalogs[i], i);
                 swerveServosPIDF[i] = new SwervePIDF(this, i, HardwareDevices.swerveServos[i]);
+                swerveModules[i] = new SwerveModule(this, HardwareDevices.swerveMotors[i], HardwareDevices.swerveServos[i], swerveServosPIDF[i],  HardwareDevices.swerveAnalogs[i], i);
                 if (Constants.SERVO_ANALOG_ACTIVE) {
                     int analogPortNumber = Character.getNumericValue(HardwareDevices.swerveAnalogs[i].getConnectionInfo().charAt(HardwareDevices.swerveAnalogs[i].getConnectionInfo().length() - 1));
                     if (analogPortNumber != i) {

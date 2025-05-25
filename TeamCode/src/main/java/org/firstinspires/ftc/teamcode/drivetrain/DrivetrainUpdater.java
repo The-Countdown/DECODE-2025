@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
-import org.firstinspires.ftc.teamcode.opmodes.teleop.TeleOp;
 
 /**
  * The `ThreadedPIDF` class is responsible for managing the Proportional-Integral-Derivative-Feedforward (PIDF)
@@ -18,7 +17,6 @@ import org.firstinspires.ftc.teamcode.opmodes.teleop.TeleOp;
 public class DrivetrainUpdater extends Thread {
     private final RobotContainer robotContainer;
     private final double[] currentPowers = new double[4];
-    private double lastTimestamp = -1;
     private final ElapsedTime deltaTimer = new ElapsedTime();
 
     public DrivetrainUpdater(RobotContainer robotContainer) {
@@ -30,38 +28,40 @@ public class DrivetrainUpdater extends Thread {
 
     @Override
     public void run() {
-        while (!Status.isOpModeActive());
+        while (!Status.opModeIsActive);
+        deltaTimer.reset();
         robotContainer.refreshData();
         for (int i = 0; i < robotContainer.swerveModules.length; i++) {
             currentPowers[i] = RobotContainer.HardwareDevices.swerveMotors[i].getPower();
         }
-        while (Status.isOpModeActive()) {
+        while (Status.opModeIsActive) {
             robotContainer.refreshData();
 
-            double now = deltaTimer.seconds();
+            double deltaTime = deltaTimer.seconds();
             deltaTimer.reset();
-            if (lastTimestamp < 0) {
-                lastTimestamp = now;
-            }
-            double deltaTime = now - lastTimestamp;
-            lastTimestamp = now;
 
             for (int i = 0; i < robotContainer.swerveModules.length; i++) {
                 double target = robotContainer.swerveModules[i].motor.targetPower;
 
                 double maxDelta = Constants.MAX_DRIVE_ACCELERATION * deltaTime;
                 double error = target - currentPowers[i];
-                double delta = Math.signum(error) * Math.min(Math.abs(error), maxDelta);
 
-                currentPowers[i] += delta;
+                if (!(error < 0)) {
+                    double delta = Math.signum(error) * Math.min(Math.abs(error), maxDelta);
+                    currentPowers[i] += delta;
+                } else {
+                    currentPowers[i] = target;
+                }
+
                 double acceleratedMotorPower = currentPowers[i];
 
-                if (robotContainer.swerveServosPIDF[i].getError() <= Constants.SWERVE_SERVO_PIDF_TOLERANCE_DEGREES) {
+                if (Math.abs(robotContainer.swerveServosPIDF[i].getError()) <= Constants.SWERVE_SERVO_PIDF_TOLERANCE_DEGREES) {
                     Status.swerveServoStatus.put(i, Status.ServoStatus.TARGET_REACHED);
+                    robotContainer.swerveModules[i].servo.setPower(0);
 
                     robotContainer.swerveModules[i].motor.setPower(acceleratedMotorPower);
                 } else {
-                    robotContainer.swerveModules[i].servo.setPower(robotContainer.swerveServosPIDF[i].calculate());
+                    robotContainer.swerveModules[i].servo.setPower(-robotContainer.swerveServosPIDF[i].calculate());
                     Status.swerveServoStatus.put(i, Status.ServoStatus.MOVING);
 
                     robotContainer.swerveModules[i].motor.setPower(acceleratedMotorPower * Math.abs(Math.cos(Math.toRadians(robotContainer.swerveServosPIDF[i].getError()))));

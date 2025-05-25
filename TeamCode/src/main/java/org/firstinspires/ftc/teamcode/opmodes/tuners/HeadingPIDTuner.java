@@ -44,7 +44,7 @@ public class HeadingPIDTuner extends OpMode {
     public void start() {
         gamepadEx1 = new GamepadWrapper(gamepad1);
         gamepadEx2 = new GamepadWrapper(gamepad2);
-        Status.setOpModeActive(true);
+        Status.opModeIsActive = true;
         robotContainer.loopTimer.reset();
         if (RobotContainer.HardwareDevices.pinpoint.getDeviceStatus() != GoBildaPinpoint.DeviceStatus.READY) {
             robotContainer.addRetainedTelemetry("WARNING, PINPOINT STATUS:", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
@@ -89,7 +89,7 @@ public class HeadingPIDTuner extends OpMode {
 
     @Override
     public void stop() {
-        Status.setOpModeActive(false);
+        Status.opModeIsActive = false;
         robotContainer.isRunning = false;
     }
 }

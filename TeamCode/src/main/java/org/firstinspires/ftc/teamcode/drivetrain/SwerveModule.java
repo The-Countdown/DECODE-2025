@@ -42,13 +42,13 @@ public class SwerveModule {
      * @param analogEncoder The analog encoder for reading the module's angle.
      * @param moduleIndex   The index of the module.
      */
-    public SwerveModule(RobotContainer robotContainer, DcMotorEx motor, CRServoImplEx turningServo, AnalogInput analogEncoder, int moduleIndex) {
+    public SwerveModule(RobotContainer robotContainer, DcMotorEx motor, CRServoImplEx turningServo, SwervePIDF servoPIDF, AnalogInput analogEncoder, int moduleIndex) {
         this.robotContainer = robotContainer;
         this.drivingMotor = motor;
         this.turningServo = turningServo;
+        this.servoPIDF = servoPIDF;
         this.analogEncoder = analogEncoder;
         this.moduleIndex = moduleIndex;
-        this.servoPIDF = new SwervePIDF(robotContainer, moduleIndex, turningServo);
     }
 
     public class Servo {
@@ -59,8 +59,7 @@ public class SwerveModule {
          * @return The current angle of the module in degrees, normalized at -180 to 180.
          */
         public double getAngle() {
-            if (
-                    !Constants.SERVO_ANALOG_ACTIVE) {
+            if (!Constants.SERVO_ANALOG_ACTIVE) {
                 return 0;
             }
 

@@ -29,8 +29,8 @@ public class SwervePIDF {
         this.timer = new ElapsedTime();
     }
 
-    public void setTargetAngle(double targetAngle) {
-        this.targetAngle = targetAngle;
+    public void setTargetAngle(double angle) {
+        targetAngle = robotContainer.drivetrain.normalizeAngle(angle);
     }
 
     public double getTargetAngle() {

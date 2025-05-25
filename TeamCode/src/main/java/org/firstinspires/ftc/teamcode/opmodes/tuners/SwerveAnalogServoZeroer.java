@@ -43,7 +43,7 @@ public class SwerveAnalogServoZeroer extends OpMode {
     public void start() {
         gamepadEx1 = new GamepadWrapper(gamepad1);
         gamepadEx2 = new GamepadWrapper(gamepad2);
-        Status.setOpModeActive(true);
+        Status.opModeIsActive = true;
         robotContainer.loopTimer.reset();
         if (RobotContainer.HardwareDevices.pinpoint.getDeviceStatus() != GoBildaPinpoint.DeviceStatus.READY) {
             robotContainer.addRetainedTelemetry("WARNING, PINPOINT STATUS:", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
@@ -70,29 +70,32 @@ public class SwerveAnalogServoZeroer extends OpMode {
 
         if (currentServo >= 0) {
             if (gamepad1.right_bumper) {
-                robotContainer.swerveModules[currentServo].servo.setTargetAngle(robotContainer.swerveModules[currentServo].servo.getAngle() + 0.05);
+                robotContainer.swerveModules[currentServo].servo.setTargetAngle(robotContainer.swerveServosPIDF[currentServo].getTargetAngle() + 0.3);
             } else if (gamepad1.left_bumper) {
-                robotContainer.swerveModules[currentServo].servo.setTargetAngle(robotContainer.swerveModules[currentServo].servo.getAngle() - 0.05);
+                robotContainer.swerveModules[currentServo].servo.setTargetAngle(robotContainer.swerveServosPIDF[currentServo].getTargetAngle() - 0.3);
             }
         }
 
-        robotContainer.indicatorLight.rainbow();
+        robotContainer.indicatorLight.off();
 
-        robotContainer.opMode.telemetry.addData("Control Hub Voltage:", robotContainer.getVoltage(Constants.CONTROL_HUB_INDEX) + "V");
-        robotContainer.opMode.telemetry.addData("Expansion Hub Voltage:", robotContainer.getVoltage(Constants.EXPANSION_HUB_INDEX) + "V");
-        robotContainer.opMode.telemetry.addData("Control Hub Current:", robotContainer.getCurrent(Constants.CONTROL_HUB_INDEX) + "A");
-        robotContainer.opMode.telemetry.addData("Expansion Hub Current:", robotContainer.getCurrent(Constants.EXPANSION_HUB_INDEX) + "A");
+        robotContainer.opMode.telemetry.addData("Control Hub Voltage", robotContainer.getVoltage(Constants.CONTROL_HUB_INDEX) + "V");
+        robotContainer.opMode.telemetry.addData("Expansion Hub Voltage", robotContainer.getVoltage(Constants.EXPANSION_HUB_INDEX) + "V");
+        robotContainer.opMode.telemetry.addData("Control Hub Current", robotContainer.getCurrent(Constants.CONTROL_HUB_INDEX) + "A");
+        robotContainer.opMode.telemetry.addData("Expansion Hub Current", robotContainer.getCurrent(Constants.EXPANSION_HUB_INDEX) + "A");
         robotContainer.opMode.telemetry.addLine();
-        robotContainer.opMode.telemetry.addData("Pinpoint X:", PinpointUpdater.currentPose.getX(DistanceUnit.CM) + "cm");
-        robotContainer.opMode.telemetry.addData("Pinpoint Y:", PinpointUpdater.currentPose.getY(DistanceUnit.CM) + "cm");
-        robotContainer.opMode.telemetry.addData("Pinpoint Heading:", PinpointUpdater.currentHeading + "°");
+        robotContainer.opMode.telemetry.addData("Pinpoint X", PinpointUpdater.currentPose.getX(DistanceUnit.CM) + "cm");
+        robotContainer.opMode.telemetry.addData("Pinpoint Y", PinpointUpdater.currentPose.getY(DistanceUnit.CM) + "cm");
+        robotContainer.opMode.telemetry.addData("Pinpoint Heading", PinpointUpdater.currentHeading + "°");
         robotContainer.opMode.telemetry.addLine();
-        robotContainer.opMode.telemetry.addData("Avg Loop Time:", CURRENT_LOOP_TIME_AVG_MS + "ms");
-        robotContainer.opMode.telemetry.addData("Loop Time:", CURRENT_LOOP_TIME_MS + "ms");
+        robotContainer.opMode.telemetry.addData("Avg Loop Time", CURRENT_LOOP_TIME_AVG_MS + "ms");
+        robotContainer.opMode.telemetry.addData("Loop Time", CURRENT_LOOP_TIME_MS + "ms");
         robotContainer.opMode.telemetry.addLine();
-        robotContainer.opMode.telemetry.addData("Selected Servo:", currentServo);
+        robotContainer.opMode.telemetry.addData("Selected Servo", currentServo);
         if (currentServo >= 0) {
-            robotContainer.opMode.telemetry.addData("Servo Angle:", robotContainer.swerveModules[currentServo].servo.getAngle());
+            robotContainer.opMode.telemetry.addData("Servo Angle", robotContainer.swerveModules[currentServo].servo.getAngle());
+            robotContainer.opMode.telemetry.addData("Servo Target", robotContainer.swerveServosPIDF[currentServo].getTargetAngle());
+            robotContainer.opMode.telemetry.addData("Servo Set Power", robotContainer.swerveServosPIDF[currentServo].calculate());
+            robotContainer.opMode.telemetry.addData("Servo Error", robotContainer.swerveServosPIDF[currentServo].getError());
         }
         robotContainer.displayRetainedTelemetry();
         robotContainer.opMode.telemetry.update();
@@ -102,7 +105,7 @@ public class SwerveAnalogServoZeroer extends OpMode {
 
     @Override
     public void stop() {
-        Status.setOpModeActive(false);
+        Status.opModeIsActive = false;
         robotContainer.isRunning = false;
     }
 }

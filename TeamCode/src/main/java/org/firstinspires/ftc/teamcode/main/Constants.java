@@ -25,7 +25,7 @@ public class Constants {
 
     public static boolean MECANUM_ACTIVE = false;
     public static boolean TURRET_ACTIVE = false;
-    public static boolean SERVO_ANALOG_ACTIVE = false;
+    public static boolean SERVO_ANALOG_ACTIVE = true;
 
     public static final int
             CONTROL_HUB_INDEX = 0,
@@ -106,10 +106,10 @@ public class Constants {
      */
     // TODO: Tune
     public static double
-            SWERVE_SERVO_KP = 0,
+            SWERVE_SERVO_KP = 0.01,
             SWERVE_SERVO_KI = 0,
                 SWERVE_SERVO_I_MAX = 0,
-            SWERVE_SERVO_KD = 0,
+            SWERVE_SERVO_KD = 0.0003,
             SWERVE_SERVO_KF = 0;
 
     // TODO: Tune
@@ -175,6 +175,7 @@ public class Constants {
     }
 
     public static final HashMap<LED_COLOR, LED_COLOR_VALUES> LED_COLOR_MAP = new HashMap<LED_COLOR, LED_COLOR_VALUES>() {{
+        put(LED_COLOR.OFF, new LED_COLOR_VALUES(500, 0.0));
         put(LED_COLOR.RED, new LED_COLOR_VALUES(1100, 0.279));
         put(LED_COLOR.ORANGE, new LED_COLOR_VALUES(1200, 0.333));
         put(LED_COLOR.YELLOW, new LED_COLOR_VALUES(1300, 0.388));

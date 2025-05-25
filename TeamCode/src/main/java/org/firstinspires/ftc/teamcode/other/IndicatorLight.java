@@ -18,7 +18,7 @@ public class IndicatorLight extends RobotContainer.HardwareDevices {
 
     public void rainbow() {
         if (rainbowTimer.milliseconds() >= 2) {
-            rainbowValue += (0.001 * rainbowSign);
+            rainbowValue += (0.005 * rainbowSign);
             rainbowTimer.reset();
             if (rainbowValue >= 1) {
                 rainbowSign = -1;
@@ -31,7 +31,7 @@ public class IndicatorLight extends RobotContainer.HardwareDevices {
     }
 
     public void off() {
-        RobotContainer.HardwareDevices.indicatorLight.setPosition(Objects.requireNonNull(Constants.LED_COLOR_MAP.get(Constants.LED_COLOR.OFF)).ANALOG);
+        RobotContainer.HardwareDevices.indicatorLight.setPosition((Objects.requireNonNull(Constants.LED_COLOR_MAP.get(Constants.LED_COLOR.OFF))).ANALOG);
     }
 
     public double scalePosition(double position) {
