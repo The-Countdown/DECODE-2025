@@ -24,14 +24,14 @@ public class SwerveAnalogServoZeroer extends OpMode {
         robotContainer = new RobotContainer(this);
         robotContainer.isRunning = true;
         robotContainer.init();
-        robotContainer.indicatorLight.setColor(Constants.LED_COLOR.RED);
+        robotContainer.indicatorLightFrontLeft.setColor(Constants.LED_COLOR.RED);
         robotContainer.refreshData();
         RobotContainer.HardwareDevices.imu.resetYaw();
         RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU(); // TODO: Run at start of auto instead
         robotContainer.opMode.telemetry.setMsTransmissionInterval(200);
         robotContainer.opMode.telemetry.addLine("OpMode Initialized");
         robotContainer.opMode.telemetry.update();
-        robotContainer.indicatorLight.setColor(Constants.LED_COLOR.GREEN);
+        robotContainer.indicatorLightFrontLeft.setColor(Constants.LED_COLOR.GREEN);
     }
 
     @Override
@@ -76,19 +76,19 @@ public class SwerveAnalogServoZeroer extends OpMode {
             }
         }
 
-        robotContainer.indicatorLight.off();
+        robotContainer.indicatorLightFrontLeft.off();
 
-        robotContainer.opMode.telemetry.addData("Control Hub Voltage", robotContainer.getVoltage(Constants.CONTROL_HUB_INDEX) + "V");
-        robotContainer.opMode.telemetry.addData("Expansion Hub Voltage", robotContainer.getVoltage(Constants.EXPANSION_HUB_INDEX) + "V");
-        robotContainer.opMode.telemetry.addData("Control Hub Current", robotContainer.getCurrent(Constants.CONTROL_HUB_INDEX) + "A");
-        robotContainer.opMode.telemetry.addData("Expansion Hub Current", robotContainer.getCurrent(Constants.EXPANSION_HUB_INDEX) + "A");
+        robotContainer.opMode.telemetry.addData("Control Hub Voltage", robotContainer.getVoltage(Constants.CONTROL_HUB_INDEX) + " V");
+        robotContainer.opMode.telemetry.addData("Expansion Hub Voltage", robotContainer.getVoltage(Constants.EXPANSION_HUB_INDEX) + " V");
+        robotContainer.opMode.telemetry.addData("Control Hub Current", robotContainer.getCurrent(Constants.CONTROL_HUB_INDEX) + " A");
+        robotContainer.opMode.telemetry.addData("Expansion Hub Current", robotContainer.getCurrent(Constants.EXPANSION_HUB_INDEX) + " A");
         robotContainer.opMode.telemetry.addLine();
-        robotContainer.opMode.telemetry.addData("Pinpoint X", PinpointUpdater.currentPose.getX(DistanceUnit.CM) + "cm");
-        robotContainer.opMode.telemetry.addData("Pinpoint Y", PinpointUpdater.currentPose.getY(DistanceUnit.CM) + "cm");
+        robotContainer.opMode.telemetry.addData("Pinpoint X", PinpointUpdater.currentPose.getX(DistanceUnit.CM) + " cm");
+        robotContainer.opMode.telemetry.addData("Pinpoint Y", PinpointUpdater.currentPose.getY(DistanceUnit.CM) + " cm");
         robotContainer.opMode.telemetry.addData("Pinpoint Heading", PinpointUpdater.currentHeading + "°");
         robotContainer.opMode.telemetry.addLine();
-        robotContainer.opMode.telemetry.addData("Avg Loop Time", CURRENT_LOOP_TIME_AVG_MS + "ms");
-        robotContainer.opMode.telemetry.addData("Loop Time", CURRENT_LOOP_TIME_MS + "ms");
+        robotContainer.opMode.telemetry.addData("Avg Loop Time", (int) CURRENT_LOOP_TIME_AVG_MS + " ms");
+        robotContainer.opMode.telemetry.addData("Loop Time", (int) CURRENT_LOOP_TIME_MS + " ms");
         robotContainer.opMode.telemetry.addLine();
         robotContainer.opMode.telemetry.addData("Selected Servo", currentServo);
         if (currentServo >= 0) {

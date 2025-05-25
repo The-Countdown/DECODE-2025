@@ -31,7 +31,7 @@ public class Constants {
             CONTROL_HUB_INDEX = 0,
             EXPANSION_HUB_INDEX = 1;
 
-    public static final int LOOP_AVERAGE_WINDOW_SIZE = 10;
+    public static final int LOOP_AVERAGE_WINDOW_SIZE = 30;
 
     public static final int
             NUM_SWERVE_MOTORS = 4,
@@ -47,7 +47,7 @@ public class Constants {
             WHEELBASE_ICR_Y = WHEELBASE_WIDTH_MM / 2;
 
     /**
-     * The angle offset for each swerve servo, used to correct any mechanical misalignments.
+     * The angle offset for each swerve servo, used to correct any mechanical misalignment.
      * Index 4 is global, and the rest are in order (module 0, 1, 2, 3) see {@link SwerveModule}.
      */
     // TODO: Tune if needed

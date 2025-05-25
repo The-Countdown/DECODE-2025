@@ -9,6 +9,7 @@ public class GamepadWrapper {
         private boolean currState = false;
         private final ElapsedTime holdDuration = new ElapsedTime();
         private boolean isTiming = false;
+        private boolean alreadyTriggered = false;
 
         public void update(boolean newState) {
             prevState = currState;
@@ -35,19 +36,42 @@ public class GamepadWrapper {
         }
 
         /**
-         * Checks if the button has been held down for at least the specified number of seconds.
+         * Checks if the button has been held down for the specified number of seconds.
          * @param seconds The number of seconds to check for.
-         * @return True if the button has been held for at least the specified number of seconds, false otherwise.
+         * @return True if the button has been held for the specified number of seconds +- 0.1 seconds.
          */
         public boolean isHeldFor(double seconds) {
-            if(isTiming){
-                return holdDuration.seconds() >= seconds;
+            if (isTiming) {
+                double time = holdDuration.seconds();
+                if (!alreadyTriggered && time > seconds - 0.1 && time < seconds + 0.1) {
+                    alreadyTriggered = true;
+                    return true;
+                }
+            } else {
+                alreadyTriggered = false;
+            }
+            return false;
+        }
+
+        public boolean isHeldFor(double seconds, double toleranceSeconds) {
+            if (isTiming) {
+                double time = holdDuration.seconds();
+                if (!alreadyTriggered && time > seconds - toleranceSeconds && time < seconds + toleranceSeconds) {
+                    alreadyTriggered = true;
+                    return true;
+                }
+            } else {
+                alreadyTriggered = false;
             }
             return false;
         }
     }
 
     private final Gamepad gamepad;
+
+    public final ButtonReader back = new ButtonReader();
+    public final ButtonReader start = new ButtonReader();
+    public final ButtonReader guide = new ButtonReader();
 
     public final ButtonReader a = new ButtonReader();
     public final ButtonReader b = new ButtonReader();
@@ -62,6 +86,9 @@ public class GamepadWrapper {
     public final ButtonReader leftBumper = new ButtonReader();
     public final ButtonReader rightBumper = new ButtonReader();
 
+    public final ButtonReader leftStickButton = new ButtonReader();
+    public final ButtonReader rightStickButton = new ButtonReader();
+
     public final ButtonReader leftTrigger = new ButtonReader();
     public final ButtonReader rightTrigger = new ButtonReader();
 
@@ -75,6 +102,10 @@ public class GamepadWrapper {
     }
 
     public void update() {
+        back.update(gamepad.back);
+        start.update(gamepad.start);
+        guide.update(gamepad.guide);
+
         a.update(gamepad.a);
         b.update(gamepad.b);
         x.update(gamepad.x);
@@ -87,6 +118,9 @@ public class GamepadWrapper {
 
         leftBumper.update(gamepad.left_bumper);
         rightBumper.update(gamepad.right_bumper);
+
+        leftStickButton.update(gamepad.left_stick_button);
+        rightStickButton.update(gamepad.right_stick_button);
 
         leftTrigger.update(gamepad.left_trigger > 0.1);
         rightTrigger.update(gamepad.right_trigger > 0.1);

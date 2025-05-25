@@ -47,7 +47,7 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
             rotationalMagnitude = robotContainer.headingPID.calculate(PinpointUpdater.currentHeading);
         }
 
-        if (Status.robotHeadingTargetReached && x == 0 && y == 0) {
+        if (Status.robotHeadingTargetReached && x == 0 && y == 0 && rX == 0) {
             swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
             return;
         }

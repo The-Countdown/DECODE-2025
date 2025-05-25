@@ -33,6 +33,8 @@ public class Status {
 
     public static boolean opModeIsActive = false;
 
+    public static boolean lightsOn = true;
+
 //    private static volatile boolean opModeIsActive = false;
 //    private static final Object opModeLock = new Object();
 //

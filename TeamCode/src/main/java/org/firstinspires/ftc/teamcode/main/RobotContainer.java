@@ -56,6 +56,14 @@ public class RobotContainer {
     public final SwerveModule[] swerveModules = new SwerveModule[Constants.NUM_SWERVE_MOTORS];
     public SwervePIDF[] swerveServosPIDF = new SwervePIDF[Constants.NUM_SWERVE_SERVOS];
     public DrivetrainUpdater drivetrainUpdater = new DrivetrainUpdater(this);
+    public Drivetrain drivetrain;
+    public HeadingPID headingPID;
+    public IndicatorLight indicatorLightFrontLeft;
+    public IndicatorLight indicatorLightFrontRight;
+    public IndicatorLight indicatorLightBack;
+    public Turret turret;
+    public LinkedMotors turretFlywheel;
+    public Intake intake;
 
     public static class HardwareDevices {
         public static List<LynxModule> allHubs;
@@ -68,7 +76,9 @@ public class RobotContainer {
         public static RevColorSensorV3 flashlight;
 
         // Gobilda RGB indicator light
-        public static ServoImplEx indicatorLight;
+        public static ServoImplEx indicatorLightFrontLeft;
+        public static ServoImplEx indicatorLightFrontRight;
+        public static ServoImplEx indicatorLightBack;
 
         // Gobilda 5000 Series
         public static DcMotorImplEx[] swerveMotors = new DcMotorImplEx[Constants.NUM_SWERVE_MOTORS];
@@ -113,7 +123,9 @@ public class RobotContainer {
         HardwareDevices.limelight = getHardwareDevice(Limelight3A.class, "limelight");
         HardwareDevices.flashlight = getHardwareDevice(RevColorSensorV3.class, "flashlight");
 
-        HardwareDevices.indicatorLight = getHardwareDevice(ServoImplEx.class, "indicatorLight");
+        HardwareDevices.indicatorLightFrontLeft = getHardwareDevice(ServoImplEx.class, "indicatorLightFrontLeft");
+        HardwareDevices.indicatorLightFrontRight = getHardwareDevice(ServoImplEx.class, "indicatorLightFrontRight");
+        HardwareDevices.indicatorLightBack = getHardwareDevice(ServoImplEx.class, "indicatorLightBack");
 
         if (Constants.TURRET_ACTIVE) {
             HardwareDevices.turretFlywheelMaster = getHardwareDevice(DcMotorImplEx.class, "turretFlywheelMaster");
@@ -169,6 +181,15 @@ public class RobotContainer {
                     addRetainedTelemetry("WARNING: Swerve Servo " + i + " is connected to port " + HardwareDevices.swerveServos[i].getPortNumber() + ", should be port " + i, null);
                 }
             }
+
+            drivetrain = new Drivetrain(this);
+            headingPID = new HeadingPID(this);
+            indicatorLightFrontLeft = new IndicatorLight(this, HardwareDevices.indicatorLightFrontLeft);
+            indicatorLightFrontRight = new IndicatorLight(this, HardwareDevices.indicatorLightFrontRight);
+            indicatorLightBack = new IndicatorLight(this, HardwareDevices.indicatorLightBack);
+            turret = new Turret(this);
+            turretFlywheel = new LinkedMotors(HardwareDevices.turretFlywheelMaster, HardwareDevices.turretFlywheelSlave);
+            intake = new Intake(this);
 
             drivetrainUpdater.start();
         }
@@ -368,13 +389,4 @@ public class RobotContainer {
         }
         return sum / loopTimes.size();
     }
-
-    public Drivetrain drivetrain = new Drivetrain(this);
-
-    public HeadingPID headingPID = new HeadingPID(this);
-    public IndicatorLight indicatorLight = new IndicatorLight();
-    public Turret turret = new Turret(this);
-    public LinkedMotors turretFlywheel = new LinkedMotors(HardwareDevices.turretFlywheelMaster, HardwareDevices.turretFlywheelSlave);
-    public Intake intake = new Intake(this);
-
 }
