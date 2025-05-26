@@ -213,6 +213,14 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
             normalizedAngle -= 360;
         }
 
+        // On this edge case the servo will not move. If fixing the problem is less expensive than this, please do so.
+        if (normalizedAngle == 90) {
+            normalizedAngle = 89.999;
+        }
+        if (normalizedAngle == -90 || normalizedAngle == -180) {
+            normalizedAngle += 0.001;
+        }
+
         return normalizedAngle;
     }
 

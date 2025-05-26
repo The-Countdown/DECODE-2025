@@ -46,11 +46,13 @@ public class TeleOp extends OpMode {
         gamepadEx1 = new GamepadWrapper(gamepad1);
         gamepadEx2 = new GamepadWrapper(gamepad2);
         Status.opModeIsActive = true;
-        robotContainer.loopTimer.reset();
-        turretAccelerationTimer.reset();
+        Status.lightsOn = true;
+        Status.isDrivingActive = true;
         if (RobotContainer.HardwareDevices.pinpoint.getDeviceStatus() != GoBildaPinpoint.DeviceStatus.READY) {
             robotContainer.addRetainedTelemetry("WARNING, PINPOINT STATUS:", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
         }
+        robotContainer.loopTimer.reset();
+        turretAccelerationTimer.reset();
     }
 
     @Override
@@ -58,6 +60,7 @@ public class TeleOp extends OpMode {
         CURRENT_LOOP_TIME_MS = robotContainer.updateLoopTimeTracking();
         CURRENT_LOOP_TIME_AVG_MS = robotContainer.getRollingAverageLoopTime();
         robotContainer.refreshData();
+        robotContainer.delayedActionManager.update();
         gamepadEx1.update();
         gamepadEx2.update();
 
@@ -71,21 +74,23 @@ public class TeleOp extends OpMode {
             currentServo = 3;
         }
 
-        if (Constants.MECANUM_ACTIVE) {
-            robotContainer.drivetrain.mecanumDrive(
-                    robotContainer.drivetrain.joystickScaler(gamepad1.left_stick_y),
-                    robotContainer.drivetrain.joystickScaler(gamepad1.left_stick_x),
-                    robotContainer.drivetrain.joystickScaler(gamepad1.right_stick_x),
-                    gamepad1.right_trigger,
-                    gamepad1.left_trigger
-            );
-        } else {
-            robotContainer.drivetrain.swerveDirectionalInput(
-                    robotContainer.drivetrain.joystickScaler(gamepad1.left_stick_x),
-                    robotContainer.drivetrain.joystickScaler(gamepad1.left_stick_y),
-                    robotContainer.drivetrain.joystickScaler(gamepad1.right_stick_x),
-                    fieldOriented
-            );
+        if (Status.isDrivingActive) {
+            if (Constants.MECANUM_ACTIVE) {
+                robotContainer.drivetrain.mecanumDrive(
+                        robotContainer.drivetrain.joystickScaler(gamepad1.left_stick_y),
+                        robotContainer.drivetrain.joystickScaler(gamepad1.left_stick_x),
+                        robotContainer.drivetrain.joystickScaler(gamepad1.right_stick_x),
+                        gamepad1.right_trigger,
+                        gamepad1.left_trigger
+                );
+            } else {
+                robotContainer.drivetrain.swerveDirectionalInput(
+                        robotContainer.drivetrain.joystickScaler(gamepad1.left_stick_x),
+                        robotContainer.drivetrain.joystickScaler(gamepad1.left_stick_y),
+                        robotContainer.drivetrain.joystickScaler(gamepad1.right_stick_x),
+                        fieldOriented
+                );
+            }
         }
 
         if (Constants.TURRET_ACTIVE) {
@@ -115,15 +120,19 @@ public class TeleOp extends OpMode {
             }
         }
 
-        if (gamepadEx1.guide.isHeldFor(2)) {
-            if (Status.lightsOn) {
-                robotContainer.indicatorLightBack.flashingReset();
-                robotContainer.indicatorLightFrontLeft.flashingReset();
-                robotContainer.indicatorLightFrontRight.flashingReset();
-                Status.lightsOn = false;
-            } else {
-                Status.lightsOn = true;
-            }
+        if (gamepadEx1.guide.isHeldFor(2) && Status.lightsOn) {
+            robotContainer.indicatorLightBack.flashingReset();
+            robotContainer.indicatorLightFrontLeft.flashingReset();
+            robotContainer.indicatorLightFrontRight.flashingReset();
+            Status.lightsOn = false;
+            robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
+            Status.isDrivingActive = false;
+        }
+
+        if (gamepadEx1.guide.wasJustPressed() && !Status.lightsOn) {
+            Status.lightsOn = true;
+            robotContainer.delayedActionManager.schedule(() -> Status.isDrivingActive = true, 1000);
+            Status.isDrivingActive = true;
         }
 
         if (!Status.lightsOn) {
@@ -156,8 +165,6 @@ public class TeleOp extends OpMode {
                 robotContainer.indicatorLightBack.rainbowReset();
             }
         }
-
-
 
         robotContainer.opMode.telemetry.addData("Control Hub Voltage", robotContainer.getVoltage(Constants.CONTROL_HUB_INDEX) + " V");
         robotContainer.opMode.telemetry.addData("Expansion Hub Voltage", robotContainer.getVoltage(Constants.EXPANSION_HUB_INDEX) + " V");

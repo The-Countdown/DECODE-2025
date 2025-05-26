@@ -1,8 +1,5 @@
 package org.firstinspires.ftc.teamcode.main;
 
-import android.os.Handler;
-import android.os.Looper;
-
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
@@ -28,6 +25,7 @@ import org.firstinspires.ftc.teamcode.other.GoBildaPinpoint;
 import org.firstinspires.ftc.teamcode.other.IndicatorLight;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Turret;
+import org.firstinspires.ftc.teamcode.util.DelayedActionManager;
 import org.firstinspires.ftc.teamcode.util.LinkedMotors;
 
 import java.util.ArrayList;
@@ -52,10 +50,10 @@ public class RobotContainer {
     public final ElapsedTime loopTimer = new ElapsedTime();
     private final ArrayList<String> retainedTelemetryCaptions = new ArrayList<>();
     private final ArrayList<Object> retainedTelemetryValues = new ArrayList<>();
-    private final Handler handler = new Handler(Looper.getMainLooper());
     public final SwerveModule[] swerveModules = new SwerveModule[Constants.NUM_SWERVE_MOTORS];
     public SwervePIDF[] swerveServosPIDF = new SwervePIDF[Constants.NUM_SWERVE_SERVOS];
     public DrivetrainUpdater drivetrainUpdater = new DrivetrainUpdater(this);
+    public DelayedActionManager delayedActionManager = new DelayedActionManager();
     public Drivetrain drivetrain;
     public HeadingPID headingPID;
     public IndicatorLight indicatorLightFrontLeft;
@@ -237,44 +235,6 @@ public class RobotContainer {
         for (int i = 0; i < retainedTelemetryCaptions.size(); i++) {
             telemetry.addData(retainedTelemetryCaptions.get(i), retainedTelemetryValues.get(i));
         }
-    }
-
-    /**
-     * Runs a sequence of actions with specified delays between them.
-     * This method takes a list of actions (Runnable objects) and a corresponding list of delays.
-     * It ensures that each action is executed after the specified delay from the previous action.
-     *
-     * @param actions A list of Runnable actions to be executed in sequence.
-     * @param delays  A list of delay times (in milliseconds) corresponding to each action.
-     *                The size of this list must be the same as the 'actions' list.
-     * @throws IllegalArgumentException If the 'actions' and 'delays' lists have different lengths.
-     */
-    public void runActionSequence(List<Runnable> actions, List<Long> delays) {
-        if (actions.size() != delays.size()) {
-            throw new IllegalArgumentException("Actions and delays must have the same length.");
-        }
-        // Start the recursive process of running actions with delays, starting at index 0.
-        runActionSequenceInternal(actions, delays, 0);
-    }
-    /**
-     * Internal recursive method to run the action sequence.
-     * This method recursively executes the actions in the 'actions' list with the delays specified
-     * in the 'delays' list. It uses a Handler to schedule each action to run after the specified delay.
-     *
-     * @param actions A list of Runnable actions to be executed.
-     * @param delays  A list of delay times (in milliseconds) for each action.
-     * @param index   The current index of the action and delay to be processed.
-     */
-    private void runActionSequenceInternal(List<Runnable> actions, List<Long> delays, int index) {
-        // Base case: If the index is past the end of the list, we're done.
-        if (index >= actions.size()) return;
-
-        // Run the action at the current index.
-        actions.get(index).run();
-
-        // Schedule the next action to run after the specified delay.
-        // Recursively call this method for the next action (index + 1).
-        handler.postDelayed(() -> runActionSequenceInternal(actions, delays, index + 1), delays.get(index));
     }
 
     /**

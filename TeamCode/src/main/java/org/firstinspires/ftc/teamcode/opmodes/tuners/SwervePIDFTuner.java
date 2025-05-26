@@ -63,11 +63,11 @@ public class SwervePIDFTuner extends OpMode {
 
         if (targetTimer.seconds() < 5) {
             for (int i = 0; i < Constants.NUM_SWERVE_SERVOS; i++) {
-                robotContainer.swerveModules[i].servo.setTargetAngle(90.1);
+                robotContainer.swerveModules[i].servo.setTargetAngle(90);
             }
         } else if (targetTimer.seconds() >= 5 && targetTimer.seconds() < 10) {
             for (int i = 0; i < Constants.NUM_SWERVE_SERVOS; i++) {
-                robotContainer.swerveModules[i].servo.setTargetAngle(-89.9);
+                robotContainer.swerveModules[i].servo.setTargetAngle(-90);
             }
         } else {
             targetTimer.reset();
