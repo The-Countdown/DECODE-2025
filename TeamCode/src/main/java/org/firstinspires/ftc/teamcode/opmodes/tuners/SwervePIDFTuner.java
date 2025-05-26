@@ -11,6 +11,8 @@ import org.firstinspires.ftc.teamcode.other.GoBildaPinpoint;
 import org.firstinspires.ftc.teamcode.other.PinpointUpdater;
 import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
 
+import java.util.Objects;
+
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "SwervePIDFTuner", group = "TeleOp")
 public class SwervePIDFTuner extends OpMode {
     public static double CURRENT_LOOP_TIME_AVG_MS;
@@ -45,7 +47,7 @@ public class SwervePIDFTuner extends OpMode {
         gamepadEx1 = new GamepadWrapper(gamepad1);
         gamepadEx2 = new GamepadWrapper(gamepad2);
         Status.opModeIsActive = true;
-        robotContainer.loopTimer.reset();
+        Objects.requireNonNull(robotContainer.loopTimers.get("teleOp")).reset();
         if (RobotContainer.HardwareDevices.pinpoint.getDeviceStatus() != GoBildaPinpoint.DeviceStatus.READY) {
             robotContainer.addRetainedTelemetry("WARNING, PINPOINT STATUS:", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
         }
@@ -54,12 +56,11 @@ public class SwervePIDFTuner extends OpMode {
 
     @Override
     public void loop() {
-        CURRENT_LOOP_TIME_MS = robotContainer.updateLoopTimeTracking();
-        CURRENT_LOOP_TIME_AVG_MS = robotContainer.getRollingAverageLoopTime();
+        CURRENT_LOOP_TIME_MS = robotContainer.updateLoopTime("teleOp");
+        CURRENT_LOOP_TIME_AVG_MS = robotContainer.getRollingAverageLoopTime("teleOp");
         robotContainer.refreshData();
         gamepadEx1.update();
         gamepadEx2.update();
-
 
         if (targetTimer.seconds() < 5) {
             for (int i = 0; i < Constants.NUM_SWERVE_SERVOS; i++) {
@@ -94,8 +95,6 @@ public class SwervePIDFTuner extends OpMode {
         robotContainer.opMode.telemetry.addLine();
         robotContainer.displayRetainedTelemetry();
         robotContainer.opMode.telemetry.update();
-
-        RobotContainer.HardwareDevices.pinpoint.update();
     }
 
     @Override

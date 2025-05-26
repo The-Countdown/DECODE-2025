@@ -15,6 +15,8 @@ import org.firstinspires.ftc.teamcode.main.Status;
  * improving efficiency.
  */
 public class DrivetrainUpdater extends Thread {
+    public double CURRENT_LOOP_TIME_MS = 0;
+    public double CURRENT_LOOP_TIME_AVG_MS = 0;
     private final RobotContainer robotContainer;
     private final double[] currentPowers = new double[4];
     private final ElapsedTime deltaTimer = new ElapsedTime();
@@ -37,20 +39,27 @@ public class DrivetrainUpdater extends Thread {
         while (Status.opModeIsActive) {
             robotContainer.refreshData();
 
+            CURRENT_LOOP_TIME_MS = robotContainer.updateLoopTime("drivetrainUpdater");
+            CURRENT_LOOP_TIME_AVG_MS = robotContainer.getRollingAverageLoopTime("drivetrainUpdater");
+
             double deltaTime = deltaTimer.seconds();
             deltaTimer.reset();
 
             for (int i = 0; i < robotContainer.swerveModules.length; i++) {
                 double target = robotContainer.swerveModules[i].motor.targetPower;
 
-                double maxDelta = Constants.MAX_DRIVE_ACCELERATION * deltaTime;
-                double error = target - currentPowers[i];
-
-                if (!(error < 0)) {
-                    double delta = Math.signum(error) * Math.min(Math.abs(error), maxDelta);
-                    currentPowers[i] += delta;
+                if (Math.abs(target) < Constants.ZERO_POWER_TOLERANCE) {
+                    currentPowers[i] = 0;
                 } else {
-                    currentPowers[i] = target;
+                    double error = target - currentPowers[i];
+                    double maxDelta = Constants.MAX_DRIVE_ACCELERATION * deltaTime;
+
+                    if (error > 0) {
+                        double delta = Math.min(error, maxDelta);
+                        currentPowers[i] += delta;
+                    } else {
+                        currentPowers[i] = target;
+                    }
                 }
 
                 double acceleratedMotorPower = currentPowers[i];
@@ -61,12 +70,13 @@ public class DrivetrainUpdater extends Thread {
 
                     robotContainer.swerveModules[i].motor.setPower(acceleratedMotorPower);
                 } else {
-                    robotContainer.swerveModules[i].servo.setPower(-robotContainer.swerveServosPIDF[i].calculate());
+                    robotContainer.swerveModules[i].servo.setPower(robotContainer.swerveServosPIDF[i].calculate());
                     Status.swerveServoStatus.put(i, Status.ServoStatus.MOVING);
 
                     robotContainer.swerveModules[i].motor.setPower(acceleratedMotorPower * Math.abs(Math.cos(Math.toRadians(robotContainer.swerveServosPIDF[i].getError()))));
                 }
             }
+            Thread.yield();
         }
     }
 }

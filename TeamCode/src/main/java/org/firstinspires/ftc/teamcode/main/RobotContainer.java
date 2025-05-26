@@ -23,14 +23,17 @@ import org.firstinspires.ftc.teamcode.drivetrain.SwerveModule;
 import org.firstinspires.ftc.teamcode.drivetrain.SwervePIDF;
 import org.firstinspires.ftc.teamcode.other.GoBildaPinpoint;
 import org.firstinspires.ftc.teamcode.other.IndicatorLight;
+import org.firstinspires.ftc.teamcode.other.PinpointUpdater;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.util.DelayedActionManager;
 import org.firstinspires.ftc.teamcode.util.LinkedMotors;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The Robot class serves as the central manager for all robot hardware and high-level operations.
@@ -46,13 +49,14 @@ public class RobotContainer {
     public HardwareMap hardwareMap;
     public Telemetry telemetry;
     public boolean isRunning = false;
-    public final LinkedList<Double> loopTimes = new LinkedList<>();
-    public final ElapsedTime loopTimer = new ElapsedTime();
+    public final Map<String, LinkedList<Double>> loopTimesMap = new HashMap<>();
+    public final Map<String, ElapsedTime> loopTimers = new HashMap<>();
     private final ArrayList<String> retainedTelemetryCaptions = new ArrayList<>();
     private final ArrayList<Object> retainedTelemetryValues = new ArrayList<>();
     public final SwerveModule[] swerveModules = new SwerveModule[Constants.NUM_SWERVE_MOTORS];
     public SwervePIDF[] swerveServosPIDF = new SwervePIDF[Constants.NUM_SWERVE_SERVOS];
-    public DrivetrainUpdater drivetrainUpdater = new DrivetrainUpdater(this);
+    public DrivetrainUpdater drivetrainUpdater;
+    public PinpointUpdater pinpointUpdater;
     public DelayedActionManager delayedActionManager = new DelayedActionManager();
     public Drivetrain drivetrain;
     public HeadingPID headingPID;
@@ -189,7 +193,9 @@ public class RobotContainer {
             turretFlywheel = new LinkedMotors(HardwareDevices.turretFlywheelMaster, HardwareDevices.turretFlywheelSlave);
             intake = new Intake(this);
 
-            drivetrainUpdater.start();
+            registerLoopTimer("teleOp");
+            registerLoopTimer("drivetrainUpdater");
+            registerLoopTimer("pinpointUpdater");
         }
     }
 
@@ -313,40 +319,36 @@ public class RobotContainer {
         return selectedHub.getCurrent(CurrentUnit.AMPS);
     }
 
-    /**
-     * Updates the loop time tracking with the current loop time.
-     * Should be ran at the start of the loop
-     * This method:
-     *   - Calculates the current loop time.
-     *   - Maintains the rolling average.
-     *   - Resets the loop timer.
-     * @return The time taken for the current loop (in milliseconds).
-     */
-    public double updateLoopTimeTracking() {
-        double loopTimeMs = loopTimer.milliseconds();
-        loopTimer.reset();
-
-        loopTimes.add(loopTimeMs);
-        if (loopTimes.size() > Constants.LOOP_AVERAGE_WINDOW_SIZE) {
-            loopTimes.removeFirst();
-        }
-
-        return loopTimeMs;
+    public void registerLoopTimer(String name) {
+        loopTimesMap.put(name, new LinkedList<>());
+        loopTimers.put(name, new ElapsedTime());
     }
 
     /**
-     * Returns the rolling average loop time in milliseconds.
-     * Call at the end of the loop
-     * @return The rolling average loop time.
+     * Call at the top of your named loop.
+     * @return The elapsed time (ms) since last call for this name.
      */
-    public double getRollingAverageLoopTime() {
-        if (loopTimes.isEmpty()) {
-            return 0;
+    public double updateLoopTime(String name) {
+        ElapsedTime timer = loopTimers.get(name);
+        LinkedList<Double> times = loopTimesMap.get(name);
+        if (timer == null || times == null) {
+            throw new IllegalArgumentException("LoopTimer not registered: " + name);
         }
+        double dt = timer.milliseconds();
+        timer.reset();
+        times.add(dt);
+        if (times.size() > Constants.LOOP_AVERAGE_WINDOW_SIZE) {
+            times.removeFirst();
+        }
+        return dt;
+    }
+
+    /** Call anywhere to get the rolling average for that loop name. */
+    public double getRollingAverageLoopTime(String name) {
+        LinkedList<Double> times = loopTimesMap.get(name);
+        if (times == null || times.isEmpty()) return 0;
         double sum = 0;
-        for (double time : loopTimes) {
-            sum += time;
-        }
-        return sum / loopTimes.size();
+        for (double t : times) sum += t;
+        return sum / times.size();
     }
 }

@@ -155,6 +155,8 @@ public class Constants {
     //power per second
     public static double MAX_DRIVE_ACCELERATION = 1;
 
+    public static double ZERO_POWER_TOLERANCE = 0.03;
+
     public static double TURRET_ACCELERATION_TIME_SECONDS = 3;
 
     // will not update if TURRET_ACCELERATION_TIME_SECONDS is changed in ftc dashboard

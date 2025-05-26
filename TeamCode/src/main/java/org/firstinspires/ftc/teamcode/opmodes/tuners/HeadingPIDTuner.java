@@ -11,6 +11,8 @@ import org.firstinspires.ftc.teamcode.other.GoBildaPinpoint;
 import org.firstinspires.ftc.teamcode.other.PinpointUpdater;
 import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
 
+import java.util.Objects;
+
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "HeadingPIDTuner", group = "TeleOp")
 public class HeadingPIDTuner extends OpMode {
     public static double CURRENT_LOOP_TIME_AVG_MS;
@@ -45,7 +47,7 @@ public class HeadingPIDTuner extends OpMode {
         gamepadEx1 = new GamepadWrapper(gamepad1);
         gamepadEx2 = new GamepadWrapper(gamepad2);
         Status.opModeIsActive = true;
-        robotContainer.loopTimer.reset();
+        Objects.requireNonNull(robotContainer.loopTimers.get("teleOp")).reset();
         if (RobotContainer.HardwareDevices.pinpoint.getDeviceStatus() != GoBildaPinpoint.DeviceStatus.READY) {
             robotContainer.addRetainedTelemetry("WARNING, PINPOINT STATUS:", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
         }
@@ -54,8 +56,8 @@ public class HeadingPIDTuner extends OpMode {
 
     @Override
     public void loop() {
-        CURRENT_LOOP_TIME_MS = robotContainer.updateLoopTimeTracking();
-        CURRENT_LOOP_TIME_AVG_MS = robotContainer.getRollingAverageLoopTime();
+        CURRENT_LOOP_TIME_MS = robotContainer.updateLoopTime("teleOp");
+        CURRENT_LOOP_TIME_AVG_MS = robotContainer.getRollingAverageLoopTime("teleOp");
         robotContainer.refreshData();
         gamepadEx1.update();
         gamepadEx2.update();
@@ -83,8 +85,6 @@ public class HeadingPIDTuner extends OpMode {
         robotContainer.opMode.telemetry.addData("Loop Time", (int) CURRENT_LOOP_TIME_MS + " ms");
         robotContainer.displayRetainedTelemetry();
         robotContainer.opMode.telemetry.update();
-
-        RobotContainer.HardwareDevices.pinpoint.update();
     }
 
     @Override
