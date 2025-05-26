@@ -54,8 +54,8 @@ public class DrivetrainUpdater extends Thread {
                     double error = target - currentPowers[i];
                     double maxDelta = Constants.MAX_DRIVE_ACCELERATION * deltaTime;
 
-                    if (error > 0) {
-                        double delta = Math.min(error, maxDelta);
+                    if (Math.signum(error) == Math.signum(target) && Math.signum(target) != 0) {
+                        double delta = Math.copySign(Math.min(Math.abs(error), maxDelta), error);
                         currentPowers[i] += delta;
                     } else {
                         currentPowers[i] = target;

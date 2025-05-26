@@ -4,7 +4,6 @@ import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.other.PinpointUpdater;
-import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
 
 import java.util.Arrays;
 
@@ -13,7 +12,6 @@ import java.util.Arrays;
  */
 public class Drivetrain extends RobotContainer.HardwareDevices {
     private final RobotContainer robotContainer;
-    private final GamepadWrapper.ButtonReader rXtoggle = new GamepadWrapper.ButtonReader();
 
     /**
      * Constructor for the Drivetrain class.
@@ -38,12 +36,11 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
 
         double rotationalMagnitude = Math.abs(rX);
 
-        boolean noRotationInput = rX == 0;
-        rXtoggle.update(!noRotationInput);
-        if (noRotationInput) {
-            if (rXtoggle.wasJustReleased()) {
-                robotContainer.headingPID.setTargetHeading(PinpointUpdater.currentHeading);
-            }
+        if (robotContainer.gamepadEx1.rightStickX.wasJustReleased()) {
+            robotContainer.headingPID.setTargetHeading(PinpointUpdater.currentHeading);
+        }
+
+        if (rX == 0) {
             rotationalMagnitude = robotContainer.headingPID.calculate(PinpointUpdater.currentHeading);
         }
 
@@ -231,6 +228,6 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
      * @return the scaled power
      */
     public double joystickScaler(double input) {
-        return Math.max(-1, Math.min(1, Math.pow(Math.abs(input), Constants.JOYSTICK_SCALER_EXPONENT) * input));
+        return Math.pow(Math.abs(input), Constants.JOYSTICK_SCALER_EXPONENT) * input;
     }
 }

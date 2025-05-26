@@ -4,19 +4,15 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.drivetrain.DrivetrainUpdater;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.other.PinpointUpdater;
-import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "TeleOp")
 public class TeleOp extends OpMode {
     public static double CURRENT_LOOP_TIME_AVG_MS;
     private RobotContainer robotContainer;
-    public GamepadWrapper gamepadEx1;
-    public GamepadWrapper gamepadEx2;
     public static boolean fieldOriented = false;
     public static double CURRENT_LOOP_TIME_MS;
     private static final ElapsedTime turretAccelerationTimer = new ElapsedTime();
@@ -43,17 +39,11 @@ public class TeleOp extends OpMode {
 
     @Override
     public void start() {
-        gamepadEx1 = new GamepadWrapper(gamepad1);
-        gamepadEx2 = new GamepadWrapper(gamepad2);
+        robotContainer.start(this);
 
         Status.opModeIsActive = true;
         Status.lightsOn = true;
         Status.isDrivingActive = true;
-
-        robotContainer.pinpointUpdater = new PinpointUpdater(robotContainer);
-        robotContainer.pinpointUpdater.start();
-        robotContainer.drivetrainUpdater = new DrivetrainUpdater(robotContainer);
-        robotContainer.drivetrainUpdater.start();
 
         turretAccelerationTimer.reset();
     }
@@ -64,8 +54,8 @@ public class TeleOp extends OpMode {
         CURRENT_LOOP_TIME_AVG_MS = robotContainer.getRollingAverageLoopTime("teleOp");
         robotContainer.refreshData();
         robotContainer.delayedActionManager.update();
-        gamepadEx1.update();
-        gamepadEx2.update();
+        robotContainer.gamepadEx1.update();
+        robotContainer.gamepadEx2.update();
 
         if (gamepad1.dpad_up) {
             currentServo = 0;
@@ -105,15 +95,15 @@ public class TeleOp extends OpMode {
                 robotContainer.turret.setTurretSpinPower(0);
             }
 
-            if (gamepadEx1.a.wasJustPressed() || gamepadEx1.b.wasJustPressed()) {
+            if (robotContainer.gamepadEx1.a.wasJustPressed() || robotContainer.gamepadEx1.b.wasJustPressed()) {
                 turretAccelerationTimer.reset();
             }
-            if (gamepadEx1.a.isHeld()) {
+            if (robotContainer.gamepadEx1.a.isHeld()) {
                 robotContainer.turret.flywheel.setVelocity(
                         turretAccelerationTimer.nanoseconds()
                                 * Constants.TURRET_ACCELERATION_MULTIPLIER_NANO
                 );
-            } else if (gamepadEx1.b.isHeld()) {
+            } else if (robotContainer.gamepadEx1.b.isHeld()) {
                 robotContainer.turret.flywheel.setVelocity(
                         -turretAccelerationTimer.nanoseconds()
                                 * Constants.TURRET_ACCELERATION_MULTIPLIER_NANO
@@ -123,7 +113,7 @@ public class TeleOp extends OpMode {
             }
         }
 
-        if (gamepadEx1.guide.isHeldFor(2) && Status.lightsOn) {
+        if (robotContainer.gamepadEx1.guide.isHeldFor(2) && Status.lightsOn) {
             robotContainer.indicatorLightBack.flashingReset();
             robotContainer.indicatorLightFrontLeft.flashingReset();
             robotContainer.indicatorLightFrontRight.flashingReset();
@@ -132,7 +122,7 @@ public class TeleOp extends OpMode {
             Status.isDrivingActive = false;
         }
 
-        if (gamepadEx1.guide.wasJustPressed() && !Status.lightsOn) {
+        if (robotContainer.gamepadEx1.guide.wasJustPressed() && !Status.lightsOn) {
             Status.lightsOn = true;
             robotContainer.delayedActionManager.schedule(() -> Status.isDrivingActive = true, 1000);
         }
@@ -163,7 +153,7 @@ public class TeleOp extends OpMode {
                 robotContainer.indicatorLightBack.setColor(Constants.LED_COLOR.RED);
             }
 
-            if (gamepadEx1.leftStickY.wasJustReleased()) {
+            if (robotContainer.gamepadEx1.leftStickY.wasJustReleased()) {
                 robotContainer.indicatorLightBack.rainbowReset();
             }
         }

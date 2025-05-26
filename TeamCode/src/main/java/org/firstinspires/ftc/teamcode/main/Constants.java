@@ -106,7 +106,7 @@ public class Constants {
      */
     // TODO: Tune
     public static double
-            SWERVE_SERVO_KP = 0.01,
+            SWERVE_SERVO_KP = 0.0075,
             SWERVE_SERVO_KI = 0,
                 SWERVE_SERVO_I_MAX = 0,
             SWERVE_SERVO_KD = 0.0003,
@@ -114,7 +114,7 @@ public class Constants {
 
     // TODO: Tune
     public static double
-            HEADING_KP = 0,
+            HEADING_KP = 0.04,
             HEADING_KI = 0,
                 HEADING_I_MAX = 0,
             HEADING_KD = 0;
@@ -149,7 +149,7 @@ public class Constants {
     public static final int WHEEL_CALCULATED_MAX_RPM = 861;
 
     // TODO: Tune if needed
-    public static double JOYSTICK_SCALER_EXPONENT = 1.33;
+    public static double JOYSTICK_SCALER_EXPONENT = 0.4;
 
     //power per second
     public static double MAX_DRIVE_ACCELERATION = 1;

@@ -9,7 +9,6 @@ import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.other.GoBildaPinpoint;
 import org.firstinspires.ftc.teamcode.other.PinpointUpdater;
-import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
 
 import java.util.Objects;
 
@@ -17,8 +16,6 @@ import java.util.Objects;
 public class HeadingPIDTuner extends OpMode {
     public static double CURRENT_LOOP_TIME_AVG_MS;
     private RobotContainer robotContainer;
-    public GamepadWrapper gamepadEx1;
-    public GamepadWrapper gamepadEx2;
     public static double CURRENT_LOOP_TIME_MS;
     private final ElapsedTime targetTimer = new ElapsedTime();
 
@@ -44,8 +41,7 @@ public class HeadingPIDTuner extends OpMode {
 
     @Override
     public void start() {
-        gamepadEx1 = new GamepadWrapper(gamepad1);
-        gamepadEx2 = new GamepadWrapper(gamepad2);
+        robotContainer.start(this);
         Status.opModeIsActive = true;
         Objects.requireNonNull(robotContainer.loopTimers.get("teleOp")).reset();
         if (RobotContainer.HardwareDevices.pinpoint.getDeviceStatus() != GoBildaPinpoint.DeviceStatus.READY) {
@@ -59,8 +55,8 @@ public class HeadingPIDTuner extends OpMode {
         CURRENT_LOOP_TIME_MS = robotContainer.updateLoopTime("teleOp");
         CURRENT_LOOP_TIME_AVG_MS = robotContainer.getRollingAverageLoopTime("teleOp");
         robotContainer.refreshData();
-        gamepadEx1.update();
-        gamepadEx2.update();
+        robotContainer.gamepadEx1.update();
+        robotContainer.gamepadEx2.update();
 
         if (targetTimer.seconds() < 5) {
             robotContainer.headingPID.setTargetHeading(90);
@@ -69,6 +65,10 @@ public class HeadingPIDTuner extends OpMode {
         } else {
             targetTimer.reset();
         }
+
+        double power = robotContainer.headingPID.calculate(PinpointUpdater.currentHeading);
+        double[] powers = {power,power,power,power};
+        robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_ROTATION_FORMATION_DEGREES, powers);
 
         robotContainer.indicatorLightFrontLeft.rainbow();
 
@@ -83,6 +83,12 @@ public class HeadingPIDTuner extends OpMode {
         robotContainer.opMode.telemetry.addLine();
         robotContainer.opMode.telemetry.addData("Avg Loop Time", (int) CURRENT_LOOP_TIME_AVG_MS + " ms");
         robotContainer.opMode.telemetry.addData("Loop Time", (int) CURRENT_LOOP_TIME_MS + " ms");
+        robotContainer.opMode.telemetry.addLine();
+        robotContainer.opMode.telemetry.addData("Heading PID Target", robotContainer.headingPID.getTargetHeading());
+        robotContainer.opMode.telemetry.addData("Heading PID Target Reached", Status.robotHeadingTargetReached);
+        robotContainer.opMode.telemetry.addData("Heading PID Output", robotContainer.headingPID.calculate(PinpointUpdater.currentHeading));
+        robotContainer.opMode.telemetry.addData("Right Stick X", gamepad1.right_stick_x);
+        robotContainer.opMode.telemetry.addLine();
         robotContainer.displayRetainedTelemetry();
         robotContainer.opMode.telemetry.update();
     }

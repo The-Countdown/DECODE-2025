@@ -46,6 +46,8 @@ public class HeadingPID {
             lastError = error;
             Status.robotHeadingTargetReached = true;
             return 0;
+        } else {
+            Status.robotHeadingTargetReached = false;
         }
 
         p = Constants.HEADING_KP * error;

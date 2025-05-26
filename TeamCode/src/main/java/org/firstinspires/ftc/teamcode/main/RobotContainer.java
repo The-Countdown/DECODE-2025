@@ -27,6 +27,7 @@ import org.firstinspires.ftc.teamcode.other.PinpointUpdater;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.util.DelayedActionManager;
+import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
 import org.firstinspires.ftc.teamcode.util.LinkedMotors;
 
 import java.util.ArrayList;
@@ -49,6 +50,8 @@ public class RobotContainer {
     public HardwareMap hardwareMap;
     public Telemetry telemetry;
     public boolean isRunning = false;
+    public GamepadWrapper gamepadEx1;
+    public GamepadWrapper gamepadEx2;
     public final Map<String, LinkedList<Double>> loopTimesMap = new HashMap<>();
     public final Map<String, ElapsedTime> loopTimers = new HashMap<>();
     private final ArrayList<String> retainedTelemetryCaptions = new ArrayList<>();
@@ -206,6 +209,15 @@ public class RobotContainer {
         for (LynxModule hub : HardwareDevices.allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }
+    }
+
+    public void start(OpMode opmode) {
+        gamepadEx1 = new GamepadWrapper(opmode.gamepad1);
+        gamepadEx2 = new GamepadWrapper(opmode.gamepad2);
+        pinpointUpdater = new PinpointUpdater(this);
+        pinpointUpdater.start();
+        drivetrainUpdater = new DrivetrainUpdater(this);
+        drivetrainUpdater.start();
     }
 
     /**
