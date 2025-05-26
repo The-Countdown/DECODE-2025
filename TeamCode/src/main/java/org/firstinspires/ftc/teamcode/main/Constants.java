@@ -119,17 +119,16 @@ public class Constants {
                 HEADING_I_MAX = 0,
             HEADING_KD = 0;
 
-    // TODO: Find these values
     public static final double
-            PINPOINT_X_OFFSET_MM = 0,
-            PINPOINT_Y_OFFSET_MM = 0;
+            PINPOINT_X_OFFSET_MM = 145,
+            PINPOINT_Y_OFFSET_MM = -145;
 
     public static final GoBildaPinpoint.GoBildaOdometryPods
             PINPOINT_ODOM_POD = GoBildaPinpoint.GoBildaOdometryPods.goBILDA_4_BAR_POD;
 
     public static final GoBildaPinpoint.EncoderDirection
             PINPOINT_X_ENCODER_DIRECTION = GoBildaPinpoint.EncoderDirection.FORWARD,
-            PINPOINT_Y_ENCODER_DIRECTION = GoBildaPinpoint.EncoderDirection.FORWARD;
+            PINPOINT_Y_ENCODER_DIRECTION = GoBildaPinpoint.EncoderDirection.REVERSED;
 
     public static final double ANALOG_MAX_VOLTAGE = 3.3;
 
