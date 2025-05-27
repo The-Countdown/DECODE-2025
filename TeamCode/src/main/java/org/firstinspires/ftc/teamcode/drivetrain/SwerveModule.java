@@ -89,6 +89,10 @@ public class SwerveModule {
             drivingMotor.setPower(power);
         }
 
+        public void setVelocity(double velocity) {
+            drivingMotor.setVelocity(velocity);
+        }
+
         public void setTargetPower(double power) {
             targetPower = power;
         }

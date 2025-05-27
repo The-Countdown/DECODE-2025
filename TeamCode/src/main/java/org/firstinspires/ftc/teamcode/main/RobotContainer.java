@@ -164,6 +164,7 @@ public class RobotContainer {
                     HardwareDevices.swerveMotors[i].setDirection(DcMotorImplEx.Direction.REVERSE);
                 }
                 HardwareDevices.swerveMotors[i].setZeroPowerBehavior(DcMotorImplEx.ZeroPowerBehavior.BRAKE);
+                HardwareDevices.swerveMotors[i].setMode(DcMotorImplEx.RunMode.RUN_USING_ENCODER);
             }
 
             for (int i = 0; i < swerveModules.length; i++) {

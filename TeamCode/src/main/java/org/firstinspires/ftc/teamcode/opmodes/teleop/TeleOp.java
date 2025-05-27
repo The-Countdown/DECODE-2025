@@ -113,7 +113,7 @@ public class TeleOp extends OpMode {
             }
         }
 
-        if (robotContainer.gamepadEx1.guide.isHeldFor(2) && Status.lightsOn) {
+        if (robotContainer.gamepadEx1.guide.isHeldFor(1) && Status.lightsOn) {
             robotContainer.indicatorLightBack.flashingReset();
             robotContainer.indicatorLightFrontLeft.flashingReset();
             robotContainer.indicatorLightFrontRight.flashingReset();
