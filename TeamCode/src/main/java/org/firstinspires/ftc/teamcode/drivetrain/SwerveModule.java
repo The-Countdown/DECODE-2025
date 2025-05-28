@@ -10,20 +10,19 @@ import org.firstinspires.ftc.teamcode.main.RobotContainer;
 /**
  * Represents a single Swerve Drive Module, encapsulating its motor and servo controls, as well as sensor data.
  *
- *
  * <pre>
  *      Quadrant 1    |   Quadrant 0
  *                    |
  *      ------------------------
  *                    |
  *      Quadrant 2    |   Quadrant 3
+ *</pre>
  *
  *  Like a coordinate plane, the first quadrant is 0, the second is 1, etc.
  *  This is relating to the positions of the modules on the robot
- *
+ * <p>
  *  When indexing from ANY ARRAY IN THIS CODEBASE:
  *  0 - front right, 1 - front left, 2 - back left, 3 - back right
- * </pre>
  */
 public class SwerveModule {
     private final RobotContainer robotContainer;

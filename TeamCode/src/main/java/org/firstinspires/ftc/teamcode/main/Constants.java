@@ -23,7 +23,6 @@ public class Constants {
             )
     );
 
-    public static boolean MECANUM_ACTIVE = false;
     public static boolean TURRET_ACTIVE = false;
     public static boolean SERVO_ANALOG_ACTIVE = true;
 

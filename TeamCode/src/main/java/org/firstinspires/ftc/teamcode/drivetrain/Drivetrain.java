@@ -30,10 +30,6 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
      * @param fieldOriented A boolean indicating whether to use field-oriented driving.
      */
     public void swerveDirectionalInput(double x, double y, double rX, boolean fieldOriented) {
-        if (Constants.MECANUM_ACTIVE) {
-            return;
-        }
-
         double rotationalMagnitude = Math.abs(rX);
 
         if (robotContainer.gamepadEx1.rightStickX.wasJustReleased()) {
@@ -98,10 +94,6 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
      * @param targetPowers An array of target powers for each swerve module.
      */
     public void swerveSetTargets(double[] targetAngles, double[] targetPowers) {
-        if (Constants.MECANUM_ACTIVE) {
-            return;
-        }
-
         if (!Arrays.stream(targetPowers).allMatch(v -> v == 0)) {
             targetPowers = scalePowers(targetPowers);
         }
@@ -128,36 +120,6 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
             robotContainer.swerveModules[i].servo.setTargetAngle(targetAngles[i]);
         }
     }
-
-    public void mecanumDrive(double x, double y, double rX, double rT, double lT) {
-        if (!Constants.MECANUM_ACTIVE) {
-            return;
-        }
-        double yStickLMulti = 0.8;
-        double xStickLMulti = 0.4;
-        double xStickRMulti = 0.4;
-        double[] powers = new double[4];
-
-        double xStickR;
-        double xStickL;
-        double yStickL;
-
-        xStickR = rX * (xStickRMulti + (rT * 0.45) - (lT * 0.1));
-        xStickL = x * (xStickLMulti + (rT * 0.5) - (lT * 0.2));
-        yStickL = y * (-(yStickLMulti + (rT * 0.5) - (lT * 0.2)));
-
-        powers[1] = yStickL + xStickL + xStickR;
-        powers[2] = yStickL - xStickL + xStickR;
-        powers[0] = yStickL - xStickL - xStickR;
-        powers[3] = yStickL + xStickL - xStickR;
-
-        powers = scalePowers(powers);
-
-        RobotContainer.HardwareDevices.driveMotors[1].setPower(powers[1]);
-        RobotContainer.HardwareDevices.driveMotors[2].setPower(powers[2]);
-        RobotContainer.HardwareDevices.driveMotors[0].setPower(powers[0]);
-        RobotContainer.HardwareDevices.driveMotors[3].setPower(powers[3]);
-        }
 
     /**
      * This function scales all the powers to ensure they are within the -1 and 1 ranges.
@@ -222,8 +184,8 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
     }
 
     /**
-     * This funciton scales the power of the joystick to follow a curve, so that it allows for finer adjustments.
-     * It is clamped between -1 and 1 out of caution, although it doesn't need it, it allows for changes to the curve.
+     * This function scales the power of the joystick to follow a curve, so that it allows for finer adjustments.
+     * It allows for changes to the curve with the constant JOYSTICK_SCALER_EXPONENT.
      * @param input the input from the joystick
      * @return the scaled power
      */

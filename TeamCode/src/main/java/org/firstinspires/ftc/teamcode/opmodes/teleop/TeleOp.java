@@ -3,11 +3,9 @@ package org.firstinspires.ftc.teamcode.opmodes.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
-import org.firstinspires.ftc.teamcode.other.PinpointUpdater;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "TeleOp")
 public class TeleOp extends OpMode {
@@ -68,22 +66,12 @@ public class TeleOp extends OpMode {
         }
 
         if (Status.isDrivingActive) {
-            if (Constants.MECANUM_ACTIVE) {
-                robotContainer.drivetrain.mecanumDrive(
-                        robotContainer.drivetrain.joystickScaler(gamepad1.left_stick_y),
-                        robotContainer.drivetrain.joystickScaler(gamepad1.left_stick_x),
-                        robotContainer.drivetrain.joystickScaler(gamepad1.right_stick_x),
-                        gamepad1.right_trigger,
-                        gamepad1.left_trigger
-                );
-            } else {
                 robotContainer.drivetrain.swerveDirectionalInput(
                         robotContainer.drivetrain.joystickScaler(gamepad1.left_stick_x),
                         robotContainer.drivetrain.joystickScaler(gamepad1.left_stick_y),
                         robotContainer.drivetrain.joystickScaler(gamepad1.right_stick_x),
                         fieldOriented
                 );
-            }
         }
 
         if (Constants.TURRET_ACTIVE) {
@@ -113,10 +101,8 @@ public class TeleOp extends OpMode {
             }
         }
 
-        if (robotContainer.gamepadEx1.guide.isHeldFor(1) && Status.lightsOn) {
-            robotContainer.indicatorLightBack.flashingReset();
-            robotContainer.indicatorLightFrontLeft.flashingReset();
-            robotContainer.indicatorLightFrontRight.flashingReset();
+        if (robotContainer.gamepadEx1.guide.isHeldFor(0.75) && Status.lightsOn) {
+            robotContainer.allIndicatorLights.flashingReset();
             Status.lightsOn = false;
             robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
             Status.isDrivingActive = false;
@@ -128,9 +114,7 @@ public class TeleOp extends OpMode {
         }
 
         if (!Status.lightsOn) {
-            robotContainer.indicatorLightBack.flashing(Constants.LED_COLOR.ORANGE, Constants.LED_COLOR.OFF, 8, 2);
-            robotContainer.indicatorLightFrontLeft.flashing(Constants.LED_COLOR.ORANGE, Constants.LED_COLOR.OFF, 8, 2);
-            robotContainer.indicatorLightFrontRight.flashing(Constants.LED_COLOR.ORANGE, Constants.LED_COLOR.OFF, 8, 2);
+            robotContainer.allIndicatorLights.flashing(Constants.LED_COLOR.ORANGE, Constants.LED_COLOR.OFF, 8, 2);
         }
 
         if (Status.lightsOn) {
@@ -146,7 +130,7 @@ public class TeleOp extends OpMode {
             }
 
             if (gamepad1.left_stick_y < -0.1) {
-                robotContainer.indicatorLightBack.rainbow();
+                robotContainer.allIndicatorLights.rainbow();
             } else if (gamepad1.left_stick_y > 0.1) {
                 robotContainer.indicatorLightBack.flashing(Constants.LED_COLOR.RED, Constants.LED_COLOR.WHITE, 2);
             } else {
@@ -154,40 +138,11 @@ public class TeleOp extends OpMode {
             }
 
             if (robotContainer.gamepadEx1.leftStickY.wasJustReleased()) {
-                robotContainer.indicatorLightBack.rainbowReset();
+                robotContainer.allIndicatorLights.rainbowReset();
             }
         }
 
-        robotContainer.opMode.telemetry.addData("Control Hub Voltage", robotContainer.getVoltage(Constants.CONTROL_HUB_INDEX) + " V");
-        robotContainer.opMode.telemetry.addData("Expansion Hub Voltage", robotContainer.getVoltage(Constants.EXPANSION_HUB_INDEX) + " V");
-        robotContainer.opMode.telemetry.addData("Control Hub Current", robotContainer.getCurrent(Constants.CONTROL_HUB_INDEX) + " A");
-        robotContainer.opMode.telemetry.addData("Expansion Hub Current", robotContainer.getCurrent(Constants.EXPANSION_HUB_INDEX) + " A");
-        robotContainer.opMode.telemetry.addLine();
-        robotContainer.opMode.telemetry.addData("Pinpoint X", PinpointUpdater.currentPose.getX(DistanceUnit.CM) + " cm");
-        robotContainer.opMode.telemetry.addData("Pinpoint Y", PinpointUpdater.currentPose.getY(DistanceUnit.CM) + " cm");
-        robotContainer.opMode.telemetry.addData("Pinpoint Heading", PinpointUpdater.currentHeading + "°");
-        robotContainer.opMode.telemetry.addData("PINPOINT STATUS", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
-        robotContainer.opMode.telemetry.addLine();
-        robotContainer.opMode.telemetry.addData("TeleOp Avg Loop Time", (int) CURRENT_LOOP_TIME_AVG_MS + " ms");
-        robotContainer.opMode.telemetry.addData("TeleOp Loop Time", (int) CURRENT_LOOP_TIME_MS + " ms");
-        robotContainer.opMode.telemetry.addLine();
-        robotContainer.opMode.telemetry.addData("DriveTrain Avg Loop Time", (int) robotContainer.drivetrainUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms");
-        robotContainer.opMode.telemetry.addData("DriveTrain Loop Time", (int) robotContainer.drivetrainUpdater.CURRENT_LOOP_TIME_MS + " ms");
-        robotContainer.opMode.telemetry.addLine();
-        robotContainer.opMode.telemetry.addData("Pinpoint Avg Loop Time", (int) robotContainer.pinpointUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms");
-        robotContainer.opMode.telemetry.addData("Pinpoint Loop Time", (int) robotContainer.pinpointUpdater.CURRENT_LOOP_TIME_MS + " ms");
-        if (currentServo >= 0) {
-            robotContainer.opMode.telemetry.addLine();
-            robotContainer.opMode.telemetry.addData("Selected Servo", currentServo);
-            robotContainer.opMode.telemetry.addData("Servo Angle", robotContainer.swerveModules[currentServo].servo.getAngle());
-            robotContainer.opMode.telemetry.addData("Servo Target", robotContainer.swerveServosPIDF[currentServo].getTargetAngle());
-            robotContainer.opMode.telemetry.addData("Servo Set Power", robotContainer.swerveServosPIDF[currentServo].calculate());
-            robotContainer.opMode.telemetry.addData("Servo Error", robotContainer.swerveServosPIDF[currentServo].getError());
-            robotContainer.opMode.telemetry.addData("Motor Target Power", robotContainer.swerveModules[currentServo].motor.targetPower);
-            robotContainer.opMode.telemetry.addData("Motor Current Power", RobotContainer.HardwareDevices.swerveMotors[currentServo].getPower());
-        }
-        robotContainer.displayRetainedTelemetry();
-        robotContainer.opMode.telemetry.update();
+        robotContainer.telemetry(currentServo, CURRENT_LOOP_TIME_MS, CURRENT_LOOP_TIME_AVG_MS);
 
         Thread.yield();
     }

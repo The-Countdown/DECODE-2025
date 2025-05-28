@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.opmodes.tuners;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
@@ -70,27 +69,9 @@ public class HeadingPIDTuner extends OpMode {
         double[] powers = {power,power,power,power};
         robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_ROTATION_FORMATION_DEGREES, powers);
 
-        robotContainer.indicatorLightFrontLeft.rainbow();
+        robotContainer.allIndicatorLights.off();
 
-        robotContainer.opMode.telemetry.addData("Control Hub Voltage", robotContainer.getVoltage(Constants.CONTROL_HUB_INDEX) + " V");
-        robotContainer.opMode.telemetry.addData("Expansion Hub Voltage", robotContainer.getVoltage(Constants.EXPANSION_HUB_INDEX) + " V");
-        robotContainer.opMode.telemetry.addData("Control Hub Current", robotContainer.getCurrent(Constants.CONTROL_HUB_INDEX) + " A");
-        robotContainer.opMode.telemetry.addData("Expansion Hub Current", robotContainer.getCurrent(Constants.EXPANSION_HUB_INDEX) + " A");
-        robotContainer.opMode.telemetry.addLine();
-        robotContainer.opMode.telemetry.addData("Pinpoint X", PinpointUpdater.currentPose.getX(DistanceUnit.CM) + " cm");
-        robotContainer.opMode.telemetry.addData("Pinpoint Y", PinpointUpdater.currentPose.getY(DistanceUnit.CM) + " cm");
-        robotContainer.opMode.telemetry.addData("Pinpoint Heading", PinpointUpdater.currentHeading + "°");
-        robotContainer.opMode.telemetry.addLine();
-        robotContainer.opMode.telemetry.addData("Avg Loop Time", (int) CURRENT_LOOP_TIME_AVG_MS + " ms");
-        robotContainer.opMode.telemetry.addData("Loop Time", (int) CURRENT_LOOP_TIME_MS + " ms");
-        robotContainer.opMode.telemetry.addLine();
-        robotContainer.opMode.telemetry.addData("Heading PID Target", robotContainer.headingPID.getTargetHeading());
-        robotContainer.opMode.telemetry.addData("Heading PID Target Reached", Status.robotHeadingTargetReached);
-        robotContainer.opMode.telemetry.addData("Heading PID Output", robotContainer.headingPID.calculate(PinpointUpdater.currentHeading));
-        robotContainer.opMode.telemetry.addData("Right Stick X", gamepad1.right_stick_x);
-        robotContainer.opMode.telemetry.addLine();
-        robotContainer.displayRetainedTelemetry();
-        robotContainer.opMode.telemetry.update();
+        robotContainer.telemetry(-1, CURRENT_LOOP_TIME_MS, CURRENT_LOOP_TIME_AVG_MS);
     }
 
     @Override

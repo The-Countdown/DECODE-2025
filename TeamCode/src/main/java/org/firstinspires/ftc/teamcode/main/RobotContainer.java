@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.main;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
@@ -22,7 +24,7 @@ import org.firstinspires.ftc.teamcode.drivetrain.HeadingPID;
 import org.firstinspires.ftc.teamcode.drivetrain.SwerveModule;
 import org.firstinspires.ftc.teamcode.drivetrain.SwervePIDF;
 import org.firstinspires.ftc.teamcode.other.GoBildaPinpoint;
-import org.firstinspires.ftc.teamcode.other.IndicatorLight;
+import org.firstinspires.ftc.teamcode.other.IndicatorLighting;
 import org.firstinspires.ftc.teamcode.other.PinpointUpdater;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Turret;
@@ -63,9 +65,10 @@ public class RobotContainer {
     public DelayedActionManager delayedActionManager = new DelayedActionManager();
     public Drivetrain drivetrain;
     public HeadingPID headingPID;
-    public IndicatorLight indicatorLightFrontLeft;
-    public IndicatorLight indicatorLightFrontRight;
-    public IndicatorLight indicatorLightBack;
+    public IndicatorLighting.Light indicatorLightFrontLeft;
+    public IndicatorLighting.Light indicatorLightFrontRight;
+    public IndicatorLighting.Light indicatorLightBack;
+    public IndicatorLighting.Group allIndicatorLights = new IndicatorLighting.Group();
     public Turret turret;
     public LinkedMotors turretFlywheel;
     public Intake intake;
@@ -96,9 +99,6 @@ public class RobotContainer {
         public static AnalogInput[] swerveAnalogs = new AnalogInput[Constants.NUM_SWERVE_ANALOGS];
             public static String[] analogNames = new String[Constants.NUM_SWERVE_ANALOGS];
 
-        public static DcMotorImplEx[] driveMotors = new DcMotorImplEx[4];
-            public static String[] driveMotorNames = new String[4];
-
         // Turret
         public static DcMotorImplEx turretFlywheelMaster;
         public static DcMotorImplEx turretFlywheelSlave;
@@ -115,7 +115,7 @@ public class RobotContainer {
     public RobotContainer(OpMode opMode) {
         this.opMode = opMode;
         this.hardwareMap = opMode.hardwareMap;
-        this.telemetry = opMode.telemetry;
+        this.telemetry = new MultipleTelemetry(opMode.telemetry, FtcDashboard.getInstance().getTelemetry());
 
         HardwareDevices.imu = getHardwareDevice(IMU.class, "imu");
         HardwareDevices.imu.initialize(Constants.imuParameters);
@@ -148,59 +148,53 @@ public class RobotContainer {
             HardwareDevices.turretEncoder = getHardwareDevice(AnalogInput.class, "turretEncoder");
         }
 
-        if (Constants.MECANUM_ACTIVE) {
-            for (int i = 0; i < HardwareDevices.driveMotors.length; i++) {
-                HardwareDevices.driveMotorNames[i] = "driveMotor" + (i);
-                HardwareDevices.driveMotors[i] = getHardwareDevice(DcMotorImplEx.class, HardwareDevices.driveMotorNames[i]);
-                HardwareDevices.driveMotors[i].setZeroPowerBehavior(DcMotorImplEx.ZeroPowerBehavior.BRAKE);
-            }
-            HardwareDevices.driveMotors[1].setDirection(DcMotorImplEx.Direction.REVERSE);
-            HardwareDevices.driveMotors[2].setDirection(DcMotorImplEx.Direction.REVERSE);
-        } else {
-            for (int i = 0; i < HardwareDevices.swerveMotors.length; i++) {
-                HardwareDevices.motorNames[i] = "swerveMotor" + (i);
-                HardwareDevices.swerveMotors[i] = getHardwareDevice(DcMotorImplEx.class, HardwareDevices.motorNames[i]);
-                if (i == 0 || i == 2) { // TODO: Find which motors to reverse
-                    HardwareDevices.swerveMotors[i].setDirection(DcMotorImplEx.Direction.REVERSE);
-                }
-                HardwareDevices.swerveMotors[i].setZeroPowerBehavior(DcMotorImplEx.ZeroPowerBehavior.BRAKE);
-                HardwareDevices.swerveMotors[i].setMode(DcMotorImplEx.RunMode.RUN_USING_ENCODER);
-            }
+        for (int i = 0; i < swerveModules.length; i++) {
+            HardwareDevices.motorNames[i] = "swerveMotor" + (i);
+            HardwareDevices.swerveMotors[i] = getHardwareDevice(DcMotorImplEx.class, HardwareDevices.motorNames[i]);
+            HardwareDevices.servoNames[i] = "swerveServo" + (i);
+            HardwareDevices.swerveServos[i] = getHardwareDevice(CRServoImplEx.class, HardwareDevices.servoNames[i]);
+            HardwareDevices.analogNames[i] = "swerveAnalog" + (i);
+            HardwareDevices.swerveAnalogs[i] = getHardwareDevice(AnalogInput.class, HardwareDevices.analogNames[i]);
 
-            for (int i = 0; i < swerveModules.length; i++) {
-                HardwareDevices.servoNames[i] = "swerveServo" + (i);
-                HardwareDevices.swerveServos[i] = getHardwareDevice(CRServoImplEx.class, HardwareDevices.servoNames[i]);
-                HardwareDevices.analogNames[i] = "swerveAnalog" + (i);
-                HardwareDevices.swerveAnalogs[i] = getHardwareDevice(AnalogInput.class, HardwareDevices.analogNames[i]);
-                swerveServosPIDF[i] = new SwervePIDF(this, i, HardwareDevices.swerveServos[i]);
-                swerveModules[i] = new SwerveModule(this, HardwareDevices.swerveMotors[i], HardwareDevices.swerveServos[i], swerveServosPIDF[i],  HardwareDevices.swerveAnalogs[i], i);
-                if (Constants.SERVO_ANALOG_ACTIVE) {
-                    int analogPortNumber = Character.getNumericValue(HardwareDevices.swerveAnalogs[i].getConnectionInfo().charAt(HardwareDevices.swerveAnalogs[i].getConnectionInfo().length() - 1));
-                    if (analogPortNumber != i) {
-                        addRetainedTelemetry("WARNING: Swerve Analog Encoder " + i + " is connected to port " + analogPortNumber + ", should be port " + i, null);
-                    }
-                }
-                if (HardwareDevices.swerveMotors[i].getPortNumber() != i) {
-                    addRetainedTelemetry("WARNING: Swerve Motor " + i + " is connected to port " + HardwareDevices.swerveMotors[i].getPortNumber() + ", should be port " + i, null);
-                }
-                if (HardwareDevices.swerveServos[i].getPortNumber() != i) {
-                    addRetainedTelemetry("WARNING: Swerve Servo " + i + " is connected to port " + HardwareDevices.swerveServos[i].getPortNumber() + ", should be port " + i, null);
+            if (i == 0 || i == 2) {
+                HardwareDevices.swerveMotors[i].setDirection(DcMotorImplEx.Direction.REVERSE);
+            }
+            HardwareDevices.swerveMotors[i].setZeroPowerBehavior(DcMotorImplEx.ZeroPowerBehavior.BRAKE);
+            HardwareDevices.swerveMotors[i].setMode(DcMotorImplEx.RunMode.RUN_USING_ENCODER);
+
+            swerveServosPIDF[i] = new SwervePIDF(this, i, HardwareDevices.swerveServos[i]);
+            swerveModules[i] = new SwerveModule(this, HardwareDevices.swerveMotors[i], HardwareDevices.swerveServos[i], swerveServosPIDF[i], HardwareDevices.swerveAnalogs[i], i);
+
+            if (Constants.SERVO_ANALOG_ACTIVE) {
+                int analogPortNumber = Character.getNumericValue(HardwareDevices.swerveAnalogs[i].getConnectionInfo().charAt(HardwareDevices.swerveAnalogs[i].getConnectionInfo().length() - 1));
+                if (analogPortNumber != i) {
+                    addRetainedTelemetry("WARNING: Swerve Analog Encoder " + i + " is connected to port " + analogPortNumber + ", should be port " + i, null);
                 }
             }
-
-            drivetrain = new Drivetrain(this);
-            headingPID = new HeadingPID(this);
-            indicatorLightFrontLeft = new IndicatorLight(this, HardwareDevices.indicatorLightFrontLeft);
-            indicatorLightFrontRight = new IndicatorLight(this, HardwareDevices.indicatorLightFrontRight);
-            indicatorLightBack = new IndicatorLight(this, HardwareDevices.indicatorLightBack);
-            turret = new Turret(this);
-            turretFlywheel = new LinkedMotors(HardwareDevices.turretFlywheelMaster, HardwareDevices.turretFlywheelSlave);
-            intake = new Intake(this);
-
-            registerLoopTimer("teleOp");
-            registerLoopTimer("drivetrainUpdater");
-            registerLoopTimer("pinpointUpdater");
+            if (HardwareDevices.swerveMotors[i].getPortNumber() != i) {
+                addRetainedTelemetry("WARNING: Swerve Motor " + i + " is connected to port " + HardwareDevices.swerveMotors[i].getPortNumber() + ", should be port " + i, null);
+            }
+            if (HardwareDevices.swerveServos[i].getPortNumber() != i) {
+                addRetainedTelemetry("WARNING: Swerve Servo " + i + " is connected to port " + HardwareDevices.swerveServos[i].getPortNumber() + ", should be port " + i, null);
+            }
         }
+
+        indicatorLightFrontLeft = new IndicatorLighting.Light(this, HardwareDevices.indicatorLightFrontLeft);
+        indicatorLightFrontRight = new IndicatorLighting.Light(this, HardwareDevices.indicatorLightFrontRight);
+        indicatorLightBack = new IndicatorLighting.Light(this, HardwareDevices.indicatorLightBack);
+        allIndicatorLights.addLight(indicatorLightFrontLeft);
+        allIndicatorLights.addLight(indicatorLightFrontRight);
+        allIndicatorLights.addLight(indicatorLightBack);
+
+        turret = new Turret(this);
+        turretFlywheel = new LinkedMotors(HardwareDevices.turretFlywheelMaster, HardwareDevices.turretFlywheelSlave);
+        intake = new Intake(this);
+
+        drivetrain = new Drivetrain(this);
+        headingPID = new HeadingPID(this);
+        registerLoopTimer("teleOp");
+        registerLoopTimer("drivetrainUpdater");
+        registerLoopTimer("pinpointUpdater");
     }
 
     public void init() {
@@ -363,5 +357,43 @@ public class RobotContainer {
         double sum = 0;
         for (double t : times) sum += t;
         return sum / times.size();
+    }
+
+    public void telemetry (int currentServo, double CURRENT_LOOP_TIME_MS, double CURRENT_LOOP_TIME_AVG_MS) {
+        opMode.telemetry.addData("Control Hub Voltage", getVoltage(Constants.CONTROL_HUB_INDEX) + " V");
+        opMode.telemetry.addData("Expansion Hub Voltage", getVoltage(Constants.EXPANSION_HUB_INDEX) + " V");
+        opMode.telemetry.addData("Control Hub Current", getCurrent(Constants.CONTROL_HUB_INDEX) + " A");
+        opMode.telemetry.addData("Expansion Hub Current", getCurrent(Constants.EXPANSION_HUB_INDEX) + " A");
+        opMode.telemetry.addLine();
+        opMode.telemetry.addData("Pinpoint X", PinpointUpdater.currentPose.getX(DistanceUnit.CM) + " cm");
+        opMode.telemetry.addData("Pinpoint Y", PinpointUpdater.currentPose.getY(DistanceUnit.CM) + " cm");
+        opMode.telemetry.addData("Pinpoint Heading", PinpointUpdater.currentHeading + "°");
+        opMode.telemetry.addData("PINPOINT STATUS", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
+        opMode.telemetry.addLine();
+        opMode.telemetry.addData("TeleOp Avg Loop Time", (int) CURRENT_LOOP_TIME_AVG_MS + " ms");
+        opMode.telemetry.addData("TeleOp Loop Time", (int) CURRENT_LOOP_TIME_MS + " ms");
+        opMode.telemetry.addLine();
+        opMode.telemetry.addData("DriveTrain Avg Loop Time", (int) drivetrainUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms");
+        opMode.telemetry.addData("DriveTrain Loop Time", (int) drivetrainUpdater.CURRENT_LOOP_TIME_MS + " ms");
+        opMode.telemetry.addLine();
+        opMode.telemetry.addData("Pinpoint Avg Loop Time", (int) pinpointUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms");
+        opMode.telemetry.addData("Pinpoint Loop Time", (int) pinpointUpdater.CURRENT_LOOP_TIME_MS + " ms");
+        opMode.telemetry.addLine();
+        opMode.telemetry.addData("Heading PID Target", headingPID.getTargetHeading());
+        opMode.telemetry.addData("Heading PID Target Reached", Status.robotHeadingTargetReached);
+        opMode.telemetry.addData("Heading PID Output", headingPID.calculate(PinpointUpdater.currentHeading));
+        if (currentServo >= 0) {
+            opMode.telemetry.addLine();
+            opMode.telemetry.addData("Selected Servo", currentServo);
+            opMode.telemetry.addData("Servo Angle", swerveModules[currentServo].servo.getAngle());
+            opMode.telemetry.addData("Servo Target", swerveServosPIDF[currentServo].getTargetAngle());
+            opMode.telemetry.addData("Servo Set Power", swerveServosPIDF[currentServo].calculate());
+            opMode.telemetry.addData("Servo Error", swerveServosPIDF[currentServo].getError());
+            opMode.telemetry.addData("Motor Target Power", swerveModules[currentServo].motor.targetPower);
+            opMode.telemetry.addData("Motor Current Power", RobotContainer.HardwareDevices.swerveMotors[currentServo].getPower());
+        }
+        opMode.telemetry.addLine();
+        displayRetainedTelemetry();
+        opMode.telemetry.update();
     }
 }

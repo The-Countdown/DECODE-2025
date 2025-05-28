@@ -3,12 +3,10 @@ package org.firstinspires.ftc.teamcode.opmodes.tuners;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.other.GoBildaPinpoint;
-import org.firstinspires.ftc.teamcode.other.PinpointUpdater;
 
 import java.util.Objects;
 
@@ -18,6 +16,7 @@ public class SwervePIDFTuner extends OpMode {
     private RobotContainer robotContainer;
     public static double CURRENT_LOOP_TIME_MS;
     private final ElapsedTime targetTimer = new ElapsedTime();
+    private int currentServo = -1;
 
     @Override
     public void init() {
@@ -70,27 +69,19 @@ public class SwervePIDFTuner extends OpMode {
             targetTimer.reset();
         }
 
-        robotContainer.indicatorLightFrontLeft.off();
+        if (gamepad1.dpad_up) {
+            currentServo = 0;
+        } else if (gamepad1.dpad_right) {
+            currentServo = 1;
+        } else if (gamepad1.dpad_down) {
+            currentServo = 2;
+        } else if (gamepad1.dpad_left) {
+            currentServo = 3;
+        }
 
-        robotContainer.opMode.telemetry.addData("Control Hub Voltage", robotContainer.getVoltage(Constants.CONTROL_HUB_INDEX) + " V");
-        robotContainer.opMode.telemetry.addData("Expansion Hub Voltage", robotContainer.getVoltage(Constants.EXPANSION_HUB_INDEX) + " V");
-        robotContainer.opMode.telemetry.addData("Control Hub Current", robotContainer.getCurrent(Constants.CONTROL_HUB_INDEX) + " A");
-        robotContainer.opMode.telemetry.addData("Expansion Hub Current", robotContainer.getCurrent(Constants.EXPANSION_HUB_INDEX) + " A");
-        robotContainer.opMode.telemetry.addLine();
-        robotContainer.opMode.telemetry.addData("Pinpoint X", PinpointUpdater.currentPose.getX(DistanceUnit.CM) + " cm");
-        robotContainer.opMode.telemetry.addData("Pinpoint Y", PinpointUpdater.currentPose.getY(DistanceUnit.CM) + " cm");
-        robotContainer.opMode.telemetry.addData("Pinpoint Heading", PinpointUpdater.currentHeading + "°");
-        robotContainer.opMode.telemetry.addLine();
-        robotContainer.opMode.telemetry.addData("Avg Loop Time", (int) CURRENT_LOOP_TIME_AVG_MS + " ms");
-        robotContainer.opMode.telemetry.addData("Loop Time", (int) CURRENT_LOOP_TIME_MS + " ms");
-        robotContainer.opMode.telemetry.addLine();
-        robotContainer.opMode.telemetry.addData("Servo Target 0", robotContainer.swerveServosPIDF[0].getTargetAngle());
-        robotContainer.opMode.telemetry.addData("Servo Target 1", robotContainer.swerveServosPIDF[1].getTargetAngle());
-        robotContainer.opMode.telemetry.addData("Servo Target 2", robotContainer.swerveServosPIDF[2].getTargetAngle());
-        robotContainer.opMode.telemetry.addData("Servo Target 3", robotContainer.swerveServosPIDF[3].getTargetAngle());
-        robotContainer.opMode.telemetry.addLine();
-        robotContainer.displayRetainedTelemetry();
-        robotContainer.opMode.telemetry.update();
+        robotContainer.allIndicatorLights.off();
+
+        robotContainer.telemetry(currentServo, CURRENT_LOOP_TIME_MS, CURRENT_LOOP_TIME_AVG_MS);
     }
 
     @Override
