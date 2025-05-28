@@ -138,21 +138,25 @@ public class Constants {
     // TODO: Tune if needed
     public static double SWERVE_SERVO_PIDF_TOLERANCE_DEGREES = 1;
 
-    public static final int SWERVE_MOTOR_RPM_CALCULATED_MAX = 5800;
+    public static final int SWERVE_MOTOR_RPM_TESTED_MAX = 5800;
 
-    public static final int SWERVE_MOTOR_TPR = 28;
+    public static final int SWERVE_MOTOR_TICKS_PER_REVOLUTION = 28;
 
     public static final double SWERVE_MOTOR_TO_WHEEL_GEAR_RATIO = 6.74;
 
     public static final double WHEEL_DIAMETER_MM = 62;
 
-    public static final int WHEEL_CALCULATED_MAX_RPM = 861;
+    public static final double WHEEL_CALCULATED_MAX_RPM = SWERVE_MOTOR_RPM_TESTED_MAX / SWERVE_MOTOR_TO_WHEEL_GEAR_RATIO;
+
+    public static final double ROBOT_CALCULATED_MAX_SPEED_METERS_PER_SECOND = (Math.PI * (WHEEL_DIAMETER_MM / 1000)) * (WHEEL_CALCULATED_MAX_RPM / 60);
+
+    public static final int SWERVE_MOTOR_MAX_VELOCITY_TICKS_PER_SECOND = (SWERVE_MOTOR_RPM_TESTED_MAX / 60) * SWERVE_MOTOR_TICKS_PER_REVOLUTION;
 
     // TODO: Tune if needed
     public static double JOYSTICK_SCALER_EXPONENT = 0.4;
 
     //power per second
-    public static double MAX_DRIVE_ACCELERATION = 1;
+    public static double MAX_DRIVE_ACCELERATION = 2;
 
     public static double ZERO_POWER_TOLERANCE = 0.03;
 

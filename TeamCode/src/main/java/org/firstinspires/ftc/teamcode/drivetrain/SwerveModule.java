@@ -89,8 +89,11 @@ public class SwerveModule {
             drivingMotor.setPower(power);
         }
 
+        /**
+        * Sets the velocity of the motor from 0-1, because it is specific to this swerve motor so the value will be consistent with the multiplier
+         */
         public void setVelocity(double velocity) {
-            drivingMotor.setVelocity(velocity);
+            drivingMotor.setVelocity(velocity * Constants.SWERVE_MOTOR_MAX_VELOCITY_TICKS_PER_SECOND);
         }
 
         public void setTargetPower(double power) {
