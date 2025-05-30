@@ -261,19 +261,6 @@ public class RobotContainer {
     }
 
     // This is for hardware error that are critical and code execution should stop to tell the user of the error.
-    public void criticalHardwareError(String errorMessage) {
-        telemetry.log().clear();
-        telemetry.addLine(errorMessage);
-        telemetry.addLine("This message will show for 10 seconds.");
-        telemetry.update();
-        try {
-            Thread.sleep(10000); // 10 seconds = 10000 milliseconds.
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt(); // Do something here, prob something else.
-        }
-    }
-
-    // This is for hardware error that are critical and code execution should stop to tell the user of the error.
     public void testCriticalHardwareDevice(Object hardwareClass) {
         if (hardwareClass == null) {
             telemetry.log().clear();
