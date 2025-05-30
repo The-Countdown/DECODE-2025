@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.main.Constants;
 
 import java.util.Objects;
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "WheelPower", group = "TeleOp")
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "WheelPower", group = "Tuner")
 public class WheelPower extends OpMode {
     private RobotContainer robotContainer;
 

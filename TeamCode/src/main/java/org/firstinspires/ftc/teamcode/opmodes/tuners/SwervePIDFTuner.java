@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.other.GoBildaPinpoint;
 
 import java.util.Objects;
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "SwervePIDFTuner", group = "TeleOp")
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "SwervePIDFTuner", group = "Tuner")
 public class SwervePIDFTuner extends OpMode {
     public static double CURRENT_LOOP_TIME_AVG_MS;
     private RobotContainer robotContainer;
@@ -81,7 +81,7 @@ public class SwervePIDFTuner extends OpMode {
 
         robotContainer.allIndicatorLights.off();
 
-        robotContainer.telemetry(currentServo, CURRENT_LOOP_TIME_MS, CURRENT_LOOP_TIME_AVG_MS);
+        robotContainer.telemetry(currentServo, 0, CURRENT_LOOP_TIME_MS, CURRENT_LOOP_TIME_AVG_MS, gamepad1);
     }
 
     @Override

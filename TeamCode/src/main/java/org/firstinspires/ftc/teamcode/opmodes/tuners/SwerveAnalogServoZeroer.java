@@ -9,12 +9,13 @@ import org.firstinspires.ftc.teamcode.other.GoBildaPinpoint;
 
 import java.util.Objects;
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "SwerveAnalogServoZeroer", group = "TeleOp")
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "SwerveAnalogServoZeroer", group = "Tuner")
 public class SwerveAnalogServoZeroer extends OpMode {
     public static double CURRENT_LOOP_TIME_AVG_MS;
     private RobotContainer robotContainer;
     public static double CURRENT_LOOP_TIME_MS;
     private int currentServo = -1;
+    private double[] offset = {0, 0, 0, 0};
 
     @Override
     public void init() {
@@ -67,14 +68,16 @@ public class SwerveAnalogServoZeroer extends OpMode {
         if (currentServo >= 0) {
             if (gamepad1.right_bumper) {
                 robotContainer.swerveModules[currentServo].servo.setTargetAngle(robotContainer.swerveServosPIDF[currentServo].getTargetAngle() + 0.3);
+                offset[currentServo] += 0.3;
             } else if (gamepad1.left_bumper) {
                 robotContainer.swerveModules[currentServo].servo.setTargetAngle(robotContainer.swerveServosPIDF[currentServo].getTargetAngle() - 0.3);
+                offset[currentServo] -= 0.3;
             }
+            robotContainer.telemetry(currentServo, offset[currentServo], CURRENT_LOOP_TIME_MS, CURRENT_LOOP_TIME_AVG_MS, gamepad1);
         }
 
         robotContainer.allIndicatorLights.off();
 
-        robotContainer.telemetry(currentServo, CURRENT_LOOP_TIME_MS, CURRENT_LOOP_TIME_AVG_MS);
     }
 
     @Override

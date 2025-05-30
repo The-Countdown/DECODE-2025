@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.other.PinpointUpdater;
 
 import java.util.Objects;
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "HeadingPIDTuner", group = "TeleOp")
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "HeadingPIDTuner", group = "Tuner")
 public class HeadingPIDTuner extends OpMode {
     public static double CURRENT_LOOP_TIME_AVG_MS;
     private RobotContainer robotContainer;
@@ -71,7 +71,7 @@ public class HeadingPIDTuner extends OpMode {
 
         robotContainer.allIndicatorLights.off();
 
-        robotContainer.telemetry(-1, CURRENT_LOOP_TIME_MS, CURRENT_LOOP_TIME_AVG_MS);
+        robotContainer.telemetry(-1, 0, CURRENT_LOOP_TIME_MS, CURRENT_LOOP_TIME_AVG_MS, gamepad1);
     }
 
     @Override

@@ -50,7 +50,7 @@ public class Constants {
      * Index 4 is global, and the rest are in order (module 0, 1, 2, 3) see {@link SwerveModule}.
      */
     // TODO: Tune if needed
-    public static double[] SWERVE_SERVO_ANGLE_OFFSET = {0, 0, 0, 0, 0};
+    public static double[] SWERVE_SERVO_ANGLE_OFFSET = {-105, 227, 0, 0, 0};
 
     /**
      * The desired servo angles for the swerve modules when in the rotation formation
@@ -112,11 +112,11 @@ public class Constants {
      */
     // TODO: Tune
     public static double
-            SWERVE_SERVO_KP = 0.0075,
+            SWERVE_SERVO_KP = 0.02,
             SWERVE_SERVO_KI = 0,
                 SWERVE_SERVO_I_MAX = 0,
             SWERVE_SERVO_KD = 0.0003,
-            SWERVE_SERVO_KF = 0;
+            SWERVE_SERVO_KF = 0.02;
 
     // TODO: Tune
     public static double
@@ -214,7 +214,7 @@ public class Constants {
      * @param angle The angle to normalize.
      * @return The normalized angle.
      */
-    private static double normalizeAngle(double angle) {
+    public static double normalizeAngle(double angle) {
         // Check if the angle is already in the desired range.
         if (angle >= -180 && angle < 180) {
             return angle;
@@ -231,6 +231,13 @@ public class Constants {
         // If the angle is in the range [180, 360), shift it to [-180, 0).
         if (normalizedAngle >= 180) {
             normalizedAngle -= 360;
+        }
+
+        if (normalizedAngle == 90) {
+            normalizedAngle = 89.999;
+        }
+        if (normalizedAngle == -90 || normalizedAngle == -180) {
+            normalizedAngle += 0.001;
         }
 
         return normalizedAngle;

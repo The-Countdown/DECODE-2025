@@ -74,9 +74,7 @@ public class SwerveModule {
 
             angle += Constants.SWERVE_SERVO_ANGLE_OFFSET[4] + Constants.SWERVE_SERVO_ANGLE_OFFSET[moduleIndex];
 
-            if (angle > 180) {
-                angle -= 360;
-            }
+            angle = Constants.normalizeAngle(angle);
 
             return angle;
         }

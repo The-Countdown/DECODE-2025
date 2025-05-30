@@ -24,7 +24,6 @@ public class TeleOp extends OpMode {
         robotContainer.refreshData();
         RobotContainer.HardwareDevices.imu.resetYaw();
         RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU(); // TODO: Run at start of auto instead
-        // Does this need to be here.
         if (!robotContainer.turretFunctional) {
             robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
         }
@@ -72,9 +71,9 @@ public class TeleOp extends OpMode {
             // Fix this for also drivetrain working during turret.
             if (!robotContainer.turretFunctional) {
                 robotContainer.drivetrain.swerveDirectionalInput(
-                        robotContainer.drivetrain.joystickScaler(gamepad1.left_stick_x),
-                        robotContainer.drivetrain.joystickScaler(gamepad1.left_stick_y),
-                        robotContainer.drivetrain.joystickScaler(gamepad1.right_stick_x),
+                        robotContainer.drivetrain.joystickScaler(robotContainer.gamepadEx1.leftStickX()),
+                        robotContainer.drivetrain.joystickScaler(robotContainer.gamepadEx1.leftStickY()),
+                        robotContainer.drivetrain.joystickScaler(robotContainer.gamepadEx1.rightStickX()),
                         fieldOriented
                 );
             }
@@ -110,7 +109,9 @@ public class TeleOp extends OpMode {
         if (robotContainer.gamepadEx1.guide.isHeldFor(0.75) && Status.lightsOn) {
             robotContainer.allIndicatorLights.flashingReset();
             Status.lightsOn = false;
-            robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
+            if (!robotContainer.turretFunctional) {
+                robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
+            }
             Status.isDrivingActive = false;
         }
 
@@ -124,20 +125,20 @@ public class TeleOp extends OpMode {
         }
 
         if (Status.lightsOn) {
-            if (gamepad1.left_stick_x > 0.1) {
+            if (robotContainer.gamepadEx1.leftStickX() > 0.1) {
                 robotContainer.indicatorLightFrontRight.flashing(Constants.LED_COLOR.ORANGE, Constants.LED_COLOR.WHITE, 2);
                 robotContainer.indicatorLightFrontLeft.setColor(Constants.LED_COLOR.WHITE);
-            } else if (gamepad1.left_stick_x < -0.1) {
+            } else if (robotContainer.gamepadEx1.leftStickX() < -0.1) {
                 robotContainer.indicatorLightFrontLeft.flashing(Constants.LED_COLOR.ORANGE, Constants.LED_COLOR.WHITE, 2);
                 robotContainer.indicatorLightFrontRight.setColor(Constants.LED_COLOR.WHITE);
+            } else if (robotContainer.gamepadEx1.leftStickY() > 0.1) {
+                robotContainer.allIndicatorLights.rainbow();
             } else {
                 robotContainer.indicatorLightFrontRight.setColor(Constants.LED_COLOR.WHITE);
                 robotContainer.indicatorLightFrontLeft.setColor(Constants.LED_COLOR.WHITE);
             }
 
-            if (gamepad1.left_stick_y < -0.1) {
-                robotContainer.allIndicatorLights.rainbow();
-            } else if (gamepad1.left_stick_y > 0.1) {
+            if (robotContainer.gamepadEx1.leftStickY() < -0.1) {
                 robotContainer.indicatorLightBack.flashing(Constants.LED_COLOR.RED, Constants.LED_COLOR.WHITE, 2);
             } else {
                 robotContainer.indicatorLightBack.setColor(Constants.LED_COLOR.RED);
@@ -148,14 +149,16 @@ public class TeleOp extends OpMode {
             }
         }
 
-        robotContainer.telemetry(currentServo, CURRENT_LOOP_TIME_MS, CURRENT_LOOP_TIME_AVG_MS);
+        robotContainer.telemetry(currentServo, 0, CURRENT_LOOP_TIME_MS, CURRENT_LOOP_TIME_AVG_MS, gamepad1);
 
         Thread.yield();
     }
 
     @Override
     public void stop() {
-        robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
+        if (!robotContainer.turretFunctional) {
+            robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
+        }
         Status.opModeIsActive = false;
         robotContainer.isRunning = false;
     }

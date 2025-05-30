@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.DcMotorImplEx;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
@@ -136,7 +137,7 @@ public class RobotContainer {
         HardwareDevices.indicatorLightFrontRight = getHardwareDevice(ServoImplEx.class, "indicatorLightFrontRight");
         HardwareDevices.indicatorLightBack = getHardwareDevice(ServoImplEx.class, "indicatorLightBack");
 
-        if (Constants.TURRET_BOT_ACTIVE) {
+        if (Constants.TURRET_BOT_ACTIVE) { // you use this constant here but another somewhere else, is there a reason
             HardwareDevices.turretFlywheelMaster = getHardwareDevice(DcMotorImplEx.class, "turretFlywheelMaster");
             HardwareDevices.turretFlywheelSlave = getHardwareDevice(DcMotorImplEx.class, "turretFlywheelSlave");
             HardwareDevices.turretFlywheelMaster.setMode(DcMotorImplEx.RunMode.RUN_USING_ENCODER);
@@ -162,7 +163,7 @@ public class RobotContainer {
             intake = new Intake(this);
         }
 
-        if (!turretFunctional) {
+        if (!turretFunctional) { // you use this constant here but another somewhere else, is there a reason
             for (int i = 0; i < swerveModules.length; i++) {
                 HardwareDevices.motorNames[i] = "swerveMotor" + (i);
                 HardwareDevices.swerveMotors[i] = getHardwareDevice(DcMotorImplEx.class, HardwareDevices.motorNames[i]);
@@ -178,7 +179,7 @@ public class RobotContainer {
                 HardwareDevices.swerveMotors[i].setMode(DcMotorImplEx.RunMode.RUN_USING_ENCODER);
 
                 swerveServosPIDF[i] = new SwervePIDF(this, i, HardwareDevices.swerveServos[i]);
-                swerveModules[i] = new SwerveModule(this, HardwareDevices.swerveMotors[i], HardwareDevices.swerveServos[i], swerveServosPIDF[i], HardwareDevices.swerveAnalogs[i], Constants.SWERVE_POWER_MULTIPLIER[i], i);
+                swerveModules[i] = new SwerveModule(this, HardwareDevices.swerveMotors[i], HardwareDevices.swerveServos[i], swerveServosPIDF[i], HardwareDevices.swerveAnalogs[i], Constants.SWERVE_POWER_MULTIPLIER[i], i); // is it best to pass in a constant?
 
                 if (Constants.SERVO_ANALOG_ACTIVE) {
                     int analogPortNumber = Character.getNumericValue(HardwareDevices.swerveAnalogs[i].getConnectionInfo().charAt(HardwareDevices.swerveAnalogs[i].getConnectionInfo().length() - 1));
@@ -212,7 +213,7 @@ public class RobotContainer {
     public void init() {
         HardwareDevices.allHubs = hardwareMap.getAll(LynxModule.class);
         HardwareDevices.controlHub = hardwareMap.get(LynxModule.class, "Control Hub");
-        HardwareDevices.expansionHub = hardwareMap.get(LynxModule.class, "Expansion Hub 2");
+        HardwareDevices.expansionHub = hardwareMap.get(LynxModule.class, "Expansion Hub 1"); // this should be 1 because the expansion hub on the swerve is that one, we should upgrade to 2 though
         for (LynxModule hub : HardwareDevices.allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }
@@ -266,7 +267,7 @@ public class RobotContainer {
     public void testCriticalHardwareDevice(Object hardwareClass) {
         if (hardwareClass == null) {
             telemetry.log().clear();
-            telemetry.addLine("Failed to load hardware class: " + hardwareClass.toString());
+            telemetry.addLine("Failed to load hardware class: " + hardwareClass.toString()); // HARDWARE CLASS IS NULL, THIS WILL ERROR! fix it however you want cole
             telemetry.addLine("This message will show for 10 seconds.");
             telemetry.update();
             try {
@@ -386,7 +387,7 @@ public class RobotContainer {
         return sum / times.size();
     }
 
-    public void telemetry (int currentServo, double CURRENT_LOOP_TIME_MS, double CURRENT_LOOP_TIME_AVG_MS) {
+    public void telemetry (int currentServo, double offset, double CURRENT_LOOP_TIME_MS, double CURRENT_LOOP_TIME_AVG_MS, Gamepad gamepad) {
         opMode.telemetry.addData("Control Hub Voltage", getVoltage(Constants.CONTROL_HUB_INDEX) + " V");
         opMode.telemetry.addData("Expansion Hub Voltage", getVoltage(Constants.EXPANSION_HUB_INDEX) + " V");
         opMode.telemetry.addData("Control Hub Current", getCurrent(Constants.CONTROL_HUB_INDEX) + " A");
@@ -409,11 +410,14 @@ public class RobotContainer {
         opMode.telemetry.addData("Heading PID Target", headingPID.getTargetHeading());
         opMode.telemetry.addData("Heading PID Target Reached", Status.robotHeadingTargetReached);
         opMode.telemetry.addData("Heading PID Output", headingPID.calculate(PinpointUpdater.currentHeading));
+        opMode.telemetry.addLine();
+        opMode.telemetry.addData("Left Stick Y", gamepad.left_stick_y);
         if (currentServo >= 0) {
             opMode.telemetry.addLine();
             opMode.telemetry.addData("Selected Servo", currentServo);
             opMode.telemetry.addData("Servo Angle", swerveModules[currentServo].servo.getAngle());
             opMode.telemetry.addData("Servo Target", swerveServosPIDF[currentServo].getTargetAngle());
+            opMode.telemetry.addData("Servo Offset", offset);
             opMode.telemetry.addData("Servo Set Power", swerveServosPIDF[currentServo].calculate());
             opMode.telemetry.addData("Servo Error", swerveServosPIDF[currentServo].getError());
             opMode.telemetry.addData("Motor Target Power", swerveModules[currentServo].motor.targetPower);
