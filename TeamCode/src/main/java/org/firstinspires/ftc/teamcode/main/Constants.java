@@ -23,7 +23,7 @@ public class Constants {
             )
     );
 
-    public static boolean TURRET_BOT_ACTIVE = false;
+    public static boolean TURRET_BOT_ACTIVE = true;
     public static boolean SERVO_ANALOG_ACTIVE = true;
 
     public static final int

@@ -24,7 +24,10 @@ public class TeleOp extends OpMode {
         robotContainer.refreshData();
         RobotContainer.HardwareDevices.imu.resetYaw();
         RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU(); // TODO: Run at start of auto instead
-        robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
+        // Does this need to be here.
+        if (!robotContainer.turretFunctional) {
+            robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
+        }
         robotContainer.opMode.telemetry.setMsTransmissionInterval(750);
         robotContainer.opMode.telemetry.addLine("OpMode Initialized");
         robotContainer.opMode.telemetry.update();
@@ -66,15 +69,18 @@ public class TeleOp extends OpMode {
         }
 
         if (Status.isDrivingActive) {
+            // Fix this for also drivetrain working during turret.
+            if (!robotContainer.turretFunctional) {
                 robotContainer.drivetrain.swerveDirectionalInput(
                         robotContainer.drivetrain.joystickScaler(gamepad1.left_stick_x),
                         robotContainer.drivetrain.joystickScaler(gamepad1.left_stick_y),
                         robotContainer.drivetrain.joystickScaler(gamepad1.right_stick_x),
                         fieldOriented
                 );
+            }
         }
 
-        if (Constants.TURRET_BOT_ACTIVE && robotContainer.turretFunctional) {
+        if (robotContainer.turretFunctional) {
             if (gamepad1.right_bumper) {
                 robotContainer.turret.setTurretSpinPower(0.6);
             } else if (gamepad1.left_bumper) {

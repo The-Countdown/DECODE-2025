@@ -152,9 +152,9 @@ public class RobotContainer {
             HardwareDevices.turretEncoder = getHardwareDevice(AnalogInput.class, "turretEncoder");
             if (HardwareDevices.turretFlywheelMaster != null && HardwareDevices.turretRotation != null) { // Assume turret wants to be loaded
                 turretFunctional = true;
-                telemetry.addLine("WARNING: Turret has been loaded and flagged as functional!");
+                telemetry.addLine("Turret has been loaded and flagged as functional!");
             } else {
-                telemetry.addLine("WARNING: Turret has not been loaded and flagged as non functional!");
+                telemetry.addLine("Turret has not been loaded and flagged as non functional!");
                 turretFunctional = false;
             }
             turret = new Turret(this);
@@ -162,34 +162,36 @@ public class RobotContainer {
             intake = new Intake(this);
         }
 
-        for (int i = 0; i < swerveModules.length; i++) {
-            HardwareDevices.motorNames[i] = "swerveMotor" + (i);
-            HardwareDevices.swerveMotors[i] = getHardwareDevice(DcMotorImplEx.class, HardwareDevices.motorNames[i]);
-            HardwareDevices.servoNames[i] = "swerveServo" + (i);
-            HardwareDevices.swerveServos[i] = getHardwareDevice(CRServoImplEx.class, HardwareDevices.servoNames[i]);
-            HardwareDevices.analogNames[i] = "swerveAnalog" + (i);
-            HardwareDevices.swerveAnalogs[i] = getHardwareDevice(AnalogInput.class, HardwareDevices.analogNames[i]);
+        if (!turretFunctional) {
+            for (int i = 0; i < swerveModules.length; i++) {
+                HardwareDevices.motorNames[i] = "swerveMotor" + (i);
+                HardwareDevices.swerveMotors[i] = getHardwareDevice(DcMotorImplEx.class, HardwareDevices.motorNames[i]);
+                HardwareDevices.servoNames[i] = "swerveServo" + (i);
+                HardwareDevices.swerveServos[i] = getHardwareDevice(CRServoImplEx.class, HardwareDevices.servoNames[i]);
+                HardwareDevices.analogNames[i] = "swerveAnalog" + (i);
+                HardwareDevices.swerveAnalogs[i] = getHardwareDevice(AnalogInput.class, HardwareDevices.analogNames[i]);
 
-            if (i == 0 || i == 2) {
-                HardwareDevices.swerveMotors[i].setDirection(DcMotorImplEx.Direction.REVERSE);
-            }
-            HardwareDevices.swerveMotors[i].setZeroPowerBehavior(DcMotorImplEx.ZeroPowerBehavior.BRAKE);
-            HardwareDevices.swerveMotors[i].setMode(DcMotorImplEx.RunMode.RUN_USING_ENCODER);
-
-            swerveServosPIDF[i] = new SwervePIDF(this, i, HardwareDevices.swerveServos[i]);
-            swerveModules[i] = new SwerveModule(this, HardwareDevices.swerveMotors[i], HardwareDevices.swerveServos[i], swerveServosPIDF[i], HardwareDevices.swerveAnalogs[i], Constants.SWERVE_POWER_MULTIPLIER[i], i);
-
-            if (Constants.SERVO_ANALOG_ACTIVE) {
-                int analogPortNumber = Character.getNumericValue(HardwareDevices.swerveAnalogs[i].getConnectionInfo().charAt(HardwareDevices.swerveAnalogs[i].getConnectionInfo().length() - 1));
-                if (analogPortNumber != i) {
-                    addRetainedTelemetry("WARNING: Swerve Analog Encoder " + i + " is connected to port " + analogPortNumber + ", should be port " + i, null);
+                if (i == 0 || i == 2) {
+                    HardwareDevices.swerveMotors[i].setDirection(DcMotorImplEx.Direction.REVERSE);
                 }
-            }
-            if (HardwareDevices.swerveMotors[i].getPortNumber() != i) {
-                addRetainedTelemetry("WARNING: Swerve Motor " + i + " is connected to port " + HardwareDevices.swerveMotors[i].getPortNumber() + ", should be port " + i, null);
-            }
-            if (HardwareDevices.swerveServos[i].getPortNumber() != i) {
-                addRetainedTelemetry("WARNING: Swerve Servo " + i + " is connected to port " + HardwareDevices.swerveServos[i].getPortNumber() + ", should be port " + i, null);
+                HardwareDevices.swerveMotors[i].setZeroPowerBehavior(DcMotorImplEx.ZeroPowerBehavior.BRAKE);
+                HardwareDevices.swerveMotors[i].setMode(DcMotorImplEx.RunMode.RUN_USING_ENCODER);
+
+                swerveServosPIDF[i] = new SwervePIDF(this, i, HardwareDevices.swerveServos[i]);
+                swerveModules[i] = new SwerveModule(this, HardwareDevices.swerveMotors[i], HardwareDevices.swerveServos[i], swerveServosPIDF[i], HardwareDevices.swerveAnalogs[i], Constants.SWERVE_POWER_MULTIPLIER[i], i);
+
+                if (Constants.SERVO_ANALOG_ACTIVE) {
+                    int analogPortNumber = Character.getNumericValue(HardwareDevices.swerveAnalogs[i].getConnectionInfo().charAt(HardwareDevices.swerveAnalogs[i].getConnectionInfo().length() - 1));
+                    if (analogPortNumber != i) {
+                        addRetainedTelemetry("WARNING: Swerve Analog Encoder " + i + " is connected to port " + analogPortNumber + ", should be port " + i, null);
+                    }
+                }
+                if (HardwareDevices.swerveMotors[i].getPortNumber() != i) {
+                    addRetainedTelemetry("WARNING: Swerve Motor " + i + " is connected to port " + HardwareDevices.swerveMotors[i].getPortNumber() + ", should be port " + i, null);
+                }
+                if (HardwareDevices.swerveServos[i].getPortNumber() != i) {
+                    addRetainedTelemetry("WARNING: Swerve Servo " + i + " is connected to port " + HardwareDevices.swerveServos[i].getPortNumber() + ", should be port " + i, null);
+                }
             }
         }
 
@@ -210,7 +212,7 @@ public class RobotContainer {
     public void init() {
         HardwareDevices.allHubs = hardwareMap.getAll(LynxModule.class);
         HardwareDevices.controlHub = hardwareMap.get(LynxModule.class, "Control Hub");
-        HardwareDevices.expansionHub = hardwareMap.get(LynxModule.class, "Expansion Hub 1");
+        HardwareDevices.expansionHub = hardwareMap.get(LynxModule.class, "Expansion Hub 2");
         for (LynxModule hub : HardwareDevices.allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }
