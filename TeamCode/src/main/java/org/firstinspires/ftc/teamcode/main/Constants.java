@@ -23,7 +23,7 @@ public class Constants {
             )
     );
 
-    public static boolean TURRET_ACTIVE = false;
+    public static boolean TURRET_BOT_ACTIVE = false;
     public static boolean SERVO_ANALOG_ACTIVE = true;
 
     public static final int
@@ -60,28 +60,28 @@ public class Constants {
             normalizeAngle(Math.toDegrees(Math.atan2(WHEELBASE_ICR_Y, WHEELBASE_ICR_X))),
             normalizeAngle(Math.toDegrees(Math.atan2(-WHEELBASE_ICR_Y, WHEELBASE_ICR_X))),
             normalizeAngle(Math.toDegrees(Math.atan2(-WHEELBASE_ICR_Y, -WHEELBASE_ICR_X))),
-            normalizeAngle(Math.toDegrees(Math.atan2(WHEELBASE_ICR_Y, -WHEELBASE_ICR_X)))
+            normalizeAngle(Math.toDegrees(Math.atan2(WHEELBASE_ICR_Y, -WHEELBASE_ICR_X))),
     };
 
     public static final double[] SWERVE_ROTATION_FORMATION_RADIANS = {
             Math.atan2(WHEELBASE_ICR_Y, WHEELBASE_ICR_X),
             Math.atan2(-WHEELBASE_ICR_Y, WHEELBASE_ICR_X),
             Math.atan2(-WHEELBASE_ICR_Y, -WHEELBASE_ICR_X),
-            Math.atan2(WHEELBASE_ICR_Y, -WHEELBASE_ICR_X)
+            Math.atan2(WHEELBASE_ICR_Y, -WHEELBASE_ICR_X),
     };
 
     public static final double[] SWERVE_ROTATION_FORMATION_COSINES_RADIANS = {
             Math.cos(SWERVE_ROTATION_FORMATION_RADIANS[0]),
             Math.cos(SWERVE_ROTATION_FORMATION_RADIANS[1]),
             Math.cos(SWERVE_ROTATION_FORMATION_RADIANS[2]),
-            Math.cos(SWERVE_ROTATION_FORMATION_RADIANS[3])
+            Math.cos(SWERVE_ROTATION_FORMATION_RADIANS[3]),
     };
 
     public static final double[] SWERVE_ROTATION_FORMATION_SINES_RADIANS = {
             Math.sin(SWERVE_ROTATION_FORMATION_RADIANS[0]),
             Math.sin(SWERVE_ROTATION_FORMATION_RADIANS[1]),
             Math.sin(SWERVE_ROTATION_FORMATION_RADIANS[2]),
-            Math.sin(SWERVE_ROTATION_FORMATION_RADIANS[3])
+            Math.sin(SWERVE_ROTATION_FORMATION_RADIANS[3]),
     };
 
     /**
@@ -91,13 +91,20 @@ public class Constants {
             180 - SWERVE_ROTATION_FORMATION_DEGREES[0],
             180 - SWERVE_ROTATION_FORMATION_DEGREES[1],
             180 - SWERVE_ROTATION_FORMATION_DEGREES[2],
-            180 - SWERVE_ROTATION_FORMATION_DEGREES[3]
+            180 - SWERVE_ROTATION_FORMATION_DEGREES[3],
     };
 
     /**
      * An array of power values for each swerve motor that sets them to no power.
      */
     public static final double[] SWERVE_NO_POWER = {0, 0, 0, 0};
+
+    public static final double[] SWERVE_POWER_MULTIPLIER = {
+        0, // Front Right
+        0, // Front Left
+        0, // Back Left
+        0, // Back Right
+    };
 
     /**
      * PIDF values for the swerve drive servos.

@@ -17,6 +17,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
 import org.firstinspires.ftc.teamcode.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.drivetrain.DrivetrainUpdater;
@@ -32,6 +33,7 @@ import org.firstinspires.ftc.teamcode.util.DelayedActionManager;
 import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
 import org.firstinspires.ftc.teamcode.util.LinkedMotors;
 
+import java.lang.Thread;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -54,6 +56,7 @@ public class RobotContainer {
     public boolean isRunning = false;
     public GamepadWrapper gamepadEx1;
     public GamepadWrapper gamepadEx2;
+    public boolean turretFunctional = false;
     public final Map<String, LinkedList<Double>> loopTimesMap = new HashMap<>();
     public final Map<String, ElapsedTime> loopTimers = new HashMap<>();
     private final ArrayList<String> retainedTelemetryCaptions = new ArrayList<>();
@@ -62,6 +65,7 @@ public class RobotContainer {
     public SwervePIDF[] swerveServosPIDF = new SwervePIDF[Constants.NUM_SWERVE_SERVOS];
     public DrivetrainUpdater drivetrainUpdater;
     public PinpointUpdater pinpointUpdater;
+    public Pose2D pinpointPose;
     public DelayedActionManager delayedActionManager = new DelayedActionManager();
     public Drivetrain drivetrain;
     public HeadingPID headingPID;
@@ -69,9 +73,9 @@ public class RobotContainer {
     public IndicatorLighting.Light indicatorLightFrontRight;
     public IndicatorLighting.Light indicatorLightBack;
     public IndicatorLighting.Group allIndicatorLights = new IndicatorLighting.Group();
-    public Turret turret;
-    public LinkedMotors turretFlywheel;
-    public Intake intake;
+    public Turret turret = null;
+    public LinkedMotors turretFlywheel = null;
+    public Intake intake = null;
 
     public static class HardwareDevices {
         public static List<LynxModule> allHubs;
@@ -132,7 +136,7 @@ public class RobotContainer {
         HardwareDevices.indicatorLightFrontRight = getHardwareDevice(ServoImplEx.class, "indicatorLightFrontRight");
         HardwareDevices.indicatorLightBack = getHardwareDevice(ServoImplEx.class, "indicatorLightBack");
 
-        if (Constants.TURRET_ACTIVE) {
+        if (Constants.TURRET_BOT_ACTIVE) {
             HardwareDevices.turretFlywheelMaster = getHardwareDevice(DcMotorImplEx.class, "turretFlywheelMaster");
             HardwareDevices.turretFlywheelSlave = getHardwareDevice(DcMotorImplEx.class, "turretFlywheelSlave");
             HardwareDevices.turretFlywheelMaster.setMode(DcMotorImplEx.RunMode.RUN_USING_ENCODER);
@@ -146,6 +150,16 @@ public class RobotContainer {
             HardwareDevices.lateralConveyorServo = getHardwareDevice(CRServoImplEx.class, "lateralConveyorServo");
             HardwareDevices.longitudinalConveyorServo = getHardwareDevice(CRServoImplEx.class, "longitudinalConveyorServo");
             HardwareDevices.turretEncoder = getHardwareDevice(AnalogInput.class, "turretEncoder");
+            if (HardwareDevices.turretFlywheelMaster != null && HardwareDevices.turretRotation != null) { // Assume turret wants to be loaded
+                turretFunctional = true;
+                telemetry.addLine("WARNING: Turret has been loaded and flagged as functional!");
+            } else {
+                telemetry.addLine("WARNING: Turret has not been loaded and flagged as non functional!");
+                turretFunctional = false;
+            }
+            turret = new Turret(this);
+            turretFlywheel = new LinkedMotors(HardwareDevices.turretFlywheelMaster, HardwareDevices.turretFlywheelSlave);
+            intake = new Intake(this);
         }
 
         for (int i = 0; i < swerveModules.length; i++) {
@@ -163,7 +177,7 @@ public class RobotContainer {
             HardwareDevices.swerveMotors[i].setMode(DcMotorImplEx.RunMode.RUN_USING_ENCODER);
 
             swerveServosPIDF[i] = new SwervePIDF(this, i, HardwareDevices.swerveServos[i]);
-            swerveModules[i] = new SwerveModule(this, HardwareDevices.swerveMotors[i], HardwareDevices.swerveServos[i], swerveServosPIDF[i], HardwareDevices.swerveAnalogs[i], i);
+            swerveModules[i] = new SwerveModule(this, HardwareDevices.swerveMotors[i], HardwareDevices.swerveServos[i], swerveServosPIDF[i], HardwareDevices.swerveAnalogs[i], Constants.SWERVE_POWER_MULTIPLIER[i], i);
 
             if (Constants.SERVO_ANALOG_ACTIVE) {
                 int analogPortNumber = Character.getNumericValue(HardwareDevices.swerveAnalogs[i].getConnectionInfo().charAt(HardwareDevices.swerveAnalogs[i].getConnectionInfo().length() - 1));
@@ -185,10 +199,6 @@ public class RobotContainer {
         allIndicatorLights.addLight(indicatorLightFrontLeft);
         allIndicatorLights.addLight(indicatorLightFrontRight);
         allIndicatorLights.addLight(indicatorLightBack);
-
-        turret = new Turret(this);
-        turretFlywheel = new LinkedMotors(HardwareDevices.turretFlywheelMaster, HardwareDevices.turretFlywheelSlave);
-        intake = new Intake(this);
 
         drivetrain = new Drivetrain(this);
         headingPID = new HeadingPID(this);
@@ -231,7 +241,7 @@ public class RobotContainer {
         try {
             return hardwareMap.get(hardwareClass, name);
         } catch (Exception e) {
-            telemetry.addLine("Error: " + e.getMessage());
+            telemetry.addLine("Could not load hardware class: '" + name + "' and got error: '" + e + "'");
             return null; // Or throw the exception if you prefer
         }
     }
@@ -247,6 +257,34 @@ public class RobotContainer {
     public void displayRetainedTelemetry() {
         for (int i = 0; i < retainedTelemetryCaptions.size(); i++) {
             telemetry.addData(retainedTelemetryCaptions.get(i), retainedTelemetryValues.get(i));
+        }
+    }
+
+    // This is for hardware error that are critical and code execution should stop to tell the user of the error.
+    public void criticalHardwareError(String errorMessage) {
+        telemetry.log().clear();
+        telemetry.addLine(errorMessage);
+        telemetry.addLine("This message will show for 10 seconds.");
+        telemetry.update();
+        try {
+            Thread.sleep(10000); // 10 seconds = 10000 milliseconds.
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt(); // Do something here, prob something else.
+        }
+    }
+
+    // This is for hardware error that are critical and code execution should stop to tell the user of the error.
+    public void testCriticalHardwareDevice(Object hardwareClass) {
+        if (hardwareClass == null) {
+            telemetry.log().clear();
+            telemetry.addLine("Failed to load hardware class: " + hardwareClass.toString());
+            telemetry.addLine("This message will show for 10 seconds.");
+            telemetry.update();
+            try {
+                Thread.sleep(10000); // 10 seconds = 10000 milliseconds.
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt(); // Do something here, prob something else.
+            }
         }
     }
 

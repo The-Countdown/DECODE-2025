@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.main.RobotContainer;
  *
  *  Like a coordinate plane, the first quadrant is 0, the second is 1, etc.
  *  This is relating to the positions of the modules on the robot
- * <p>
+ *
  *  When indexing from ANY ARRAY IN THIS CODEBASE:
  *  0 - front right, 1 - front left, 2 - back left, 3 - back right
  */
@@ -29,6 +29,7 @@ public class SwerveModule {
     private final DcMotorEx drivingMotor;
     private final CRServoImplEx turningServo;
     private final AnalogInput analogEncoder;
+    private final double powerMultiplier;
     private final int moduleIndex;
     private final SwervePIDF servoPIDF;
 
@@ -39,16 +40,23 @@ public class SwerveModule {
      * @param motor         The driving motor of the module.
      * @param turningServo  The servo responsible for turning the module.
      * @param analogEncoder The analog encoder for reading the module's angle.
+     * @param powerMultiplier A multiplier to maintain constant velocity for all modules despite differences in friction between modules.
      * @param moduleIndex   The index of the module.
      */
-    public SwerveModule(RobotContainer robotContainer, DcMotorEx motor, CRServoImplEx turningServo, SwervePIDF servoPIDF, AnalogInput analogEncoder, int moduleIndex) {
+    public SwerveModule(RobotContainer robotContainer, DcMotorEx motor, CRServoImplEx turningServo, SwervePIDF servoPIDF, AnalogInput analogEncoder, double powerMultiplier, int moduleIndex) {
         this.robotContainer = robotContainer;
         this.drivingMotor = motor;
         this.turningServo = turningServo;
         this.servoPIDF = servoPIDF;
         this.analogEncoder = analogEncoder;
+        this.powerMultiplier = powerMultiplier;
         this.moduleIndex = moduleIndex;
     }
+
+    // I hate getters and setter but I want to keep powerMultiplier private and not mutable by any part of the program.
+    public double getPowerMultiplier() {
+        return this.powerMultiplier;
+    };
 
     public class Servo {
 
@@ -89,11 +97,16 @@ public class SwerveModule {
         }
 
         /**
-        * Sets the velocity of the motor from 0-1, because it is specific to this swerve motor so the value will be consistent with the multiplier
+        * Sets the velocity of the motor from 0-1, because it is specific to this swerve motor so the value will be consistent with the multiplier.
          */
         public void setVelocity(double velocity) {
             drivingMotor.setVelocity(velocity * Constants.SWERVE_MOTOR_MAX_VELOCITY_TICKS_PER_SECOND);
         }
+
+        // This function takes in a double between 0-1 for 0 rpm to max rpm of motor as relative to the max forward speed of the drive base.
+        public void setPowerWithMultiplier(double speed) {
+            drivingMotor.setPower(speed * powerMultiplier);
+        };
 
         public void setTargetPower(double power) {
             targetPower = power;

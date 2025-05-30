@@ -10,14 +10,17 @@ public class Turret extends RobotContainer.HardwareDevices {
     }
 
     public void setIntakePower(double intakePower) {
+        robotContainer.testCriticalHardwareDevice(RobotContainer.HardwareDevices.turretIntakeServo);
         RobotContainer.HardwareDevices.turretIntakeServo.setPower(intakePower);
     }
 
     public void setTurretSpinPower(double power) {
+        robotContainer.testCriticalHardwareDevice(RobotContainer.HardwareDevices.turretRotation);
         RobotContainer.HardwareDevices.turretRotation.setPower(power);
     }
 
     public void setArcAngle(double angle) {
+        robotContainer.testCriticalHardwareDevice(RobotContainer.HardwareDevices.turretArcServo);
         RobotContainer.HardwareDevices.turretArcServo.setPosition(angle);
     }
 

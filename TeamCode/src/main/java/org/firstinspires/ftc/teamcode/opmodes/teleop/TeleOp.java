@@ -74,7 +74,7 @@ public class TeleOp extends OpMode {
                 );
         }
 
-        if (Constants.TURRET_ACTIVE) {
+        if (Constants.TURRET_BOT_ACTIVE && robotContainer.turretFunctional) {
             if (gamepad1.right_bumper) {
                 robotContainer.turret.setTurretSpinPower(0.6);
             } else if (gamepad1.left_bumper) {
