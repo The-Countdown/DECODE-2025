@@ -22,106 +22,6 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
     }
 
     /**
-     * This method calculates and sets the target angles and powers for each swerve module based on directional inputs.
-     *
-     * @param x             The x-axis translational input from -1 to 1.
-     * @param y             The y-axis translational input from -1 to 1.
-     * @param rX            The rotational input from -1 to 1.
-     * @param fieldOriented A boolean indicating whether to use field-oriented driving.
-     */
-    public void swerveDirectionalInput(double x, double y, double rX, boolean fieldOriented) {
-        double rotationalMagnitude = Math.abs(rX);
-
-        if (robotContainer.gamepadEx1.rightStickX.wasJustReleased()) {
-            robotContainer.headingPID.setTargetHeading(PinpointUpdater.currentHeading);
-        }
-
-        if (rX == 0) {
-            rotationalMagnitude = robotContainer.headingPID.calculate(PinpointUpdater.currentHeading);
-        }
-
-        if (Status.robotHeadingTargetReached && x == 0 && y == 0 && rX == 0) {
-            swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
-            return;
-        }
-
-        // Determine the rotational direction based on the sign of rX.
-        int rotationalDirection = rX >= 0 ? 1 : -1;
-
-        // Calculate the magnitude of translational movement.
-        double translationalMagnitude = Math.sqrt(x * x + y * y);
-        // Calculate the angle of translational movement.
-        double translationalAngle = Math.atan2(y, x);
-        // Set the initial translational direction to forward.
-        int translationalDirection = 1;
-
-        double currentHeading = PinpointUpdater.currentHeading;
-        // Adjust the translational angle for field-oriented driving if enabled.
-        translationalAngle = fieldOriented ? translationalAngle - currentHeading : translationalAngle;
-        translationalAngle = normalizeAngle(translationalAngle);
-
-        double[] calculatedAngles = new double[robotContainer.swerveModules.length];
-        double[] calculatedPowers = new double[robotContainer.swerveModules.length];
-
-        // Iterate through each swerve module to calculate its target angle and power.
-        for (int i = 0; i < robotContainer.swerveModules.length; i++) {
-            // Calculate the x and y components of translational movement.
-            double translationalX = translationalMagnitude * Math.cos(translationalAngle) * translationalDirection;
-            double translationalY = translationalMagnitude * Math.sin(translationalAngle) * translationalDirection;
-
-            // Calculate the x and y components of rotational movement.
-            double rotationalX = rotationalMagnitude * Constants.SWERVE_ROTATION_FORMATION_COSINES_RADIANS[i] * rotationalDirection;
-            double rotationalY = rotationalMagnitude * Constants.SWERVE_ROTATION_FORMATION_SINES_RADIANS[i] * rotationalDirection;
-
-            // Combine the translational and rotational components into a single vector.
-            double vectorX = translationalX + rotationalX;
-            double vectorY = translationalY + rotationalY;
-
-            // Calculate the magnitude and angle of the combined vector.
-            double vectorMagnitude = Math.sqrt(vectorX * vectorX + vectorY * vectorY);
-            double vectorAngle = Math.atan2(vectorY, vectorX);
-
-            calculatedAngles[i] = Math.toDegrees(vectorAngle);
-            calculatedPowers[i] = vectorMagnitude;
-        }
-
-        swerveSetTargets(calculatedAngles, calculatedPowers);
-    }
-
-    /**
-     * This method sets the target angles and powers for each swerve module, handling motor inversion if necessary.
-     * @param targetAngles An array of target angles for each swerve module.
-     * @param targetPowers An array of target powers for each swerve module.
-     */
-    public void swerveSetTargets(double[] targetAngles, double[] targetPowers) {
-        if (!Arrays.stream(targetPowers).allMatch(v -> v == 0)) {
-            targetPowers = scalePowers(targetPowers);
-        }
-
-        for (int i = 0; i < swerveServos.length; i++) {
-            double currentAngle = robotContainer.swerveModules[i].servo.getAngle();
-            double error = targetAngles[i] - currentAngle;
-            error = normalizeAngle(error);
-
-            /*
-             * if the error is greater than 90 the direction of the wheel needs to be flipped, so we add 180 to the target angle
-             * and we invert the powers.
-             *
-             * if it is not greater then we just pass in the regular power.
-             *
-             */
-            if (Math.abs(error) > 90) {
-                targetAngles[i] = normalizeAngle(targetAngles[i] + 180);
-                robotContainer.swerveModules[i].motor.setTargetPower(-targetPowers[i]);
-            } else {
-                robotContainer.swerveModules[i].motor.setTargetPower(targetPowers[i]);
-            }
-
-            robotContainer.swerveModules[i].servo.setTargetAngle(targetAngles[i]);
-        }
-    }
-
-    /**
      * This function scales all the powers to ensure they are within the -1 and 1 ranges.
      * This avoids breaking any of the robot functions.
      * @param powers the array of powers for all swerve modules.
@@ -183,13 +83,45 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
         return normalizedAngle;
     }
 
+    public void mecanumDrive(double x, double y, double rX, double rT, double lT) {
+        double yStickLMulti = 0.8;
+        double xStickLMulti = 0.4;
+        double xStickRMulti = 0.4;
+        double[] powers = new double[4];
+
+        double xStickR;
+        double xStickL;
+        double yStickL;
+
+        xStickR = rX * (xStickRMulti + (rT * 0.45) - (lT * 0.1));
+        xStickL = x * (xStickLMulti + (rT * 0.5) - (lT * 0.2));
+        yStickL = y * (-(yStickLMulti + (rT * 0.5) - (lT * 0.2)));
+
+        powers[1] = yStickL + xStickL + xStickR;
+        powers[2] = yStickL - xStickL + xStickR;
+        powers[0] = yStickL - xStickL - xStickR;
+        powers[3] = yStickL + xStickL - xStickR;
+
+        powers = scalePowers(powers);
+
+        RobotContainer.HardwareDevices.driveMotors[1].setPower(powers[1]);
+        RobotContainer.HardwareDevices.driveMotors[2].setPower(powers[2]);
+        RobotContainer.HardwareDevices.driveMotors[0].setPower(powers[0]);
+        RobotContainer.HardwareDevices.driveMotors[3].setPower(powers[3]);
+    }
+
+    //RobotContainer.HardwareDevices.driveMotors[3].setPower(yStickL - xStickL + xStickR);
+    //RobotContainer.HardwareDevices.driveMotors[2].setPower(yStickL + xStickL + xStickR);
+    //RobotContainer.HardwareDevices.driveMotors[0].setPower(yStickL - xStickL - xStickR);
+    //RobotContainer.HardwareDevices.driveMotors[1].setPower(yStickL + xStickL - xStickR);
+
     /**
-     * This function scales the power of the joystick to follow a curve, so that it allows for finer adjustments.
-     * It allows for changes to the curve with the constant JOYSTICK_SCALER_EXPONENT.
-     * @param input the input from the joystick
-     * @return the scaled power
+     * This funciton scales the power of the joystick to follow a curve, so that it allows for finer adjustments.
+     * It is clamped between -1 and 1 out of caution, although it doesn't need it, it allows for changes to the curve.
+     * @param input
+     * @return
      */
     public double joystickScaler(double input) {
-        return Math.pow(Math.abs(input), Constants.JOYSTICK_SCALER_EXPONENT) * input;
+        return Math.max(-1, Math.min(1, Math.pow(Math.abs(input), Constants.JOYSTICK_SCALER_EXPONENT) * input));
     }
 }

@@ -5,7 +5,6 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.teamcode.drivetrain.Drivetrain;
-import org.firstinspires.ftc.teamcode.drivetrain.SwerveModule;
 import org.firstinspires.ftc.teamcode.other.GoBildaPinpoint;
 
 import java.util.HashMap;
@@ -169,7 +168,7 @@ public class Constants {
     public static double TURRET_ACCELERATION_TIME_SECONDS = 3;
 
     // will not update if TURRET_ACCELERATION_TIME_SECONDS is changed in ftc dashboard
-    public static double TURRET_ACCELERATION_MULTIPLIER_NANO = TURRET_ACCELERATION_TIME_SECONDS * 1e9 * 2781;
+    public static double TURRET_ACCELERATION_MULTIPLIER_NANO = TURRET_ACCELERATION_TIME_SECONDS * 1e9 * 9000;
 
     public enum LED_COLOR {
         OFF,

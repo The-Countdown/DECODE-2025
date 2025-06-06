@@ -24,9 +24,6 @@ public class TeleOp extends OpMode {
         robotContainer.refreshData();
         RobotContainer.HardwareDevices.imu.resetYaw();
         RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU(); // TODO: Run at start of auto instead
-        if (!robotContainer.turretFunctional) {
-            robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
-        }
         robotContainer.opMode.telemetry.setMsTransmissionInterval(750);
         robotContainer.opMode.telemetry.addLine("OpMode Initialized");
         robotContainer.opMode.telemetry.update();
@@ -68,85 +65,38 @@ public class TeleOp extends OpMode {
         }
 
         if (Status.isDrivingActive) {
-            // Fix this for also drivetrain working during turret.
-            if (!robotContainer.turretFunctional) {
-                robotContainer.drivetrain.swerveDirectionalInput(
-                        robotContainer.drivetrain.joystickScaler(robotContainer.gamepadEx1.leftStickX()),
-                        robotContainer.drivetrain.joystickScaler(robotContainer.gamepadEx1.leftStickY()),
-                        robotContainer.drivetrain.joystickScaler(robotContainer.gamepadEx1.rightStickX()),
-                        fieldOriented
-                );
-            }
+            robotContainer.drivetrain.mecanumDrive(
+                    robotContainer.drivetrain.joystickScaler(gamepad1.left_stick_y),
+                    robotContainer.drivetrain.joystickScaler(gamepad1.left_stick_x),
+                    robotContainer.drivetrain.joystickScaler(gamepad1.right_stick_x),
+                    gamepad1.right_trigger,
+                    gamepad1.left_trigger
+                    );
         }
 
-        if (robotContainer.turretFunctional) {
-            if (gamepad1.right_bumper) {
-                robotContainer.turret.setTurretSpinPower(0.6);
-            } else if (gamepad1.left_bumper) {
-                robotContainer.turret.setTurretSpinPower(-0.6);
-            } else {
-                robotContainer.turret.setTurretSpinPower(0);
-            }
-
-            if (robotContainer.gamepadEx1.a.wasJustPressed() || robotContainer.gamepadEx1.b.wasJustPressed()) {
-                turretAccelerationTimer.reset();
-            }
-            if (robotContainer.gamepadEx1.a.isHeld()) {
-                robotContainer.turret.flywheel.setVelocity(
-                        turretAccelerationTimer.nanoseconds()
-                                * Constants.TURRET_ACCELERATION_MULTIPLIER_NANO
-                );
-            } else if (robotContainer.gamepadEx1.b.isHeld()) {
-                robotContainer.turret.flywheel.setVelocity(
-                        -turretAccelerationTimer.nanoseconds()
-                                * Constants.TURRET_ACCELERATION_MULTIPLIER_NANO
-                );
-            } else {
-                robotContainer.turret.flywheel.setPower(0);
-            }
+        if (gamepad1.right_bumper) {
+            robotContainer.turret.setTurretSpinPower(0.6);
+        } else if (gamepad1.left_bumper) {
+            robotContainer.turret.setTurretSpinPower(-0.6);
+        } else {
+            robotContainer.turret.setTurretSpinPower(0);
         }
 
-        if (robotContainer.gamepadEx1.guide.isHeldFor(0.75) && Status.lightsOn) {
-            robotContainer.allIndicatorLights.flashingReset();
-            Status.lightsOn = false;
-            if (!robotContainer.turretFunctional) {
-                robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
-            }
-            Status.isDrivingActive = false;
+        if (robotContainer.gamepadEx1.a.wasJustPressed() || robotContainer.gamepadEx1.b.wasJustPressed()) {
+            turretAccelerationTimer.reset();
         }
-
-        if (robotContainer.gamepadEx1.guide.wasJustPressed() && !Status.lightsOn) {
-            Status.lightsOn = true;
-            robotContainer.delayedActionManager.schedule(() -> Status.isDrivingActive = true, 1000);
-        }
-
-        if (!Status.lightsOn) {
-            robotContainer.allIndicatorLights.flashing(Constants.LED_COLOR.ORANGE, Constants.LED_COLOR.OFF, 8, 2);
-        }
-
-        if (Status.lightsOn) {
-            if (robotContainer.gamepadEx1.leftStickX() > 0.1) {
-                robotContainer.indicatorLightFrontRight.flashing(Constants.LED_COLOR.ORANGE, Constants.LED_COLOR.WHITE, 2);
-                robotContainer.indicatorLightFrontLeft.setColor(Constants.LED_COLOR.WHITE);
-            } else if (robotContainer.gamepadEx1.leftStickX() < -0.1) {
-                robotContainer.indicatorLightFrontLeft.flashing(Constants.LED_COLOR.ORANGE, Constants.LED_COLOR.WHITE, 2);
-                robotContainer.indicatorLightFrontRight.setColor(Constants.LED_COLOR.WHITE);
-            } else if (robotContainer.gamepadEx1.leftStickY() > 0.1) {
-                robotContainer.allIndicatorLights.rainbow();
-            } else {
-                robotContainer.indicatorLightFrontRight.setColor(Constants.LED_COLOR.WHITE);
-                robotContainer.indicatorLightFrontLeft.setColor(Constants.LED_COLOR.WHITE);
-            }
-
-            if (robotContainer.gamepadEx1.leftStickY() < -0.1) {
-                robotContainer.indicatorLightBack.flashing(Constants.LED_COLOR.RED, Constants.LED_COLOR.WHITE, 2);
-            } else {
-                robotContainer.indicatorLightBack.setColor(Constants.LED_COLOR.RED);
-            }
-
-            if (robotContainer.gamepadEx1.leftStickY.wasJustReleased()) {
-                robotContainer.allIndicatorLights.rainbowReset();
-            }
+        if (robotContainer.gamepadEx1.a.isHeld()) {
+            robotContainer.turret.flywheel.setPower(
+                    turretAccelerationTimer.nanoseconds()
+                    * Constants.TURRET_ACCELERATION_MULTIPLIER_NANO * 4
+                    );
+        } else if (robotContainer.gamepadEx1.b.isHeld()) {
+            robotContainer.turret.flywheel.setPower(
+                    -turretAccelerationTimer.nanoseconds()
+                    * Constants.TURRET_ACCELERATION_MULTIPLIER_NANO * 4
+                    );
+        } else {
+            robotContainer.turret.flywheel.setPower(0);
         }
 
         robotContainer.telemetry(currentServo, 0, CURRENT_LOOP_TIME_MS, CURRENT_LOOP_TIME_AVG_MS, gamepad1);
@@ -156,9 +106,6 @@ public class TeleOp extends OpMode {
 
     @Override
     public void stop() {
-        if (!robotContainer.turretFunctional) {
-            robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
-        }
         Status.opModeIsActive = false;
         robotContainer.isRunning = false;
     }
