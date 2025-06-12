@@ -6,30 +6,31 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
-import org.firstinspires.ftc.teamcode.other.GoBildaPinpoint;
 
-import java.util.Objects;
+import java.util.Arrays;
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "SwervePIDFTuner", group = "Tuner")
-public class SwervePIDFTuner extends OpMode {
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Rotate", group = "Auto")
+public class Rotate extends OpMode {
     public static double CURRENT_LOOP_TIME_AVG_MS;
     private RobotContainer robotContainer;
+    public static boolean fieldOriented = false;
     public static double CURRENT_LOOP_TIME_MS;
-    private final ElapsedTime targetTimer = new ElapsedTime();
+    private static final ElapsedTime turretAccelerationTimer = new ElapsedTime();
+    private static final ElapsedTime rotateTimer = new ElapsedTime();
     private int currentServo = -1;
+    double[] angles = {0, 0, 0, 0};
+    double angle = 0;
 
     @Override
     public void init() {
         robotContainer = new RobotContainer(this);
         robotContainer.isRunning = true;
         robotContainer.init();
-        robotContainer.indicatorLightFrontLeft.setColor(Constants.LED_COLOR.RED);
         robotContainer.refreshData();
         RobotContainer.HardwareDevices.imu.resetYaw();
         RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU(); // TODO: Run at start of auto instead
-        robotContainer.opMode.telemetry.addLine("OpMode Initialized");
-        robotContainer.opMode.telemetry.update();
-        robotContainer.indicatorLightFrontLeft.setColor(Constants.LED_COLOR.GREEN);
+        robotContainer.telemetry.addLine("OpMode Initialized");
+        robotContainer.telemetry.update();
     }
 
     @Override
@@ -40,12 +41,13 @@ public class SwervePIDFTuner extends OpMode {
     @Override
     public void start() {
         robotContainer.start(this);
+
         Status.opModeIsActive = true;
-        Objects.requireNonNull(robotContainer.loopTimers.get("teleOp")).reset();
-        if (RobotContainer.HardwareDevices.pinpoint.getDeviceStatus() != GoBildaPinpoint.DeviceStatus.READY) {
-            robotContainer.addRetainedTelemetry("WARNING, PINPOINT STATUS:", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
-        }
-        targetTimer.reset();
+        Status.lightsOn = false;
+        Status.isDrivingActive = false;
+
+        turretAccelerationTimer.reset();
+
     }
 
     @Override
@@ -53,19 +55,18 @@ public class SwervePIDFTuner extends OpMode {
         CURRENT_LOOP_TIME_MS = robotContainer.updateLoopTime("teleOp");
         CURRENT_LOOP_TIME_AVG_MS = robotContainer.getRollingAverageLoopTime("teleOp");
         robotContainer.refreshData();
-        robotContainer.gamepadEx1.update();
-        robotContainer.gamepadEx2.update();
 
-        if (targetTimer.seconds() < 5) {
-            for (int i = 0; i < Constants.NUM_SWERVE_SERVOS; i++) {
-                robotContainer.swerveModules[i].servo.setTargetAngle(90);
+        if (rotateTimer.seconds() > 1) {
+            for (int i = 0; i < angles.length; i++) {
+                angles[i] += 10;
             }
-        } else if (targetTimer.seconds() >= 5 && targetTimer.seconds() < 10) {
-            for (int i = 0; i < Constants.NUM_SWERVE_SERVOS; i++) {
-                robotContainer.swerveModules[i].servo.setTargetAngle(-90);
-            }
-        } else {
-            targetTimer.reset();
+            angle += 10;
+            rotateTimer.reset();
+        }
+
+        if (angle > 360) {
+            Arrays.fill(angles, 0);
+            angle = 0;
         }
 
         if (gamepad1.dpad_up) {
@@ -78,9 +79,10 @@ public class SwervePIDFTuner extends OpMode {
             currentServo = 3;
         }
 
-        robotContainer.allIndicatorLights.off();
+        robotContainer.drivetrain.swerveSetTargets(angles, Constants.SWERVE_NO_POWER);
 
         robotContainer.telemetry(currentServo, 0, CURRENT_LOOP_TIME_MS, CURRENT_LOOP_TIME_AVG_MS, gamepad1);
+        Thread.yield();
     }
 
     @Override

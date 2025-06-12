@@ -217,6 +217,7 @@ public class RobotContainer {
         for (LynxModule hub : HardwareDevices.allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }
+        telemetry.setMsTransmissionInterval(750);
     }
 
     public void start(OpMode opmode) {
@@ -388,43 +389,43 @@ public class RobotContainer {
     }
 
     public void telemetry (int currentServo, double offset, double CURRENT_LOOP_TIME_MS, double CURRENT_LOOP_TIME_AVG_MS, Gamepad gamepad) {
-        opMode.telemetry.addData("Control Hub Voltage", getVoltage(Constants.CONTROL_HUB_INDEX) + " V");
-        opMode.telemetry.addData("Expansion Hub Voltage", getVoltage(Constants.EXPANSION_HUB_INDEX) + " V");
-        opMode.telemetry.addData("Control Hub Current", getCurrent(Constants.CONTROL_HUB_INDEX) + " A");
-        opMode.telemetry.addData("Expansion Hub Current", getCurrent(Constants.EXPANSION_HUB_INDEX) + " A");
-        opMode.telemetry.addLine();
-        opMode.telemetry.addData("Pinpoint X", PinpointUpdater.currentPose.getX(DistanceUnit.CM) + " cm");
-        opMode.telemetry.addData("Pinpoint Y", PinpointUpdater.currentPose.getY(DistanceUnit.CM) + " cm");
-        opMode.telemetry.addData("Pinpoint Heading", PinpointUpdater.currentHeading + "°");
-        opMode.telemetry.addData("PINPOINT STATUS", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
-        opMode.telemetry.addLine();
-        opMode.telemetry.addData("TeleOp Avg Loop Time", (int) CURRENT_LOOP_TIME_AVG_MS + " ms");
-        opMode.telemetry.addData("TeleOp Loop Time", (int) CURRENT_LOOP_TIME_MS + " ms");
-        opMode.telemetry.addLine();
-        opMode.telemetry.addData("DriveTrain Avg Loop Time", (int) drivetrainUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms");
-        opMode.telemetry.addData("DriveTrain Loop Time", (int) drivetrainUpdater.CURRENT_LOOP_TIME_MS + " ms");
-        opMode.telemetry.addLine();
-        opMode.telemetry.addData("Pinpoint Avg Loop Time", (int) pinpointUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms");
-        opMode.telemetry.addData("Pinpoint Loop Time", (int) pinpointUpdater.CURRENT_LOOP_TIME_MS + " ms");
-        opMode.telemetry.addLine();
-        opMode.telemetry.addData("Heading PID Target", headingPID.getTargetHeading());
-        opMode.telemetry.addData("Heading PID Target Reached", Status.robotHeadingTargetReached);
-        opMode.telemetry.addData("Heading PID Output", headingPID.calculate(PinpointUpdater.currentHeading));
-        opMode.telemetry.addLine();
-        opMode.telemetry.addData("Left Stick Y", gamepad.left_stick_y);
+        telemetry.addData("Control Hub Voltage", getVoltage(Constants.CONTROL_HUB_INDEX) + " V");
+        telemetry.addData("Expansion Hub Voltage", getVoltage(Constants.EXPANSION_HUB_INDEX) + " V");
+        telemetry.addData("Control Hub Current", getCurrent(Constants.CONTROL_HUB_INDEX) + " A");
+        telemetry.addData("Expansion Hub Current", getCurrent(Constants.EXPANSION_HUB_INDEX) + " A");
+        telemetry.addLine();
+        telemetry.addData("Pinpoint X", PinpointUpdater.currentPose.getX(DistanceUnit.CM) + " cm");
+        telemetry.addData("Pinpoint Y", PinpointUpdater.currentPose.getY(DistanceUnit.CM) + " cm");
+        telemetry.addData("Pinpoint Heading", PinpointUpdater.currentHeading + "°");
+        telemetry.addData("PINPOINT STATUS", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
+        telemetry.addLine();
+        telemetry.addData("TeleOp Avg Loop Time", (int) CURRENT_LOOP_TIME_AVG_MS + " ms");
+        telemetry.addData("TeleOp Loop Time", (int) CURRENT_LOOP_TIME_MS + " ms");
+        telemetry.addLine();
+        telemetry.addData("DriveTrain Avg Loop Time", (int) drivetrainUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms");
+        telemetry.addData("DriveTrain Loop Time", (int) drivetrainUpdater.CURRENT_LOOP_TIME_MS + " ms");
+        telemetry.addLine();
+        telemetry.addData("Pinpoint Avg Loop Time", (int) pinpointUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms");
+        telemetry.addData("Pinpoint Loop Time", (int) pinpointUpdater.CURRENT_LOOP_TIME_MS + " ms");
+        telemetry.addLine();
+        telemetry.addData("Heading PID Target", headingPID.getTargetHeading());
+        telemetry.addData("Heading PID Target Reached", Status.robotHeadingTargetReached);
+        telemetry.addData("Heading PID Output", headingPID.calculate(PinpointUpdater.currentHeading));
+        telemetry.addLine();
+        telemetry.addData("Left Stick Y", gamepad.left_stick_y);
         if (currentServo >= 0) {
-            opMode.telemetry.addLine();
-            opMode.telemetry.addData("Selected Servo", currentServo);
-            opMode.telemetry.addData("Servo Angle", swerveModules[currentServo].servo.getAngle());
-            opMode.telemetry.addData("Servo Target", swerveServosPIDF[currentServo].getTargetAngle());
-            opMode.telemetry.addData("Servo Offset", offset);
-            opMode.telemetry.addData("Servo Set Power", swerveServosPIDF[currentServo].calculate());
-            opMode.telemetry.addData("Servo Error", swerveServosPIDF[currentServo].getError());
-            opMode.telemetry.addData("Motor Target Power", swerveModules[currentServo].motor.targetPower);
-            opMode.telemetry.addData("Motor Current Power", RobotContainer.HardwareDevices.swerveMotors[currentServo].getPower());
+            telemetry.addLine();
+            telemetry.addData("Selected Servo", currentServo);
+            telemetry.addData("Servo Angle", swerveModules[currentServo].servo.getAngle());
+            telemetry.addData("Servo Target", swerveServosPIDF[currentServo].getTargetAngle());
+            telemetry.addData("Servo Offset", offset);
+            telemetry.addData("Servo Set Power", swerveServosPIDF[currentServo].calculate());
+            telemetry.addData("Servo Error", swerveServosPIDF[currentServo].getError());
+            telemetry.addData("Motor Target Power", swerveModules[currentServo].motor.targetPower);
+            telemetry.addData("Motor Current Power", RobotContainer.HardwareDevices.swerveMotors[currentServo].getPower());
         }
-        opMode.telemetry.addLine();
+        telemetry.addLine();
         displayRetainedTelemetry();
-        opMode.telemetry.update();
+        telemetry.update();
     }
 }

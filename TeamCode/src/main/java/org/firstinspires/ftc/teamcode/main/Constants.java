@@ -23,7 +23,7 @@ public class Constants {
             )
     );
 
-    public static boolean TURRET_BOT_ACTIVE = true;
+    public static boolean TURRET_BOT_ACTIVE = false;
     public static boolean SERVO_ANALOG_ACTIVE = true;
 
     public static final int
@@ -31,6 +31,8 @@ public class Constants {
             EXPANSION_HUB_INDEX = 1;
 
     public static final int LOOP_AVERAGE_WINDOW_SIZE = 30;
+
+    public static final int TELEMETRY_UPDATE_INTERVAL_MS = 750;
 
     public static final int
             NUM_SWERVE_MOTORS = 4,
@@ -50,7 +52,7 @@ public class Constants {
      * Index 4 is global, and the rest are in order (module 0, 1, 2, 3) see {@link SwerveModule}.
      */
     // TODO: Tune if needed
-    public static double[] SWERVE_SERVO_ANGLE_OFFSET = {-105, 227, 0, 0, 0};
+    public static double[] SWERVE_SERVO_ANGLE_OFFSET = {2, -67, -33, 12, 0};
 
     /**
      * The desired servo angles for the swerve modules when in the rotation formation
@@ -115,8 +117,8 @@ public class Constants {
             SWERVE_SERVO_KP = 0.02,
             SWERVE_SERVO_KI = 0,
                 SWERVE_SERVO_I_MAX = 0,
-            SWERVE_SERVO_KD = 0.0003,
-            SWERVE_SERVO_KF = 0.02;
+            SWERVE_SERVO_KD = 0.0005,
+            SWERVE_SERVO_KF = 0.01;
 
     // TODO: Tune
     public static double
@@ -142,7 +144,7 @@ public class Constants {
     public static double HEADING_PID_TOLERANCE_DEGREES = 2;
 
     // TODO: Tune if needed
-    public static double SWERVE_SERVO_PIDF_TOLERANCE_DEGREES = 1;
+    public static double SWERVE_SERVO_PIDF_TOLERANCE_DEGREES = 3;
 
     public static final int SWERVE_MOTOR_RPM_TESTED_MAX = 5800;
 

@@ -27,9 +27,8 @@ public class TeleOp extends OpMode {
         if (!robotContainer.turretFunctional) {
             robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
         }
-        robotContainer.opMode.telemetry.setMsTransmissionInterval(750);
-        robotContainer.opMode.telemetry.addLine("OpMode Initialized");
-        robotContainer.opMode.telemetry.update();
+        robotContainer.telemetry.addLine("OpMode Initialized");
+        robotContainer.telemetry.update();
     }
 
     @Override

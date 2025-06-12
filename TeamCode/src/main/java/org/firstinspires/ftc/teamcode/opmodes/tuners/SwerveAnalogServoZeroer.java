@@ -16,6 +16,7 @@ public class SwerveAnalogServoZeroer extends OpMode {
     public static double CURRENT_LOOP_TIME_MS;
     private int currentServo = -1;
     private double[] offset = {0, 0, 0, 0};
+    private double[] power = {0.2, 0.2, 0.2, 0.2};
 
     @Override
     public void init() {
@@ -26,7 +27,6 @@ public class SwerveAnalogServoZeroer extends OpMode {
         robotContainer.refreshData();
         RobotContainer.HardwareDevices.imu.resetYaw();
         RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU(); // TODO: Run at start of auto instead
-        robotContainer.opMode.telemetry.setMsTransmissionInterval(200);
         robotContainer.opMode.telemetry.addLine("OpMode Initialized");
         robotContainer.opMode.telemetry.update();
         robotContainer.indicatorLightFrontLeft.setColor(Constants.LED_COLOR.GREEN);
@@ -41,6 +41,7 @@ public class SwerveAnalogServoZeroer extends OpMode {
     public void start() {
         robotContainer.start(this);
         Status.opModeIsActive = true;
+        robotContainer.drivetrain.swerveSetTargets(offset, power);
         Objects.requireNonNull(robotContainer.loopTimers.get("teleOp")).reset();
         if (RobotContainer.HardwareDevices.pinpoint.getDeviceStatus() != GoBildaPinpoint.DeviceStatus.READY) {
             robotContainer.addRetainedTelemetry("WARNING, PINPOINT STATUS:", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
