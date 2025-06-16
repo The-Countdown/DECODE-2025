@@ -52,7 +52,7 @@ public class Constants {
      * Index 4 is global, and the rest are in order (module 0, 1, 2, 3) see {@link SwerveModule}.
      */
     // TODO: Tune if needed
-    public static double[] SWERVE_SERVO_ANGLE_OFFSET = {2, -67, -33, 12, 0};
+    public static double[] SWERVE_SERVO_ANGLE_OFFSET = {8, 10, 85, 125, 0};
 
     /**
      * The desired servo angles for the swerve modules when in the rotation formation
@@ -113,12 +113,12 @@ public class Constants {
      * These values will need to be tuned.
      */
     // TODO: Tune
-    public static double
-            SWERVE_SERVO_KP = 0.02,
-            SWERVE_SERVO_KI = 0,
-                SWERVE_SERVO_I_MAX = 0,
-            SWERVE_SERVO_KD = 0.0005,
-            SWERVE_SERVO_KF = 0.01;
+    public static double[]
+            SWERVE_SERVO_KP = {0.0125, 0.02, 0.0125, 0.02},
+            SWERVE_SERVO_KI = {0.01, 0.01, 0.01, 0.01},
+                SWERVE_SERVO_I_MAX = {0, 0, 0, 0},
+            SWERVE_SERVO_KD = {0.00005, 0.00005, 0.00005, 0.00005},
+            SWERVE_SERVO_KF = {0.03, 0.03, 0.03, 0.03};
 
     // TODO: Tune
     public static double

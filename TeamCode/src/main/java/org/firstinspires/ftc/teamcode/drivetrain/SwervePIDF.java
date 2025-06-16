@@ -56,9 +56,9 @@ public class SwervePIDF {
         timer.reset();
         if (currentTime < 1e-6) currentTime = 1e-6;
 
-        p = Constants.SWERVE_SERVO_KP * error;
-        double newI = Math.max(-Constants.SWERVE_SERVO_I_MAX, Math.min(Constants.SWERVE_SERVO_I_MAX,  // Prevent integral windup
-                i + Constants.SWERVE_SERVO_KI * error * currentTime));
+        p = Constants.SWERVE_SERVO_KP[module] * error;
+        double newI = Math.max(-Constants.SWERVE_SERVO_I_MAX[module], Math.min(Constants.SWERVE_SERVO_I_MAX[module],  // Prevent integral windup
+                i + Constants.SWERVE_SERVO_KI[module] * error * currentTime));
 
             if (Math.abs(p + newI + d) < 1) {
                 i = newI; // Only allow integration if output is within limits
@@ -68,8 +68,8 @@ public class SwervePIDF {
             if (Math.signum(error) != Math.signum(lastError)) {
                 i *= 0.9;
             }
-        d = Constants.SWERVE_SERVO_KD * (error - lastError) / currentTime;
-        ff = Constants.SWERVE_SERVO_KF * Math.signum(error);
+        d = Constants.SWERVE_SERVO_KD[module] * (error - lastError) / currentTime;
+        ff = Constants.SWERVE_SERVO_KF[module] * Math.signum(error);
 
         lastError = error;
 
