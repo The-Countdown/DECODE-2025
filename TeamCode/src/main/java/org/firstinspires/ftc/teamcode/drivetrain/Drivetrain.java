@@ -129,21 +129,18 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
      */
     public double[] scalePowers(double[] powers) {
         double maxPower = 0;
-        // Iterate through each power value in the array.
+        // Find the largest magnitude, not just the largest positive.
         for (int i = 0; i < powers.length; i++) {
-            // if the power is greater then the current max power then we update it.
-            if(powers[i] > maxPower){
-                maxPower = powers[i];
+            if (Math.abs(powers[i]) > maxPower) {
+                maxPower = Math.abs(powers[i]);
             }
         }
-        // if the maxPower is above one, that means that we need to scale.
-        if(maxPower > 1){
-            // iterate through and divide every element by the max power.
+        // If any wheel wants more than 100%, scale them all back into [-1,1].
+        if (maxPower > 1) {
             for (int i = 0; i < powers.length; i++) {
                 powers[i] /= maxPower;
             }
         }
-
         return powers;
     }
 

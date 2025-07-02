@@ -413,6 +413,9 @@ public class RobotContainer {
         telemetry.addData("Heading PID Output", headingPID.calculate(PinpointUpdater.currentHeading));
         telemetry.addLine();
         telemetry.addData("Left Stick Y", gamepad.left_stick_y);
+        telemetry.addData("Left Stick X", gamepad.left_stick_x);
+        telemetry.addData("Right Stick Y", gamepad.right_stick_y);
+        telemetry.addData("Right Stick X", gamepad.right_stick_x);
         if (currentServo >= 0) {
             telemetry.addLine();
             telemetry.addData("Selected Servo", currentServo);
