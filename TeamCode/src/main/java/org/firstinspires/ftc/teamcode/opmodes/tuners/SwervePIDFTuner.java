@@ -80,7 +80,7 @@ public class SwervePIDFTuner extends OpMode {
 
         robotContainer.allIndicatorLights.off();
 
-        robotContainer.telemetry(currentServo, 0, CURRENT_LOOP_TIME_MS, CURRENT_LOOP_TIME_AVG_MS, gamepad1);
+        robotContainer.telemetry(currentServo, 0, CURRENT_LOOP_TIME_MS, CURRENT_LOOP_TIME_AVG_MS);
     }
 
     @Override

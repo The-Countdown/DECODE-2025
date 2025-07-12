@@ -103,14 +103,13 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
             double error = targetAngles[i] - currentAngle;
             error = normalizeAngle(error);
 
-            /*
-             * if the error is greater than 90 the direction of the wheel needs to be flipped, so we add 180 to the target angle
-             * and we invert the powers.
-             *
-             * if it is not greater then we just pass in the regular power.
-             *
-             */
-            if (Math.abs(error) > 90) {
+            if (!Constants.SWERVE_MODULE_FLIPPED[i] && Math.abs(error) > Constants.SWERVE_MODULE_FLIP_SWITCH_ON) {
+                Constants.SWERVE_MODULE_FLIPPED[i] = true;
+            } else if (Constants.SWERVE_MODULE_FLIPPED[i] && Math.abs(error) <  Constants.SWERVE_MODULE_FLIP_SWITCH_OFF) {
+                Constants.SWERVE_MODULE_FLIPPED[i] = false;
+            }
+
+            if (Constants.SWERVE_MODULE_FLIPPED[i]) {
                 targetAngles[i] = normalizeAngle(targetAngles[i] + 180);
                 robotContainer.swerveModules[i].motor.setTargetPower(-targetPowers[i]);
             } else {
@@ -118,6 +117,7 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
             }
 
             robotContainer.swerveModules[i].servo.setTargetAngle(targetAngles[i]);
+            Constants.SWERVE_MODULE_FLIPPED[i] = false;
         }
     }
 
@@ -151,6 +151,14 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
      * @return The normalized angle.
      */
     public double normalizeAngle(double angle) {
+        // On this edge case the servo will not move. If fixing the problem is less expensive than this, please do so.
+        if (angle == 90) {
+            angle = 89.999;
+        }
+        if (angle == -90 || angle == -180) {
+            angle += 0.001;
+        }
+
         // Check if the angle is already in the desired range.
         if (angle >= -180 && angle < 180) {
             return angle;
@@ -167,14 +175,6 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
         // If the angle is in the range [180, 360), shift it to [-180, 0).
         if (normalizedAngle >= 180) {
             normalizedAngle -= 360;
-        }
-
-        // On this edge case the servo will not move. If fixing the problem is less expensive than this, please do so.
-        if (normalizedAngle == 90) {
-            normalizedAngle = 89.999;
-        }
-        if (normalizedAngle == -90 || normalizedAngle == -180) {
-            normalizedAngle += 0.001;
         }
 
         return normalizedAngle;

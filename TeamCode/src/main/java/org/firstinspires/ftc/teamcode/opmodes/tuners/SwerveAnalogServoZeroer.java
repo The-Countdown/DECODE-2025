@@ -74,7 +74,7 @@ public class SwerveAnalogServoZeroer extends OpMode {
                 robotContainer.swerveModules[currentServo].servo.setTargetAngle(robotContainer.swerveServosPIDF[currentServo].getTargetAngle() - 0.3);
                 offset[currentServo] -= 0.3;
             }
-            robotContainer.telemetry(currentServo, offset[currentServo], CURRENT_LOOP_TIME_MS, CURRENT_LOOP_TIME_AVG_MS, gamepad1);
+            robotContainer.telemetry(currentServo, offset[currentServo], CURRENT_LOOP_TIME_MS, CURRENT_LOOP_TIME_AVG_MS);
         }
 
         robotContainer.allIndicatorLights.off();

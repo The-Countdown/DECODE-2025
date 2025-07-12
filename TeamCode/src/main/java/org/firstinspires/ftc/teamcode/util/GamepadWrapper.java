@@ -143,7 +143,7 @@ public class GamepadWrapper {
         return gamepad.right_stick_x;
     }
     public float rightStickY() {
-        return gamepad.right_stick_y;
+        return -gamepad.right_stick_y;
     }
 
     public float leftTriggerRaw() {

@@ -70,7 +70,7 @@ public class HeadingPIDTuner extends OpMode {
 
         robotContainer.allIndicatorLights.off();
 
-        robotContainer.telemetry(-1, 0, CURRENT_LOOP_TIME_MS, CURRENT_LOOP_TIME_AVG_MS, gamepad1);
+        robotContainer.telemetry(-1, 0, CURRENT_LOOP_TIME_MS, CURRENT_LOOP_TIME_AVG_MS);
     }
 
     @Override

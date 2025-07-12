@@ -47,12 +47,20 @@ public class Constants {
             WHEELBASE_ICR_X = WHEELBASE_LENGTH_MM / 2,
             WHEELBASE_ICR_Y = WHEELBASE_WIDTH_MM / 2;
 
+    public static final boolean[] SWERVE_MODULE_FLIPPED = new boolean[NUM_SWERVE_SERVOS];
+
+    public static final double SWERVE_MODULE_FLIP_SWITCH_TOLERANCE_DEGREES = 2;
+
+    public static final double SWERVE_MODULE_FLIP_SWITCH_ON = 90 + SWERVE_MODULE_FLIP_SWITCH_TOLERANCE_DEGREES;
+
+    public static final double SWERVE_MODULE_FLIP_SWITCH_OFF = 90 - SWERVE_MODULE_FLIP_SWITCH_TOLERANCE_DEGREES;
+
     /**
      * The angle offset for each swerve servo, used to correct any mechanical misalignment.
      * Index 4 is global, and the rest are in order (module 0, 1, 2, 3) see {@link SwerveModule}.
      */
     // TODO: Tune if needed
-    public static double[] SWERVE_SERVO_ANGLE_OFFSET = {8, 10, 85, 125, 0};
+    public static double[] SWERVE_SERVO_ANGLE_OFFSET = {0, 0, 0, 0};
 
     /**
      * The desired servo angles for the swerve modules when in the rotation formation
@@ -114,11 +122,11 @@ public class Constants {
      */
     // TODO: Tune
     public static double[]
-            SWERVE_SERVO_KP = {0.0125, 0.02, 0.0125, 0.02},
-            SWERVE_SERVO_KI = {0.01, 0.01, 0.01, 0.01},
+            SWERVE_SERVO_KP = {0.007, 0.007, 0.008, 0.012},
+            SWERVE_SERVO_KI = {0, 0, 0, 0},
                 SWERVE_SERVO_I_MAX = {0, 0, 0, 0},
-            SWERVE_SERVO_KD = {0.00005, 0.00005, 0.00005, 0.00005},
-            SWERVE_SERVO_KF = {0.03, 0.03, 0.03, 0.03};
+            SWERVE_SERVO_KD = {0, 0, 0.00005, 0.00007},
+            SWERVE_SERVO_KF = {0.07, 0.065, 0.065, 0.05};
 
     // TODO: Tune
     public static double

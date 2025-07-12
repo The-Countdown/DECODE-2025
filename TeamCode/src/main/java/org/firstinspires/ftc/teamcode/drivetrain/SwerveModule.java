@@ -70,9 +70,9 @@ public class SwerveModule {
                 return 0;
             }
 
-            double angle = analogEncoder.getVoltage() / Constants.ANALOG_MAX_VOLTAGE * 360;
+            double angle = (analogEncoder.getVoltage() / Constants.ANALOG_MAX_VOLTAGE) * 360;
 
-            angle += Constants.SWERVE_SERVO_ANGLE_OFFSET[4] + Constants.SWERVE_SERVO_ANGLE_OFFSET[moduleIndex];
+            angle += Constants.SWERVE_SERVO_ANGLE_OFFSET[moduleIndex];
 
             angle = Constants.normalizeAngle(angle);
 

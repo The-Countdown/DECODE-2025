@@ -37,9 +37,8 @@ public class SwervePIDF {
         return targetAngle;
     }
 
-    // TODO: FLIP GET ANGLE AND GET TARGET ANGLE AND INVERT THE AXON SERVOS, THIS IS BACKWARDS COMPARED TO LINE 54
     public double getError() {
-        double error = robotContainer.swerveModules[module].servo.getAngle() - robotContainer.swerveServosPIDF[module].getTargetAngle();
+        double error = targetAngle - robotContainer.swerveModules[module].servo.getAngle();
         error = robotContainer.drivetrain.normalizeAngle(error);
 
         return error;
@@ -50,8 +49,7 @@ public class SwervePIDF {
      * @return The calculated PIDF output.
      */
     public double calculate() {
-        double currentAngle = robotContainer.swerveModules[module].servo.getAngle();
-        double error = robotContainer.drivetrain.normalizeAngle(targetAngle - currentAngle);
+        double error = getError();
         double currentTime = timer.seconds();
         timer.reset();
         if (currentTime < 1e-6) currentTime = 1e-6;

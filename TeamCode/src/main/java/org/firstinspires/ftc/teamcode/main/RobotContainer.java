@@ -388,7 +388,7 @@ public class RobotContainer {
         return sum / times.size();
     }
 
-    public void telemetry (int currentServo, double offset, double CURRENT_LOOP_TIME_MS, double CURRENT_LOOP_TIME_AVG_MS, Gamepad gamepad) {
+    public void telemetry (int currentServo, double offset, double CURRENT_LOOP_TIME_MS, double CURRENT_LOOP_TIME_AVG_MS) {
         telemetry.addData("Control Hub Voltage", getVoltage(Constants.CONTROL_HUB_INDEX) + " V");
         telemetry.addData("Expansion Hub Voltage", getVoltage(Constants.EXPANSION_HUB_INDEX) + " V");
         telemetry.addData("Control Hub Current", getCurrent(Constants.CONTROL_HUB_INDEX) + " A");
@@ -412,10 +412,10 @@ public class RobotContainer {
         telemetry.addData("Heading PID Target Reached", Status.robotHeadingTargetReached);
         telemetry.addData("Heading PID Output", headingPID.calculate(PinpointUpdater.currentHeading));
         telemetry.addLine();
-        telemetry.addData("Left Stick Y", gamepad.left_stick_y);
-        telemetry.addData("Left Stick X", gamepad.left_stick_x);
-        telemetry.addData("Right Stick Y", gamepad.right_stick_y);
-        telemetry.addData("Right Stick X", gamepad.right_stick_x);
+        telemetry.addData("Left Stick Y", gamepadEx1.leftStickY());
+        telemetry.addData("Left Stick X", gamepadEx1.leftStickX());
+        telemetry.addData("Right Stick Y", gamepadEx1.rightStickY());
+        telemetry.addData("Right Stick X", gamepadEx1.rightStickX());
         if (currentServo >= 0) {
             telemetry.addLine();
             telemetry.addData("Selected Servo", currentServo);

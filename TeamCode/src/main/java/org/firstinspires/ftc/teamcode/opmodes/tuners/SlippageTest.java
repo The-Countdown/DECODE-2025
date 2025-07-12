@@ -9,8 +9,8 @@ import org.firstinspires.ftc.teamcode.main.Status;
 
 import java.util.Arrays;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Rotate", group = "Auto")
-public class Rotate extends OpMode {
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "SlippageTest", group = "Auto")
+public class SlippageTest extends OpMode {
     public static double CURRENT_LOOP_TIME_AVG_MS;
     private RobotContainer robotContainer;
     public static boolean fieldOriented = false;
@@ -18,8 +18,6 @@ public class Rotate extends OpMode {
     private static final ElapsedTime turretAccelerationTimer = new ElapsedTime();
     private static final ElapsedTime rotateTimer = new ElapsedTime();
     private int currentServo = -1;
-    double[] angles = {0, 0, 0, 0};
-    double angle = 0;
 
     @Override
     public void init() {
@@ -47,7 +45,9 @@ public class Rotate extends OpMode {
         Status.isDrivingActive = false;
 
         turretAccelerationTimer.reset();
-
+        for (int i = 0; i < Constants.NUM_SWERVE_SERVOS; i++) {
+            robotContainer.swerveModules[i].servo.setPower(1);
+        }
     }
 
     @Override
@@ -56,18 +56,16 @@ public class Rotate extends OpMode {
         CURRENT_LOOP_TIME_AVG_MS = robotContainer.getRollingAverageLoopTime("teleOp");
         robotContainer.refreshData();
 
-        if (rotateTimer.seconds() > 1) {
-            for (int i = 0; i < angles.length; i++) {
-                angles[i] += 10;
-            }
-            angle += 10;
-            rotateTimer.reset();
-        }
-
-        if (angle > 360) {
-            Arrays.fill(angles, 0);
-            angle = 0;
-        }
+//        if (rotateTimer.seconds() > 2) {
+//            for (int i = 0; i < Constants.NUM_SWERVE_SERVOS; i++) {
+//                robotContainer.swerveModules[i].servo.setPower(-1);
+//            }
+//            rotateTimer.reset();
+//        } else if (rotateTimer.seconds() > 1) {
+//            for (int i = 0; i < Constants.NUM_SWERVE_SERVOS; i++) {
+//                robotContainer.swerveModules[i].servo.setPower(1);
+//            }
+//        }
 
         if (gamepad1.dpad_up) {
             currentServo = 0;
@@ -79,9 +77,8 @@ public class Rotate extends OpMode {
             currentServo = 3;
         }
 
-        robotContainer.drivetrain.swerveSetTargets(angles, Constants.SWERVE_NO_POWER);
-
         robotContainer.telemetry(currentServo, 0, CURRENT_LOOP_TIME_MS, CURRENT_LOOP_TIME_AVG_MS);
+
         Thread.yield();
     }
 
