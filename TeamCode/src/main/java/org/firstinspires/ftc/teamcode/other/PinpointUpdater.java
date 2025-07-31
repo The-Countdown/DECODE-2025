@@ -27,22 +27,23 @@ public class PinpointUpdater extends Thread {
     @Override
     public void run() {
         while (!Status.opModeIsActive);
-        while (Status.opModeIsActive) {
+        while (true) {
             RobotContainer.HardwareDevices.pinpoint.update();
             currentPose = RobotContainer.HardwareDevices.pinpoint.getPosition();
             robotContainer.pinpointPose = currentPose;
-            currentHeading = currentPose.getHeading(AngleUnit.DEGREES); // TODO: Invert if needed (could be increasing when going counter-clockwise)
+            currentHeading = currentPose.getHeading(AngleUnit.DEGREES);
             CURRENT_LOOP_TIME_MS = robotContainer.updateLoopTime("pinpointUpdater");
             CURRENT_LOOP_TIME_AVG_MS = robotContainer.getRollingAverageLoopTime("pinpointUpdater");
             if (Status.isDrivingActive) {
                 try {
-                    Thread.sleep(50); // TODO: Change later if TeleOp needs it more eventually
+                    Thread.sleep(50);
                 } catch (InterruptedException e) {
                     break;
                 }
             } else {
                 Thread.yield();
             }
+            while (!Status.opModeIsActive);
         }
     }
 }

@@ -60,7 +60,7 @@ public class Constants {
      * Index 4 is global, and the rest are in order (module 0, 1, 2, 3) see {@link SwerveModule}.
      */
     // TODO: Tune if needed
-    public static double[] SWERVE_SERVO_ANGLE_OFFSET = {0, 0, 0, 0};
+    public static double[] SWERVE_SERVO_ANGLE_OFFSET = {45, 245, 38, 128};
 
     /**
      * The desired servo angles for the swerve modules when in the rotation formation
@@ -122,15 +122,15 @@ public class Constants {
      */
     // TODO: Tune
     public static double[]
-            SWERVE_SERVO_KP = {0.007, 0.007, 0.008, 0.012},
+            SWERVE_SERVO_KP = {0.005, 0.005, 0.005, 0.003},
             SWERVE_SERVO_KI = {0, 0, 0, 0},
                 SWERVE_SERVO_I_MAX = {0, 0, 0, 0},
-            SWERVE_SERVO_KD = {0, 0, 0.00005, 0.00007},
-            SWERVE_SERVO_KF = {0.07, 0.065, 0.065, 0.05};
+            SWERVE_SERVO_KD = {0, 0, 0, 0},
+            SWERVE_SERVO_KF = {0.05, 0.05, 0.05, 0.05};
 
     // TODO: Tune
     public static double
-            HEADING_KP = 0.04,
+            HEADING_KP = 0.01,
             HEADING_KI = 0,
                 HEADING_I_MAX = 0,
             HEADING_KD = 0;
@@ -149,10 +149,10 @@ public class Constants {
     public static final double ANALOG_MAX_VOLTAGE = 3.3;
 
     // TODO: Tune if needed
-    public static double HEADING_PID_TOLERANCE_DEGREES = 2;
+    public static double HEADING_PID_TOLERANCE_DEGREES = 3000;
 
     // TODO: Tune if needed
-    public static double SWERVE_SERVO_PIDF_TOLERANCE_DEGREES = 3;
+    public static double SWERVE_SERVO_PIDF_TOLERANCE_DEGREES = 2;
 
     public static final int SWERVE_MOTOR_RPM_TESTED_MAX = 5800;
 

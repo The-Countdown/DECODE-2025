@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.drivetrain;
 
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
@@ -12,6 +14,10 @@ import java.util.Arrays;
  */
 public class Drivetrain extends RobotContainer.HardwareDevices {
     private final RobotContainer robotContainer;
+
+    private static final ElapsedTime stopTimer = new ElapsedTime();
+
+    double[] lastAngles = Constants.SWERVE_STOP_FORMATION;
 
     /**
      * Constructor for the Drivetrain class.
@@ -40,8 +46,22 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
             rotationalMagnitude = robotContainer.headingPID.calculate(PinpointUpdater.currentHeading);
         }
 
-        if (Status.robotHeadingTargetReached && x == 0 && y == 0 && rX == 0) {
+        if ((robotContainer.gamepadEx1.leftStickX.wasJustReleased() ||
+                robotContainer.gamepadEx1.leftStickY.wasJustReleased() ||
+                robotContainer.gamepadEx1.rightStickX.wasJustReleased()) &&
+                Status.robotHeadingTargetReached && x == 0 && y == 0 && rX == 0) {
+            swerveSetTargets(lastAngles, Constants.SWERVE_NO_POWER);
+            stopTimer.reset();
+            return;
+        }
+
+        if (Status.robotHeadingTargetReached && x == 0 && y == 0 && rX == 0 && stopTimer.seconds() >= 1) {
             swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
+            return;
+        }
+
+        if (Status.robotHeadingTargetReached && x == 0 && y == 0 && rX == 0) {
+            swerveSetTargets(lastAngles, Constants.SWERVE_NO_POWER);
             return;
         }
 
@@ -55,8 +75,9 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
         // Set the initial translational direction to forward.
         int translationalDirection = 1;
 
-        double currentHeading = PinpointUpdater.currentHeading;
+        double currentHeading = normalizeAngle(PinpointUpdater.currentHeading);
         // Adjust the translational angle for field-oriented driving if enabled.
+        translationalAngle = normalizeAngle(translationalAngle);
         translationalAngle = fieldOriented ? translationalAngle - currentHeading : translationalAngle;
         translationalAngle = normalizeAngle(translationalAngle);
 
@@ -85,6 +106,9 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
             calculatedPowers[i] = vectorMagnitude;
         }
 
+        if (!Arrays.stream(calculatedAngles).allMatch(v -> Math.abs(v) <= 0.01)) {
+            lastAngles = calculatedAngles;
+        }
         swerveSetTargets(calculatedAngles, calculatedPowers);
     }
 

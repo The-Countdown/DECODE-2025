@@ -66,13 +66,20 @@ public class TeleOp extends OpMode {
             currentServo = 3;
         }
 
+        if (!fieldOriented && robotContainer.gamepadEx1.a.wasJustPressed()) {
+            fieldOriented = true;
+        } else if (fieldOriented && robotContainer.gamepadEx1.a.wasJustPressed()) {
+            fieldOriented = false;
+        }
+
+
         if (Status.isDrivingActive) {
             // Fix this for also drivetrain working during turret.
             if (!robotContainer.turretFunctional) {
                 robotContainer.drivetrain.swerveDirectionalInput(
-                        robotContainer.drivetrain.joystickScaler(robotContainer.gamepadEx1.leftStickX()),
+                        robotContainer.drivetrain.joystickScaler(-robotContainer.gamepadEx1.leftStickX()),
                         robotContainer.drivetrain.joystickScaler(robotContainer.gamepadEx1.leftStickY()),
-                        robotContainer.drivetrain.joystickScaler(robotContainer.gamepadEx1.rightStickX()),
+                        robotContainer.drivetrain.joystickScaler(-robotContainer.gamepadEx1.rightStickX()),
                         fieldOriented
                 );
             }
