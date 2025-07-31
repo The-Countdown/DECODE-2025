@@ -77,9 +77,15 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
 
         double currentHeading = normalizeAngle(PinpointUpdater.currentHeading);
         // Adjust the translational angle for field-oriented driving if enabled.
+        robotContainer.telemetry.addData("First translationalAngle", translationalAngle);
+        translationalAngle = normalizeAngle(Math.toDegrees(translationalAngle));
+        robotContainer.telemetry.addData("translationalAngle after first normalize", translationalAngle);
+        translationalAngle = fieldOriented ? translationalAngle + currentHeading : translationalAngle;
+        robotContainer.telemetry.addData("translationalAngle after subtracting current heading", translationalAngle);
         translationalAngle = normalizeAngle(translationalAngle);
-        translationalAngle = fieldOriented ? translationalAngle - currentHeading : translationalAngle;
-        translationalAngle = normalizeAngle(translationalAngle);
+        robotContainer.telemetry.addData("translationalAngle after second normalize", translationalAngle);
+
+        translationalAngle = Math.toRadians(translationalAngle);
 
         double[] calculatedAngles = new double[robotContainer.swerveModules.length];
         double[] calculatedPowers = new double[robotContainer.swerveModules.length];
