@@ -11,6 +11,9 @@ import java.util.Map;
  * of the robot's overall configuration at any given time.
  */
 public class Status {
+
+    public static boolean competitionMode = false;
+
     /**
      * A map to store the status of each swerve servo.
      * The key is the integer, and the value is the ServoStatus enum.

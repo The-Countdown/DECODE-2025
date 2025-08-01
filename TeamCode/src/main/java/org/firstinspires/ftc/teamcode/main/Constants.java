@@ -23,7 +23,6 @@ public class Constants {
             )
     );
 
-    public static boolean TURRET_BOT_ACTIVE = false;
     public static boolean SERVO_ANALOG_ACTIVE = true;
 
     public static final int
@@ -175,11 +174,6 @@ public class Constants {
     public static double MAX_DRIVE_ACCELERATION = 2;
 
     public static double ZERO_POWER_TOLERANCE = 0.03;
-
-    public static double TURRET_ACCELERATION_TIME_SECONDS = 3;
-
-    // will not update if TURRET_ACCELERATION_TIME_SECONDS is changed in ftc dashboard
-    public static double TURRET_ACCELERATION_MULTIPLIER_NANO = TURRET_ACCELERATION_TIME_SECONDS * 1e9 * 2781;
 
     public enum LED_COLOR {
         OFF,

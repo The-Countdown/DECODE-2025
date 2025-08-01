@@ -26,8 +26,7 @@ public class PinpointUpdater extends Thread {
 
     @Override
     public void run() {
-        while (!Status.opModeIsActive);
-        while (true) {
+        while (Status.opModeIsActive || Status.competitionMode) {
             RobotContainer.HardwareDevices.pinpoint.update();
             currentPose = RobotContainer.HardwareDevices.pinpoint.getPosition();
             robotContainer.pinpointPose = currentPose;
@@ -43,7 +42,6 @@ public class PinpointUpdater extends Thread {
             } else {
                 Thread.yield();
             }
-            while (!Status.opModeIsActive);
         }
     }
 }

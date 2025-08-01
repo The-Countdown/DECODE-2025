@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.DcMotorImplEx;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
@@ -28,11 +27,8 @@ import org.firstinspires.ftc.teamcode.drivetrain.SwervePIDF;
 import org.firstinspires.ftc.teamcode.other.GoBildaPinpoint;
 import org.firstinspires.ftc.teamcode.other.IndicatorLighting;
 import org.firstinspires.ftc.teamcode.other.PinpointUpdater;
-import org.firstinspires.ftc.teamcode.subsystems.Intake;
-import org.firstinspires.ftc.teamcode.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.util.DelayedActionManager;
 import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
-import org.firstinspires.ftc.teamcode.util.LinkedMotors;
 
 import java.lang.Thread;
 import java.util.ArrayList;
@@ -57,7 +53,6 @@ public class RobotContainer {
     public boolean isRunning = false;
     public GamepadWrapper gamepadEx1;
     public GamepadWrapper gamepadEx2;
-    public boolean turretFunctional = false;
     public final Map<String, LinkedList<Double>> loopTimesMap = new HashMap<>();
     public final Map<String, ElapsedTime> loopTimers = new HashMap<>();
     private final ArrayList<String> retainedTelemetryCaptions = new ArrayList<>();
@@ -74,9 +69,6 @@ public class RobotContainer {
     public IndicatorLighting.Light indicatorLightFrontRight;
     public IndicatorLighting.Light indicatorLightBack;
     public IndicatorLighting.Group allIndicatorLights = new IndicatorLighting.Group();
-    public Turret turret = null;
-    public LinkedMotors turretFlywheel = null;
-    public Intake intake = null;
 
     public static class HardwareDevices {
         public static List<LynxModule> allHubs;
@@ -103,18 +95,6 @@ public class RobotContainer {
 
         public static AnalogInput[] swerveAnalogs = new AnalogInput[Constants.NUM_SWERVE_ANALOGS];
             public static String[] analogNames = new String[Constants.NUM_SWERVE_ANALOGS];
-
-        // Turret
-        public static DcMotorImplEx turretFlywheelMaster;
-        public static DcMotorImplEx turretFlywheelSlave;
-        public static DcMotorImplEx turretRotation;
-        public static DcMotorImplEx turretIntakeMotor;
-        public static DcMotorImplEx intakeMotor;
-        public static CRServoImplEx turretIntakeServo;
-        public static CRServoImplEx lateralConveyorServo;
-        public static CRServoImplEx longitudinalConveyorServo;
-        public static ServoImplEx turretArcServo;
-        public static AnalogInput turretEncoder;
     }
 
     public RobotContainer(OpMode opMode) {
@@ -137,62 +117,34 @@ public class RobotContainer {
         HardwareDevices.indicatorLightFrontRight = getHardwareDevice(ServoImplEx.class, "indicatorLightFrontRight");
         HardwareDevices.indicatorLightBack = getHardwareDevice(ServoImplEx.class, "indicatorLightBack");
 
-        if (Constants.TURRET_BOT_ACTIVE) { // you use this constant here but another somewhere else, is there a reason
-            HardwareDevices.turretFlywheelMaster = getHardwareDevice(DcMotorImplEx.class, "turretFlywheelMaster");
-            HardwareDevices.turretFlywheelSlave = getHardwareDevice(DcMotorImplEx.class, "turretFlywheelSlave");
-            HardwareDevices.turretFlywheelMaster.setMode(DcMotorImplEx.RunMode.RUN_USING_ENCODER);
-            HardwareDevices.turretFlywheelSlave.setMode(DcMotorImplEx.RunMode.RUN_USING_ENCODER);
-            HardwareDevices.turretRotation = getHardwareDevice(DcMotorImplEx.class, "turretRotation");
-            HardwareDevices.turretRotation.setZeroPowerBehavior(DcMotorImplEx.ZeroPowerBehavior.BRAKE);
-            HardwareDevices.turretIntakeMotor = getHardwareDevice(DcMotorImplEx.class, "turretIntakeMotor");
-            HardwareDevices.intakeMotor = getHardwareDevice(DcMotorImplEx.class, "intakeMotor");
-            HardwareDevices.turretArcServo = getHardwareDevice(ServoImplEx.class, "turretArcServo");
-            HardwareDevices.turretIntakeServo = getHardwareDevice(CRServoImplEx.class, "turretIntakeServo");
-            HardwareDevices.lateralConveyorServo = getHardwareDevice(CRServoImplEx.class, "lateralConveyorServo");
-            HardwareDevices.longitudinalConveyorServo = getHardwareDevice(CRServoImplEx.class, "longitudinalConveyorServo");
-            HardwareDevices.turretEncoder = getHardwareDevice(AnalogInput.class, "turretEncoder");
-            if (HardwareDevices.turretFlywheelMaster != null && HardwareDevices.turretRotation != null) { // Assume turret wants to be loaded
-                turretFunctional = true;
-                telemetry.addLine("Turret has been loaded and flagged as functional!");
-            } else {
-                telemetry.addLine("Turret has not been loaded and flagged as non functional!");
-                turretFunctional = false;
+        for (int i = 0; i < swerveModules.length; i++) {
+            HardwareDevices.motorNames[i] = "swerveMotor" + (i);
+            HardwareDevices.swerveMotors[i] = getHardwareDevice(DcMotorImplEx.class, HardwareDevices.motorNames[i]);
+            HardwareDevices.servoNames[i] = "swerveServo" + (i);
+            HardwareDevices.swerveServos[i] = getHardwareDevice(CRServoImplEx.class, HardwareDevices.servoNames[i]);
+            HardwareDevices.analogNames[i] = "swerveAnalog" + (i);
+            HardwareDevices.swerveAnalogs[i] = getHardwareDevice(AnalogInput.class, HardwareDevices.analogNames[i]);
+
+            if (i == 0 || i == 2) {
+                HardwareDevices.swerveMotors[i].setDirection(DcMotorImplEx.Direction.REVERSE);
             }
-            turret = new Turret(this);
-            turretFlywheel = new LinkedMotors(HardwareDevices.turretFlywheelMaster, HardwareDevices.turretFlywheelSlave);
-            intake = new Intake(this);
-        }
+            HardwareDevices.swerveMotors[i].setZeroPowerBehavior(DcMotorImplEx.ZeroPowerBehavior.BRAKE);
+            HardwareDevices.swerveMotors[i].setMode(DcMotorImplEx.RunMode.RUN_USING_ENCODER);
 
-        if (!turretFunctional) { // you use this constant here but another somewhere else, is there a reason
-            for (int i = 0; i < swerveModules.length; i++) {
-                HardwareDevices.motorNames[i] = "swerveMotor" + (i);
-                HardwareDevices.swerveMotors[i] = getHardwareDevice(DcMotorImplEx.class, HardwareDevices.motorNames[i]);
-                HardwareDevices.servoNames[i] = "swerveServo" + (i);
-                HardwareDevices.swerveServos[i] = getHardwareDevice(CRServoImplEx.class, HardwareDevices.servoNames[i]);
-                HardwareDevices.analogNames[i] = "swerveAnalog" + (i);
-                HardwareDevices.swerveAnalogs[i] = getHardwareDevice(AnalogInput.class, HardwareDevices.analogNames[i]);
+            swerveServosPIDF[i] = new SwervePIDF(this, i, HardwareDevices.swerveServos[i]);
+            swerveModules[i] = new SwerveModule(this, HardwareDevices.swerveMotors[i], HardwareDevices.swerveServos[i], swerveServosPIDF[i], HardwareDevices.swerveAnalogs[i], Constants.SWERVE_POWER_MULTIPLIER[i], i); // is it best to pass in a constant?
 
-                if (i == 0 || i == 2) {
-                    HardwareDevices.swerveMotors[i].setDirection(DcMotorImplEx.Direction.REVERSE);
+            if (Constants.SERVO_ANALOG_ACTIVE) {
+                int analogPortNumber = Character.getNumericValue(HardwareDevices.swerveAnalogs[i].getConnectionInfo().charAt(HardwareDevices.swerveAnalogs[i].getConnectionInfo().length() - 1));
+                if (analogPortNumber != i) {
+                    addRetainedTelemetry("WARNING: Swerve Analog Encoder " + i + " is connected to port " + analogPortNumber + ", should be port " + i, null);
                 }
-                HardwareDevices.swerveMotors[i].setZeroPowerBehavior(DcMotorImplEx.ZeroPowerBehavior.BRAKE);
-                HardwareDevices.swerveMotors[i].setMode(DcMotorImplEx.RunMode.RUN_USING_ENCODER);
-
-                swerveServosPIDF[i] = new SwervePIDF(this, i, HardwareDevices.swerveServos[i]);
-                swerveModules[i] = new SwerveModule(this, HardwareDevices.swerveMotors[i], HardwareDevices.swerveServos[i], swerveServosPIDF[i], HardwareDevices.swerveAnalogs[i], Constants.SWERVE_POWER_MULTIPLIER[i], i); // is it best to pass in a constant?
-
-                if (Constants.SERVO_ANALOG_ACTIVE) {
-                    int analogPortNumber = Character.getNumericValue(HardwareDevices.swerveAnalogs[i].getConnectionInfo().charAt(HardwareDevices.swerveAnalogs[i].getConnectionInfo().length() - 1));
-                    if (analogPortNumber != i) {
-                        addRetainedTelemetry("WARNING: Swerve Analog Encoder " + i + " is connected to port " + analogPortNumber + ", should be port " + i, null);
-                    }
-                }
-                if (HardwareDevices.swerveMotors[i].getPortNumber() != i) {
-                    addRetainedTelemetry("WARNING: Swerve Motor " + i + " is connected to port " + HardwareDevices.swerveMotors[i].getPortNumber() + ", should be port " + i, null);
-                }
-                if (HardwareDevices.swerveServos[i].getPortNumber() != i) {
-                    addRetainedTelemetry("WARNING: Swerve Servo " + i + " is connected to port " + HardwareDevices.swerveServos[i].getPortNumber() + ", should be port " + i, null);
-                }
+            }
+            if (HardwareDevices.swerveMotors[i].getPortNumber() != i) {
+                addRetainedTelemetry("WARNING: Swerve Motor " + i + " is connected to port " + HardwareDevices.swerveMotors[i].getPortNumber() + ", should be port " + i, null);
+            }
+            if (HardwareDevices.swerveServos[i].getPortNumber() != i) {
+                addRetainedTelemetry("WARNING: Swerve Servo " + i + " is connected to port " + HardwareDevices.swerveServos[i].getPortNumber() + ", should be port " + i, null);
             }
         }
 
@@ -264,11 +216,11 @@ public class RobotContainer {
         }
     }
 
-    // This is for hardware error that are critical and code execution should stop to tell the user of the error.
+    /** This is for hardware error that are critical and code execution should stop to tell the user of the error. */
     public void testCriticalHardwareDevice(Object hardwareClass) {
         if (hardwareClass == null) {
             telemetry.log().clear();
-            telemetry.addLine("Failed to load hardware class: " + hardwareClass.toString()); // HARDWARE CLASS IS NULL, THIS WILL ERROR! fix it however you want cole
+            telemetry.addLine("Failed to load hardware class: " + hardwareClass.toString());
             telemetry.addLine("This message will show for 10 seconds.");
             telemetry.update();
             try {

@@ -9,11 +9,10 @@ import org.firstinspires.ftc.teamcode.main.Status;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "TeleOp")
 public class TeleOp extends OpMode {
-    public static double CURRENT_LOOP_TIME_AVG_MS;
     private RobotContainer robotContainer;
-    public static boolean fieldOriented = false;
     public static double CURRENT_LOOP_TIME_MS;
-    private static final ElapsedTime turretAccelerationTimer = new ElapsedTime();
+    public static double CURRENT_LOOP_TIME_AVG_MS;
+    public static boolean fieldOriented = false;
     private int currentServo = -1;
 
     @Override
@@ -24,9 +23,7 @@ public class TeleOp extends OpMode {
         robotContainer.refreshData();
         RobotContainer.HardwareDevices.imu.resetYaw();
         RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU(); // TODO: Run at start of auto instead
-        if (!robotContainer.turretFunctional) {
-            robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
-        }
+        robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
         robotContainer.telemetry.addLine("OpMode Initialized");
         robotContainer.telemetry.update();
     }
@@ -38,13 +35,11 @@ public class TeleOp extends OpMode {
 
     @Override
     public void start() {
-        robotContainer.start(this);
-
         Status.opModeIsActive = true;
         Status.lightsOn = true;
         Status.isDrivingActive = true;
 
-        turretAccelerationTimer.reset();
+        robotContainer.start(this);
     }
 
     @Override
@@ -74,50 +69,20 @@ public class TeleOp extends OpMode {
 
 
         if (Status.isDrivingActive) {
-            // Fix this for also drivetrain working during turret.
-            if (!robotContainer.turretFunctional) {
-                robotContainer.drivetrain.swerveDirectionalInput(
-                        robotContainer.drivetrain.joystickScaler(-robotContainer.gamepadEx1.leftStickX()),
-                        robotContainer.drivetrain.joystickScaler(robotContainer.gamepadEx1.leftStickY()),
-                        robotContainer.drivetrain.joystickScaler(-robotContainer.gamepadEx1.rightStickX()),
-                        fieldOriented
-                );
-            }
-        }
-
-        if (robotContainer.turretFunctional) {
-            if (gamepad1.right_bumper) {
-                robotContainer.turret.setTurretSpinPower(0.6);
-            } else if (gamepad1.left_bumper) {
-                robotContainer.turret.setTurretSpinPower(-0.6);
-            } else {
-                robotContainer.turret.setTurretSpinPower(0);
-            }
-
-            if (robotContainer.gamepadEx1.a.wasJustPressed() || robotContainer.gamepadEx1.b.wasJustPressed()) {
-                turretAccelerationTimer.reset();
-            }
-            if (robotContainer.gamepadEx1.a.isHeld()) {
-                robotContainer.turret.flywheel.setVelocity(
-                        turretAccelerationTimer.nanoseconds()
-                                * Constants.TURRET_ACCELERATION_MULTIPLIER_NANO
-                );
-            } else if (robotContainer.gamepadEx1.b.isHeld()) {
-                robotContainer.turret.flywheel.setVelocity(
-                        -turretAccelerationTimer.nanoseconds()
-                                * Constants.TURRET_ACCELERATION_MULTIPLIER_NANO
-                );
-            } else {
-                robotContainer.turret.flywheel.setPower(0);
-            }
+            robotContainer.drivetrain.swerveDirectionalInput(
+                    robotContainer.drivetrain.joystickScaler(-robotContainer.gamepadEx1.leftStickX()),
+                    robotContainer.drivetrain.joystickScaler(robotContainer.gamepadEx1.leftStickY()),
+                    robotContainer.drivetrain.joystickScaler(-robotContainer.gamepadEx1.rightStickX()),
+                    fieldOriented
+            );
         }
 
         if (robotContainer.gamepadEx1.guide.isHeldFor(0.75) && Status.lightsOn) {
             robotContainer.allIndicatorLights.flashingReset();
             Status.lightsOn = false;
-            if (!robotContainer.turretFunctional) {
-                robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
-            }
+
+            robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
+
             Status.isDrivingActive = false;
         }
 
@@ -162,9 +127,8 @@ public class TeleOp extends OpMode {
 
     @Override
     public void stop() {
-        if (!robotContainer.turretFunctional) {
-            robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
-        }
+        robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
+
         Status.opModeIsActive = false;
         robotContainer.isRunning = false;
     }
