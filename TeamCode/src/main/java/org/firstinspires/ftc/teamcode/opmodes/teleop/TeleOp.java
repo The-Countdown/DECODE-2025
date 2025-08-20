@@ -91,11 +91,19 @@ public class TeleOp extends OpMode {
             robotContainer.delayedActionManager.schedule(() -> Status.isDrivingActive = true, 1000);
         }
 
+        if (robotContainer.gamepadEx1.b.wasJustPressed() && !Status.policeOn) {
+            Status.policeOn = true;
+        }
+
+        if (robotContainer.gamepadEx1.b.wasJustPressed() && Status.policeOn) {
+            Status.policeOn = false;
+        }
+
         if (!Status.lightsOn) {
             robotContainer.allIndicatorLights.flashing(Constants.LED_COLOR.ORANGE, Constants.LED_COLOR.OFF, 8, 2);
         }
 
-        if (Status.lightsOn) {
+        if (Status.lightsOn && !Status.policeOn) {
             if (robotContainer.gamepadEx1.leftStickX() > 0.1) {
                 robotContainer.indicatorLightFrontRight.flashing(Constants.LED_COLOR.ORANGE, Constants.LED_COLOR.WHITE, 2);
                 robotContainer.indicatorLightFrontLeft.setColor(Constants.LED_COLOR.WHITE);
@@ -103,7 +111,8 @@ public class TeleOp extends OpMode {
                 robotContainer.indicatorLightFrontLeft.flashing(Constants.LED_COLOR.ORANGE, Constants.LED_COLOR.WHITE, 2);
                 robotContainer.indicatorLightFrontRight.setColor(Constants.LED_COLOR.WHITE);
             } else if (robotContainer.gamepadEx1.leftStickY() > 0.1) {
-                robotContainer.allIndicatorLights.rainbow();
+                robotContainer.indicatorLightFrontRight.rainbow();
+                robotContainer.indicatorLightFrontLeft.rainbow();
             } else {
                 robotContainer.indicatorLightFrontRight.setColor(Constants.LED_COLOR.WHITE);
                 robotContainer.indicatorLightFrontLeft.setColor(Constants.LED_COLOR.WHITE);
@@ -111,6 +120,8 @@ public class TeleOp extends OpMode {
 
             if (robotContainer.gamepadEx1.leftStickY() < -0.1) {
                 robotContainer.indicatorLightBack.flashing(Constants.LED_COLOR.RED, Constants.LED_COLOR.WHITE, 2);
+            } else if (robotContainer.gamepadEx1.leftStickY() > 0.1) {
+                robotContainer.indicatorLightBack.rainbow();
             } else {
                 robotContainer.indicatorLightBack.setColor(Constants.LED_COLOR.RED);
             }
@@ -118,6 +129,10 @@ public class TeleOp extends OpMode {
             if (robotContainer.gamepadEx1.leftStickY.wasJustReleased()) {
                 robotContainer.allIndicatorLights.rainbowReset();
             }
+        }
+
+        if (Status.policeOn) {
+            robotContainer.allIndicatorLights.flashing(Constants.LED_COLOR.RED, Constants.LED_COLOR.BLUE, 3);
         }
 
         robotContainer.telemetry(currentServo, 0, CURRENT_LOOP_TIME_MS, CURRENT_LOOP_TIME_AVG_MS);

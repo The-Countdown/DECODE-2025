@@ -368,6 +368,11 @@ public class RobotContainer {
         telemetry.addData("Left Stick X", gamepadEx1.leftStickX());
         telemetry.addData("Right Stick Y", gamepadEx1.rightStickY());
         telemetry.addData("Right Stick X", gamepadEx1.rightStickX());
+        telemetry.addLine();
+        telemetry.addData("Motor 0 Current Velocity", swerveModules[0].motor.getVelocity());
+        telemetry.addData("Motor 1 Current Velocity", swerveModules[1].motor.getVelocity());
+        telemetry.addData("Motor 2 Current Velocity", swerveModules[2].motor.getVelocity());
+        telemetry.addData("Motor 3 Current Velocity", swerveModules[3].motor.getVelocity());
         if (currentServo >= 0) {
             telemetry.addLine();
             telemetry.addData("Selected Servo", currentServo);
@@ -377,6 +382,7 @@ public class RobotContainer {
             telemetry.addData("Servo Set Power", swerveServosPIDF[currentServo].calculate());
             telemetry.addData("Servo Error", swerveServosPIDF[currentServo].getError());
             telemetry.addData("Motor Target Power", swerveModules[currentServo].motor.targetPower);
+            telemetry.addData("Motor Current Velocity", swerveModules[currentServo].motor.getVelocity());
             telemetry.addData("Motor Current Power", RobotContainer.HardwareDevices.swerveMotors[currentServo].getPower());
         }
         telemetry.addLine();

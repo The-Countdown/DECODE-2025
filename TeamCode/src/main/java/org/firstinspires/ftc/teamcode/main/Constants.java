@@ -116,15 +116,20 @@ public class Constants {
     };
 
     /**
+     * Scales the PIDF values for the swerve drive servos based off the speed of the motor being driven,
+     * to compensate for the lesser friction when the robot is moving.
+     */
+    public static double SWERVE_SERVO_PIDF_SCALER = 0.5;
+
+    /**
      * PIDF values for the swerve drive servos.
      * These values will need to be tuned.
      */
-    // TODO: Tune
     public static double[]
-            SWERVE_SERVO_KP = {0.005, 0.005, 0.005, 0.003},
+            SWERVE_SERVO_KP = {0.006, 0.006, 0.006, 0.00525},
             SWERVE_SERVO_KI = {0, 0, 0, 0},
                 SWERVE_SERVO_I_MAX = {0, 0, 0, 0},
-            SWERVE_SERVO_KD = {0, 0, 0, 0},
+            SWERVE_SERVO_KD = {-0.0005, -0.0005, -0.0005, -0.0005},
             SWERVE_SERVO_KF = {0.05, 0.05, 0.05, 0.05};
 
     // TODO: Tune
@@ -165,13 +170,13 @@ public class Constants {
 
     public static final double ROBOT_CALCULATED_MAX_SPEED_METERS_PER_SECOND = (Math.PI * (WHEEL_DIAMETER_MM / 1000)) * (WHEEL_CALCULATED_MAX_RPM / 60);
 
-    public static final int SWERVE_MOTOR_MAX_VELOCITY_TICKS_PER_SECOND = (SWERVE_MOTOR_RPM_TESTED_MAX / 60) * SWERVE_MOTOR_TICKS_PER_REVOLUTION;
+    public static final int SWERVE_MOTOR_MAX_VELOCITY_TICKS_PER_SECOND = ((SWERVE_MOTOR_RPM_TESTED_MAX / 60) * SWERVE_MOTOR_TICKS_PER_REVOLUTION) - 328;
 
     // TODO: Tune if needed
     public static double JOYSTICK_SCALER_EXPONENT = 0.4;
 
     //power per second
-    public static double MAX_DRIVE_ACCELERATION = 2;
+    public static double MAX_DRIVE_ACCELERATION = 10;
 
     public static double ZERO_POWER_TOLERANCE = 0.03;
 

@@ -37,6 +37,7 @@ public class Status {
     public static boolean opModeIsActive = false;
 
     public static boolean lightsOn = false;
+    public static boolean policeOn = false;
 
     public static boolean isDrivingActive = false;
 

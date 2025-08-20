@@ -101,6 +101,10 @@ public class SwerveModule {
             drivingMotor.setVelocity(velocity * Constants.SWERVE_MOTOR_MAX_VELOCITY_TICKS_PER_SECOND);
         }
 
+        public double getVelocity() {
+            return drivingMotor.getVelocity();
+        }
+
         // This function takes in a double between 0-1 for 0 rpm to max rpm of motor as relative to the max forward speed of the drive base.
         public void setPowerWithMultiplier(double speed) {
             drivingMotor.setPower(speed * powerMultiplier);

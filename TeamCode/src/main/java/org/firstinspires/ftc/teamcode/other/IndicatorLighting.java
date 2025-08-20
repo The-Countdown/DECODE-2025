@@ -13,6 +13,10 @@ import java.util.Objects;
 public class IndicatorLighting {
     public static class Group {
         private final List<Light> lights = new ArrayList<>();
+        private final ElapsedTime flashingTimer = new ElapsedTime();
+        private double policeCounter = 0;
+        private double policeHz = 4;
+        private double policeRepeatAmount = 3;
 
         public void addLight(RobotContainer container, ServoImplEx hardware) {
             lights.add(new Light(container, hardware));
@@ -32,6 +36,33 @@ public class IndicatorLighting {
             for (Light light : lights) {
                 light.rainbow();
             }
+        }
+
+        public void police() {
+
+//            if (policeCounter == 0) {
+//                if (flashingTimer.seconds() <= 1 / policeHz) {
+//                    lights.get(0).setColor(Constants.LED_COLOR.RED);
+//                    lights.get(2).setColor(Constants.LED_COLOR.RED);
+//                } else if (flashingTimer.seconds() <= 2 / policeHz) {
+//                    lights.get(0).setColor(Constants.LED_COLOR.OFF);
+//                    lights.get(2).setColor(Constants.LED_COLOR.OFF);
+//                } else if ((flashingTimer.seconds() >= 1.5)) {
+//                    flashingTimer.reset();
+//                    policeCounter = 1;
+//                }
+//            } else if (policeCounter == 1) {
+//                if (flashingTimer.seconds() <= 1 / policeHz) {
+//                    lights.get(1).setColor(Constants.LED_COLOR.BLUE);
+//                    lights.get(2).setColor(Constants.LED_COLOR.BLUE);
+//                } else if (flashingTimer.seconds() <= 2 / policeHz) {
+//                    lights.get(1).setColor(Constants.LED_COLOR.OFF);
+//                    lights.get(2).setColor(Constants.LED_COLOR.OFF);
+//                } else if ((flashingTimer.seconds() >= 1.5)) {
+//                    flashingTimer.reset();
+//                    policeCounter = 0;
+//                }
+//            }
         }
 
         public void rainbowReset() {
