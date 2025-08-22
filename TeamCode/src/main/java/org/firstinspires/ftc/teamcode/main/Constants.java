@@ -224,12 +224,20 @@ public class Constants {
      * @return The normalized angle.
      */
     public static double normalizeAngle(double angle) {
+        // On this edge case the servo will not move. If fixing the problem is less expensive than this, please do so.
+        if (angle == 90) {
+            angle = 89.999;
+        }
+        if (angle == -90 || angle == -180) {
+            angle += 0.001;
+        }
+
         // Check if the angle is already in the desired range.
         if (angle >= -180 && angle < 180) {
             return angle;
         }
 
-        // Normalize the angle to the range [0, 360).
+        // Normalize the angle to the range [-360, 360).
         double normalizedAngle = angle % 360;
 
         // If the result was negative, shift it to the range [0, 360).
@@ -240,13 +248,6 @@ public class Constants {
         // If the angle is in the range [180, 360), shift it to [-180, 0).
         if (normalizedAngle >= 180) {
             normalizedAngle -= 360;
-        }
-
-        if (normalizedAngle == 90) {
-            normalizedAngle = 89.999;
-        }
-        if (normalizedAngle == -90 || normalizedAngle == -180) {
-            normalizedAngle += 0.001;
         }
 
         return normalizedAngle;
