@@ -38,8 +38,8 @@ public class PathPlannerExample extends LinearOpMode {
 
 
         // Do stuff
-        pathplanner.addMarker(new Marker(new Pose2D(DistanceUnit.CM, 1, 1, AngleUnit.DEGREES, 300)));
-        pathplanner.addMarker(new Marker(new Pose2D(DistanceUnit.CM, 2, 2, AngleUnit.DEGREES, 300)));
+        pathplanner.addMarker(new Marker(new Pose2D(DistanceUnit.CM, 100, 100, AngleUnit.DEGREES, 300)));
+        pathplanner.addMarker(new Marker(new Pose2D(DistanceUnit.CM, 200, 200, AngleUnit.DEGREES, 300)));
 
         waitForStart();
 

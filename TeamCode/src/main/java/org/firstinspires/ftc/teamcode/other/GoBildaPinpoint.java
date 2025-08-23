@@ -361,20 +361,6 @@ public class GoBildaPinpoint extends I2cDeviceSynchDevice<I2cDeviceSynchSimple> 
     /**
      * Sets the odometry pod positions relative to the point that the odometry computer tracks around.<br><br>
      * The most common tracking position is the center of the robot. <br> <br>
-     * The X pod offset refers to how far sideways (in mm) from the tracking point the X (forward) odometry pod is. Left of the center is a positive number, right of center is a negative number. <br>
-     * the Y pod offset refers to how far forwards (in mm) from the tracking point the Y (strafe) odometry pod is. forward of center is a positive number, backwards is a negative number.<br>
-     * @param xOffset how sideways from the center of the robot is the X (forward) pod? Left increases
-     * @param yOffset how far forward from the center of the robot is the Y (Strafe) pod? forward increases
-     * @deprecated The overflow for this function has a DistanceUnit, which can reduce the chance of unit confusion.
-     */
-    public void setOffsets(double xOffset, double yOffset){
-        writeFloat(Register.X_POD_OFFSET, (float) xOffset);
-        writeFloat(Register.Y_POD_OFFSET, (float) yOffset);
-    }
-
-    /**
-     * Sets the odometry pod positions relative to the point that the odometry computer tracks around.<br><br>
-     * The most common tracking position is the center of the robot. <br> <br>
      * The X pod offset refers to how far sideways from the tracking point the X (forward) odometry pod is. Left of the center is a positive number, right of center is a negative number. <br>
      * the Y pod offset refers to how far forwards from the tracking point the Y (strafe) odometry pod is. forward of center is a positive number, backwards is a negative number.<br>
      * @param xOffset how sideways from the center of the robot is the X (forward) pod? Left increases
@@ -678,14 +664,6 @@ public class GoBildaPinpoint extends I2cDeviceSynchDevice<I2cDeviceSynchSimple> 
      */
     public double getVelY(DistanceUnit distanceUnit){
         return distanceUnit.fromMm(yVelocity);
-    }
-
-    /**
-     * @return the estimated H (heading) velocity of the robot in radians/sec
-     * @deprecated The overflow for this function has an AngleUnit, which can reduce the chance of unit confusion.
-     */
-    public double getHeadingVelocity() {
-        return hVelocity;
     }
 
     /**

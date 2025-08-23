@@ -140,8 +140,9 @@ public class Constants {
             HEADING_KD = 0;
 
     public static final double
+        // Pinpoint might be backwards, check this!!!
             PINPOINT_X_OFFSET_MM = 145,
-            PINPOINT_Y_OFFSET_MM = -145;
+            PINPOINT_Y_OFFSET_MM = 0;
 
     public static final GoBildaPinpoint.GoBildaOdometryPods
             PINPOINT_ODOM_POD = GoBildaPinpoint.GoBildaOdometryPods.goBILDA_4_BAR_POD;
