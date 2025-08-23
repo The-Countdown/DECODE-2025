@@ -13,7 +13,6 @@ import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Constants;
 
 @Autonomous(name="Pathplanner example", group="Robot")
-@Disabled
 public class PathPlannerExample extends LinearOpMode {
     private RobotContainer robotContainer;
     public static double CURRENT_LOOP_TIME_MS;
@@ -22,6 +21,7 @@ public class PathPlannerExample extends LinearOpMode {
     private int currentServo = -1;
 
     private PathPlanner pathplanner;
+
 
     @Override
     public void runOpMode() {
@@ -36,7 +36,15 @@ public class PathPlannerExample extends LinearOpMode {
         robotContainer.telemetry.update();
         pathplanner = new PathPlanner(robotContainer.telemetry);
 
+
+        // Do stuff
         pathplanner.addMarker(new Marker(new Pose2D(DistanceUnit.CM, 1, 1, AngleUnit.DEGREES, 300)));
         pathplanner.addMarker(new Marker(new Pose2D(DistanceUnit.CM, 2, 2, AngleUnit.DEGREES, 300)));
+
+        waitForStart();
+
+        while (opModeIsActive()) {
+            pathplanner.run();
+        }
     }
 }

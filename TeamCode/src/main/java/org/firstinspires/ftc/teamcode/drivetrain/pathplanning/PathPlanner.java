@@ -21,7 +21,7 @@ public class PathPlanner {
 
     public void run() {
         for (int i = 0; i < markers.size(); i++) {
-            telemetry.addData("Marker", markers.get(i).toString());
+            telemetry.addData("Marker", markers.get(i).markerPose.toString());
             telemetry.update();
             try {
                 Thread.sleep(1000);
