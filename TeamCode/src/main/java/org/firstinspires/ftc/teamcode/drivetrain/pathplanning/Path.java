@@ -1,13 +1,13 @@
 package org.firstinspires.ftc.teamcode.drivetrain.pathplanning;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 public class Path {
-    //how do i make a list to store points this thing is stupid keeps erroring
-    //deal w this on friday
-    //list of points
+    private Pose2D[] points;
     private int currentPoint;
+    //accuracy should be a variable
 
-
+    public Path () {
+    
+    }
 }
