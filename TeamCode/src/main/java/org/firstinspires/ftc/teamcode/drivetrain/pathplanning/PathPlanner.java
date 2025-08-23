@@ -12,7 +12,7 @@ public class PathPlanner {
     ArrayList<Marker> markers = new ArrayList<Marker>();
 
     public PathPlanner(Telemetry telemetry) {
-        telemetry = telemetry;
+        this.telemetry = telemetry;
     }
 
     public void addMarker(Marker marker) {
