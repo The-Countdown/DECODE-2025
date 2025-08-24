@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.main;
 
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,6 +15,8 @@ import java.util.Map;
 public class Status {
 
     public static boolean competitionMode = false;
+
+    public static Pose2D targetPose;
 
     /**
      * A map to store the status of each swerve servo.

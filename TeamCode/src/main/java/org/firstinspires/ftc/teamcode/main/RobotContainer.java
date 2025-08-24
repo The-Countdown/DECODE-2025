@@ -24,6 +24,8 @@ import org.firstinspires.ftc.teamcode.drivetrain.DrivetrainUpdater;
 import org.firstinspires.ftc.teamcode.drivetrain.HeadingPID;
 import org.firstinspires.ftc.teamcode.drivetrain.SwerveModule;
 import org.firstinspires.ftc.teamcode.drivetrain.SwervePIDF;
+import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.PathPlanner;
+import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.PoseMath;
 import org.firstinspires.ftc.teamcode.other.GoBildaPinpoint;
 import org.firstinspires.ftc.teamcode.other.IndicatorLighting;
 import org.firstinspires.ftc.teamcode.other.PinpointUpdater;
@@ -61,7 +63,8 @@ public class RobotContainer {
     public SwervePIDF[] swerveServosPIDF = new SwervePIDF[Constants.NUM_SWERVE_SERVOS];
     public DrivetrainUpdater drivetrainUpdater;
     public PinpointUpdater pinpointUpdater;
-    public Pose2D pinpointPose;
+    public PoseMath poseMath = new PoseMath();
+    public PathPlanner pathPlanner;
     public DelayedActionManager delayedActionManager = new DelayedActionManager();
     public Drivetrain drivetrain;
     public HeadingPID headingPID;
@@ -147,6 +150,8 @@ public class RobotContainer {
                 addRetainedTelemetry("WARNING: Swerve Servo " + i + " is connected to port " + HardwareDevices.swerveServos[i].getPortNumber() + ", should be port " + i, null);
             }
         }
+
+        pathPlanner = new PathPlanner(telemetry, this);
 
         indicatorLightFrontLeft = new IndicatorLighting.Light(this, HardwareDevices.indicatorLightFrontLeft);
         indicatorLightFrontRight = new IndicatorLighting.Light(this, HardwareDevices.indicatorLightFrontRight);

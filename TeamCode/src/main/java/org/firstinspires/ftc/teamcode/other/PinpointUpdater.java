@@ -29,7 +29,6 @@ public class PinpointUpdater extends Thread {
         while (Status.opModeIsActive || Status.competitionMode) {
             RobotContainer.HardwareDevices.pinpoint.update();
             currentPose = RobotContainer.HardwareDevices.pinpoint.getPosition();
-            robotContainer.pinpointPose = currentPose;
             currentHeading = currentPose.getHeading(AngleUnit.DEGREES);
             CURRENT_LOOP_TIME_MS = robotContainer.updateLoopTime("pinpointUpdater");
             CURRENT_LOOP_TIME_AVG_MS = robotContainer.getRollingAverageLoopTime("pinpointUpdater");

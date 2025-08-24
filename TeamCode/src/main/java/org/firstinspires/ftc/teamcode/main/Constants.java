@@ -150,6 +150,8 @@ public class Constants {
     public static final GoBildaPinpoint.EncoderDirection
             PINPOINT_X_ENCODER_DIRECTION = GoBildaPinpoint.EncoderDirection.FORWARD,
             PINPOINT_Y_ENCODER_DIRECTION = GoBildaPinpoint.EncoderDirection.REVERSED;
+    
+    public static final double PATHING_ERROR_MARGIN_CM = 10;
 
     public static final double ANALOG_MAX_VOLTAGE = 3.3;
 

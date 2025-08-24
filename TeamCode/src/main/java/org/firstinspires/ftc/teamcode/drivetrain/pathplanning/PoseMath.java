@@ -3,21 +3,15 @@ package org.firstinspires.ftc.teamcode.drivetrain.pathplanning;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.teamcode.main.Constants;
+import org.firstinspires.ftc.teamcode.main.Status;
+import org.firstinspires.ftc.teamcode.other.PinpointUpdater;
 
 public class PoseMath {
-    private Pose2D currentPose;
 
-    public PoseMath(Pose2D currentPose) {
-        this.currentPose = currentPose;
-    }
-
-    public void updatePose(Pose2D currentPose) {
-        this.currentPose = currentPose;
-    }
-
-    public double distanceTo(Pose2D target) {
-        double dx = target.getX(DistanceUnit.CM) - currentPose.getX(DistanceUnit.CM);
-        double dy = target.getY(DistanceUnit.CM) - currentPose.getY(DistanceUnit.CM);
+    public double distanceTo() {
+        double dx = Status.targetPose.getX(DistanceUnit.CM) - PinpointUpdater.currentPose.getX(DistanceUnit.CM);
+        double dy = Status.targetPose.getY(DistanceUnit.CM) - PinpointUpdater.currentPose.getY(DistanceUnit.CM);
         return Math.sqrt(dx * dx + dy * dy);
     }
 
@@ -25,8 +19,8 @@ public class PoseMath {
      * @param targetHeading
      * @return The heading error in degrees
      */
-    public double HeadingError(double targetHeading) {
-        return normalizeAngle(targetHeading - currentPose.getHeading(AngleUnit.DEGREES));
+    public double headingError(double targetHeading) {
+        return normalizeAngle(targetHeading - PinpointUpdater.currentPose.getHeading(AngleUnit.DEGREES));
     }
 
     /**
@@ -35,19 +29,19 @@ public class PoseMath {
      * @return The angle needed to face the target position in degrees
      */
     public double targetPosDirectionDegrees (Pose2D target) {
-        double dx = target.getX(DistanceUnit.CM) - currentPose.getX(DistanceUnit.CM);
-        double dy = target.getY(DistanceUnit.CM) - currentPose.getY(DistanceUnit.CM);
+        double dx = target.getX(DistanceUnit.CM) - PinpointUpdater.currentPose.getX(DistanceUnit.CM);
+        double dy = target.getY(DistanceUnit.CM) - PinpointUpdater.currentPose.getY(DistanceUnit.CM);
         return normalizeAngle(Math.atan2(dy, dx));
     }
 
-    //gives pose between two poses, so the middle of the path
-    //bit confused do later
-    //do i even need this?
-    /*
-    public double middlePath(Pose2d other, double t) {
-
+    /**
+     * Calculates when x and y distance is <= PATHING_ERROR_MARGIN_CM
+     * @return True when robot gets within PATHING_ERROR_MARGIN_CM
+     */
+    public boolean isAtPos() {
+        return Status.targetPose.getX(DistanceUnit.CM) - PinpointUpdater.currentPose.getX(DistanceUnit.CM) <= Constants.PATHING_ERROR_MARGIN_CM &&
+                Status.targetPose.getY(DistanceUnit.CM) - PinpointUpdater.currentPose.getY(DistanceUnit.CM) <= Constants.PATHING_ERROR_MARGIN_CM;
     }
-    */
 
     private double normalizeAngle(double angle) {
         // On this edge case the servo will not move. If fixing the problem is less expensive than this, please do so.
