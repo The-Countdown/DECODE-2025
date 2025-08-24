@@ -34,7 +34,7 @@ public class PathPlannerExample extends LinearOpMode {
         robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
         robotContainer.telemetry.addLine("Auto Initialized");
         robotContainer.telemetry.update();
-        pathplanner = new PathPlanner(robotContainer.telemetry);
+        pathplanner = new PathPlanner(robotContainer.telemetry, robotContainer);
 
 
         // Do stuff

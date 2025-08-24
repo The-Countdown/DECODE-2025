@@ -8,6 +8,10 @@ public class Marker {
     public Marker(Pose2D pose) {
         markerPose = pose;
     }
+
+    public Pose2D getPose() {
+        return markerPose;
+    }
     
     private Pose2D point;
 }
