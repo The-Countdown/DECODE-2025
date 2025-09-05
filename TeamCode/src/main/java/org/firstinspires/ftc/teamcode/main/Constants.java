@@ -58,8 +58,7 @@ public class Constants {
      * The angle offset for each swerve servo, used to correct any mechanical misalignment.
      * Index 4 is global, and the rest are in order (module 0, 1, 2, 3) see {@link SwerveModule}.
      */
-    // TODO: Tune if needed
-    public static double[] SWERVE_SERVO_ANGLE_OFFSET = {45, 245, 38, 128};
+    public static double[] SWERVE_SERVO_ANGLE_OFFSET = {45, 245, 38, 130};
 
     /**
      * The desired servo angles for the swerve modules when in the rotation formation
@@ -126,18 +125,17 @@ public class Constants {
      * These values will need to be tuned.
      */
     public static double[]
-            SWERVE_SERVO_KP = {0.006, 0.006, 0.006, 0.00525},
-            SWERVE_SERVO_KI = {0, 0, 0, 0},
+            SWERVE_SERVO_KP = {0.006, 0.006, 0.006, 0.006},
+            SWERVE_SERVO_KI = {0.00004, 0.00004, 0.00004, 0.00004},
                 SWERVE_SERVO_I_MAX = {0, 0, 0, 0},
-            SWERVE_SERVO_KD = {-0.0005, -0.0005, -0.0005, -0.0005},
-            SWERVE_SERVO_KF = {0.05, 0.05, 0.05, 0.05};
+            SWERVE_SERVO_KD = {0.000001, 0.000001, 0.000001, 0.000001},
+            SWERVE_SERVO_KF = {0, 0, 0, 0};
 
-    // TODO: Tune
     public static double
-            HEADING_KP = 0.01,
-            HEADING_KI = 0,
+            HEADING_KP = 0.02,
+            HEADING_KI = 0.002,
                 HEADING_I_MAX = 0,
-            HEADING_KD = 0;
+            HEADING_KD = 0.000002;
 
     public static final double
         // Pinpoint might be backwards, check this!!!
@@ -155,11 +153,9 @@ public class Constants {
 
     public static final double ANALOG_MAX_VOLTAGE = 3.3;
 
-    // TODO: Tune if needed
-    public static double HEADING_PID_TOLERANCE_DEGREES = 3000;
+    public static double HEADING_PID_TOLERANCE_DEGREES = 0.1;
 
-    // TODO: Tune if needed
-    public static double SWERVE_SERVO_PIDF_TOLERANCE_DEGREES = 2;
+    public static double SWERVE_SERVO_PIDF_TOLERANCE_DEGREES = 1;
 
     public static final int SWERVE_MOTOR_RPM_TESTED_MAX = 5800;
 
@@ -175,7 +171,6 @@ public class Constants {
 
     public static final int SWERVE_MOTOR_MAX_VELOCITY_TICKS_PER_SECOND = ((SWERVE_MOTOR_RPM_TESTED_MAX / 60) * SWERVE_MOTOR_TICKS_PER_REVOLUTION) - 328;
 
-    // TODO: Tune if needed
     public static double JOYSTICK_SCALER_EXPONENT = 0.4;
 
     //power per second

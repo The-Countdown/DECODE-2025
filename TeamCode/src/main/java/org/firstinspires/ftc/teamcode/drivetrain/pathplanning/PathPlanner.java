@@ -6,6 +6,7 @@ import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.other.PinpointUpdater;
 
 import java.util.ArrayList;
@@ -14,7 +15,6 @@ import java.lang.Thread;
 public class PathPlanner {
     Telemetry telemetry;
     RobotContainer robot;
-    public Pose2D target;
     ArrayList<Pose2D> poses = new ArrayList<Pose2D>();
 
     public PathPlanner(Telemetry telemetry, RobotContainer robot) {
@@ -26,17 +26,16 @@ public class PathPlanner {
         poses.add(pose);
     }
 
-    //lucy can you make this function end when it reaches the target
     /**
     * Calculates angle of the target relative to the current position of the robot and drives to target
     * @param index
     */
     public void driveToPose(int index) {
         Pose2D currentPose = PinpointUpdater.currentPose;
-        Pose2D targetPose = poses.get(index);
+        Status.targetPose = poses.get(index);
 
-        double deltaX = targetPose.getX(DistanceUnit.CM) - currentPose.getX(DistanceUnit.CM);
-        double deltaY = targetPose.getY(DistanceUnit.CM) - currentPose.getX(DistanceUnit.CM);
+        double deltaX = Status.targetPose.getX(DistanceUnit.CM) - currentPose.getX(DistanceUnit.CM);
+        double deltaY = Status.targetPose.getY(DistanceUnit.CM) - currentPose.getX(DistanceUnit.CM);
 
         double angleToTarget = Math.atan2(deltaY, deltaX);
         double[] angles = {angleToTarget, angleToTarget, angleToTarget, angleToTarget};
@@ -44,6 +43,13 @@ public class PathPlanner {
 
         robot.drivetrain.swerveSetTargets(angles,powers);
         robot.pathPlanner.waitForTarget();
+        robot.drivetrain.swerveSetTargets(angles, Constants.SWERVE_NO_POWER);
+    }
+
+    public void driveThroughPath () {
+        for (int i = 0; i < poses.size(); i++) {
+            driveToPose(i);
+        }
         robot.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
     }
 
@@ -53,15 +59,10 @@ public class PathPlanner {
         }
     }
 
-
     public void run() {
         for (int i = 0; i < poses.size(); i++) {
             telemetry.addData("Pose", poses.get(i).toString());
             telemetry.update();
-            try {
-                Thread.sleep(1000);
-            } catch (Exception error) {
-            }
         }
     }
 }

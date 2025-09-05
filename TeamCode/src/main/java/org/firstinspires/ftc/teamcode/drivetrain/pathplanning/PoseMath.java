@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.other.PinpointUpdater;
 
 public class PoseMath {
+    //hiii nvm then no hi
 
     public double distanceTo() {
         double dx = Status.targetPose.getX(DistanceUnit.CM) - PinpointUpdater.currentPose.getX(DistanceUnit.CM);
