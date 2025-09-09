@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.util.ClassUtil;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.main.Constants;
@@ -69,12 +70,28 @@ public class TeleOp extends OpMode {
 
 
         if (Status.isDrivingActive) {
-            robotContainer.drivetrain.swerveDirectionalInput(
-                    robotContainer.drivetrain.joystickScaler(-robotContainer.gamepadEx1.leftStickX()),
-                    robotContainer.drivetrain.joystickScaler(robotContainer.gamepadEx1.leftStickY()),
-                    robotContainer.drivetrain.joystickScaler(-robotContainer.gamepadEx1.rightStickX()),
-                    fieldOriented
-            );
+            if (Constants.useHeadingPIDForTurning) {
+                robotContainer.drivetrain.swerveDirectionalInput(
+                        robotContainer.drivetrain.joystickScaler(-robotContainer.gamepadEx1.leftStickX()),
+                        robotContainer.drivetrain.joystickScaler(robotContainer.gamepadEx1.leftStickY()),
+                        0,
+                        fieldOriented
+                        );
+            } else {
+                robotContainer.drivetrain.swerveDirectionalInput(
+                        robotContainer.drivetrain.joystickScaler(-robotContainer.gamepadEx1.leftStickX()),
+                        robotContainer.drivetrain.joystickScaler(robotContainer.gamepadEx1.leftStickY()),
+                        robotContainer.drivetrain.joystickScaler(-robotContainer.gamepadEx1.rightStickX()),
+                        fieldOriented
+                        );
+            }
+        }
+
+        if (robotContainer.gamepadEx1.rightStickX() > 0.05) {
+            robotContainer.headingPID.setTargetHeading((robotContainer.headingPID.getTargetHeading() + Constants.turningRate * CURRENT_LOOP_TIME_MS * robotContainer.gamepadEx1.rightStickX()));
+        }
+        if (robotContainer.gamepadEx1.rightStickX() < -0.05) {
+            robotContainer.headingPID.setTargetHeading((robotContainer.headingPID.getTargetHeading() + Constants.turningRate * CURRENT_LOOP_TIME_MS * robotContainer.gamepadEx1.rightStickX()));
         }
 
         if (robotContainer.gamepadEx1.guide.isHeldFor(0.75) && Status.lightsOn) {

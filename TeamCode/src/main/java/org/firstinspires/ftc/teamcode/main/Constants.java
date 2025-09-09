@@ -23,6 +23,9 @@ public class Constants {
             )
     );
 
+    public static boolean useHeadingPIDForTurning = true;
+    public static double turningRate = 0.05;
+
     public static boolean SERVO_ANALOG_ACTIVE = true;
 
     public static final int
@@ -125,17 +128,17 @@ public class Constants {
      * These values will need to be tuned.
      */
     public static double[]
-            SWERVE_SERVO_KP = {0.006, 0.006, 0.006, 0.006},
-            SWERVE_SERVO_KI = {0.00004, 0.00004, 0.00004, 0.00004},
+            SWERVE_SERVO_KP = {0.004, 0.004, 0.004, 0.004},
+            SWERVE_SERVO_KI = {0.00006, 0.00006, 0.00006, 0.00006},
                 SWERVE_SERVO_I_MAX = {0, 0, 0, 0},
             SWERVE_SERVO_KD = {0.000001, 0.000001, 0.000001, 0.000001},
-            SWERVE_SERVO_KF = {0, 0, 0, 0};
+            SWERVE_SERVO_KF = {0.02, 0.02, 0.02, 0.02};
 
     public static double
-            HEADING_KP = 0.02,
-            HEADING_KI = 0.002,
+            HEADING_KP = 0.012,
+            HEADING_KI = 0.0002,
                 HEADING_I_MAX = 0,
-            HEADING_KD = 0.000002;
+            HEADING_KD = 0.0000002;
 
     public static final double
         // Pinpoint might be backwards, check this!!!
@@ -153,9 +156,9 @@ public class Constants {
 
     public static final double ANALOG_MAX_VOLTAGE = 3.3;
 
-    public static double HEADING_PID_TOLERANCE_DEGREES = 0.1;
+    public static double HEADING_PID_TOLERANCE_DEGREES = 0.5;
 
-    public static double SWERVE_SERVO_PIDF_TOLERANCE_DEGREES = 1;
+    public static double SWERVE_SERVO_PIDF_TOLERANCE_DEGREES = 0.2;
 
     public static final int SWERVE_MOTOR_RPM_TESTED_MAX = 5800;
 

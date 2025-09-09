@@ -39,7 +39,7 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
         double rotationalMagnitude = Math.abs(rX);
 
         if (robotContainer.gamepadEx1.rightStickX.wasJustReleased()) {
-            robotContainer.headingPID.setTargetHeading(PinpointUpdater.currentHeading);
+            // robotContainer.headingPID.setTargetHeading(PinpointUpdater.currentHeading);
         }
 
         if (rX == 0) {
