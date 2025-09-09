@@ -17,6 +17,7 @@ public class HeadingPID {
     private double p;
     private double i;
     private double d;
+    private double f;
 
     public HeadingPID(RobotContainer robotContainer) {
         this.robotContainer = robotContainer;
@@ -66,6 +67,6 @@ public class HeadingPID {
 
         lastError = error;
 
-        return p + i + d;
+        return p + i + d + Constants.HEADING_KF;
     }
 }

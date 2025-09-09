@@ -23,8 +23,8 @@ public class Constants {
             )
     );
 
-    public static boolean useHeadingPIDForTurning = true;
-    public static double turningRate = 0.05;
+    public static boolean useHeadingPIDForTurning = false;
+    public static double turningRate = 0.20;
 
     public static boolean SERVO_ANALOG_ACTIVE = true;
 
@@ -132,13 +132,14 @@ public class Constants {
             SWERVE_SERVO_KI = {0.00006, 0.00006, 0.00006, 0.00006},
                 SWERVE_SERVO_I_MAX = {0, 0, 0, 0},
             SWERVE_SERVO_KD = {0.000001, 0.000001, 0.000001, 0.000001},
-            SWERVE_SERVO_KF = {0.02, 0.02, 0.02, 0.02};
+            SWERVE_SERVO_KF = {0.03, 0.03, 0.03, 0.03};
 
     public static double
-            HEADING_KP = 0.012,
-            HEADING_KI = 0.0002,
+            HEADING_KP = 0.015,
+            HEADING_KI = 0.2,
                 HEADING_I_MAX = 0,
-            HEADING_KD = 0.0000002;
+            HEADING_KD = 0.0002,
+            HEADING_KF = 0.06;
 
     public static final double
         // Pinpoint might be backwards, check this!!!

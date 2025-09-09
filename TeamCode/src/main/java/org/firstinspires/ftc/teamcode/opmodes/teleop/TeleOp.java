@@ -87,11 +87,13 @@ public class TeleOp extends OpMode {
             }
         }
 
-        if (robotContainer.gamepadEx1.rightStickX() > 0.05) {
-            robotContainer.headingPID.setTargetHeading((robotContainer.headingPID.getTargetHeading() + Constants.turningRate * CURRENT_LOOP_TIME_MS * robotContainer.gamepadEx1.rightStickX()));
-        }
-        if (robotContainer.gamepadEx1.rightStickX() < -0.05) {
-            robotContainer.headingPID.setTargetHeading((robotContainer.headingPID.getTargetHeading() + Constants.turningRate * CURRENT_LOOP_TIME_MS * robotContainer.gamepadEx1.rightStickX()));
+        if (Constants.useHeadingPIDForTurning) {
+            if (robotContainer.gamepadEx1.rightStickX() > 0.05) {
+                robotContainer.headingPID.setTargetHeading((robotContainer.headingPID.getTargetHeading() - Constants.turningRate * CURRENT_LOOP_TIME_MS * robotContainer.gamepadEx1.rightStickX()));
+            }
+            if (robotContainer.gamepadEx1.rightStickX() < -0.05) {
+                robotContainer.headingPID.setTargetHeading((robotContainer.headingPID.getTargetHeading() - Constants.turningRate * CURRENT_LOOP_TIME_MS * robotContainer.gamepadEx1.rightStickX()));
+            }
         }
 
         if (robotContainer.gamepadEx1.guide.isHeldFor(0.75) && Status.lightsOn) {
