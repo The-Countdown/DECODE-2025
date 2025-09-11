@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.main.Status;
  */
 public class HeadingPID {
     private final RobotContainer robotContainer;
+    private boolean enabled = true;
     private double targetHeading = 0;
     private final ElapsedTime timer = new ElapsedTime();
     private double lastError = 0;
@@ -21,6 +22,10 @@ public class HeadingPID {
 
     public HeadingPID(RobotContainer robotContainer) {
         this.robotContainer = robotContainer;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public void setTargetHeading(double targetHeading) {
@@ -37,36 +42,40 @@ public class HeadingPID {
      * @return The calculated PID output.
      */
     public double calculate(double heading) {
-        double error = robotContainer.drivetrain.normalizeAngle(targetHeading - heading);
+        if (enabled) {
+            double error = robotContainer.drivetrain.normalizeAngle(targetHeading - heading);
 
-        double currentTime = timer.seconds();
-        timer.reset();
-        if (currentTime < 1e-6) currentTime = 1e-6;
+            double currentTime = timer.seconds();
+            timer.reset();
+            if (currentTime < 1e-6) currentTime = 1e-6;
 
-        if (Math.abs(error) < Constants.HEADING_PID_TOLERANCE_DEGREES) {
+            if (Math.abs(error) < Constants.HEADING_PID_TOLERANCE_DEGREES) {
+                lastError = error;
+                Status.robotHeadingTargetReached = true;
+                return 0;
+            } else {
+                Status.robotHeadingTargetReached = false;
+            }
+
+            p = Constants.HEADING_KP * error;
+            double newI = Math.max(-Constants.HEADING_I_MAX, Math.min(Constants.HEADING_I_MAX,  // Prevent integral windup
+                    i + Constants.HEADING_KI * error * currentTime));
+
+                if (Math.abs(p + newI + d) < 1) {
+                    i = newI; // Only allow integration if output is within limits
+                }
+
+                // Decay integral if error changes sign
+                if (Math.signum(error) != Math.signum(lastError)) {
+                    i *= 0.9;
+                }
+            d = Constants.HEADING_KD * (error - lastError) / currentTime;
+
             lastError = error;
-            Status.robotHeadingTargetReached = true;
-            return 0;
+
+            return p + i + d + Constants.HEADING_KF;
         } else {
-            Status.robotHeadingTargetReached = false;
+            return 0;
         }
-
-        p = Constants.HEADING_KP * error;
-        double newI = Math.max(-Constants.HEADING_I_MAX, Math.min(Constants.HEADING_I_MAX,  // Prevent integral windup
-                i + Constants.HEADING_KI * error * currentTime));
-
-            if (Math.abs(p + newI + d) < 1) {
-                i = newI; // Only allow integration if output is within limits
-            }
-
-            // Decay integral if error changes sign
-            if (Math.signum(error) != Math.signum(lastError)) {
-                i *= 0.9;
-            }
-        d = Constants.HEADING_KD * (error - lastError) / currentTime;
-
-        lastError = error;
-
-        return p + i + d + Constants.HEADING_KF;
     }
 }

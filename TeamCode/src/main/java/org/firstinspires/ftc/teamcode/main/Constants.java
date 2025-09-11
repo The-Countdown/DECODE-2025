@@ -129,10 +129,11 @@ public class Constants {
      */
     public static double[]
             SWERVE_SERVO_KP = {0.004, 0.004, 0.004, 0.004},
-            SWERVE_SERVO_KI = {0.00006, 0.00006, 0.00006, 0.00006},
+            SWERVE_SERVO_KI = {0.00008, 0.00008, 0.00008, 0.00008},
                 SWERVE_SERVO_I_MAX = {0, 0, 0, 0},
-            SWERVE_SERVO_KD = {0.000001, 0.000001, 0.000001, 0.000001},
-            SWERVE_SERVO_KF = {0.03, 0.03, 0.03, 0.03};
+            SWERVE_SERVO_KD = {0.0001, 0.0001, 0.0001, 0.0001},
+            SWERVE_SERVO_KF = {0.04, 0.04, 0.04, 0.04},
+            SWERVE_SERVO_MOTOR_VELOCITY = {0.01, 0.01, 0.01, 0.01};
 
     public static double
             HEADING_KP = 0.015,

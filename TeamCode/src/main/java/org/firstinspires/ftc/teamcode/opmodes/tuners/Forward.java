@@ -57,7 +57,7 @@ public class Forward extends OpMode {
         robotContainer.gamepadEx2.update();
 
         for (int i = 0; i < Constants.NUM_SWERVE_SERVOS; i++) {
-            robotContainer.swerveModules[i].servo.setTargetAngle(0);
+            robotContainer.swerveModules[i].servo.setTargetAngle(90);
             robotContainer.swerveModules[i].motor.setTargetPower(0.2);
         }
 

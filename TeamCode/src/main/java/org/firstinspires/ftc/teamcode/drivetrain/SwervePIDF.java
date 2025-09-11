@@ -19,6 +19,7 @@ public class SwervePIDF {
     public double p;
     public double i;
     public double d;
+    public double swerveConstantPower;
     public double ff;
 
     public SwervePIDF(RobotContainer robotContainer, int module, CRServoImplEx servo) {
@@ -67,7 +68,11 @@ public class SwervePIDF {
                 i *= 0.9;
             }
         d = Constants.SWERVE_SERVO_KD[module] * (error - lastError) / currentTime;
-        ff = Constants.SWERVE_SERVO_KF[module] * Math.signum(error);
+        swerveConstantPower = (Constants.SWERVE_SERVO_KF[module] * (1 - (robotContainer.swerveModules[module].motor.targetPower * Constants.SWERVE_SERVO_MOTOR_VELOCITY[module])));
+        if (swerveConstantPower < 0) {
+            swerveConstantPower = 0;
+        }
+        ff = swerveConstantPower * Math.signum(error);
 
         lastError = error;
 
