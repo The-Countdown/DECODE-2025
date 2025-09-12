@@ -6,7 +6,10 @@ import com.qualcomm.hardware.limelightvision.LLFieldMap;
 import com.qualcomm.hardware.limelightvision.LLResult;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 
 public class Limelight {
@@ -19,21 +22,32 @@ public class Limelight {
         this.telemetry = telemetry;
         this.limelightCam = limelight;
     }
+
     LLResult result =  limelight.getLatestResult();
 
-    //current april tag seen
+    /**
+    * @param pose Pose3d to convert to Pose2d
+    * @return Pose2d
+    */
+    public Pose2D to2D(Pose3D pose) {
+        return new Pose2D(DistanceUnit.CM, pose.getPosition().x, pose.getPosition().y, AngleUnit.DEGREES,pose.getOrientation().getYaw(AngleUnit.DEGREES));
+    }
+
 
     public int getTag() {
         return limelightCam.getTag();
     }
-    public Pose2D getPose() {
-        if (result.isValid())
 
-        limelightCam.getPose();
+    public Pose3D getRobotPose() {
+        if (result.isValid()) {
+            return result.getBotpose();
+        } else {
+            return null;
+        }
     }
 
-    public void updatePose() {
-        RobotContainer.HardwareDevices.pinpoint.setPosition(limelightCam.getPose());
+    public void updateLimelight() {
+        RobotContainer.HardwareDevices.pinpoint.setPosition(limelightCam.to2D(getRobotPose()));
     }
 
     public enum motif {
@@ -68,7 +82,7 @@ public class Limelight {
     }
 
 
-    // look at april tag give pose2d (for initialization)
+    // * look at april tag give pose2d (for initialization)
     // track april tag constantly (with offset) (with turret)
     // * look at random thing for color combo
     // drive to function with offset options
