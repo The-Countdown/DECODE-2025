@@ -16,22 +16,11 @@ apply from: '../build.common.gradle'
 apply from: '../build.dependencies.gradle'
 
 android {
-
     namespace = 'org.firstinspires.ftc.teamcode'
 
-    compileOptions {
-    }
-
     packagingOptions {
-        jniLibs {
-            pickFirsts += ['**/*.so']
-        }
         jniLibs.useLegacyPackaging true
     }
-}
-
-tasks.withType(JavaCompile).configureEach {
-    options.compilerArgs.addAll(["-Xlint:-options", "-Xlint:-deprecation"])
 }
 
 dependencies {
