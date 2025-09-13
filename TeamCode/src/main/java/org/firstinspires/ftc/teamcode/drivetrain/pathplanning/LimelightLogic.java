@@ -26,8 +26,12 @@ public class LimelightLogic {
         if (limelight.getLatestResult().isValid()) result = limelight.getLatestResult();
         if (Status.motif == null) findMotif();
         if (Status.alliance == null) findAlliance();
-        RobotContainer.HardwareDevices.pinpoint.setPosition(HelperFunctions.to2D(result.getBotpose()));
+        if (Status.motif != null) {
+            result.getFiducialResults().removeIf(tag -> tag.getFiducialId() == 21 || tag.getFiducialId() == 22 || tag.getFiducialId() == 23);
+            RobotContainer.HardwareDevices.pinpoint.setPosition(HelperFunctions.to2D(result.getBotpose()));
+        }
     }
+
 
     public Constants.MOTIF checkMotif(LLResultTypes.FiducialResult aprilTag) {
         if (aprilTag.getFiducialId() == 21) {
@@ -62,7 +66,7 @@ public class LimelightLogic {
         for (LLResultTypes.FiducialResult tag : result.getFiducialResults()) {
             if (checkMotif(tag) != null) {
                 Status.alliance = checkAlliance(tag);
-                robot.addRetainedTelemetry("Motif Found" , checkMotif(tag));
+                robot.addRetainedTelemetry("Alliance Found" , checkAlliance(tag));
             }
         }
     }

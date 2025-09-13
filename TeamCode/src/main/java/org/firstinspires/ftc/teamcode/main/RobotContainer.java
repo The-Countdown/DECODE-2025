@@ -161,6 +161,14 @@ public class RobotContainer {
                 addRetainedTelemetry("WARNING: Swerve Servo " + i + " is connected to port " + HardwareDevices.swerveServos[i].getPortNumber() + ", should be port " + i, null);
             }
         }
+        
+        HardwareDevices.turretServo = getHardwareDevice(ServoImplEx.class, "turretServo");
+        HardwareDevices.hoodServo = getHardwareDevice(ServoImplEx.class, "hoodServo");
+        HardwareDevices.transferServo = getHardwareDevice(CRServoImplEx.class, "transferServo");
+        HardwareDevices.spindexServo = getHardwareDevice(ServoImplEx.class, "spindexServo");
+        HardwareDevices.intakeMotor = getHardwareDevice(DcMotorImplEx.class, "intakeMotor");
+        HardwareDevices.flyWheelMotorMaster = getHardwareDevice(DcMotorImplEx.class, "flyWheelMotorMaster");
+        HardwareDevices.flyWheelMotorSlave = getHardwareDevice(DcMotorImplEx.class, "flyWheelMotorSlave");
 
         HardwareDevices.flyWheelMotorSlave.setDirection(DcMotorImplEx.Direction.REVERSE);
         LinkedMotors flyWheelMotors = new LinkedMotors(HardwareDevices.flyWheelMotorMaster, HardwareDevices.flyWheelMotorSlave);
