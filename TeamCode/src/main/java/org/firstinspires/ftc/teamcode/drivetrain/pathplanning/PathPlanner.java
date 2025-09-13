@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.main.RobotContainer;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.main.Status;
-import org.firstinspires.ftc.teamcode.other.PinpointUpdater;
+import org.firstinspires.ftc.teamcode.other.LocalizationUpdater;
 
 import java.util.ArrayList;
 import java.lang.Thread;
@@ -31,11 +31,11 @@ public class PathPlanner {
     * @param index
     */
     public void driveToPose(int index) {
-        Pose2D currentPose = PinpointUpdater.currentPose;
+        Pose2D currentPose = LocalizationUpdater.currentPose;
         Status.targetPose = poses.get(index);
 
         double deltaX = Status.targetPose.getX(DistanceUnit.CM) - currentPose.getX(DistanceUnit.CM);
-        double deltaY = Status.targetPose.getY(DistanceUnit.CM) - currentPose.getX(DistanceUnit.CM);
+        double deltaY = Status.targetPose.getY(DistanceUnit.CM) - currentPose.getY(DistanceUnit.CM);
 
         double angleToTarget = Math.atan2(deltaY, deltaX);
         double[] angles = {angleToTarget, angleToTarget, angleToTarget, angleToTarget};
@@ -59,7 +59,7 @@ public class PathPlanner {
         }
     }
 
-    public void run() {
+    public void displayPoses() {
         for (int i = 0; i < poses.size(); i++) {
             telemetry.addData("Pose", poses.get(i).toString());
             telemetry.update();

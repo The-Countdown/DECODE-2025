@@ -5,7 +5,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
-import org.firstinspires.ftc.teamcode.other.PinpointUpdater;
+import org.firstinspires.ftc.teamcode.other.LocalizationUpdater;
+import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
 import java.util.Arrays;
 
@@ -39,11 +40,11 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
         double rotationalMagnitude = Math.abs(rX);
 
         if (robotContainer.gamepadEx1.rightStickX.wasJustReleased()) {
-            robotContainer.headingPID.setTargetHeading(PinpointUpdater.currentHeading);
+            robotContainer.headingPID.setTargetHeading(LocalizationUpdater.currentHeading);
         }
 
         if (rX == 0) {
-            rotationalMagnitude = robotContainer.headingPID.calculate(PinpointUpdater.currentHeading);
+            rotationalMagnitude = robotContainer.headingPID.calculate(LocalizationUpdater.currentHeading);
         }
 
         if ((robotContainer.gamepadEx1.leftStickX.wasJustReleased() ||
@@ -75,11 +76,11 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
         // Set the initial translational direction to forward.
         int translationalDirection = 1;
 
-        double currentHeading = normalizeAngle(PinpointUpdater.currentHeading);
+        double currentHeading = HelperFunctions.normalizeAngle(LocalizationUpdater.currentHeading);
         // Adjust the translational angle for field-oriented driving if enabled.
-        translationalAngle = normalizeAngle(Math.toDegrees(translationalAngle));
+        translationalAngle = HelperFunctions.normalizeAngle(Math.toDegrees(translationalAngle));
         translationalAngle = fieldOriented ? translationalAngle + currentHeading : translationalAngle;
-        translationalAngle = normalizeAngle(translationalAngle);
+        translationalAngle = HelperFunctions.normalizeAngle(translationalAngle);
 
         translationalAngle = Math.toRadians(translationalAngle);
 
@@ -127,7 +128,7 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
         for (int i = 0; i < swerveServos.length; i++) {
             double currentAngle = robotContainer.swerveModules[i].servo.getAngle();
             double error = targetAngles[i] - currentAngle;
-            error = normalizeAngle(error);
+            error = HelperFunctions.normalizeAngle(error);
 
             if (!Constants.SWERVE_MODULE_FLIPPED[i] && Math.abs(error) > Constants.SWERVE_MODULE_FLIP_SWITCH_ON) {
                 Constants.SWERVE_MODULE_FLIPPED[i] = true;
@@ -136,7 +137,7 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
             }
 
             if (Constants.SWERVE_MODULE_FLIPPED[i]) {
-                targetAngles[i] = normalizeAngle(targetAngles[i] + 180);
+                targetAngles[i] = HelperFunctions.normalizeAngle(targetAngles[i] + 180);
                 robotContainer.swerveModules[i].motor.setTargetPower(-targetPowers[i]);
             } else {
                 robotContainer.swerveModules[i].motor.setTargetPower(targetPowers[i]);
@@ -168,42 +169,6 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
             }
         }
         return powers;
-    }
-
-    /**
-     * Normalizes an angle to the range [-180, 180).
-     *
-     * @param angle The angle to normalize.
-     * @return The normalized angle.
-     */
-    public double normalizeAngle(double angle) {
-        // On this edge case the servo will not move. If fixing the problem is less expensive than this, please do so.
-        if (angle == 90) {
-            angle = 89.999;
-        }
-        if (angle == -90 || angle == -180) {
-            angle += 0.001;
-        }
-
-        // Check if the angle is already in the desired range.
-        if (angle >= -180 && angle < 180) {
-            return angle;
-        }
-
-        // Normalize the angle to the range [-360, 360).
-        double normalizedAngle = angle % 360;
-
-        // If the result was negative, shift it to the range [0, 360).
-        if (normalizedAngle < 0) {
-            normalizedAngle += 360;
-        }
-
-        // If the angle is in the range [180, 360), shift it to [-180, 0).
-        if (normalizedAngle >= 180) {
-            normalizedAngle -= 360;
-        }
-
-        return normalizedAngle;
     }
 
     /**

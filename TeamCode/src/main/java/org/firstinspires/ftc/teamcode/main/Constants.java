@@ -1,12 +1,15 @@
 package org.firstinspires.ftc.teamcode.main;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.IMU;
 
-import org.firstinspires.ftc.teamcode.drivetrain.Drivetrain;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.drivetrain.SwerveModule;
-import org.firstinspires.ftc.teamcode.other.GoBildaPinpoint;
+import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
 import java.util.HashMap;
 
@@ -16,16 +19,29 @@ import java.util.HashMap;
  */
 @Config
 public class Constants {
+
+    public enum ALLIANCE {
+        BLUE,
+        RED
+    }
+
+    public enum MOTIF {
+        GPP,
+        PGP,
+        PPG
+    }
+
     public static final IMU.Parameters imuParameters = new IMU.Parameters(
             new RevHubOrientationOnRobot(
-                    RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
-                    RevHubOrientationOnRobot.UsbFacingDirection.UP
+                    RevHubOrientationOnRobot.LogoFacingDirection.UP,
+                    RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
             )
     );
 
     public static boolean useHeadingPIDForTurning = false;
     public static double turningRate = 0.20;
-
+    public static double startingX = 0, startingY = 0, startingHeading = 0;
+    public static Pose2D startingPose = new Pose2D(DistanceUnit.CM,startingX,startingY, AngleUnit.DEGREES,startingHeading);
     public static boolean SERVO_ANALOG_ACTIVE = true;
 
     public static final int
@@ -68,10 +84,10 @@ public class Constants {
      * These values are not exactly 45 degrees because the drivebase is not a perfect square
      */
     public static final double[] SWERVE_ROTATION_FORMATION_DEGREES = {
-            normalizeAngle(Math.toDegrees(Math.atan2(WHEELBASE_ICR_Y, WHEELBASE_ICR_X))),
-            normalizeAngle(Math.toDegrees(Math.atan2(-WHEELBASE_ICR_Y, WHEELBASE_ICR_X))),
-            normalizeAngle(Math.toDegrees(Math.atan2(-WHEELBASE_ICR_Y, -WHEELBASE_ICR_X))),
-            normalizeAngle(Math.toDegrees(Math.atan2(WHEELBASE_ICR_Y, -WHEELBASE_ICR_X))),
+            HelperFunctions.normalizeAngle(Math.toDegrees(Math.atan2(WHEELBASE_ICR_Y, WHEELBASE_ICR_X))),
+            HelperFunctions.normalizeAngle(Math.toDegrees(Math.atan2(-WHEELBASE_ICR_Y, WHEELBASE_ICR_X))),
+            HelperFunctions.normalizeAngle(Math.toDegrees(Math.atan2(-WHEELBASE_ICR_Y, -WHEELBASE_ICR_X))),
+            HelperFunctions.normalizeAngle(Math.toDegrees(Math.atan2(WHEELBASE_ICR_Y, -WHEELBASE_ICR_X))),
     };
 
     public static final double[] SWERVE_ROTATION_FORMATION_RADIANS = {
@@ -147,12 +163,12 @@ public class Constants {
             PINPOINT_X_OFFSET_MM = 145,
             PINPOINT_Y_OFFSET_MM = 0;
 
-    public static final GoBildaPinpoint.GoBildaOdometryPods
-            PINPOINT_ODOM_POD = GoBildaPinpoint.GoBildaOdometryPods.goBILDA_4_BAR_POD;
+    public static final GoBildaPinpointDriver.GoBildaOdometryPods
+            PINPOINT_ODOM_POD = GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD;
 
-    public static final GoBildaPinpoint.EncoderDirection
-            PINPOINT_X_ENCODER_DIRECTION = GoBildaPinpoint.EncoderDirection.FORWARD,
-            PINPOINT_Y_ENCODER_DIRECTION = GoBildaPinpoint.EncoderDirection.REVERSED;
+    public static final GoBildaPinpointDriver.EncoderDirection
+            PINPOINT_X_ENCODER_DIRECTION = GoBildaPinpointDriver.EncoderDirection.FORWARD,
+            PINPOINT_Y_ENCODER_DIRECTION = GoBildaPinpointDriver.EncoderDirection.REVERSED;
     
     public static final double PATHING_ERROR_MARGIN_CM = 10;
 
@@ -215,44 +231,5 @@ public class Constants {
         public LED_COLOR_VALUES(int MICROSECONDS, double ANALOG) {
             this.MICROSECONDS = MICROSECONDS; this.ANALOG = ANALOG;
         }
-    }
-
-    /**
-     * Normalizes an angle to the range [-180, 180).
-     * <p>
-     * (This is duplicated from {@link Drivetrain} because I wanted the constants class to be
-     * isolated from the rest of the codebase)
-     *
-     * @param angle The angle to normalize.
-     * @return The normalized angle.
-     */
-    public static double normalizeAngle(double angle) {
-        // On this edge case the servo will not move. If fixing the problem is less expensive than this, please do so.
-        if (angle == 90) {
-            angle = 89.999;
-        }
-        if (angle == -90 || angle == -180) {
-            angle += 0.001;
-        }
-
-        // Check if the angle is already in the desired range.
-        if (angle >= -180 && angle < 180) {
-            return angle;
-        }
-
-        // Normalize the angle to the range [-360, 360).
-        double normalizedAngle = angle % 360;
-
-        // If the result was negative, shift it to the range [0, 360).
-        if (normalizedAngle < 0) {
-            normalizedAngle += 360;
-        }
-
-        // If the angle is in the range [180, 360), shift it to [-180, 0).
-        if (normalizedAngle >= 180) {
-            normalizedAngle -= 360;
-        }
-
-        return normalizedAngle;
     }
 }

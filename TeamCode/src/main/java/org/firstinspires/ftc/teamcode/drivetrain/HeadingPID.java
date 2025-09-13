@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
+import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
 /**
  * A PID controller for maintaining a specific heading.
@@ -43,7 +44,7 @@ public class HeadingPID {
      */
     public double calculate(double heading) {
         if (enabled) {
-            double error = robotContainer.drivetrain.normalizeAngle(targetHeading - heading);
+            double error = HelperFunctions.normalizeAngle(targetHeading - heading);
 
             double currentTime = timer.seconds();
             timer.reset();

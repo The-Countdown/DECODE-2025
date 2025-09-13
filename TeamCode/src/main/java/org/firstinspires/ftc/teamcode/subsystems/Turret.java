@@ -48,7 +48,16 @@ public class Turret extends RobotContainer.HardwareDevices {
     //ticks per second
     //param 0-1
     //drive train updater go look at
-    public void setFlywheelTargetPower(double power) {
+    public void setFlywheelTargetVelocity(double power) {
         flyWheelMotors.setVelocity(Constants.SWERVE_MOTOR_MAX_VELOCITY_TICKS_PER_SECOND * power);
+    }
+
+    public void pointAtGoal() {
+        //get the desired alliance color
+        //get the target location of the goal
+        //get the location of the robot
+        //calculate the angle from the robot position to the goal using atan to get an angle of 0-90
+        //take into account the rotation of the robot
+        //finally aim the turret to the final angle or as close as possible
     }
 }

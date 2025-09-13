@@ -5,14 +5,14 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.Status;
-import org.firstinspires.ftc.teamcode.other.PinpointUpdater;
+import org.firstinspires.ftc.teamcode.other.LocalizationUpdater;
 
 public class PoseMath {
     //hiii nvm then no hi
 
     public double distanceTo() {
-        double dx = Status.targetPose.getX(DistanceUnit.CM) - PinpointUpdater.currentPose.getX(DistanceUnit.CM);
-        double dy = Status.targetPose.getY(DistanceUnit.CM) - PinpointUpdater.currentPose.getY(DistanceUnit.CM);
+        double dx = Status.targetPose.getX(DistanceUnit.CM) - LocalizationUpdater.currentPose.getX(DistanceUnit.CM);
+        double dy = Status.targetPose.getY(DistanceUnit.CM) - LocalizationUpdater.currentPose.getY(DistanceUnit.CM);
         return Math.sqrt(dx * dx + dy * dy);
     }
 
@@ -21,7 +21,7 @@ public class PoseMath {
      * @return The heading error in degrees
      */
     public double headingError(double targetHeading) {
-        return normalizeAngle(targetHeading - PinpointUpdater.currentPose.getHeading(AngleUnit.DEGREES));
+        return normalizeAngle(targetHeading - LocalizationUpdater.currentPose.getHeading(AngleUnit.DEGREES));
     }
 
     /**
@@ -30,8 +30,8 @@ public class PoseMath {
      * @return The angle needed to face the target position in degrees
      */
     public double targetPosDirectionDegrees (Pose2D target) {
-        double dx = target.getX(DistanceUnit.CM) - PinpointUpdater.currentPose.getX(DistanceUnit.CM);
-        double dy = target.getY(DistanceUnit.CM) - PinpointUpdater.currentPose.getY(DistanceUnit.CM);
+        double dx = target.getX(DistanceUnit.CM) - LocalizationUpdater.currentPose.getX(DistanceUnit.CM);
+        double dy = target.getY(DistanceUnit.CM) - LocalizationUpdater.currentPose.getY(DistanceUnit.CM);
         return normalizeAngle(Math.atan2(dy, dx));
     }
 
@@ -40,8 +40,8 @@ public class PoseMath {
      * @return True when robot gets within PATHING_ERROR_MARGIN_CM
      */
     public boolean isAtPos() {
-        return Status.targetPose.getX(DistanceUnit.CM) - PinpointUpdater.currentPose.getX(DistanceUnit.CM) <= Constants.PATHING_ERROR_MARGIN_CM &&
-                Status.targetPose.getY(DistanceUnit.CM) - PinpointUpdater.currentPose.getY(DistanceUnit.CM) <= Constants.PATHING_ERROR_MARGIN_CM;
+        return Status.targetPose.getX(DistanceUnit.CM) - LocalizationUpdater.currentPose.getX(DistanceUnit.CM) <= Constants.PATHING_ERROR_MARGIN_CM &&
+                Status.targetPose.getY(DistanceUnit.CM) - LocalizationUpdater.currentPose.getY(DistanceUnit.CM) <= Constants.PATHING_ERROR_MARGIN_CM;
     }
 
     private double normalizeAngle(double angle) {

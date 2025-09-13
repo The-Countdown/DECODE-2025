@@ -62,9 +62,9 @@ public class TeleOp extends OpMode {
             currentServo = 3;
         }
 
-        if (!fieldOriented && robotContainer.gamepadEx1.a.wasJustPressed()) {
+        if (!fieldOriented && robotContainer.gamepadEx1.cross.wasJustPressed()) {
             fieldOriented = true;
-        } else if (fieldOriented && robotContainer.gamepadEx1.a.wasJustPressed()) {
+        } else if (fieldOriented && robotContainer.gamepadEx1.cross.wasJustPressed()) {
             fieldOriented = false;
         }
 
@@ -96,7 +96,7 @@ public class TeleOp extends OpMode {
             }
         }
 
-        if (robotContainer.gamepadEx1.guide.isHeldFor(0.75) && Status.lightsOn) {
+        if (robotContainer.gamepadEx1.ps.isHeldFor(0.75) && Status.lightsOn) {
             robotContainer.allIndicatorLights.flashingReset();
             Status.lightsOn = false;
 
@@ -105,16 +105,16 @@ public class TeleOp extends OpMode {
             Status.isDrivingActive = false;
         }
 
-        if (robotContainer.gamepadEx1.guide.wasJustPressed() && !Status.lightsOn) {
+        if (robotContainer.gamepadEx1.ps.wasJustPressed() && !Status.lightsOn) {
             Status.lightsOn = true;
             robotContainer.delayedActionManager.schedule(() -> Status.isDrivingActive = true, 1000);
         }
 
-        if (robotContainer.gamepadEx1.b.wasJustPressed() && !Status.policeOn) {
+        if (robotContainer.gamepadEx1.circle.wasJustPressed() && !Status.policeOn) {
             Status.policeOn = true;
         }
 
-        if (robotContainer.gamepadEx1.b.wasJustPressed() && Status.policeOn) {
+        if (robotContainer.gamepadEx1.circle.wasJustPressed() && Status.policeOn) {
             Status.policeOn = false;
         }
 
@@ -151,7 +151,7 @@ public class TeleOp extends OpMode {
         }
 
         if (Status.policeOn) {
-            robotContainer.allIndicatorLights.flashing(Constants.LED_COLOR.RED, Constants.LED_COLOR.BLUE, 3);
+            robotContainer.allIndicatorLights.police();
         }
 
         robotContainer.telemetry(currentServo, 0, CURRENT_LOOP_TIME_MS, CURRENT_LOOP_TIME_AVG_MS);

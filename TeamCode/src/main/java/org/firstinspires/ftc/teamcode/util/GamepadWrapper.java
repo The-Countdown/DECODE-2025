@@ -69,14 +69,14 @@ public class GamepadWrapper {
 
     private final Gamepad gamepad;
 
-    public final ButtonReader back = new ButtonReader();
-    public final ButtonReader start = new ButtonReader();
-    public final ButtonReader guide = new ButtonReader();
+    public final ButtonReader share = new ButtonReader(); // back
+    public final ButtonReader options = new ButtonReader(); // start
+    public final ButtonReader ps = new ButtonReader(); // guide
 
-    public final ButtonReader a = new ButtonReader();
-    public final ButtonReader b = new ButtonReader();
-    public final ButtonReader x = new ButtonReader();
-    public final ButtonReader y = new ButtonReader();
+    public final ButtonReader cross = new ButtonReader(); // a
+    public final ButtonReader circle = new ButtonReader(); // b
+    public final ButtonReader square = new ButtonReader(); // x
+    public final ButtonReader triangle = new ButtonReader(); // y
 
     public final ButtonReader dpadUp = new ButtonReader();
     public final ButtonReader dpadDown = new ButtonReader();
@@ -102,14 +102,14 @@ public class GamepadWrapper {
     }
 
     public void update() {
-        back.update(gamepad.back);
-        start.update(gamepad.start);
-        guide.update(gamepad.guide);
+        share.update(gamepad.back);
+        options.update(gamepad.start);
+        ps.update(gamepad.guide);
 
-        a.update(gamepad.a);
-        b.update(gamepad.b);
-        x.update(gamepad.x);
-        y.update(gamepad.y);
+        cross.update(gamepad.a);
+        circle.update(gamepad.b);
+        square.update(gamepad.x);
+        triangle.update(gamepad.y);
 
         dpadUp.update(gamepad.dpad_up);
         dpadDown.update(gamepad.dpad_down);

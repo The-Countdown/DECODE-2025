@@ -30,7 +30,9 @@ public class DrivetrainUpdater extends Thread {
 
     @Override
     public void run() {
-        while (!Status.opModeIsActive);
+        while (!Status.opModeIsActive) {
+            Thread.yield();
+        }
         deltaTimer.reset();
         robotContainer.refreshData();
         for (int i = 0; i < robotContainer.swerveModules.length; i++) {

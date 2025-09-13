@@ -4,12 +4,8 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
-import org.firstinspires.ftc.teamcode.other.GoBildaPinpoint;
-
-import java.util.Objects;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Swerve Forward Tuner", group = "Tuner")
 public class SwerveForwardTuner extends OpMode {
@@ -45,7 +41,7 @@ public class SwerveForwardTuner extends OpMode {
         Status.opModeIsActive = true;
         targetTimer.reset();
 
-        robotContainer.pinpointUpdater.start();
+        robotContainer.localizationUpdater.start();
 
         robotContainer.swerveModules[0].servo.setTargetAngle(90);
         robotContainer.swerveModules[1].servo.setTargetAngle(90);
@@ -86,7 +82,7 @@ public class SwerveForwardTuner extends OpMode {
         }
         robotContainer.telemetry.addData("Timer", timer);
         robotContainer.telemetry.addData("Timer Diff", System.currentTimeMillis() - timer);
-        robotContainer.telemetry.addData("Current Heading", robotContainer.pinpointUpdater.currentHeading);
+        robotContainer.telemetry.addData("Current Heading", robotContainer.localizationUpdater.currentHeading);
         robotContainer.telemetry.addData("Target Heading", robotContainer.headingPID.getTargetHeading());
 
 

@@ -1,16 +1,13 @@
 package org.firstinspires.ftc.teamcode.opmodes.tuners;
 
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 //import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
-import org.firstinspires.ftc.teamcode.other.GoBildaPinpoint;
-import org.firstinspires.ftc.teamcode.other.PinpointUpdater;
 
 import org.firstinspires.ftc.teamcode.main.Constants;
-
-import java.util.Objects;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "WheelPower", group = "Tuner")
 public class WheelPower extends OpMode {
@@ -39,7 +36,7 @@ public class WheelPower extends OpMode {
     public void start() {
         robotContainer.start(this);
         Status.opModeIsActive = true;
-        if (RobotContainer.HardwareDevices.pinpoint.getDeviceStatus() != GoBildaPinpoint.DeviceStatus.READY) {
+        if (RobotContainer.HardwareDevices.pinpoint.getDeviceStatus() != GoBildaPinpointDriver.DeviceStatus.READY) {
             robotContainer.addRetainedTelemetry("WARNING, PINPOINT STATUS:", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
         }
 

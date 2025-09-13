@@ -17,6 +17,10 @@ public class Status {
     public static boolean competitionMode = false;
 
     public static Pose2D targetPose;
+    public static Pose2D currentPose;
+    public static Constants.MOTIF motif;
+
+    public static Constants.ALLIANCE alliance;
 
     /**
      * A map to store the status of each swerve servo.
@@ -44,6 +48,4 @@ public class Status {
     public static boolean policeOn = false;
 
     public static boolean isDrivingActive = false;
-
-    // TODO: Add more status variables as needed
 }

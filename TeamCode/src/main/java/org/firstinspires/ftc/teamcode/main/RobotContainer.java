@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.main;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
@@ -9,7 +10,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.DcMotorImplEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
@@ -18,7 +18,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
 import org.firstinspires.ftc.teamcode.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.drivetrain.DrivetrainUpdater;
@@ -27,9 +26,8 @@ import org.firstinspires.ftc.teamcode.drivetrain.SwerveModule;
 import org.firstinspires.ftc.teamcode.drivetrain.SwervePIDF;
 import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.PathPlanner;
 import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.PoseMath;
-import org.firstinspires.ftc.teamcode.other.GoBildaPinpoint;
 import org.firstinspires.ftc.teamcode.other.IndicatorLighting;
-import org.firstinspires.ftc.teamcode.other.PinpointUpdater;
+import org.firstinspires.ftc.teamcode.other.LocalizationUpdater;
 import org.firstinspires.ftc.teamcode.util.DelayedActionManager;
 import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
 import org.firstinspires.ftc.teamcode.util.LinkedMotors;
@@ -64,7 +62,7 @@ public class RobotContainer {
     public final SwerveModule[] swerveModules = new SwerveModule[Constants.NUM_SWERVE_MOTORS];
     public SwervePIDF[] swerveServosPIDF = new SwervePIDF[Constants.NUM_SWERVE_SERVOS];
     public DrivetrainUpdater drivetrainUpdater;
-    public PinpointUpdater pinpointUpdater;
+    public LocalizationUpdater localizationUpdater;
     public PoseMath poseMath = new PoseMath();
     public PathPlanner pathPlanner;
     public DelayedActionManager delayedActionManager = new DelayedActionManager();
@@ -81,9 +79,8 @@ public class RobotContainer {
         public static LynxModule expansionHub;
         public static IMU imu;
 
-        public static GoBildaPinpoint pinpoint;
+        public static GoBildaPinpointDriver pinpoint;
         public static Limelight3A limelight;
-        public static RevColorSensorV3 flashlight;
 
         // Gobilda RGB indicator light
         public static ServoImplEx indicatorLightFrontLeft;
@@ -101,15 +98,17 @@ public class RobotContainer {
         public static AnalogInput[] swerveAnalogs = new AnalogInput[Constants.NUM_SWERVE_ANALOGS];
             public static String[] analogNames = new String[Constants.NUM_SWERVE_ANALOGS];
 
-        //turret
+        // Turret
         public static DcMotorImplEx flyWheelMotorMaster;
         public static DcMotorImplEx flyWheelMotorSlave;
         public static ServoImplEx turretServo;
         public static ServoImplEx hoodServo;
+
+        // Spindexer
         public static CRServoImplEx transferServo;
         public static ServoImplEx spindexServo;
 
-        //intake
+        // Intake
         public static DcMotorImplEx intakeMotor;
     }
 
@@ -121,13 +120,13 @@ public class RobotContainer {
         HardwareDevices.imu = getHardwareDevice(IMU.class, "imu");
         HardwareDevices.imu.initialize(Constants.imuParameters);
 
-        HardwareDevices.pinpoint = getHardwareDevice(GoBildaPinpoint.class, "pinpoint");
+        HardwareDevices.pinpoint = getHardwareDevice(GoBildaPinpointDriver.class, "pinpoint");
         HardwareDevices.pinpoint.setOffsets(Constants.PINPOINT_X_OFFSET_MM, Constants.PINPOINT_Y_OFFSET_MM, DistanceUnit.MM);
         HardwareDevices.pinpoint.setEncoderResolution(Constants.PINPOINT_ODOM_POD);
         HardwareDevices.pinpoint.setEncoderDirections(Constants.PINPOINT_X_ENCODER_DIRECTION, Constants.PINPOINT_Y_ENCODER_DIRECTION);
+        HardwareDevices.pinpoint.setPosition(Constants.startingPose);
 
         HardwareDevices.limelight = getHardwareDevice(Limelight3A.class, "limelight");
-        HardwareDevices.flashlight = getHardwareDevice(RevColorSensorV3.class, "flashlight");
 
         HardwareDevices.indicatorLightFrontLeft = getHardwareDevice(ServoImplEx.class, "indicatorLightFrontLeft");
         HardwareDevices.indicatorLightFrontRight = getHardwareDevice(ServoImplEx.class, "indicatorLightFrontRight");
@@ -196,8 +195,8 @@ public class RobotContainer {
     public void start(OpMode opmode) {
         gamepadEx1 = new GamepadWrapper(opmode.gamepad1);
         gamepadEx2 = new GamepadWrapper(opmode.gamepad2);
-        pinpointUpdater = new PinpointUpdater(this);
-        pinpointUpdater.start();
+        localizationUpdater = new LocalizationUpdater(this);
+        localizationUpdater.start();
         drivetrainUpdater = new DrivetrainUpdater(this);
         drivetrainUpdater.start();
     }
@@ -241,7 +240,7 @@ public class RobotContainer {
     public void testCriticalHardwareDevice(Object hardwareClass) {
         if (hardwareClass == null) {
             telemetry.log().clear();
-            telemetry.addLine("Failed to load hardware class: " + hardwareClass.toString());
+            telemetry.addLine("Failed to load hardware class, class is null");
             telemetry.addLine("This message will show for 10 seconds.");
             telemetry.update();
             try {
@@ -367,9 +366,9 @@ public class RobotContainer {
         telemetry.addData("Control Hub Current", getCurrent(Constants.CONTROL_HUB_INDEX) + " A");
         telemetry.addData("Expansion Hub Current", getCurrent(Constants.EXPANSION_HUB_INDEX) + " A");
         telemetry.addLine();
-        telemetry.addData("Pinpoint X", PinpointUpdater.currentPose.getX(DistanceUnit.CM) + " cm");
-        telemetry.addData("Pinpoint Y", PinpointUpdater.currentPose.getY(DistanceUnit.CM) + " cm");
-        telemetry.addData("Pinpoint Heading", PinpointUpdater.currentHeading + "°");
+        telemetry.addData("Pinpoint X", LocalizationUpdater.currentPose.getX(DistanceUnit.CM) + " cm");
+        telemetry.addData("Pinpoint Y", LocalizationUpdater.currentPose.getY(DistanceUnit.CM) + " cm");
+        telemetry.addData("Pinpoint Heading", LocalizationUpdater.currentHeading + "°");
         telemetry.addData("PINPOINT STATUS", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
         telemetry.addLine();
         telemetry.addData("TeleOp Avg Loop Time", (int) CURRENT_LOOP_TIME_AVG_MS + " ms");
@@ -378,12 +377,12 @@ public class RobotContainer {
         telemetry.addData("DriveTrain Avg Loop Time", (int) drivetrainUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms");
         telemetry.addData("DriveTrain Loop Time", (int) drivetrainUpdater.CURRENT_LOOP_TIME_MS + " ms");
         telemetry.addLine();
-        telemetry.addData("Pinpoint Avg Loop Time", (int) pinpointUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms");
-        telemetry.addData("Pinpoint Loop Time", (int) pinpointUpdater.CURRENT_LOOP_TIME_MS + " ms");
+        telemetry.addData("Pinpoint Avg Loop Time", (int) localizationUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms");
+        telemetry.addData("Pinpoint Loop Time", (int) localizationUpdater.CURRENT_LOOP_TIME_MS + " ms");
         telemetry.addLine();
         telemetry.addData("Heading PID Target", headingPID.getTargetHeading());
         telemetry.addData("Heading PID Target Reached", Status.robotHeadingTargetReached);
-        telemetry.addData("Heading PID Output", headingPID.calculate(PinpointUpdater.currentHeading));
+        telemetry.addData("Heading PID Output", headingPID.calculate(LocalizationUpdater.currentHeading));
         telemetry.addLine();
         telemetry.addData("Left Stick Y", gamepadEx1.leftStickY());
         telemetry.addData("Left Stick X", gamepadEx1.leftStickX());

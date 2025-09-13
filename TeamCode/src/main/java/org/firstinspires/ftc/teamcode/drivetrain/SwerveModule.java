@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
+import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
 /**
  * Represents a single Swerve Drive Module, encapsulating its motor and servo controls, as well as sensor data.
@@ -74,7 +75,7 @@ public class SwerveModule {
 
             angle += Constants.SWERVE_SERVO_ANGLE_OFFSET[moduleIndex];
 
-            angle = Constants.normalizeAngle(angle);
+            angle = HelperFunctions.normalizeAngle(angle);
 
             return angle;
         }

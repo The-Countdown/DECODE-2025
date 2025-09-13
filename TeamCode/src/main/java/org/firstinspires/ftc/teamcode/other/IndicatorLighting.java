@@ -15,7 +15,7 @@ public class IndicatorLighting {
         private final List<Light> lights = new ArrayList<>();
         private final ElapsedTime flashingTimer = new ElapsedTime();
         private double policeCounter = 0;
-        private double policeHz = 4;
+        private double policeHz = 1;
         private double policeRepeatAmount = 3;
 
         public void addLight(RobotContainer container, ServoImplEx hardware) {
@@ -39,30 +39,9 @@ public class IndicatorLighting {
         }
 
         public void police() {
-
-//            if (policeCounter == 0) {
-//                if (flashingTimer.seconds() <= 1 / policeHz) {
-//                    lights.get(0).setColor(Constants.LED_COLOR.RED);
-//                    lights.get(2).setColor(Constants.LED_COLOR.RED);
-//                } else if (flashingTimer.seconds() <= 2 / policeHz) {
-//                    lights.get(0).setColor(Constants.LED_COLOR.OFF);
-//                    lights.get(2).setColor(Constants.LED_COLOR.OFF);
-//                } else if ((flashingTimer.seconds() >= 1.5)) {
-//                    flashingTimer.reset();
-//                    policeCounter = 1;
-//                }
-//            } else if (policeCounter == 1) {
-//                if (flashingTimer.seconds() <= 1 / policeHz) {
-//                    lights.get(1).setColor(Constants.LED_COLOR.BLUE);
-//                    lights.get(2).setColor(Constants.LED_COLOR.BLUE);
-//                } else if (flashingTimer.seconds() <= 2 / policeHz) {
-//                    lights.get(1).setColor(Constants.LED_COLOR.OFF);
-//                    lights.get(2).setColor(Constants.LED_COLOR.OFF);
-//                } else if ((flashingTimer.seconds() >= 1.5)) {
-//                    flashingTimer.reset();
-//                    policeCounter = 0;
-//                }
-//            }
+            lights.get(0).flashing(Constants.LED_COLOR.RED, Constants.LED_COLOR.BLUE, 1);
+            lights.get(1).flashing(Constants.LED_COLOR.BLUE, Constants.LED_COLOR.RED, 1);
+            lights.get(2).flashing(Constants.LED_COLOR.RED, Constants.LED_COLOR.BLUE, 2);
         }
 
         public void rainbowReset() {
