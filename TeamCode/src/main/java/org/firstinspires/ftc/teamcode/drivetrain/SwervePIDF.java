@@ -48,6 +48,10 @@ public class SwervePIDF {
         return error;
     }
 
+    public void resetI() {
+        i = 0;
+    }
+
     /**
      * Calculates the PIDF output for the servo.
      * @return The calculated PIDF output.

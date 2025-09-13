@@ -68,6 +68,7 @@ public class DrivetrainUpdater extends Thread {
 
                 if (Math.abs(robotContainer.swerveServosPIDF[i].getError()) <= Constants.SWERVE_SERVO_PIDF_TOLERANCE_DEGREES) {
                     Status.swerveServoStatus.put(i, Status.ServoStatus.TARGET_REACHED);
+                    robotContainer.swerveServosPIDF[i].resetI();
                     robotContainer.swerveModules[i].servo.setPower(0);
 
                     robotContainer.swerveModules[i].motor.setVelocity(acceleratedMotorPower);
