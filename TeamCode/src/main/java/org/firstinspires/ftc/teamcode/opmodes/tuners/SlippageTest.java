@@ -7,16 +7,12 @@ import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 
-import java.util.Arrays;
-
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "SlippageTest", group = "Auto")
 public class SlippageTest extends OpMode {
     public static double CURRENT_LOOP_TIME_AVG_MS;
     private RobotContainer robotContainer;
-    public static boolean fieldOriented = false;
     public static double CURRENT_LOOP_TIME_MS;
     private static final ElapsedTime turretAccelerationTimer = new ElapsedTime();
-    private static final ElapsedTime rotateTimer = new ElapsedTime();
     private int currentServo = -1;
 
     @Override
@@ -55,17 +51,6 @@ public class SlippageTest extends OpMode {
         CURRENT_LOOP_TIME_MS = robotContainer.updateLoopTime("teleOp");
         CURRENT_LOOP_TIME_AVG_MS = robotContainer.getRollingAverageLoopTime("teleOp");
         robotContainer.refreshData();
-
-//        if (rotateTimer.seconds() > 2) {
-//            for (int i = 0; i < Constants.NUM_SWERVE_SERVOS; i++) {
-//                robotContainer.swerveModules[i].servo.setPower(-1);
-//            }
-//            rotateTimer.reset();
-//        } else if (rotateTimer.seconds() > 1) {
-//            for (int i = 0; i < Constants.NUM_SWERVE_SERVOS; i++) {
-//                robotContainer.swerveModules[i].servo.setPower(1);
-//            }
-//        }
 
         if (gamepad1.dpad_up) {
             currentServo = 0;

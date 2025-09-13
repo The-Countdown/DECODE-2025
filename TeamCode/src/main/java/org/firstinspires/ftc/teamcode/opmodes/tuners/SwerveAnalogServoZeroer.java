@@ -15,8 +15,8 @@ public class SwerveAnalogServoZeroer extends OpMode {
     private RobotContainer robotContainer;
     public static double CURRENT_LOOP_TIME_MS;
     private int currentServo = -1;
-    private double[] offset = {0, 0, 0, 0};
-    private double[] power = {0.2, 0.2, 0.2, 0.2};
+    private final double[] offset = {0, 0, 0, 0};
+    private final double[] power = {0.2, 0.2, 0.2, 0.2};
 
     @Override
     public void init() {

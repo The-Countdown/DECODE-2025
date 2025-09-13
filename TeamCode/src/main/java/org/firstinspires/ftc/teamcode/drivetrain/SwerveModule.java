@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.util.HelperFunctions;
  *
  *  Like a coordinate plane, the first quadrant is 0, the second is 1, etc.
  *  This is relating to the positions of the modules on the robot
- *
+ * <p>
  *  When indexing from ANY ARRAY IN THIS CODEBASE:
  *  0 - front right, 1 - front left, 2 - back left, 3 - back right
  */
@@ -57,7 +57,7 @@ public class SwerveModule {
     // I hate getters and setter but I want to keep powerMultiplier private and not mutable by any part of the program.
     public double getPowerMultiplier() {
         return this.powerMultiplier;
-    };
+    }
 
     public class Servo {
 
@@ -109,7 +109,7 @@ public class SwerveModule {
         // This function takes in a double between 0-1 for 0 rpm to max rpm of motor as relative to the max forward speed of the drive base.
         public void setPowerWithMultiplier(double speed) {
             drivingMotor.setPower(speed * powerMultiplier);
-        };
+        }
 
         public void setTargetPower(double power) {
             targetPower = power;

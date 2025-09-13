@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
+import org.firstinspires.ftc.teamcode.other.LocalizationUpdater;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Swerve Forward Tuner", group = "Tuner")
 public class SwerveForwardTuner extends OpMode {
@@ -13,8 +14,6 @@ public class SwerveForwardTuner extends OpMode {
     private RobotContainer robotContainer;
     public static double CURRENT_LOOP_TIME_MS;
     private final ElapsedTime targetTimer = new ElapsedTime();
-    private int currentServo = -1;
-
     public boolean direction = true;
     long timer = System.currentTimeMillis();
 
@@ -82,7 +81,7 @@ public class SwerveForwardTuner extends OpMode {
         }
         robotContainer.telemetry.addData("Timer", timer);
         robotContainer.telemetry.addData("Timer Diff", System.currentTimeMillis() - timer);
-        robotContainer.telemetry.addData("Current Heading", robotContainer.localizationUpdater.currentHeading);
+        robotContainer.telemetry.addData("Current Heading", LocalizationUpdater.currentHeading);
         robotContainer.telemetry.addData("Target Heading", robotContainer.headingPID.getTargetHeading());
 
 

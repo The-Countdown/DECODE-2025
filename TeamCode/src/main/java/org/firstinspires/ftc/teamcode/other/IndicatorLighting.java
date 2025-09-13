@@ -14,9 +14,6 @@ public class IndicatorLighting {
     public static class Group {
         private final List<Light> lights = new ArrayList<>();
         private final ElapsedTime flashingTimer = new ElapsedTime();
-        private double policeCounter = 0;
-        private double policeHz = 1;
-        private double policeRepeatAmount = 3;
 
         public void addLight(RobotContainer container, ServoImplEx hardware) {
             lights.add(new Light(container, hardware));

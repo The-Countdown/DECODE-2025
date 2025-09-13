@@ -13,7 +13,6 @@ import java.util.Arrays;
 public class Rotate extends OpMode {
     public static double CURRENT_LOOP_TIME_AVG_MS;
     private RobotContainer robotContainer;
-    public static boolean fieldOriented = false;
     public static double CURRENT_LOOP_TIME_MS;
     private static final ElapsedTime turretAccelerationTimer = new ElapsedTime();
     private static final ElapsedTime rotateTimer = new ElapsedTime();

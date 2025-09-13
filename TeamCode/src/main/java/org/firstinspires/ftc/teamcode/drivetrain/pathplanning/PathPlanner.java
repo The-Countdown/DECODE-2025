@@ -15,7 +15,7 @@ import java.lang.Thread;
 public class PathPlanner {
     Telemetry telemetry;
     RobotContainer robot;
-    ArrayList<Pose2D> poses = new ArrayList<Pose2D>();
+    ArrayList<Pose2D> poses = new ArrayList<>();
 
     public PathPlanner(Telemetry telemetry, RobotContainer robot) {
         this.telemetry = telemetry;
@@ -28,7 +28,7 @@ public class PathPlanner {
 
     /**
     * Calculates angle of the target relative to the current position of the robot and drives to target
-    * @param index
+    * @param index which pose to drive to from first to last
     */
     public void driveToPose(int index) {
         Pose2D currentPose = LocalizationUpdater.currentPose;

@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
+import org.firstinspires.ftc.teamcode.other.LocalizationUpdater;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Swerve Auto Tuner", group = "Tuner")
 public class SwerveAutoTuner extends OpMode {
@@ -13,11 +14,8 @@ public class SwerveAutoTuner extends OpMode {
     private RobotContainer robotContainer;
     public static double CURRENT_LOOP_TIME_MS;
     private final ElapsedTime targetTimer = new ElapsedTime();
-    private int currentServo = -1;
-
     public boolean direction = true;
     double targetHeading = 0; // Set the target heading in degrees (e.g., 0 for a straight line)
-    double error;
     double previousError;
     long timer = System.currentTimeMillis();
     long timer2 = System.currentTimeMillis();
@@ -83,7 +81,7 @@ public class SwerveAutoTuner extends OpMode {
             timer = System.currentTimeMillis();
         }
 
-        averagedError = robotContainer.localizationUpdater.currentHeading - targetHeading + averagedError / 2;
+        averagedError = LocalizationUpdater.currentHeading - targetHeading + averagedError / 2;
 
         for (int i = 0; i < Constants.NUM_SWERVE_SERVOS; i++) {
             if (System.currentTimeMillis() - timer2 >= PIDTuneTime) {
@@ -135,7 +133,7 @@ public class SwerveAutoTuner extends OpMode {
         robotContainer.telemetry.addData("Timer Diff", System.currentTimeMillis() - timer);
         robotContainer.telemetry.addData("Timer2", timer);
         robotContainer.telemetry.addData("Timer2 Diff", System.currentTimeMillis() - timer2);
-        robotContainer.telemetry.addData("Current Heading", robotContainer.localizationUpdater.currentHeading);
+        robotContainer.telemetry.addData("Current Heading", LocalizationUpdater.currentHeading);
         robotContainer.telemetry.addData("Error", averagedError);
 
 

@@ -8,8 +8,6 @@ import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.other.LocalizationUpdater;
 
 public class PoseMath {
-    //hiii nvm then no hi
-
     public double distanceTo() {
         double dx = Status.targetPose.getX(DistanceUnit.CM) - LocalizationUpdater.currentPose.getX(DistanceUnit.CM);
         double dy = Status.targetPose.getY(DistanceUnit.CM) - LocalizationUpdater.currentPose.getY(DistanceUnit.CM);
@@ -17,7 +15,7 @@ public class PoseMath {
     }
 
     /** Finds the heading error between the current heading and the target heading.
-     * @param targetHeading
+     * @param targetHeading The target heading in degrees
      * @return The heading error in degrees
      */
     public double headingError(double targetHeading) {
@@ -26,7 +24,7 @@ public class PoseMath {
 
     /**
      * Finds the angle needed to face the target position
-     * @param target
+     * @param target The target position
      * @return The angle needed to face the target position in degrees
      */
     public double targetPosDirectionDegrees (Pose2D target) {
