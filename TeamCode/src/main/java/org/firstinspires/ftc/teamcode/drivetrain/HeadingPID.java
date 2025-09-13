@@ -16,6 +16,8 @@ public class HeadingPID {
     private double targetHeading = 0;
     private final ElapsedTime timer = new ElapsedTime();
     private double lastError = 0;
+    private double currentTime;
+    private double lastTime;
     private double p;
     private double i;
     private double d;
@@ -45,8 +47,10 @@ public class HeadingPID {
     public double calculate(double heading) {
         if (enabled) {
             double error = HelperFunctions.normalizeAngle(targetHeading - heading);
+            currentTime = timer.seconds();
+            double dt = currentTime - lastTime;
+            lastTime = currentTime;
 
-            double currentTime = timer.seconds();
             timer.reset();
             if (currentTime < 1e-6) currentTime = 1e-6;
 
@@ -58,24 +62,20 @@ public class HeadingPID {
                 Status.robotHeadingTargetReached = false;
             }
 
+            if (dt < 1e-4) dt = 1e-4;  // safety clamp
+
             p = Constants.HEADING_KP * error;
-            double newI = Math.max(-Constants.HEADING_I_MAX, Math.min(Constants.HEADING_I_MAX,  // Prevent integral windup
-                    i + Constants.HEADING_KI * error * currentTime));
 
-                if (Math.abs(p + newI + d) < 1) {
-                    i = newI; // Only allow integration if output is within limits
-                }
+            i += Constants.HEADING_KI * error * currentTime;
+            i = Math.max(-Constants.HEADING_I_MAX, Math.min(Constants.HEADING_I_MAX, i));
 
-                // Decay integral if error changes sign
-                if (Math.signum(error) != Math.signum(lastError)) {
-                    i *= 0.9;
-                }
-            d = Constants.HEADING_KD * (error - lastError) / currentTime;
+            d = -Constants.HEADING_KD * (error - lastError) / currentTime;
 
             lastError = error;
 
             return p + i + d + Constants.HEADING_KF;
-        } else {
+        }
+        else {
             return 0;
         }
     }

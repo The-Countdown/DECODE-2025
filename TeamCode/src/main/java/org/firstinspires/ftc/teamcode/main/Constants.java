@@ -144,19 +144,19 @@ public class Constants {
      * These values will need to be tuned.
      */
     public static double[]
-            SWERVE_SERVO_KP = {0.004, 0.004, 0.004, 0.004},
-            SWERVE_SERVO_KI = {0.00008, 0.00008, 0.00008, 0.00008},
-                SWERVE_SERVO_I_MAX = {0, 0, 0, 0},
+            SWERVE_SERVO_KP = {0.005, 0.005, 0.005, 0.005},
+            SWERVE_SERVO_KI = {0.00001, 0.00001, 0.00001, 0.00001},
+            SWERVE_SERVO_I_MAX = {0.8, 0.8, 0.8, 0.8},
             SWERVE_SERVO_KD = {0.0001, 0.0001, 0.0001, 0.0001},
             SWERVE_SERVO_KF = {0.04, 0.04, 0.04, 0.04},
-            SWERVE_SERVO_MOTOR_VELOCITY = {0.01, 0.01, 0.01, 0.01};
+            SWERVE_SERVO_MOTOR_VELOCITY = {1, 1, 1, 1};
 
     public static double
-            HEADING_KP = 0.015,
-            HEADING_KI = 0.2,
-                HEADING_I_MAX = 0,
-            HEADING_KD = 0.0002,
-            HEADING_KF = 0.06;
+            HEADING_KP = 0.02,
+            HEADING_KI = 0,
+            HEADING_I_MAX = 0.8,
+            HEADING_KD = 0.0006,
+            HEADING_KF = 0.05;
 
     public static final double
         // Pinpoint might be backwards, check this!!!
@@ -174,7 +174,7 @@ public class Constants {
 
     public static final double ANALOG_MAX_VOLTAGE = 3.3;
 
-    public static double HEADING_PID_TOLERANCE_DEGREES = 0.5;
+    public static double HEADING_PID_TOLERANCE_DEGREES = 2;
 
     public static double SWERVE_SERVO_PIDF_TOLERANCE_DEGREES = 0.2;
 
