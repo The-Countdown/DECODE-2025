@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.DcMotorImplEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
@@ -31,6 +32,7 @@ import org.firstinspires.ftc.teamcode.other.IndicatorLighting;
 import org.firstinspires.ftc.teamcode.other.PinpointUpdater;
 import org.firstinspires.ftc.teamcode.util.DelayedActionManager;
 import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
+import org.firstinspires.ftc.teamcode.util.LinkedMotors;
 
 import java.lang.Thread;
 import java.util.ArrayList;
@@ -98,6 +100,17 @@ public class RobotContainer {
 
         public static AnalogInput[] swerveAnalogs = new AnalogInput[Constants.NUM_SWERVE_ANALOGS];
             public static String[] analogNames = new String[Constants.NUM_SWERVE_ANALOGS];
+
+        //turret
+        public static DcMotorImplEx flyWheelMotorMaster;
+        public static DcMotorImplEx flyWheelMotorSlave;
+        public static ServoImplEx turretServo;
+        public static ServoImplEx hoodServo;
+        public static CRServoImplEx transferServo;
+        public static ServoImplEx spindexServo;
+
+        //intake
+        public static DcMotorImplEx intakeMotor;
     }
 
     public RobotContainer(OpMode opMode) {
@@ -150,6 +163,9 @@ public class RobotContainer {
                 addRetainedTelemetry("WARNING: Swerve Servo " + i + " is connected to port " + HardwareDevices.swerveServos[i].getPortNumber() + ", should be port " + i, null);
             }
         }
+
+        HardwareDevices.flyWheelMotorSlave.setDirection(DcMotorImplEx.Direction.REVERSE);
+        LinkedMotors flyWheelMotors = new LinkedMotors(HardwareDevices.flyWheelMotorMaster, HardwareDevices.flyWheelMotorSlave);
 
         pathPlanner = new PathPlanner(telemetry, this);
 
