@@ -144,12 +144,12 @@ public class Constants {
      * These values will need to be tuned.
      */
     public static double[]
-            SWERVE_SERVO_KP = {0.005, 0.005, 0.005, 0.005},
-            SWERVE_SERVO_KI = {0.00001, 0.00001, 0.00001, 0.00001},
-            SWERVE_SERVO_I_MAX = {0.8, 0.8, 0.8, 0.8},
+            SWERVE_SERVO_KP = {0.008, 0.006, 0.004, 0.007},
+            SWERVE_SERVO_KI = {0.00005, 0.00005, 0.00005, 0.00005},
+            SWERVE_SERVO_I_MAX = {0.1, 0.1, 0.1, 0.1},
             SWERVE_SERVO_KD = {0.0001, 0.0001, 0.0001, 0.0001},
-            SWERVE_SERVO_KF = {0.04, 0.04, 0.04, 0.04},
-            SWERVE_SERVO_MOTOR_VELOCITY = {1, 1, 1, 1};
+            SWERVE_SERVO_KF = {0.035, 0.01, 0.005, 0.015},
+            SWERVE_SERVO_MOTOR_FACTOR = {1, 1, 1, 1};
 
     public static double
             HEADING_KP = 0.02,
@@ -174,9 +174,9 @@ public class Constants {
 
     public static final double ANALOG_MAX_VOLTAGE = 3.3;
 
-    public static double HEADING_PID_TOLERANCE_DEGREES = 2;
+    public static double HEADING_PID_TOLERANCE_DEGREES = 360;
 
-    public static double SWERVE_SERVO_PIDF_TOLERANCE_DEGREES = 0.2;
+    public static double SWERVE_SERVO_PIDF_TOLERANCE_DEGREES = 1;
 
     public static final int SWERVE_MOTOR_RPM_TESTED_MAX = 5800;
 

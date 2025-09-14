@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
+import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
 /**
@@ -12,25 +13,22 @@ import org.firstinspires.ftc.teamcode.util.HelperFunctions;
  */
 public class SwervePIDF {
     private final RobotContainer robotContainer;
-    private final CRServoImplEx servo;
     private final int module;
     private double targetAngle;
-    private final ElapsedTime timer;
-    private double lastError = 0;
-    private double lastAngle = 0;
-    private double lastTime = 0;
-    public double p;
-    public double i;
-    public double d;
-    public double swerveConstantPower;
-    public double ff;
 
-    public SwervePIDF(RobotContainer robotContainer, int module, CRServoImplEx servo) {
+    private boolean lastSign;
+    private double error;
+    private double p;
+    private double i;
+    private ElapsedTime iTimer;
+    private double swerveConstantPower;
+    private double ff;
+
+    public SwervePIDF(RobotContainer robotContainer, int module) {
         this.robotContainer = robotContainer;
-        this.servo = servo;
         this.module = module;
         this.targetAngle = Constants.SWERVE_STOP_FORMATION[module];
-        this.timer = new ElapsedTime();
+        this.iTimer = new ElapsedTime();
     }
 
     public void setTargetAngle(double angle) {
@@ -48,40 +46,50 @@ public class SwervePIDF {
         return error;
     }
 
-    public void resetI() {
-        i = 0;
-    }
-
     /**
      * Calculates the PIDF output for the servo.
      * @return The calculated PIDF output.
      */
     public double calculate() {
-        double error = getError();
-        double currentTime = timer.seconds();
-        double dt = currentTime - lastTime;
-        lastTime = currentTime;
+        if (Status.swerveServoStatus[module] == Status.ServoStatus.TARGET_REACHED) {
+            iTimer.reset();
+        }
 
-        if (dt < 1e-4) dt = 1e-4;  // safety clamp
+        // If current sign and last sign are different reset I.
+        if (Math.signum(error) > 0) { // Current sign pos
+            if (!lastSign) { // Last sign neg
+                iTimer.reset();
+            }
+        } else if (Math.signum(error) < 0) { // Current sign neg
+            if (lastSign) { // Last sign pos
+                iTimer.reset();
+            }
+        }
+
+        error = getError();
 
         p = Constants.SWERVE_SERVO_KP[module] * error;
+        i = Constants.SWERVE_SERVO_KI[module] * iTimer.milliseconds() * Math.signum(error);
+        // ff = Constants.SWERVE_SERVO_KF[module] * Math.signum(error);
 
-        i += Constants.SWERVE_SERVO_KI[module] * error * currentTime;
-        i = Math.max(-Constants.SWERVE_SERVO_I_MAX[module], Math.min(Constants.SWERVE_SERVO_I_MAX[module], i));
-
-        double angle = robotContainer.swerveModules[module].servo.getAngle();
-        double velocity = (angle - lastAngle) / dt;
-        d = -Constants.SWERVE_SERVO_KD[module] * velocity;
-
-        swerveConstantPower = (Constants.SWERVE_SERVO_KF[module] * (1 - (robotContainer.swerveModules[module].motor.targetPower * Constants.SWERVE_SERVO_MOTOR_VELOCITY[module])));
+        swerveConstantPower = (Constants.SWERVE_SERVO_KF[module] * (1 - (robotContainer.swerveModules[module].motor.targetPower * Constants.SWERVE_SERVO_MOTOR_FACTOR[module])));
         if (swerveConstantPower < 0) {
             swerveConstantPower = 0;
         }
         ff = swerveConstantPower * Math.signum(error);
 
-        lastError = error;
-        lastAngle = angle;
 
-        return p + i + d + ff;
+        robotContainer.telemetry.addData("Swerve Modules " + module + " : " , module);
+        robotContainer.telemetry.addData("p " + module + " : " , p);
+        robotContainer.telemetry.addData("i " + module + " : ", i);
+        robotContainer.telemetry.addData("ff " + module + " : ", ff);
+
+        if (Math.signum(error) > 0) { // Current sign pos
+            lastSign = true;
+        } else if (Math.signum(error) < 0) { // Current sign neg
+            lastSign = false;
+        }
+
+        return p + i + ff;
     }
 }

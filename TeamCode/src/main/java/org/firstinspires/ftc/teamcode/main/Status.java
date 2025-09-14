@@ -26,14 +26,7 @@ public class Status {
      * A map to store the status of each swerve servo.
      * The key is the integer, and the value is the ServoStatus enum.
      */
-    public static Map<Integer, ServoStatus> swerveServoStatus = new HashMap<>();
-    // Initialize the map in a static block
-    static {
-        swerveServoStatus.put(0, ServoStatus.TARGET_REACHED);
-        swerveServoStatus.put(1, ServoStatus.TARGET_REACHED);
-        swerveServoStatus.put(2, ServoStatus.TARGET_REACHED);
-        swerveServoStatus.put(3, ServoStatus.TARGET_REACHED);
-    }
+    public static ServoStatus swerveServoStatus[] = {ServoStatus.TARGET_REACHED, ServoStatus.TARGET_REACHED, ServoStatus.TARGET_REACHED, ServoStatus.TARGET_REACHED};
 
     public enum ServoStatus {
         TARGET_REACHED,

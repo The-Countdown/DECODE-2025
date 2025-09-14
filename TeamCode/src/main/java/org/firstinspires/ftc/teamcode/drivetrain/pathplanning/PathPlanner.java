@@ -39,7 +39,7 @@ public class PathPlanner {
 
         double angleToTarget = Math.atan2(deltaY, deltaX);
         double[] angles = {angleToTarget, angleToTarget, angleToTarget, angleToTarget};
-        double[] powers = {0.5,0.5,0.5,0.5};
+        double[] powers = {0,0,0,0};
 
         robot.drivetrain.swerveSetTargets(angles,powers);
         robot.pathPlanner.waitForTarget();
