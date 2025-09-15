@@ -7,7 +7,6 @@ import org.firstinspires.ftc.teamcode.main.RobotContainer;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.main.Status;
-import org.firstinspires.ftc.teamcode.other.LocalizationUpdater;
 
 import java.util.ArrayList;
 import java.lang.Thread;
@@ -31,7 +30,7 @@ public class PathPlanner {
     * @param index which pose to drive to from first to last
     */
     public void driveToPose(int index) {
-        Pose2D currentPose = LocalizationUpdater.currentPose;
+        Pose2D currentPose = Status.currentPose;
         Status.targetPose = poses.get(index);
 
         double deltaX = Status.targetPose.getX(DistanceUnit.CM) - currentPose.getX(DistanceUnit.CM);

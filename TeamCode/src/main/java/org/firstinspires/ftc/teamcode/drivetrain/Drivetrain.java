@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
-import org.firstinspires.ftc.teamcode.other.LocalizationUpdater;
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
 import java.util.Arrays;
@@ -40,11 +39,11 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
         double rotationalMagnitude = Math.abs(rX);
 
         if (robotContainer.gamepadEx1.rightStickX.wasJustReleased()) {
-            robotContainer.headingPID.setTargetHeading(LocalizationUpdater.currentHeading);
+            robotContainer.headingPID.setTargetHeading(Status.currentHeading);
         }
 
         if (rX == 0) {
-            rotationalMagnitude = robotContainer.headingPID.calculate(LocalizationUpdater.currentHeading);
+            rotationalMagnitude = robotContainer.headingPID.calculate(Status.currentHeading);
         }
 
         if ((robotContainer.gamepadEx1.leftStickX.wasJustReleased() ||
@@ -76,7 +75,7 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
         // Set the initial translational direction to forward.
         int translationalDirection = 1;
 
-        double currentHeading = HelperFunctions.normalizeAngle(LocalizationUpdater.currentHeading);
+        double currentHeading = HelperFunctions.normalizeAngle(Status.currentHeading);
         // Adjust the translational angle for field-oriented driving if enabled.
         translationalAngle = HelperFunctions.normalizeAngle(Math.toDegrees(translationalAngle));
         translationalAngle = fieldOriented ? translationalAngle + currentHeading : translationalAngle;

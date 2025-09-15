@@ -2,8 +2,10 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
+import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.util.LinkedMotors;
 
 public class Turret extends RobotContainer.HardwareDevices {
@@ -53,11 +55,9 @@ public class Turret extends RobotContainer.HardwareDevices {
     }
 
     public void pointAtGoal() {
-        //get the desired alliance color
-        //get the target location of the goal
-        //get the location of the robot
-        //calculate the angle from the robot position to the goal using atan to get an angle of 0-90
-        //take into account the rotation of the robot
-        //finally aim the turret to the final angle or as close as possible
+        double xDiff = Constants.GOAL_POSE.getX(DistanceUnit.INCH) - Status.currentPose.getX(DistanceUnit.INCH);
+        double yDiff = Constants.GOAL_POSE.getY(DistanceUnit.INCH) - Status.currentPose.getY(DistanceUnit.INCH);
+        double angleToFaceGoal = Math.atan(yDiff/xDiff) - Status.currentHeading;
+        setTurretTargetAngle(angleToFaceGoal);
     }
 }

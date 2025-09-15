@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
-import org.firstinspires.ftc.teamcode.other.LocalizationUpdater;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Swerve Auto Tuner", group = "Tuner")
 public class SwerveAutoTuner extends OpMode {
@@ -30,7 +29,7 @@ public class SwerveAutoTuner extends OpMode {
         robotContainer.indicatorLightFrontLeft.setColor(Constants.LED_COLOR.RED);
         robotContainer.refreshData();
         RobotContainer.HardwareDevices.imu.resetYaw();
-        RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU(); // TODO: Run at start of auto instead
+        RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU();
         robotContainer.opMode.telemetry.addLine("OpMode Initialized");
         robotContainer.opMode.telemetry.update();
         robotContainer.indicatorLightFrontLeft.setColor(Constants.LED_COLOR.GREEN);
@@ -81,7 +80,7 @@ public class SwerveAutoTuner extends OpMode {
             timer = System.currentTimeMillis();
         }
 
-        averagedError = LocalizationUpdater.currentHeading - targetHeading + averagedError / 2;
+        averagedError = Status.currentHeading - targetHeading + averagedError / 2;
 
         for (int i = 0; i < Constants.NUM_SWERVE_SERVOS; i++) {
             if (System.currentTimeMillis() - timer2 >= PIDTuneTime) {
@@ -133,7 +132,7 @@ public class SwerveAutoTuner extends OpMode {
         robotContainer.telemetry.addData("Timer Diff", System.currentTimeMillis() - timer);
         robotContainer.telemetry.addData("Timer2", timer);
         robotContainer.telemetry.addData("Timer2 Diff", System.currentTimeMillis() - timer2);
-        robotContainer.telemetry.addData("Current Heading", LocalizationUpdater.currentHeading);
+        robotContainer.telemetry.addData("Current Heading", Status.currentHeading);
         robotContainer.telemetry.addData("Error", averagedError);
 
 

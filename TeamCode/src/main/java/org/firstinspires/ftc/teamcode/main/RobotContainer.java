@@ -373,9 +373,9 @@ public class RobotContainer {
         telemetry.addData("Control Hub Current", getCurrent(Constants.CONTROL_HUB_INDEX) + " A");
         telemetry.addData("Expansion Hub Current", getCurrent(Constants.EXPANSION_HUB_INDEX) + " A");
         telemetry.addLine();
-        telemetry.addData("Pinpoint X", LocalizationUpdater.currentPose.getX(DistanceUnit.CM) + " cm");
-        telemetry.addData("Pinpoint Y", LocalizationUpdater.currentPose.getY(DistanceUnit.CM) + " cm");
-        telemetry.addData("Pinpoint Heading", LocalizationUpdater.currentHeading + "°");
+        telemetry.addData("Pinpoint X", Status.currentPose.getX(DistanceUnit.CM) + " cm");
+        telemetry.addData("Pinpoint Y", Status.currentPose.getY(DistanceUnit.CM) + " cm");
+        telemetry.addData("Pinpoint Heading", Status.currentHeading + "°");
         telemetry.addData("PINPOINT STATUS", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
         telemetry.addLine();
         telemetry.addData("TeleOp Avg Loop Time", (int) CURRENT_LOOP_TIME_AVG_MS + " ms");
@@ -389,7 +389,7 @@ public class RobotContainer {
         telemetry.addLine();
         telemetry.addData("Heading PID Target", headingPID.getTargetHeading());
         telemetry.addData("Heading PID Target Reached", Status.robotHeadingTargetReached);
-        telemetry.addData("Heading PID Output", headingPID.calculate(LocalizationUpdater.currentHeading));
+        telemetry.addData("Heading PID Output", headingPID.calculate(Status.currentHeading));
         telemetry.addLine();
         telemetry.addData("Left Stick Y", gamepadEx1.leftStickY());
         telemetry.addData("Left Stick X", gamepadEx1.leftStickX());

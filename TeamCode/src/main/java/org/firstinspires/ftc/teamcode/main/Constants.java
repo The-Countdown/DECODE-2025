@@ -25,6 +25,15 @@ public class Constants {
         RED
     }
 
+    public static Pose2D GOAL_POSE =
+            Status.alliance == ALLIANCE.BLUE ?
+            new Pose2D(DistanceUnit.INCH, 72, -72, AngleUnit.DEGREES, -45) :
+            Status.alliance == ALLIANCE.RED ?
+            new Pose2D(DistanceUnit.INCH, 72, 72, AngleUnit.DEGREES, 45) :
+            new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
+
+    public static Pose2D ORIGIN = new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
+
     public enum MOTIF {
         GPP,
         PGP,

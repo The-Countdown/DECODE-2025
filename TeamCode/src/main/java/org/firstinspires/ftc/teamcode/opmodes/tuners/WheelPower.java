@@ -21,7 +21,7 @@ public class WheelPower extends OpMode {
         robotContainer.indicatorLightFrontLeft.setColor(Constants.LED_COLOR.RED);
         robotContainer.refreshData();
         RobotContainer.HardwareDevices.imu.resetYaw();
-        RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU(); // TODO: Run at start of auto instead
+        RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU();
         robotContainer.opMode.telemetry.addLine("OpMode Initialized");
         robotContainer.opMode.telemetry.update();
         robotContainer.indicatorLightFrontLeft.setColor(Constants.LED_COLOR.GREEN);

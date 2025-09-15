@@ -27,7 +27,7 @@ public class Rotate extends OpMode {
         robotContainer.init();
         robotContainer.refreshData();
         RobotContainer.HardwareDevices.imu.resetYaw();
-        RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU(); // TODO: Run at start of auto instead
+        RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU();
         robotContainer.telemetry.addLine("OpMode Initialized");
         robotContainer.telemetry.update();
     }

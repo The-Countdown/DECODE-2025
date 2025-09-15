@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
-import org.firstinspires.ftc.teamcode.other.LocalizationUpdater;
 
 import java.util.Objects;
 
@@ -26,7 +25,7 @@ public class HeadingPIDTuner extends OpMode {
         robotContainer.indicatorLightFrontLeft.setColor(Constants.LED_COLOR.RED);
         robotContainer.refreshData();
         RobotContainer.HardwareDevices.imu.resetYaw();
-        RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU(); // TODO: Run at start of auto instead
+        RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU();
         robotContainer.opMode.telemetry.addLine("OpMode Initialized");
         robotContainer.opMode.telemetry.update();
         robotContainer.indicatorLightFrontLeft.setColor(Constants.LED_COLOR.GREEN);
@@ -64,7 +63,7 @@ public class HeadingPIDTuner extends OpMode {
             targetTimer.reset();
         }
 
-        double power = robotContainer.headingPID.calculate(LocalizationUpdater.currentHeading);
+        double power = robotContainer.headingPID.calculate(Status.currentHeading);
         double[] powers = {power,power,power,power};
         robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_ROTATION_FORMATION_DEGREES, powers);
 
