@@ -79,10 +79,10 @@ public class SwervePIDF {
         ff = swerveConstantPower * Math.signum(error);
 
 
-        robotContainer.telemetry.addData("Swerve Modules " + module + " : " , module);
-        robotContainer.telemetry.addData("p " + module + " : " , p);
-        robotContainer.telemetry.addData("i " + module + " : ", i);
-        robotContainer.telemetry.addData("ff " + module + " : ", ff);
+//        robotContainer.telemetry.addData("Swerve Modules " + module + " : " , module);
+//        robotContainer.telemetry.addData("p " + module + " : " , p);
+//        robotContainer.telemetry.addData("i " + module + " : ", i);
+//        robotContainer.telemetry.addData("ff " + module + " : ", ff);
 
         if (Math.signum(error) > 0) { // Current sign pos
             lastSign = true;

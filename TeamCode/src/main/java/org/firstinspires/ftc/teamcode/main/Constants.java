@@ -157,7 +157,7 @@ public class Constants {
             SWERVE_SERVO_KI = {0.00005, 0.00005, 0.00005, 0.00005},
             SWERVE_SERVO_I_MAX = {0.1, 0.1, 0.1, 0.1},
             SWERVE_SERVO_KD = {0.0001, 0.0001, 0.0001, 0.0001},
-            SWERVE_SERVO_KF = {0.035, 0.01, 0.005, 0.015},
+            SWERVE_SERVO_KF = {0.015, 0, 0.0025, 0.0075},
             SWERVE_SERVO_MOTOR_FACTOR = {1, 1, 1, 1};
 
     public static double

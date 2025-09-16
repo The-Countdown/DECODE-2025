@@ -30,7 +30,7 @@ public class PathPlannerExample extends OpMode {
         robotContainer.telemetry.update();
         robotContainer.pathPlanner = new PathPlanner(robotContainer.telemetry, robotContainer);
 
-        robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, 100, 100, AngleUnit.DEGREES, 300));
+        robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, 10, 10, AngleUnit.DEGREES, 300));
         robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, 200, 200, AngleUnit.DEGREES, 300));
     }
 

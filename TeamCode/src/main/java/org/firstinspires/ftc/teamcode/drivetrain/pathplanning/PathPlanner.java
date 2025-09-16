@@ -15,6 +15,7 @@ public class PathPlanner {
     Telemetry telemetry;
     RobotContainer robot;
     ArrayList<Pose2D> poses = new ArrayList<>();
+    boolean atTarget;
 
     public PathPlanner(Telemetry telemetry, RobotContainer robot) {
         this.telemetry = telemetry;
@@ -30,19 +31,31 @@ public class PathPlanner {
     * @param index which pose to drive to from first to last
     */
     public void driveToPose(int index) {
-        Pose2D currentPose = Status.currentPose;
-        Status.targetPose = poses.get(index);
+        atTarget = false;
+        double tolerance = 1;
+        while (!atTarget) {
+            Status.targetPose = poses.get(index);
+            robot.telemetry.addData("Current Position X: ", Status.currentPose.getX(DistanceUnit.CM));
+            robot.telemetry.addData("Current Position Y: ", Status.currentPose.getY(DistanceUnit.CM));
+            robot.telemetry.update();
 
-        double deltaX = Status.targetPose.getX(DistanceUnit.CM) - currentPose.getX(DistanceUnit.CM);
-        double deltaY = Status.targetPose.getY(DistanceUnit.CM) - currentPose.getY(DistanceUnit.CM);
+            if (Status.currentPose.getX(DistanceUnit.CM) + tolerance >= Status.targetPose.getX(DistanceUnit.CM) && Status.currentPose.getX(DistanceUnit.CM) - tolerance <= Status.targetPose.getX(DistanceUnit.CM)) { // Check X
+                if (Status.currentPose.getY(DistanceUnit.CM) + tolerance >= Status.targetPose.getY(DistanceUnit.CM) && Status.currentPose.getY(DistanceUnit.CM) - tolerance <= Status.targetPose.getY(DistanceUnit.CM)) { // Check Y
+                    atTarget = true;
+                }
+            }
 
-        double angleToTarget = Math.atan2(deltaY, deltaX);
-        double[] angles = {angleToTarget, angleToTarget, angleToTarget, angleToTarget};
-        double[] powers = {0,0,0,0};
+            double deltaX = Status.targetPose.getX(DistanceUnit.CM) - Status.currentPose.getX(DistanceUnit.CM);
+            double deltaY = Status.targetPose.getY(DistanceUnit.CM) - Status.currentPose.getY(DistanceUnit.CM);
 
-        robot.drivetrain.swerveSetTargets(angles,powers);
-        robot.pathPlanner.waitForTarget();
-        robot.drivetrain.swerveSetTargets(angles, Constants.SWERVE_NO_POWER);
+            double angleToTarget = Math.atan2(deltaY, deltaX);
+            double[] angles = {angleToTarget, angleToTarget, angleToTarget, angleToTarget};
+            double[] powers = {0.3, 0.3, 0.3, 0.3};
+
+            robot.drivetrain.swerveSetTargets(angles, powers);
+            robot.pathPlanner.waitForTarget();
+            robot.drivetrain.swerveSetTargets(angles, Constants.SWERVE_NO_POWER);
+        }
     }
 
     public void driveThroughPath () {
