@@ -31,19 +31,14 @@ public class PathPlanner {
     * @param index which pose to drive to from first to last
     */
     public void driveToPose(int index) {
-        atTarget = false;
-        double tolerance = 1;
-        while (!atTarget) {
+        Status.robotTargetReached = false;
+        while (!Status.robotTargetReached) {
             Status.targetPose = poses.get(index);
             robot.telemetry.addData("Current Position X: ", Status.currentPose.getX(DistanceUnit.CM));
             robot.telemetry.addData("Current Position Y: ", Status.currentPose.getY(DistanceUnit.CM));
             robot.telemetry.update();
 
-            if (Status.currentPose.getX(DistanceUnit.CM) + tolerance >= Status.targetPose.getX(DistanceUnit.CM) && Status.currentPose.getX(DistanceUnit.CM) - tolerance <= Status.targetPose.getX(DistanceUnit.CM)) { // Check X
-                if (Status.currentPose.getY(DistanceUnit.CM) + tolerance >= Status.targetPose.getY(DistanceUnit.CM) && Status.currentPose.getY(DistanceUnit.CM) - tolerance <= Status.targetPose.getY(DistanceUnit.CM)) { // Check Y
-                    atTarget = true;
-                }
-            }
+            Status.robotTargetReached = PoseMath.isAtPos();
 
             double deltaX = Status.targetPose.getX(DistanceUnit.CM) - Status.currentPose.getX(DistanceUnit.CM);
             double deltaY = Status.targetPose.getY(DistanceUnit.CM) - Status.currentPose.getY(DistanceUnit.CM);
@@ -66,7 +61,7 @@ public class PathPlanner {
     }
 
     public void waitForTarget() {
-        while (!robot.poseMath.isAtPos()){
+        while (!PoseMath.isAtPos()){
             Thread.yield();
         }
     }

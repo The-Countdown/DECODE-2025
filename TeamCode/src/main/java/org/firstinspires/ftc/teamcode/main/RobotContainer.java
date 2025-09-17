@@ -24,7 +24,6 @@ import org.firstinspires.ftc.teamcode.drivetrain.HeadingPID;
 import org.firstinspires.ftc.teamcode.drivetrain.SwerveModule;
 import org.firstinspires.ftc.teamcode.drivetrain.SwervePIDF;
 import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.PathPlanner;
-import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.PoseMath;
 import org.firstinspires.ftc.teamcode.other.IndicatorLighting;
 import org.firstinspires.ftc.teamcode.other.LocalizationUpdater;
 import org.firstinspires.ftc.teamcode.util.DelayedActionManager;
@@ -62,7 +61,6 @@ public class RobotContainer {
     public SwervePIDF[] swerveServosPIDF = new SwervePIDF[Constants.NUM_SWERVE_SERVOS];
     public DrivetrainUpdater drivetrainUpdater;
     public LocalizationUpdater localizationUpdater;
-    public PoseMath poseMath = new PoseMath();
     public PathPlanner pathPlanner;
     public DelayedActionManager delayedActionManager = new DelayedActionManager();
     public Drivetrain drivetrain;

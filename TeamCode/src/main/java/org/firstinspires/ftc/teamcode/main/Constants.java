@@ -179,7 +179,7 @@ public class Constants {
             PINPOINT_X_ENCODER_DIRECTION = GoBildaPinpointDriver.EncoderDirection.FORWARD,
             PINPOINT_Y_ENCODER_DIRECTION = GoBildaPinpointDriver.EncoderDirection.REVERSED;
     
-    public static final double PATHING_ERROR_MARGIN_CM = 10;
+    public static final double PATHING_ERROR_MARGIN_CM = 1;
 
     public static final double ANALOG_MAX_VOLTAGE = 3.3;
 
