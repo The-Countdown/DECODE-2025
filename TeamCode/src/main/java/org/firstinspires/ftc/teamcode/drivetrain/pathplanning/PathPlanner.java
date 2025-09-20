@@ -17,6 +17,8 @@ public class PathPlanner {
     ArrayList<Pose2D> poses = new ArrayList<>();
     boolean atTarget;
 
+    double tolerance = 1;
+
     public PathPlanner(Telemetry telemetry, RobotContainer robot) {
         this.telemetry = telemetry;
         this.robot = robot;
