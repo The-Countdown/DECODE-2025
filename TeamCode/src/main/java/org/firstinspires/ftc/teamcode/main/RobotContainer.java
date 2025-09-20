@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.main;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.qualcomm.hardware.dfrobot.HuskyLens;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.lynx.LynxModule;
@@ -78,6 +79,8 @@ public class RobotContainer {
 
         public static GoBildaPinpointDriver pinpoint;
         public static Limelight3A limelight;
+        public static HuskyLens huskyLens1;
+        public static HuskyLens huskyLens2;
 
         // Gobilda RGB indicator light
         public static ServoImplEx indicatorLightFrontLeft;
@@ -124,6 +127,8 @@ public class RobotContainer {
         HardwareDevices.pinpoint.setPosition(Constants.startingPose);
 
         HardwareDevices.limelight = getHardwareDevice(Limelight3A.class, "limelight");
+        HardwareDevices.huskyLens1 = getHardwareDevice(HuskyLens.class, "huskyLens1");
+        HardwareDevices.huskyLens2 = getHardwareDevice(HuskyLens.class, "huskyLens2");
 
         HardwareDevices.indicatorLightFrontLeft = getHardwareDevice(ServoImplEx.class, "indicatorLightFrontLeft");
         HardwareDevices.indicatorLightFrontRight = getHardwareDevice(ServoImplEx.class, "indicatorLightFrontRight");
