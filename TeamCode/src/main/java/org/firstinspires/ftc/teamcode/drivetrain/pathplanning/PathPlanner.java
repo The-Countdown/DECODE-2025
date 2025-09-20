@@ -33,7 +33,8 @@ public class PathPlanner {
     * @param index which pose to drive to from first to last
     */
     public void driveToPose(int index) {
-        while (atTarget) {
+        atTarget = false;
+        while (!atTarget) {
             Status.targetPose = poses.get(index);
             robot.telemetry.addData("Current Position X: ", Status.currentPose.getX(DistanceUnit.CM));
             robot.telemetry.addData("Current Position Y: ", Status.currentPose.getY(DistanceUnit.CM));
@@ -59,6 +60,7 @@ public class PathPlanner {
             // Slow down if close to the target.
             if (deltaX > 5 || deltaY > 5) {
                 powers = new double[]{0.5, 0.5, 0.5, 0.5};
+            } else {
                 powers = new double[]{0.2, 0.2, 0.2, 0.2};
             }
 
