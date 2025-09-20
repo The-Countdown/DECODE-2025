@@ -30,8 +30,13 @@ public class PathPlannerExample extends OpMode {
         robotContainer.telemetry.update();
         robotContainer.pathPlanner = new PathPlanner(robotContainer.telemetry, robotContainer);
 
-        robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, 10, 10, AngleUnit.DEGREES, 300));
-        robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, 200, 200, AngleUnit.DEGREES, 300));
+        robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, 0, 100, AngleUnit.DEGREES, 300));
+        robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, 100, 0, AngleUnit.DEGREES, 300));
+        robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, 0, 100, AngleUnit.DEGREES, 300));
+        robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, 100, 100, AngleUnit.DEGREES, 300));
+        robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, 0, 0, AngleUnit.DEGREES, 300));
+
+
     }
 
     @Override
@@ -43,6 +48,10 @@ public class PathPlannerExample extends OpMode {
         robotContainer.start(this);
 
         robotContainer.pathPlanner.driveToPose(0);
+        robotContainer.pathPlanner.driveToPose(1);
+        robotContainer.pathPlanner.driveToPose(2);
+        robotContainer.pathPlanner.driveToPose(3);
+        robotContainer.pathPlanner.driveToPose(4);
     }
 
     @Override

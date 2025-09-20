@@ -18,11 +18,13 @@ public class SwervePIDF {
 
     private boolean lastSign;
     private double error;
+    private double lastError;
     private double p;
     private double i;
     private ElapsedTime iTimer;
     private double swerveConstantPower;
     private double ff;
+    private double d;
 
     public SwervePIDF(RobotContainer robotContainer, int module) {
         this.robotContainer = robotContainer;
@@ -77,12 +79,12 @@ public class SwervePIDF {
             swerveConstantPower = 0;
         }
         ff = swerveConstantPower * Math.signum(error);
+        d = Math.signum(error) * (Constants.SWERVE_SERVO_KD[module] * (lastError - error));
 
-
-//        robotContainer.telemetry.addData("Swerve Modules " + module + " : " , module);
 //        robotContainer.telemetry.addData("p " + module + " : " , p);
 //        robotContainer.telemetry.addData("i " + module + " : ", i);
 //        robotContainer.telemetry.addData("ff " + module + " : ", ff);
+//        robotContainer.telemetry.addData("d " + module + " : ", d);
 
         if (Math.signum(error) > 0) { // Current sign pos
             lastSign = true;
@@ -90,6 +92,7 @@ public class SwervePIDF {
             lastSign = false;
         }
 
-        return p + i + ff;
+        lastError = error;
+        return p + i + ff + d;
     }
 }

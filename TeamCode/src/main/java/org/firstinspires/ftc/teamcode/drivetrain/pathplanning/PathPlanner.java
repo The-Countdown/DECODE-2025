@@ -39,6 +39,10 @@ public class PathPlanner {
             robot.telemetry.addData("Current Position Y: ", Status.currentPose.getY(DistanceUnit.CM));
             robot.telemetry.update();
 
+            robot.telemetry.addData("diff X", Status.targetPose.getX(DistanceUnit.CM) - Status.currentPose.getX(DistanceUnit.CM));
+            robot.telemetry.addData("diff Y", Status.targetPose.getY(DistanceUnit.CM) - Status.currentPose.getY(DistanceUnit.CM));
+
+            // Know when the robot is there
             if (Status.currentPose.getX(DistanceUnit.CM) + tolerance >= Status.targetPose.getX(DistanceUnit.CM) && Status.currentPose.getX(DistanceUnit.CM) - tolerance <= Status.targetPose.getX(DistanceUnit.CM)) { // Check X
                 if (Status.currentPose.getY(DistanceUnit.CM) + tolerance >= Status.targetPose.getY(DistanceUnit.CM) && Status.currentPose.getY(DistanceUnit.CM) - tolerance <= Status.targetPose.getY(DistanceUnit.CM)) { // Check Y
                     atTarget = true;
@@ -48,14 +52,21 @@ public class PathPlanner {
             double deltaX = Status.targetPose.getX(DistanceUnit.CM) - Status.currentPose.getX(DistanceUnit.CM);
             double deltaY = Status.targetPose.getY(DistanceUnit.CM) - Status.currentPose.getY(DistanceUnit.CM);
 
-            double angleToTarget = Math.atan2(deltaY, deltaX);
+            double angleToTarget = -Math.toDegrees(Math.atan2(deltaY, deltaX)) + 90;
             double[] angles = {angleToTarget, angleToTarget, angleToTarget, angleToTarget};
-            double[] powers = {0.3, 0.3, 0.3, 0.3};
+
+            double[] powers;
+            if (deltaX > 5 || deltaY > 5) {
+                powers = new double[]{0.5, 0.5, 0.5, 0.5};
+            }
+            powers = new double[]{0.2, 0.2, 0.2, 0.2};
+
 
             robot.drivetrain.swerveSetTargets(angles, powers);
-            robot.pathPlanner.waitForTarget();
-            robot.drivetrain.swerveSetTargets(angles, Constants.SWERVE_NO_POWER);
+//            robot.pathPlanner.waitForTarget();
         }
+        double[] emptyAngles = {0, 0, 0, 0};
+        robot.drivetrain.swerveSetTargets(emptyAngles, Constants.SWERVE_NO_POWER);
     }
 
     public void driveThroughPath () {
