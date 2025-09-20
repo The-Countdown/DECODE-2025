@@ -31,9 +31,8 @@ public class PathPlanner {
     * @param index which pose to drive to from first to last
     */
     public void driveToPose(int index) {
-        atTarget = false;
-        double tolerance = 1;
-        while (!atTarget) {
+        Status.robotTargetReached = false;
+        while (!Status.robotTargetReached) {
             Status.targetPose = poses.get(index);
             robot.telemetry.addData("Current Position X: ", Status.currentPose.getX(DistanceUnit.CM));
             robot.telemetry.addData("Current Position Y: ", Status.currentPose.getY(DistanceUnit.CM));
@@ -77,7 +76,7 @@ public class PathPlanner {
     }
 
     public void waitForTarget() {
-        while (!robot.poseMath.isAtPos()){
+        while (!PoseMath.isAtPos()){
             Thread.yield();
         }
     }

@@ -33,6 +33,7 @@ public class Status {
         MOVING
     }
 
+    public static boolean robotTargetReached = false;
     public static boolean robotHeadingTargetReached = false;
 
     public static boolean opModeIsActive = false;

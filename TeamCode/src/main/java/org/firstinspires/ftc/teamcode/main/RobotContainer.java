@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.main;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.qualcomm.hardware.dfrobot.HuskyLens;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.lynx.LynxModule;
@@ -24,7 +25,6 @@ import org.firstinspires.ftc.teamcode.drivetrain.HeadingPID;
 import org.firstinspires.ftc.teamcode.drivetrain.SwerveModule;
 import org.firstinspires.ftc.teamcode.drivetrain.SwervePIDF;
 import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.PathPlanner;
-import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.PoseMath;
 import org.firstinspires.ftc.teamcode.other.IndicatorLighting;
 import org.firstinspires.ftc.teamcode.other.LocalizationUpdater;
 import org.firstinspires.ftc.teamcode.util.DelayedActionManager;
@@ -62,7 +62,6 @@ public class RobotContainer {
     public SwervePIDF[] swerveServosPIDF = new SwervePIDF[Constants.NUM_SWERVE_SERVOS];
     public DrivetrainUpdater drivetrainUpdater;
     public LocalizationUpdater localizationUpdater;
-    public PoseMath poseMath = new PoseMath();
     public PathPlanner pathPlanner;
     public DelayedActionManager delayedActionManager = new DelayedActionManager();
     public Drivetrain drivetrain;
@@ -80,6 +79,8 @@ public class RobotContainer {
 
         public static GoBildaPinpointDriver pinpoint;
         public static Limelight3A limelight;
+        public static HuskyLens huskyLens1;
+        public static HuskyLens huskyLens2;
 
         // Gobilda RGB indicator light
         public static ServoImplEx indicatorLightFrontLeft;
@@ -126,6 +127,8 @@ public class RobotContainer {
         HardwareDevices.pinpoint.setPosition(Constants.startingPose);
 
         HardwareDevices.limelight = getHardwareDevice(Limelight3A.class, "limelight");
+        HardwareDevices.huskyLens1 = getHardwareDevice(HuskyLens.class, "huskyLens1");
+        HardwareDevices.huskyLens2 = getHardwareDevice(HuskyLens.class, "huskyLens2");
 
         HardwareDevices.indicatorLightFrontLeft = getHardwareDevice(ServoImplEx.class, "indicatorLightFrontLeft");
         HardwareDevices.indicatorLightFrontRight = getHardwareDevice(ServoImplEx.class, "indicatorLightFrontRight");
