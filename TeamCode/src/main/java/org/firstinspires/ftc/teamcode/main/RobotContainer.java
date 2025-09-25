@@ -127,7 +127,7 @@ public class RobotContainer {
         HardwareDevices.pinpoint.setPosition(Constants.startingPose);
 
         HardwareDevices.limelight = getHardwareDevice(Limelight3A.class, "limelight");
-        HardwareDevices.huskyLens1 = getHardwareDevice(HuskyLens.class, "huskyLens1");
+        HardwareDevices.huskyLens1 = getHardwareDevice(HuskyLens.class, "huskyLens");
         HardwareDevices.huskyLens2 = getHardwareDevice(HuskyLens.class, "huskyLens2");
 
         HardwareDevices.indicatorLightFrontLeft = getHardwareDevice(ServoImplEx.class, "indicatorLightFrontLeft");

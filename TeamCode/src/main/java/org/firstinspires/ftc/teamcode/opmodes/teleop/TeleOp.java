@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
+import org.firstinspires.ftc.teamcode.subsystems.HuskyLensFunctions;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "TeleOp")
 public class TeleOp extends OpMode {
@@ -13,6 +14,8 @@ public class TeleOp extends OpMode {
     public static double CURRENT_LOOP_TIME_AVG_MS;
     public static boolean fieldOriented = false;
     private int currentServo = -1;
+
+    private HuskyLensFunctions lens;
 
     @Override
     public void init() {
@@ -25,6 +28,8 @@ public class TeleOp extends OpMode {
         robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
         robotContainer.telemetry.addLine("OpMode Initialized");
         robotContainer.telemetry.update();
+
+         lens = new HuskyLensFunctions(robotContainer, RobotContainer.HardwareDevices.huskyLens1);
     }
 
     @Override
@@ -49,6 +54,8 @@ public class TeleOp extends OpMode {
         robotContainer.delayedActionManager.update();
         robotContainer.gamepadEx1.update();
         robotContainer.gamepadEx2.update();
+
+        lens.checkColor();
 
         if (gamepad1.dpad_up) {
             currentServo = 0;
