@@ -24,6 +24,7 @@ import org.firstinspires.ftc.teamcode.drivetrain.DrivetrainUpdater;
 import org.firstinspires.ftc.teamcode.drivetrain.HeadingPID;
 import org.firstinspires.ftc.teamcode.drivetrain.SwerveModule;
 import org.firstinspires.ftc.teamcode.drivetrain.SwervePIDF;
+import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.LimelightLogic;
 import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.PathPlanner;
 import org.firstinspires.ftc.teamcode.other.IndicatorLighting;
 import org.firstinspires.ftc.teamcode.other.LocalizationUpdater;
@@ -63,6 +64,7 @@ public class RobotContainer {
     public DrivetrainUpdater drivetrainUpdater;
     public LocalizationUpdater localizationUpdater;
     public PathPlanner pathPlanner;
+    public LimelightLogic limelightLogic;
     public DelayedActionManager delayedActionManager = new DelayedActionManager();
     public Drivetrain drivetrain;
     public HeadingPID headingPID;
@@ -177,6 +179,8 @@ public class RobotContainer {
         LinkedMotors flyWheelMotors = new LinkedMotors(HardwareDevices.flyWheelMotorMaster, HardwareDevices.flyWheelMotorSlave);
 
         pathPlanner = new PathPlanner(telemetry, this);
+
+        limelightLogic = new LimelightLogic(this, telemetry, HardwareDevices.limelight);
 
         indicatorLightFrontLeft = new IndicatorLighting.Light(this, HardwareDevices.indicatorLightFrontLeft);
         indicatorLightFrontRight = new IndicatorLighting.Light(this, HardwareDevices.indicatorLightFrontRight);

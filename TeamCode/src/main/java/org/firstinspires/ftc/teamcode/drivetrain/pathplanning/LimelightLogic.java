@@ -1,14 +1,24 @@
 package org.firstinspires.ftc.teamcode.drivetrain.pathplanning;
 
+import com.qualcomm.hardware.limelightvision.LLFieldMap;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
+import org.json.JSONObject;
+
+import java.util.List;
 
 public class LimelightLogic {
     RobotContainer robot;
@@ -20,15 +30,34 @@ public class LimelightLogic {
         this.robot = robot;
         this.telemetry = telemetry;
         this.limelight = limelight;
+
+        LLFieldMap field = new LLFieldMap();
+//        List<Double> transform = List.of(1.1, 2.1, 3.1);
+//
+//        new LLFieldMap.Fiducial(20, 6, "fam", transform, true);
+//
+//
+
+        limelight.uploadFieldmap(field, null);
     }
 
     public void updateLimelight() {
-        if (limelight.getLatestResult().isValid()) result = limelight.getLatestResult();
-        if (Status.motif == null) findMotif();
-        if (Status.alliance == null) findAlliance();
-        if (Status.motif != null) {
-            result.getFiducialResults().removeIf(tag -> tag.getFiducialId() == 21 || tag.getFiducialId() == 22 || tag.getFiducialId() == 23);
-            RobotContainer.HardwareDevices.pinpoint.setPosition(HelperFunctions.to2D(result.getBotpose()));
+        if (limelight.getLatestResult().isValid()) {
+            result = limelight.getLatestResult();
+            if (Status.motif == null) findMotif();
+            if (Status.alliance == null) findAlliance();
+            if (Status.motif != null) {
+                result.getFiducialResults().removeIf(tag -> tag.getFiducialId() == 21 || tag.getFiducialId() == 22 || tag.getFiducialId() == 23);
+                RobotContainer.HardwareDevices.pinpoint.setPosition(HelperFunctions.to2D(result.getBotpose()));
+            }
+        }
+    }
+
+    public Pose3D getPose() {
+        if (limelight.getLatestResult().isValid()) {
+            return result.getBotpose();
+        } else {
+            return new Pose3D(new Position(DistanceUnit.CM, 0, 0, 0, 0), new YawPitchRollAngles(AngleUnit.DEGREES, 0, 0, 0, 0));
         }
     }
 
