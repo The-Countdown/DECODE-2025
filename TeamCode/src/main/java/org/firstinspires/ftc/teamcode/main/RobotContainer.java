@@ -26,6 +26,8 @@ import org.firstinspires.ftc.teamcode.drivetrain.SwerveModule;
 import org.firstinspires.ftc.teamcode.drivetrain.SwervePIDF;
 import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.LimelightLogic;
 import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.PathPlanner;
+import org.firstinspires.ftc.teamcode.other.ADG728;
+import org.firstinspires.ftc.teamcode.other.ADGUpdater;
 import org.firstinspires.ftc.teamcode.other.IndicatorLighting;
 import org.firstinspires.ftc.teamcode.other.LocalizationUpdater;
 import org.firstinspires.ftc.teamcode.util.DelayedActionManager;
@@ -61,8 +63,9 @@ public class RobotContainer {
     private final ArrayList<Object> retainedTelemetryValues = new ArrayList<>();
     public final SwerveModule[] swerveModules = new SwerveModule[Constants.NUM_SWERVE_MOTORS];
     public SwervePIDF[] swerveServosPIDF = new SwervePIDF[Constants.NUM_SWERVE_SERVOS];
-    public DrivetrainUpdater drivetrainUpdater;
     public LocalizationUpdater localizationUpdater;
+    public DrivetrainUpdater drivetrainUpdater;
+    public ADGUpdater adgUpdater;
     public PathPlanner pathPlanner;
     public LimelightLogic limelightLogic;
     public DelayedActionManager delayedActionManager = new DelayedActionManager();
@@ -83,6 +86,10 @@ public class RobotContainer {
         public static Limelight3A limelight;
         public static HuskyLens huskyLens1;
         public static HuskyLens huskyLens2;
+
+        // This is the I2C multiplexer
+        public static ADG728 mux1;
+        public static AnalogInput muxAnalog1;
 
         // Gobilda RGB indicator light
         public static ServoImplEx indicatorLightFrontLeft;
@@ -131,6 +138,10 @@ public class RobotContainer {
         HardwareDevices.limelight = getHardwareDevice(Limelight3A.class, "limelight");
         HardwareDevices.huskyLens1 = getHardwareDevice(HuskyLens.class, "huskyLens");
         HardwareDevices.huskyLens2 = getHardwareDevice(HuskyLens.class, "huskyLens2");
+
+        HardwareDevices.mux1 = getHardwareDevice(ADG728.class, "mux");
+        HardwareDevices.muxAnalog1 = getHardwareDevice(AnalogInput.class, "muxA1");
+        HardwareDevices.mux1.attachAnalog(HardwareDevices.muxAnalog1);
 
         HardwareDevices.indicatorLightFrontLeft = getHardwareDevice(ServoImplEx.class, "indicatorLightFrontLeft");
         HardwareDevices.indicatorLightFrontRight = getHardwareDevice(ServoImplEx.class, "indicatorLightFrontRight");
@@ -213,6 +224,8 @@ public class RobotContainer {
         localizationUpdater.start();
         drivetrainUpdater = new DrivetrainUpdater(this);
         drivetrainUpdater.start();
+        adgUpdater = new ADGUpdater(HardwareDevices.mux1, this);
+        adgUpdater.start();
     }
 
     /**

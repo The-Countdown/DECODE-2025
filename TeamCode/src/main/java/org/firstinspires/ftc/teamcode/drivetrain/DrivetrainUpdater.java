@@ -21,6 +21,8 @@ public class DrivetrainUpdater extends Thread {
     private final double[] currentPowers = new double[4];
     private final ElapsedTime deltaTimer = new ElapsedTime();
 
+    public boolean enabled;
+
     public DrivetrainUpdater(RobotContainer robotContainer) {
         this.robotContainer = robotContainer;
         // Set the thread to be a daemon thread so that it will not prevent the program from exiting.
@@ -30,6 +32,9 @@ public class DrivetrainUpdater extends Thread {
 
     @Override
     public void run() {
+        if (!enabled) {
+         return;
+        }
         while (!Status.opModeIsActive) {
             Thread.yield();
         }

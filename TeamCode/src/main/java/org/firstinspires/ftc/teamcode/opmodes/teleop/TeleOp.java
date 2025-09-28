@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
+import org.firstinspires.ftc.teamcode.other.ADG728;
 import org.firstinspires.ftc.teamcode.subsystems.HuskyLensFunctions;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "TeleOp")
@@ -13,6 +14,7 @@ public class TeleOp extends OpMode {
     public static double CURRENT_LOOP_TIME_MS;
     public static double CURRENT_LOOP_TIME_AVG_MS;
     public static boolean fieldOriented = false;
+
     private int currentServo = -1;
 
     private HuskyLensFunctions lens;
@@ -29,21 +31,7 @@ public class TeleOp extends OpMode {
         robotContainer.telemetry.addLine("OpMode Initialized");
         robotContainer.telemetry.update();
 
-         lens = new HuskyLensFunctions(robotContainer, RobotContainer.HardwareDevices.huskyLens1);
-    }
-
-    @Override
-    public void init_loop() {
-        robotContainer.refreshData();
-    }
-
-    @Override
-    public void start() {
-        Status.opModeIsActive = true;
-        Status.lightsOn = true;
-        Status.isDrivingActive = true;
-
-        robotContainer.start(this);
+        lens = new HuskyLensFunctions(robotContainer, RobotContainer.HardwareDevices.huskyLens1);
     }
 
     @Override
@@ -55,7 +43,7 @@ public class TeleOp extends OpMode {
         robotContainer.gamepadEx1.update();
         robotContainer.gamepadEx2.update();
 
-        lens.checkColor();
+//        lens.checkColor();
 
         if (gamepad1.dpad_up) {
             currentServo = 0;

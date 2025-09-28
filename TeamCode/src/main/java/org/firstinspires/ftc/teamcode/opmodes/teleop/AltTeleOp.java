@@ -1,13 +1,14 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
-import com.qualcomm.hardware.limelightvision.LLFieldMap;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.robot.Robot;
 
-import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
-import org.firstinspires.ftc.teamcode.subsystems.HuskyLensFunctions;
-import org.json.JSONObject;
+import org.firstinspires.ftc.teamcode.other.ADG728;
+import org.firstinspires.ftc.teamcode.other.ADGUpdater;
+
+import java.util.Arrays;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "AltTeleOp", group = "TeleOp")
 public class AltTeleOp extends OpMode {
@@ -23,7 +24,6 @@ public class AltTeleOp extends OpMode {
         robotContainer.refreshData();
         RobotContainer.HardwareDevices.imu.resetYaw();
         RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU(); // TODO: Run at start of auto instead
-        robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
         RobotContainer.HardwareDevices.limelight.pipelineSwitch(0);
         robotContainer.telemetry.addLine("OpMode Initialized");
         robotContainer.telemetry.update();
@@ -41,6 +41,8 @@ public class AltTeleOp extends OpMode {
         Status.isDrivingActive = true;
         RobotContainer.HardwareDevices.limelight.start();
         robotContainer.start(this);
+
+        robotContainer.drivetrainUpdater.enabled = false;
     }
 
     @Override
@@ -49,11 +51,18 @@ public class AltTeleOp extends OpMode {
         CURRENT_LOOP_TIME_AVG_MS = robotContainer.getRollingAverageLoopTime("teleOp");
         robotContainer.refreshData();
         robotContainer.delayedActionManager.update();
-        robotContainer.gamepadEx1.update();
-        robotContainer.gamepadEx2.update();
+        if (robotContainer.gamepadEx1 != null){
+            robotContainer.gamepadEx1.update();
+        }
+        if (robotContainer.gamepadEx2 != null){
+            robotContainer.gamepadEx2.update();
+        }
         robotContainer.limelightLogic.updateLimelight();
 
-        telemetry.addData("Limelight Pose", robotContainer.limelightLogic.getPose());
+//        RobotContainer.HardwareDevices.mux1.setPortRaw(254);
+//        RobotContainer.HardwareDevices.mux1.saveVoltage();
+        robotContainer.telemetry.addData("Sensors: ", Arrays.toString(RobotContainer.HardwareDevices.mux1.getVolteges()));
+
         telemetry.update();
 
         Thread.yield();
@@ -61,8 +70,6 @@ public class AltTeleOp extends OpMode {
 
     @Override
     public void stop() {
-        robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
-
         Status.opModeIsActive = false;
         robotContainer.isRunning = false;
     }
