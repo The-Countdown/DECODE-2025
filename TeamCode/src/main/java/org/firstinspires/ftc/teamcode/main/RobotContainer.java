@@ -224,8 +224,8 @@ public class RobotContainer {
         localizationUpdater.start();
         drivetrainUpdater = new DrivetrainUpdater(this);
         drivetrainUpdater.start();
-        adgUpdater = new ADGUpdater(HardwareDevices.mux1, this);
-        adgUpdater.start();
+//        adgUpdater = new ADGUpdater(HardwareDevices.mux1, this);
+//        adgUpdater.start();
     }
 
     /**

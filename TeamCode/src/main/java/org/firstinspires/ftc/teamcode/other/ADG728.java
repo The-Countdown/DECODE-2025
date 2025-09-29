@@ -6,10 +6,6 @@ import com.qualcomm.robotcore.hardware.I2cDeviceSynch;
 import com.qualcomm.robotcore.hardware.I2cDeviceSynchDevice;
 import com.qualcomm.robotcore.hardware.configuration.annotations.DeviceProperties;
 import com.qualcomm.robotcore.hardware.configuration.annotations.I2cDeviceType;
-import com.qualcomm.robotcore.util.TypeConversion;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @I2cDeviceType
 @DeviceProperties(name = "MCP9808 Temperature Sensor", description = "an MCP9808 temperature sensor", xmlTag = "MCP9808")
@@ -55,21 +51,21 @@ public class ADG728 extends I2cDeviceSynchDevice<I2cDeviceSynch> {
         activePort = port;
         switch(port) {
             case 1:
-                writeShort((short) 254);
+                writeShort((short) 1);
             case 2:
-                writeShort((short) 253);
+                writeShort((short) 2);
             case 3:
-                writeShort((short) 251);
+                writeShort((short) 4);
             case 4:
-                writeShort((short) 247);
+                writeShort((short) 8);
             case 5:
-                writeShort((short) 239);
+                writeShort((short) 16);
             case 6:
-                writeShort((short) 223);
+                writeShort((short) 32);
             case 7:
-                writeShort((short) 191);
+                writeShort((short) 64);
             case 8:
-                writeShort((short) 127);
+                writeShort((short) 128);
         }
         readShort();
     }
@@ -77,6 +73,10 @@ public class ADG728 extends I2cDeviceSynchDevice<I2cDeviceSynch> {
     public void setPortRaw(int port) {
         writeShort((short) port);
         readShort();
+    }
+
+    public void setActivePortRaw(int port) {
+        activePort = port;
     }
 
     public double getTempF(int port) {
@@ -95,7 +95,11 @@ public class ADG728 extends I2cDeviceSynchDevice<I2cDeviceSynch> {
         volteges[activePort] = muxAnalog.getVoltage();
     }
 
-    public double[] getVolteges() {
+    public double getVoltageRaw() {
+        return muxAnalog.getVoltage();
+    }
+
+    public double[] getVoltages() {
         return volteges;
     }
 

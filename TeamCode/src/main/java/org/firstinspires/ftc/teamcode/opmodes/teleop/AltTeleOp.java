@@ -1,12 +1,9 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.robot.Robot;
 
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
-import org.firstinspires.ftc.teamcode.other.ADG728;
-import org.firstinspires.ftc.teamcode.other.ADGUpdater;
 
 import java.util.Arrays;
 
@@ -59,9 +56,31 @@ public class AltTeleOp extends OpMode {
         }
         robotContainer.limelightLogic.updateLimelight();
 
-//        RobotContainer.HardwareDevices.mux1.setPortRaw(254);
-//        RobotContainer.HardwareDevices.mux1.saveVoltage();
-        robotContainer.telemetry.addData("Sensors: ", Arrays.toString(RobotContainer.HardwareDevices.mux1.getVolteges()));
+        RobotContainer.HardwareDevices.mux1.setActivePortRaw(1);
+        RobotContainer.HardwareDevices.mux1.setPortRaw(1);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        RobotContainer.HardwareDevices.mux1.saveVoltage();
+        robotContainer.telemetry.addData("vol 1: ", RobotContainer.HardwareDevices.mux1.getVoltageRaw());
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        RobotContainer.HardwareDevices.mux1.setActivePortRaw(2);
+        RobotContainer.HardwareDevices.mux1.setPortRaw(2);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        RobotContainer.HardwareDevices.mux1.saveVoltage();
+        robotContainer.telemetry.addData("vol 2: ", RobotContainer.HardwareDevices.mux1.getVoltageRaw());
+        robotContainer.telemetry.addData("Sensors: ", Arrays.toString(RobotContainer.HardwareDevices.mux1.getVoltages()));
 
         telemetry.update();
 
