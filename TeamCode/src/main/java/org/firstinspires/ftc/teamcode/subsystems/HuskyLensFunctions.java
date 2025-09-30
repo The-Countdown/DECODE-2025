@@ -4,6 +4,8 @@ import com.qualcomm.hardware.dfrobot.HuskyLens;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 
+import java.lang.reflect.Array;
+
 public class HuskyLensFunctions {
     private RobotContainer robotContainer;
 
