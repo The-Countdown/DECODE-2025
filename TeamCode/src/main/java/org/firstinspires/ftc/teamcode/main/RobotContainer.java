@@ -115,7 +115,7 @@ public class RobotContainer {
 
         // Spindexer
         public static CRServoImplEx transferServo;
-        public static ServoImplEx spindexServo;
+        public static CRServoImplEx spindexerServo;
 
         // Intake
         public static DcMotorImplEx intakeMotor;
@@ -181,7 +181,7 @@ public class RobotContainer {
         HardwareDevices.turretServo = getHardwareDevice(ServoImplEx.class, "turretServo");
         HardwareDevices.hoodServo = getHardwareDevice(ServoImplEx.class, "hoodServo");
         HardwareDevices.transferServo = getHardwareDevice(CRServoImplEx.class, "transferServo");
-        HardwareDevices.spindexServo = getHardwareDevice(ServoImplEx.class, "spindexServo");
+        HardwareDevices.spindexerServo = getHardwareDevice(CRServoImplEx.class, "spindexServo");
         HardwareDevices.intakeMotor = getHardwareDevice(DcMotorImplEx.class, "intakeMotor");
         HardwareDevices.flyWheelMotorMaster = getHardwareDevice(DcMotorImplEx.class, "flyWheelMotorMaster");
         HardwareDevices.flyWheelMotorSlave = getHardwareDevice(DcMotorImplEx.class, "flyWheelMotorSlave");
