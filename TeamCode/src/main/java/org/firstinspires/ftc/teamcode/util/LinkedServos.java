@@ -42,15 +42,18 @@ public class LinkedServos {
         this.slaveCRServo.add(slaveServo);
     }
 
-    //set pos 0-1
+    //set pos 1 to -1
     public void setPosition(double position) {
         masterServo.setPosition(position);
         for (ServoImplEx slaveServo : slaveServo) {
             slaveServo.setPosition(position);
         }
     }
+
     //set pos degree
     public void setPositionDegree(double degree) {
+        degree = HelperFunctions.normalizeAngle(degree) + 180;
+        degree = degree > 355 ? 355 : degree; // if degree > 355 ? condition is true, return 355, otherwise(:) return degree
         masterServo.setPosition(degree/355);
         for (ServoImplEx slaveServo : slaveServo) {
             slaveServo.setPosition(degree/355);

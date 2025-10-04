@@ -6,19 +6,21 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
+import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 import org.firstinspires.ftc.teamcode.util.LinkedMotors;
+import org.firstinspires.ftc.teamcode.util.LinkedServos;
 
 public class Turret extends RobotContainer.HardwareDevices {
-    RobotContainer robotContainer;
-    LinkedMotors flyWheelMotors;
-    ServoImplEx turretServo;
-    ServoImplEx hoodServo;
+    private RobotContainer robotContainer;
+    private LinkedMotors flyWheelMotors;
+    private LinkedServos turretServos;
+    private ServoImplEx hoodServo;
 
-    public Turret(RobotContainer robotContainer, LinkedMotors flyWheelMotors, ServoImplEx turretServo, ServoImplEx hoodServo) {
+    public Turret(RobotContainer robotContainer, LinkedMotors flyWheelMotors, ServoImplEx hoodServo, LinkedServos turretServos) {
         this.robotContainer = robotContainer;
         this.flyWheelMotors = flyWheelMotors;
-        this.turretServo = turretServo;
         this.hoodServo = hoodServo;
+        this.turretServos = turretServos;
     }
 
     //turret hood change by degree
@@ -38,13 +40,13 @@ public class Turret extends RobotContainer.HardwareDevices {
 
     //assuming 1:1 ratio for turret
     //need calculate gear ratio when go home
+
+    public void setTurretTargetPosition(double position) {
+        turretServos.setPosition((position + 1)/2);
+    }
+
     public void setTurretTargetAngle(double angle) {
-        if (angle > 180) {
-            angle = 180;
-        } else if (angle < -180) {
-            angle = -180;
-        }
-        turretServo.setPosition((angle + 180)/360);
+        turretServos.setPositionDegree(HelperFunctions.normalizeAngle(angle));
     }
 
     //ticks per second
@@ -52,6 +54,15 @@ public class Turret extends RobotContainer.HardwareDevices {
     //drive train updater go look at
     public void setFlywheelTargetVelocity(double power) {
         flyWheelMotors.setVelocity(Constants.SWERVE_MOTOR_MAX_VELOCITY_TICKS_PER_SECOND * power);
+    }
+
+    public void setTurretServosPower(double power) {
+        if (power > 1) {
+            power = 1;
+        } else if (power < -1) {
+            power = -1;
+        }
+        turretServos.setPower(power);
     }
 
     public void pointAtGoal() {

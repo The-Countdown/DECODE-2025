@@ -15,17 +15,18 @@ import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
+import org.firstinspires.ftc.teamcode.util.LinkedServos;
 
 public class LimelightLogic {
-    RobotContainer robot;
-    Telemetry telemetry;
-    Limelight3A limelight;
-    LLResult result;
-
+    private RobotContainer robot;
+    private Telemetry telemetry;
+    private Limelight3A limelight;
+    private LLResult result;
     public LimelightLogic(RobotContainer robot, Telemetry telemetry, Limelight3A limelight) {
         this.robot = robot;
         this.telemetry = telemetry;
         this.limelight = limelight;
+
 
         LLFieldMap field = new LLFieldMap();
 //        List<Double> transform = List.of(1.1, 2.1, 3.1);
@@ -33,8 +34,7 @@ public class LimelightLogic {
 //        new LLFieldMap.Fiducial(20, 6, "fam", transform, true);
 //
 //
-
-        limelight.uploadFieldmap(field, null);
+//        limelight.uploadFieldmap(field, null);
     }
 
     public void updateLimelight() {
@@ -51,8 +51,11 @@ public class LimelightLogic {
 
     public void trackGoal() {
 
-        if (limelight.getLatestResult().isValid()) {
-
+        if (limelight.getLatestResult().isValid() && Math.abs(limelight.getLatestResult().getTx()) < 1) {
+//            robot.turret.setTurretTargetAngle(limelight.getLatestResult().getTx());
+            telemetry.addData("TX", limelight.getLatestResult().getTx());
+        } else {
+            robot.turret.pointAtGoal();
         }
     }
 
@@ -63,7 +66,6 @@ public class LimelightLogic {
             return new Pose3D(new Position(DistanceUnit.CM, 0, 0, 0, 0), new YawPitchRollAngles(AngleUnit.DEGREES, 0, 0, 0, 0));
         }
     }
-
 
     public Constants.MOTIF checkMotif(LLResultTypes.FiducialResult aprilTag) {
         if (aprilTag.getFiducialId() == 21) {

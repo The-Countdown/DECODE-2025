@@ -65,6 +65,9 @@ public class GamepadWrapper {
             }
             return false;
         }
+        public double getHoldDuration() {
+            return holdDuration.seconds();
+        }
     }
 
     private final Gamepad gamepad;
