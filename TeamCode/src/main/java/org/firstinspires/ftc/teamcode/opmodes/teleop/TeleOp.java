@@ -43,7 +43,6 @@ public class TeleOp extends OpMode {
         robotContainer.gamepadEx1.update();
         robotContainer.gamepadEx2.update();
 
-//        lens.checkColor();
 
         if (gamepad1.dpad_up) {
             currentServo = 0;

@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
+import org.firstinspires.ftc.teamcode.subsystems.HuskyLensFunctions;
 
 import java.util.Arrays;
 
@@ -12,6 +13,8 @@ public class AltTeleOp extends OpMode {
     private RobotContainer robotContainer;
     public static double CURRENT_LOOP_TIME_MS;
     public static double CURRENT_LOOP_TIME_AVG_MS;
+
+    private HuskyLensFunctions lens;
 
     @Override
     public void init() {
@@ -24,6 +27,7 @@ public class AltTeleOp extends OpMode {
         RobotContainer.HardwareDevices.limelight.pipelineSwitch(0);
         robotContainer.telemetry.addLine("OpMode Initialized");
         robotContainer.telemetry.update();
+        lens = new HuskyLensFunctions(robotContainer, RobotContainer.HardwareDevices.huskyLens1);
     }
 
     @Override
@@ -40,6 +44,7 @@ public class AltTeleOp extends OpMode {
         robotContainer.start(this);
 
         robotContainer.drivetrainUpdater.enabled = false;
+        robotContainer.telemetry.setMsTransmissionInterval(50);
     }
 
     @Override
@@ -55,7 +60,9 @@ public class AltTeleOp extends OpMode {
             robotContainer.gamepadEx2.update();
         }
         robotContainer.limelightLogic.updateLimelight();
-
+        // lens.checkColor();
+        lens.nearestBall();
+        /*
         RobotContainer.HardwareDevices.mux1.setActivePortRaw(1);
         RobotContainer.HardwareDevices.mux1.setPortRaw(1);
         try {
@@ -71,6 +78,7 @@ public class AltTeleOp extends OpMode {
             throw new RuntimeException(e);
         }
 
+
         RobotContainer.HardwareDevices.mux1.setActivePortRaw(2);
         RobotContainer.HardwareDevices.mux1.setPortRaw(2);
         try {
@@ -78,12 +86,14 @@ public class AltTeleOp extends OpMode {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+
+
         RobotContainer.HardwareDevices.mux1.saveVoltage();
         robotContainer.telemetry.addData("vol 2: ", RobotContainer.HardwareDevices.mux1.getVoltageRaw());
         robotContainer.telemetry.addData("Sensors: ", Arrays.toString(RobotContainer.HardwareDevices.mux1.getVoltages()));
 
         telemetry.update();
-
+        */
 
         Thread.yield();
     }
