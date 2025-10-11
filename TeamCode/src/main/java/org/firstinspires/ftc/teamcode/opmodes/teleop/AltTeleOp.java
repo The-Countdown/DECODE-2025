@@ -7,6 +7,9 @@ import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
+import org.firstinspires.ftc.teamcode.subsystems.HuskyLensFunctions;
+
+import java.util.Arrays;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "AltTeleOp", group = "TeleOp")
 public class AltTeleOp extends OpMode {
@@ -17,6 +20,8 @@ public class AltTeleOp extends OpMode {
     public boolean beamBreakBoolean;
     public GamepadWrapper.ButtonReader beamBreakButton = new GamepadWrapper.ButtonReader();
 
+    private HuskyLensFunctions lens;
+
     @Override
     public void init() {
         robotContainer = new RobotContainer(this);
@@ -25,9 +30,10 @@ public class AltTeleOp extends OpMode {
         robotContainer.refreshData();
         RobotContainer.HardwareDevices.imu.resetYaw();
         RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU(); // TODO: Run at start of auto instead
-//        RobotContainer.HardwareDevices.limelight.pipelineSwitch(0);
+        RobotContainer.HardwareDevices.limelight.pipelineSwitch(0);
         robotContainer.telemetry.addLine("OpMode Initialized");
         robotContainer.telemetry.update();
+        lens = new HuskyLensFunctions(robotContainer, RobotContainer.HardwareDevices.huskyLens1);
     }
 
     @Override
@@ -40,9 +46,11 @@ public class AltTeleOp extends OpMode {
         Status.opModeIsActive = true;
         Status.lightsOn = true;
         Status.isDrivingActive = true;
-//        RobotContainer.HardwareDevices.limelight.start();
+        RobotContainer.HardwareDevices.limelight.start();
         robotContainer.start(this);
-//        robotContainer.drivetrainUpdater.enabled = false;
+
+        robotContainer.drivetrainUpdater.enabled = false;
+        robotContainer.telemetry.setMsTransmissionInterval(50);
     }
 
     @Override
