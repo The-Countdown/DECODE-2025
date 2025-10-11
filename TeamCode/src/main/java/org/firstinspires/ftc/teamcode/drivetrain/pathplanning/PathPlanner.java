@@ -4,6 +4,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
+import org.firstinspires.ftc.teamcode.util.DelayedActionManager;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.main.Status;
@@ -12,8 +13,9 @@ import java.util.ArrayList;
 import java.lang.Thread;
 
 public class PathPlanner {
-    Telemetry telemetry;
-    RobotContainer robot;
+    private Telemetry telemetry;
+    private RobotContainer robot;
+    private DelayedActionManager delayedActionManager;
     ArrayList<Pose2D> poses = new ArrayList<>();
     boolean atTarget;
 
@@ -73,10 +75,10 @@ public class PathPlanner {
     }
 
     public void driveThroughPath () {
+        delayedActionManager.run();
         for (int i = 0; i < poses.size(); i++) {
             driveToPose(i);
         }
-        robot.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
     }
 
     public void waitForTarget() {

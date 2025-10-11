@@ -5,11 +5,19 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BooleanSupplier;
+import java.lang.Thread;
 
-public class DelayedActionManager {
+public class DelayedActionManager extends Thread {
     private final List<DelayedAction> delayedActions = new ArrayList<>();
     List<Double> timeAtPause = new ArrayList<>();
-    boolean paused = false;
+    boolean enabled = false;
+
+    @Override
+    public void run() {
+        while (enabled) {
+            update();
+        }
+    }
 
     public void schedule(DelayedAction delayedAction) {
         delayedActions.add(delayedAction);
@@ -25,7 +33,7 @@ public class DelayedActionManager {
     }
 
     public void update() {
-        if (!paused) {
+        if (enabled) {
             for (DelayedAction delayedAction : delayedActions) {
                 if (delayedAction.shouldExecute()) {
                     delayedAction.execute();
@@ -51,14 +59,14 @@ public class DelayedActionManager {
     }
 
     public void pause() {
-        paused = true;
+        enabled = false;
         for (DelayedAction delayedAction : delayedActions) {
             delayedAction.pause();
         }
     }
 
-    public void resume() {
-        paused = false;
+    public void resumeAll() {
+        enabled = true;
         for (DelayedAction delayedAction : delayedActions) {
             delayedAction.resume();
         }
@@ -71,7 +79,7 @@ public class DelayedActionManager {
         public ElapsedTime timer = new ElapsedTime();
         private boolean executed = false;
         private boolean cancelled = false;
-        private boolean paused = false;
+        private boolean enabled = true;
 
         private double pauseTime = 0;
         private double accumulatedPausedTime = 0;
@@ -94,7 +102,7 @@ public class DelayedActionManager {
         }
 
         public boolean shouldExecute() {
-            if (executed || cancelled || paused) return false;
+            if (executed || cancelled || !enabled) return false;
 
             double currentTime = timer.milliseconds() - accumulatedPausedTime;
 
@@ -121,16 +129,16 @@ public class DelayedActionManager {
         }
 
         public void pause() {
-            if (!paused) {
+            if (enabled) {
                 pauseTime = timer.milliseconds();
-                paused = true;
+                enabled = false;
             }
         }
 
         public void resume() {
-            if (paused) {
+            if (!enabled) {
                 accumulatedPausedTime += (timer.milliseconds() - pauseTime);
-                paused = false;
+                enabled = true;
             }
         }
     }
