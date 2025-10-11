@@ -38,15 +38,27 @@ public class Turret extends RobotContainer.HardwareDevices {
         hoodServo.setPosition(angle/355);
     }
 
-    //assuming 1:1 ratio for turret
-    //need calculate gear ratio when go home
-
+    /**
+     * assuming 1:1 ratio for turret
+     * need calculate gear ratio when go home
+    */
     public void setTurretTargetPosition(double position) {
         turretServos.setPosition((position + 1)/2);
     }
 
+    public void setTurretTargetRaw(double position) {
+        turretServos.setPosition(position);
+    }
+
     public void setTurretTargetAngle(double angle) {
-        turretServos.setPositionDegree(HelperFunctions.normalizeAngle(angle));
+        if (angle > 355) {
+            angle = angle % 355;
+        }
+        turretServos.setPositionDegree(angle/355);
+    }
+
+    public double getTurretPosition() {
+        return turretServos.getPosition();
     }
 
     //ticks per second
@@ -71,4 +83,6 @@ public class Turret extends RobotContainer.HardwareDevices {
         double angleToFaceGoal = Math.atan(yDiff/xDiff) - Status.currentHeading;
         setTurretTargetAngle(angleToFaceGoal);
     }
+
+
 }

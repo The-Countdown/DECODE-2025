@@ -12,10 +12,10 @@ public class Intake {
 
     public Intake(RobotContainer robotContainer, DcMotorImplEx intakeMotor) {
         this.robotContainer = robotContainer;
-        this.intakeMotor = RobotContainer.HardwareDevices.intakeMotor;
+        this.intakeMotor = intakeMotor;
     }
 
-    public void intakeVelocity(double power) {
+    public void setIntakeVelocity(double power) {
         intakeMotor.setVelocity(Constants.SWERVE_MOTOR_MAX_VELOCITY_TICKS_PER_SECOND * power);
     }
 }

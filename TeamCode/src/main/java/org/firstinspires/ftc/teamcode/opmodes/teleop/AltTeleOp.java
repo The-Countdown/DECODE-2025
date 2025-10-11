@@ -2,16 +2,20 @@ package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
-
-import java.util.Arrays;
+import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "AltTeleOp", group = "TeleOp")
 public class AltTeleOp extends OpMode {
     private RobotContainer robotContainer;
     public static double CURRENT_LOOP_TIME_MS;
     public static double CURRENT_LOOP_TIME_AVG_MS;
+    public double turretPos = 0;
+    public boolean beamBreakBoolean;
+    public GamepadWrapper.ButtonReader beamBreakButton = new GamepadWrapper.ButtonReader();
 
     @Override
     public void init() {
@@ -21,7 +25,7 @@ public class AltTeleOp extends OpMode {
         robotContainer.refreshData();
         RobotContainer.HardwareDevices.imu.resetYaw();
         RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU(); // TODO: Run at start of auto instead
-        RobotContainer.HardwareDevices.limelight.pipelineSwitch(0);
+//        RobotContainer.HardwareDevices.limelight.pipelineSwitch(0);
         robotContainer.telemetry.addLine("OpMode Initialized");
         robotContainer.telemetry.update();
     }
@@ -36,10 +40,9 @@ public class AltTeleOp extends OpMode {
         Status.opModeIsActive = true;
         Status.lightsOn = true;
         Status.isDrivingActive = true;
-        RobotContainer.HardwareDevices.limelight.start();
+//        RobotContainer.HardwareDevices.limelight.start();
         robotContainer.start(this);
-
-        robotContainer.drivetrainUpdater.enabled = false;
+//        robotContainer.drivetrainUpdater.enabled = false;
     }
 
     @Override
@@ -54,36 +57,56 @@ public class AltTeleOp extends OpMode {
         if (robotContainer.gamepadEx2 != null){
             robotContainer.gamepadEx2.update();
         }
-        robotContainer.limelightLogic.updateLimelight();
+        beamBreakButton.update(beamBreakBoolean);
 
-        RobotContainer.HardwareDevices.mux1.setActivePortRaw(1);
-        RobotContainer.HardwareDevices.mux1.setPortRaw(1);
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        RobotContainer.HardwareDevices.mux1.saveVoltage();
-        robotContainer.telemetry.addData("vol 1: ", RobotContainer.HardwareDevices.mux1.getVoltageRaw());
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        if (robotContainer.gamepadEx1 != null && robotContainer.gamepadEx1.cross.isHeld()) {
+            // constants for motor speed, different speed based off of position
+            RobotContainer.HardwareDevices.flyWheelMotorMaster.setPower(Math.min(robotContainer.gamepadEx1.cross.getHoldDuration() * Constants.FLYWHEEL_CURVE, Constants.FLYWHEEL_SPEED));
+            RobotContainer.HardwareDevices.flyWheelMotorSlave.setPower(Math.min(robotContainer.gamepadEx1.cross.getHoldDuration() * Constants.FLYWHEEL_CURVE, Constants.FLYWHEEL_SPEED));
+        } else {
+            RobotContainer.HardwareDevices.flyWheelMotorMaster.setPower(0);
+            RobotContainer.HardwareDevices.flyWheelMotorSlave.setPower(0);
         }
 
-        RobotContainer.HardwareDevices.mux1.setActivePortRaw(2);
-        RobotContainer.HardwareDevices.mux1.setPortRaw(2);
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        robotContainer.telemetry.addData("flywheel speed", RobotContainer.HardwareDevices.flyWheelMotorMaster.getVelocity());
+        robotContainer.telemetry.addData("flywheel current mA", RobotContainer.HardwareDevices.flyWheelMotorMaster.getCurrent(CurrentUnit.MILLIAMPS));
+        robotContainer.telemetry.addData("upper flywheel speed", RobotContainer.HardwareDevices.flyWheelMotorSlave.getVelocity());
+        robotContainer.telemetry.addData("upper flywheel current mA", RobotContainer.HardwareDevices.flyWheelMotorSlave.getCurrent(CurrentUnit.MILLIAMPS));
+
+
+        if (robotContainer.gamepadEx1 != null && robotContainer.gamepadEx1.circle.isHeld()) {
+            robotContainer.intake.setIntakeVelocity(Math.min(robotContainer.gamepadEx1.circle.getHoldDuration(), 1));
         }
-        RobotContainer.HardwareDevices.mux1.saveVoltage();
-        robotContainer.telemetry.addData("vol 2: ", RobotContainer.HardwareDevices.mux1.getVoltageRaw());
-        robotContainer.telemetry.addData("Sensors: ", Arrays.toString(RobotContainer.HardwareDevices.mux1.getVoltages()));
+        else {
+            robotContainer.intake.setIntakeVelocity(1);
+        }
 
-        telemetry.update();
+        //turret speed factor * current loop time is how far u want it to move per how many milesecond(loop time)
+        if (robotContainer.gamepadEx1.rightStickX() > 0.1) {
+            turretPos += (Constants.TURRET_SPEED_FACTOR * CURRENT_LOOP_TIME_MS) * Math.pow(robotContainer.gamepadEx1.rightStickX(), 2);
+        } else if (robotContainer.gamepadEx1.rightStickX() < -0.1) {
+            turretPos -= (Constants.TURRET_SPEED_FACTOR * CURRENT_LOOP_TIME_MS) * Math.pow(robotContainer.gamepadEx1.rightStickX(), 2);
+        }
 
+        if (turretPos > 0.367) {
+            turretPos = 0.367;
+        } else if (turretPos < -0.367) {
+            turretPos = -0.367;
+        }
+
+//        robotContainer.turret.setTurretTargetRaw(turretPos);
+        robotContainer.turret.setTurretTargetPosition(Math.max(Math.min(turretPos, 0.367), -0.367));
+        robotContainer.telemetry.addData("turret pos",turretPos);
+
+//        RobotContainer.HardwareDevices.spindexServo.setPower(robotContainer.gamepadEx1.leftStickX() * 0.2);
+        beamBreakBoolean = RobotContainer.HardwareDevices.beamBreak.isPressed();
+
+        if (beamBreakButton.getHoldDuration() > Constants.INTAKE_DELAY_SECONDS) {
+            robotContainer.intake.setIntakeVelocity(0.9);
+            robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setIntakeVelocity(0), Constants.INTAKE_RUNTIME_MS);
+        }
+        robotContainer.telemetry.addData("beam break", beamBreakBoolean);
+        robotContainer.telemetry.update();
 
         Thread.yield();
     }

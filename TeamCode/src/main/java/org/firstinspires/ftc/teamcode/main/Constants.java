@@ -59,7 +59,7 @@ public class Constants {
 
     public static final int LOOP_AVERAGE_WINDOW_SIZE = 30;
 
-    public static final int TELEMETRY_UPDATE_INTERVAL_MS = 750;
+    public static final int TELEMETRY_UPDATE_INTERVAL_MS = 50;
 
     public static final int
             NUM_SWERVE_MOTORS = 4,
@@ -207,6 +207,13 @@ public class Constants {
     public static double MAX_DRIVE_ACCELERATION = 10;
 
     public static double ZERO_POWER_TOLERANCE = 0.03;
+    public static double TURRET_SPEED_FACTOR = 0.001;
+    public static double FLYWHEEL_SPEED = 1;
+    public static double FLYWHEEL_CURVE = 4;
+    public static int INTAKE_RUNTIME_MS = 800;
+    public static double INTAKE_DELAY_SECONDS = 0.2;
+    public static double TRACK_GOAL_P = 2;
+
 
     public enum LED_COLOR {
         OFF,

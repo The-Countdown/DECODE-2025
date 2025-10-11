@@ -6,6 +6,8 @@ import com.qualcomm.hardware.dfrobot.HuskyLens;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.lynx.LynxModule;
+import com.qualcomm.hardware.rev.RevColorSensorV3;
+import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
@@ -13,6 +15,7 @@ import com.qualcomm.robotcore.hardware.DcMotorImplEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -24,15 +27,19 @@ import org.firstinspires.ftc.teamcode.drivetrain.DrivetrainUpdater;
 import org.firstinspires.ftc.teamcode.drivetrain.HeadingPID;
 import org.firstinspires.ftc.teamcode.drivetrain.SwerveModule;
 import org.firstinspires.ftc.teamcode.drivetrain.SwervePIDF;
+import org.firstinspires.ftc.teamcode.subsystems.ColorSensorFunctions;
+import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.LimelightLogic;
 import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.PathPlanner;
 import org.firstinspires.ftc.teamcode.other.ADG728;
 import org.firstinspires.ftc.teamcode.other.ADGUpdater;
 import org.firstinspires.ftc.teamcode.other.IndicatorLighting;
 import org.firstinspires.ftc.teamcode.other.LocalizationUpdater;
+import org.firstinspires.ftc.teamcode.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.util.DelayedActionManager;
 import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
 import org.firstinspires.ftc.teamcode.util.LinkedMotors;
+import org.firstinspires.ftc.teamcode.util.LinkedServos;
 
 import java.lang.Thread;
 import java.util.ArrayList;
@@ -75,6 +82,9 @@ public class RobotContainer {
     public IndicatorLighting.Light indicatorLightFrontRight;
     public IndicatorLighting.Light indicatorLightBack;
     public IndicatorLighting.Group allIndicatorLights = new IndicatorLighting.Group();
+    public Turret turret;
+    public Intake intake;
+    public ColorSensorFunctions colorSensor;
 
     public static class HardwareDevices {
         public static List<LynxModule> allHubs;
@@ -110,15 +120,20 @@ public class RobotContainer {
         // Turret
         public static DcMotorImplEx flyWheelMotorMaster;
         public static DcMotorImplEx flyWheelMotorSlave;
-        public static ServoImplEx turretServo;
+        public static ServoImplEx turretServoMaster;
+        public static ServoImplEx turretServoSlave;
         public static ServoImplEx hoodServo;
 
         // Spindexer
         public static CRServoImplEx transferServo;
-        public static ServoImplEx spindexServo;
+        public static CRServoImplEx spindexServo;
 
         // Intake
         public static DcMotorImplEx intakeMotor;
+
+        //sensors
+        public static RevColorSensorV3 colorSensor;
+        public static RevTouchSensor beamBreak;
     }
 
     public RobotContainer(OpMode opMode) {
@@ -141,7 +156,7 @@ public class RobotContainer {
 
         HardwareDevices.mux1 = getHardwareDevice(ADG728.class, "mux");
         HardwareDevices.muxAnalog1 = getHardwareDevice(AnalogInput.class, "muxA1");
-        HardwareDevices.mux1.attachAnalog(HardwareDevices.muxAnalog1);
+//        HardwareDevices.mux1.attachAnalog(HardwareDevices.muxAnalog1);
 
         HardwareDevices.indicatorLightFrontLeft = getHardwareDevice(ServoImplEx.class, "indicatorLightFrontLeft");
         HardwareDevices.indicatorLightFrontRight = getHardwareDevice(ServoImplEx.class, "indicatorLightFrontRight");
@@ -155,43 +170,53 @@ public class RobotContainer {
             HardwareDevices.analogNames[i] = "swerveAnalog" + (i);
             HardwareDevices.swerveAnalogs[i] = getHardwareDevice(AnalogInput.class, HardwareDevices.analogNames[i]);
 
-            if (i == 0 || i == 2) {
-                HardwareDevices.swerveMotors[i].setDirection(DcMotorImplEx.Direction.REVERSE);
-            }
-            HardwareDevices.swerveMotors[i].setZeroPowerBehavior(DcMotorImplEx.ZeroPowerBehavior.BRAKE);
-            HardwareDevices.swerveMotors[i].setMode(DcMotorImplEx.RunMode.RUN_USING_ENCODER);
+//            if (i == 0 || i == 2) {
+//                HardwareDevices.swerveMotors[i].setDirection(DcMotorImplEx.Direction.REVERSE);
+//            }
+//            HardwareDevices.swerveMotors[i].setZeroPowerBehavior(DcMotorImplEx.ZeroPowerBehavior.BRAKE);
+//            HardwareDevices.swerveMotors[i].setMode(DcMotorImplEx.RunMode.RUN_USING_ENCODER);
 
             swerveServosPIDF[i] = new SwervePIDF(this, i);
-            swerveModules[i] = new SwerveModule(this, HardwareDevices.swerveMotors[i], HardwareDevices.swerveServos[i], swerveServosPIDF[i], HardwareDevices.swerveAnalogs[i], Constants.SWERVE_POWER_MULTIPLIER[i], i); // is it best to pass in a constant?
+            swerveModules[i] = new SwerveModule(this, HardwareDevices.swerveMotors[i], HardwareDevices.swerveServos[i], swerveServosPIDF[i], HardwareDevices.swerveAnalogs[i], Constants.SWERVE_POWER_MULTIPLIER[i], i);  //is it best to pass in a constant?
 
-            if (Constants.SERVO_ANALOG_ACTIVE) {
-                int analogPortNumber = Character.getNumericValue(HardwareDevices.swerveAnalogs[i].getConnectionInfo().charAt(HardwareDevices.swerveAnalogs[i].getConnectionInfo().length() - 1));
-                if (analogPortNumber != i) {
-                    addRetainedTelemetry("WARNING: Swerve Analog Encoder " + i + " is connected to port " + analogPortNumber + ", should be port " + i, null);
-                }
-            }
-            if (HardwareDevices.swerveMotors[i].getPortNumber() != i) {
-                addRetainedTelemetry("WARNING: Swerve Motor " + i + " is connected to port " + HardwareDevices.swerveMotors[i].getPortNumber() + ", should be port " + i, null);
-            }
-            if (HardwareDevices.swerveServos[i].getPortNumber() != i) {
-                addRetainedTelemetry("WARNING: Swerve Servo " + i + " is connected to port " + HardwareDevices.swerveServos[i].getPortNumber() + ", should be port " + i, null);
-            }
+//            if (Constants.SERVO_ANALOG_ACTIVE) {
+//                int analogPortNumber = Character.getNumericValue(HardwareDevices.swerveAnalogs[i].getConnectionInfo().charAt(HardwareDevices.swerveAnalogs[i].getConnectionInfo().length() - 1));
+//                if (analogPortNumber != i) {
+//                    addRetainedTelemetry("WARNING: Swerve Analog Encoder " + i + " is connected to port " + analogPortNumber + ", should be port " + i, null);
+//                }
+//            }
+//            if (HardwareDevices.swerveMotors[i].getPortNumber() != i) {
+//                addRetainedTelemetry("WARNING: Swerve Motor " + i + " is connected to port " + HardwareDevices.swerveMotors[i].getPortNumber() + ", should be port " + i, null);
+//            }
+//            if (HardwareDevices.swerveServos[i].getPortNumber() != i) {
+//                addRetainedTelemetry("WARNING: Swerve Servo " + i + " is connected to port " + HardwareDevices.swerveServos[i].getPortNumber() + ", should be port " + i, null);
+//            }
         }
-        
-        HardwareDevices.turretServo = getHardwareDevice(ServoImplEx.class, "turretServo");
+
+        HardwareDevices.turretServoMaster = getHardwareDevice(ServoImplEx.class, "turretServoMaster");
+        HardwareDevices.turretServoSlave = getHardwareDevice(ServoImplEx.class, "turretServoSlave");
         HardwareDevices.hoodServo = getHardwareDevice(ServoImplEx.class, "hoodServo");
         HardwareDevices.transferServo = getHardwareDevice(CRServoImplEx.class, "transferServo");
-        HardwareDevices.spindexServo = getHardwareDevice(ServoImplEx.class, "spindexServo");
+        HardwareDevices.spindexServo = getHardwareDevice(CRServoImplEx.class, "spindexServo");
         HardwareDevices.intakeMotor = getHardwareDevice(DcMotorImplEx.class, "intakeMotor");
         HardwareDevices.flyWheelMotorMaster = getHardwareDevice(DcMotorImplEx.class, "flyWheelMotorMaster");
         HardwareDevices.flyWheelMotorSlave = getHardwareDevice(DcMotorImplEx.class, "flyWheelMotorSlave");
 
-        // HardwareDevices.flyWheelMotorSlave.setDirection(DcMotorImplEx.Direction.REVERSE);
+
+        //sensor
+        HardwareDevices.colorSensor = getHardwareDevice(RevColorSensorV3.class, "colorSensor");
+        HardwareDevices.beamBreak = getHardwareDevice(RevTouchSensor.class, "beamBreak");
+
+        HardwareDevices.flyWheelMotorSlave.setDirection(DcMotorImplEx.Direction.REVERSE);
         LinkedMotors flyWheelMotors = new LinkedMotors(HardwareDevices.flyWheelMotorMaster, HardwareDevices.flyWheelMotorSlave);
+        LinkedServos turretServos = new LinkedServos(HardwareDevices.turretServoMaster, HardwareDevices.turretServoSlave);
 
         pathPlanner = new PathPlanner(telemetry, this);
 
         limelightLogic = new LimelightLogic(this, telemetry, HardwareDevices.limelight);
+        turret = new Turret(this, flyWheelMotors, HardwareDevices.hoodServo, turretServos);
+        intake = new Intake(this, HardwareDevices.intakeMotor);
+        colorSensor = new ColorSensorFunctions(this, HardwareDevices.colorSensor);
 
         indicatorLightFrontLeft = new IndicatorLighting.Light(this, HardwareDevices.indicatorLightFrontLeft);
         indicatorLightFrontRight = new IndicatorLighting.Light(this, HardwareDevices.indicatorLightFrontRight);
@@ -210,7 +235,7 @@ public class RobotContainer {
     public void init() {
         HardwareDevices.allHubs = hardwareMap.getAll(LynxModule.class);
         HardwareDevices.controlHub = hardwareMap.get(LynxModule.class, "Control Hub");
-        HardwareDevices.expansionHub = hardwareMap.get(LynxModule.class, "Expansion Hub 1"); // this should be 1 because the expansion hub on the swerve is that one, we should upgrade to 2 though
+        HardwareDevices.expansionHub = hardwareMap.get(LynxModule.class, "Expansion Hub 2"); // this should be 1 because the expansion hub on the swerve is that one, we should upgrade to 2 though
         for (LynxModule hub : HardwareDevices.allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }
@@ -220,10 +245,10 @@ public class RobotContainer {
     public void start(OpMode opmode) {
         gamepadEx1 = new GamepadWrapper(opmode.gamepad1);
         gamepadEx2 = new GamepadWrapper(opmode.gamepad2);
-        localizationUpdater = new LocalizationUpdater(this);
-        localizationUpdater.start();
-        drivetrainUpdater = new DrivetrainUpdater(this);
-        drivetrainUpdater.start();
+//        localizationUpdater = new LocalizationUpdater(this);
+//        localizationUpdater.start();
+//        drivetrainUpdater = new DrivetrainUpdater(this);
+//        drivetrainUpdater.start();
 //        adgUpdater = new ADGUpdater(HardwareDevices.mux1, this);
 //        adgUpdater.start();
     }

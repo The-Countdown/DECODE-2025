@@ -50,9 +50,9 @@ public class LimelightLogic {
     }
 
     public void trackGoal() {
-
-        if (limelight.getLatestResult().isValid() && Math.abs(limelight.getLatestResult().getTx()) < 1) {
-//            robot.turret.setTurretTargetAngle(limelight.getLatestResult().getTx());
+        if (limelight.getLatestResult().isValid() && Math.abs(limelight.getLatestResult().getTx()) > 1) {
+            double tuning = limelight.getLatestResult().getTx() * Constants.TRACK_GOAL_P;
+            robot.turret.setTurretTargetAngle(tuning);
             telemetry.addData("TX", limelight.getLatestResult().getTx());
         } else {
             robot.turret.pointAtGoal();

@@ -67,4 +67,7 @@ public class LinkedServos {
             slaveCRServo.setPower(power);
         }
     }
+    public double getPosition() {
+        return masterServo.getPosition();
+    }
 }
