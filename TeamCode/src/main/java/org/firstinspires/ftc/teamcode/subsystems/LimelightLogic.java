@@ -4,6 +4,7 @@ import com.qualcomm.hardware.limelightvision.LLFieldMap;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -22,6 +23,8 @@ public class LimelightLogic {
     private Telemetry telemetry;
     private Limelight3A limelight;
     private LLResult result;
+    private ElapsedTime turretTime = new ElapsedTime();
+    private double p = 177.5;
     public LimelightLogic(RobotContainer robot, Telemetry telemetry, Limelight3A limelight) {
         this.robot = robot;
         this.telemetry = telemetry;
@@ -51,11 +54,12 @@ public class LimelightLogic {
 
     public void trackGoal() {
         if (limelight.getLatestResult().isValid() && Math.abs(limelight.getLatestResult().getTx()) > 1) {
-            double tuning = limelight.getLatestResult().getTx() * Constants.TRACK_GOAL_P;
-            robot.turret.setTurretTargetAngle(tuning);
+            p += limelight.getLatestResult().getTx() * Constants.TRACK_GOAL_P;
+            robot.turret.setTurretTargetAngle(p);
             telemetry.addData("TX", limelight.getLatestResult().getTx());
+            telemetry.addData("p", p);
         } else {
-            robot.turret.pointAtGoal();
+            robot.turret.setTurretTargetAngle(177.5);
         }
     }
 

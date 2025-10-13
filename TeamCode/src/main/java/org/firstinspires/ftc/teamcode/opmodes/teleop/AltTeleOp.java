@@ -34,6 +34,8 @@ public class AltTeleOp extends OpMode {
         robotContainer.telemetry.addLine("OpMode Initialized");
         robotContainer.telemetry.update();
         lens = new HuskyLensFunctions(robotContainer, RobotContainer.HardwareDevices.huskyLens1);
+
+        robotContainer.turret.setTurretTargetAngle(177.5);
     }
 
     @Override
@@ -49,7 +51,7 @@ public class AltTeleOp extends OpMode {
         RobotContainer.HardwareDevices.limelight.start();
         robotContainer.start(this);
 
-        robotContainer.drivetrainUpdater.enabled = false;
+//        robotContainer.drivetrainUpdater.enabled = false;
         robotContainer.telemetry.setMsTransmissionInterval(50);
     }
 
@@ -96,14 +98,15 @@ public class AltTeleOp extends OpMode {
             turretPos -= (Constants.TURRET_SPEED_FACTOR * CURRENT_LOOP_TIME_MS) * Math.pow(robotContainer.gamepadEx1.rightStickX(), 2);
         }
 
-        if (turretPos > 0.367) {
-            turretPos = 0.367;
-        } else if (turretPos < -0.367) {
-            turretPos = -0.367;
+        if (turretPos > 1) {
+            turretPos = 1;
+        } else if (turretPos < -1) {
+            turretPos = -1;
         }
 
-//        robotContainer.turret.setTurretTargetRaw(turretPos);
-        robotContainer.turret.setTurretTargetPosition(Math.max(Math.min(turretPos, 0.367), -0.367));
+        robotContainer.limelightLogic.trackGoal();
+
+//        robotContainer.turret.setTurretTargetPosition(Math.min(Math.max(turretPos, -1), 1));
         robotContainer.telemetry.addData("turret pos",turretPos);
 
 //        RobotContainer.HardwareDevices.spindexServo.setPower(robotContainer.gamepadEx1.leftStickX() * 0.2);

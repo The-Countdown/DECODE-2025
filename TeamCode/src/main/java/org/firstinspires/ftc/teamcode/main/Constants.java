@@ -212,7 +212,7 @@ public class Constants {
     public static double FLYWHEEL_CURVE = 4;
     public static int INTAKE_RUNTIME_MS = 800;
     public static double INTAKE_DELAY_SECONDS = 0.2;
-    public static double TRACK_GOAL_P = 2;
+    public static double TRACK_GOAL_P = -0.2;
 
 
     public enum LED_COLOR {
