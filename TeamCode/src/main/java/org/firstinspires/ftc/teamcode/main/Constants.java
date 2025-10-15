@@ -213,7 +213,11 @@ public class Constants {
     public static int INTAKE_RUNTIME_MS = 800;
     public static double INTAKE_DELAY_SECONDS = 0.2;
     public static double TRACK_GOAL_P = -0.2;
-
+    public static double SPINDEXER_ANGLE_OFFSET = 0;
+    public static double SPINDEXER_KP = 0;
+    public static double SPINDEXER_KI = 0;
+    public static double SPINDEXER_KD = 0;
+    public static double SPINDEXER_KF = 0;
 
     public enum LED_COLOR {
         OFF,

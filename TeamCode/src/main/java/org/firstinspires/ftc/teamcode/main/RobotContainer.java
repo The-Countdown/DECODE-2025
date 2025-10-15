@@ -35,6 +35,7 @@ import org.firstinspires.ftc.teamcode.other.ADG728;
 import org.firstinspires.ftc.teamcode.other.ADGUpdater;
 import org.firstinspires.ftc.teamcode.other.IndicatorLighting;
 import org.firstinspires.ftc.teamcode.other.LocalizationUpdater;
+import org.firstinspires.ftc.teamcode.subsystems.Spindexer;
 import org.firstinspires.ftc.teamcode.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.util.DelayedActionManager;
 import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
@@ -84,6 +85,7 @@ public class RobotContainer {
     public IndicatorLighting.Group allIndicatorLights = new IndicatorLighting.Group();
     public Turret turret;
     public Intake intake;
+    public Spindexer spindexer;
     public ColorSensorFunctions colorSensor;
 
     public static class HardwareDevices {
@@ -127,6 +129,7 @@ public class RobotContainer {
         // Spindexer
         public static CRServoImplEx transferServo;
         public static CRServoImplEx spindexServo;
+        public static AnalogInput spindexAnalog;
 
         // Intake
         public static DcMotorImplEx intakeMotor;
@@ -216,6 +219,7 @@ public class RobotContainer {
         limelightLogic = new LimelightLogic(this, telemetry, HardwareDevices.limelight);
         turret = new Turret(this, flyWheelMotors, HardwareDevices.hoodServo, turretServos);
         intake = new Intake(this, HardwareDevices.intakeMotor);
+        spindexer = new Spindexer(this, HardwareDevices.spindexServo, HardwareDevices.spindexAnalog);
         colorSensor = new ColorSensorFunctions(this, HardwareDevices.colorSensor);
 
         indicatorLightFrontLeft = new IndicatorLighting.Light(this, HardwareDevices.indicatorLightFrontLeft);
