@@ -11,6 +11,7 @@ import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorImplEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
@@ -204,6 +205,8 @@ public class RobotContainer {
         HardwareDevices.intakeMotor = getHardwareDevice(DcMotorImplEx.class, "intakeMotor");
         HardwareDevices.flyWheelMotorMaster = getHardwareDevice(DcMotorImplEx.class, "flyWheelMotorMaster");
         HardwareDevices.flyWheelMotorSlave = getHardwareDevice(DcMotorImplEx.class, "flyWheelMotorSlave");
+        HardwareDevices.flyWheelMotorMaster.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        HardwareDevices.flyWheelMotorSlave.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
 
         //sensor

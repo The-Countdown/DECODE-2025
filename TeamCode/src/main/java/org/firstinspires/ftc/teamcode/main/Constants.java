@@ -208,7 +208,7 @@ public class Constants {
 
     public static double ZERO_POWER_TOLERANCE = 0.03;
     public static double TURRET_SPEED_FACTOR = 0.001;
-    public static double FLYWHEEL_SPEED = 1;
+    public static double FLYWHEEL_SPEED = 0.9;
     public static double FLYWHEEL_CURVE = 4;
     public static int INTAKE_RUNTIME_MS = 800;
     public static double INTAKE_DELAY_SECONDS = 0.2;

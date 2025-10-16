@@ -70,9 +70,9 @@ public class Spindexer {
 
             p = Constants.SPINDEXER_KP * error;
             i = Constants.SPINDEXER_KI * iTimer.milliseconds() * Math.signum(error);
+            d = Math.signum(error) * (Constants.SPINDEXER_KD * (lastError - error));
             ff = Constants.SPINDEXER_KF * Math.signum(error);
 
-            d = Math.signum(error) * (Constants.SPINDEXER_KD * (lastError - error));
 
             if (Math.signum(error) > 0) { // Current sign pos
                 lastSign = true;

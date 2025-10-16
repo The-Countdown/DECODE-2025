@@ -88,10 +88,10 @@ public class AltTeleOp extends OpMode {
             robotContainer.intake.setIntakeVelocity(Math.min(robotContainer.gamepadEx1.circle.getHoldDuration(), 1));
         }
         else {
-            robotContainer.intake.setIntakeVelocity(1);
+            robotContainer.intake.setIntakeVelocity(0);
         }
 
-        //turret speed factor * current loop time is how far u want it to move per how many milesecond(loop time)
+        //turret speed factor * current loop time is how far u want it to move per how many millisecond(loop time)
         if (robotContainer.gamepadEx1.rightStickX() > 0.1) {
             turretPos += (Constants.TURRET_SPEED_FACTOR * CURRENT_LOOP_TIME_MS) * Math.pow(robotContainer.gamepadEx1.rightStickX(), 2);
         } else if (robotContainer.gamepadEx1.rightStickX() < -0.1) {
@@ -105,6 +105,9 @@ public class AltTeleOp extends OpMode {
         }
 
         robotContainer.limelightLogic.trackGoal();
+
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.turret.pointAtGoal(), () -> beamBreakBoolean);
+        robotContainer.turret.pointAtGoal();
 
 //        robotContainer.turret.setTurretTargetPosition(Math.min(Math.max(turretPos, -1), 1));
         robotContainer.telemetry.addData("turret pos",turretPos);
