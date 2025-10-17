@@ -16,7 +16,6 @@ import com.qualcomm.robotcore.hardware.DcMotorImplEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -29,6 +28,7 @@ import org.firstinspires.ftc.teamcode.drivetrain.HeadingPID;
 import org.firstinspires.ftc.teamcode.drivetrain.SwerveModule;
 import org.firstinspires.ftc.teamcode.drivetrain.SwervePIDF;
 import org.firstinspires.ftc.teamcode.subsystems.ColorSensorFunctions;
+import org.firstinspires.ftc.teamcode.subsystems.HuskyLensFunctions;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.LimelightLogic;
 import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.PathPlanner;
@@ -77,13 +77,15 @@ public class RobotContainer {
     public ADGUpdater adgUpdater;
     public PathPlanner pathPlanner;
     public LimelightLogic limelightLogic;
+    public HuskyLensFunctions huskyLensLogic1;
+    public HuskyLensFunctions huskyLensLogic2;
     public DelayedActionManager delayedActionManager = new DelayedActionManager();
     public Drivetrain drivetrain;
     public HeadingPID headingPID;
     public IndicatorLighting.Light indicatorLightFrontLeft;
     public IndicatorLighting.Light indicatorLightFrontRight;
     public IndicatorLighting.Light indicatorLightBack;
-    public IndicatorLighting.Group allIndicatorLights = new IndicatorLighting.Group();
+    public IndicatorLighting.Group allIndicatorLights;
     public Turret turret;
     public Intake intake;
     public Spindexer spindexer;
@@ -208,7 +210,6 @@ public class RobotContainer {
         HardwareDevices.flyWheelMotorMaster.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         HardwareDevices.flyWheelMotorSlave.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
-
         //sensor
         HardwareDevices.colorSensor = getHardwareDevice(RevColorSensorV3.class, "colorSensor");
         HardwareDevices.beamBreak = getHardwareDevice(RevTouchSensor.class, "beamBreak");
@@ -220,6 +221,8 @@ public class RobotContainer {
         pathPlanner = new PathPlanner(telemetry, this);
 
         limelightLogic = new LimelightLogic(this, telemetry, HardwareDevices.limelight);
+        huskyLensLogic1 = new HuskyLensFunctions(this, RobotContainer.HardwareDevices.huskyLens1);
+        huskyLensLogic2 = new HuskyLensFunctions(this, RobotContainer.HardwareDevices.huskyLens2);
         turret = new Turret(this, flyWheelMotors, HardwareDevices.hoodServo, turretServos);
         intake = new Intake(this, HardwareDevices.intakeMotor);
         spindexer = new Spindexer(this, HardwareDevices.spindexServo, HardwareDevices.spindexAnalog);
@@ -228,6 +231,7 @@ public class RobotContainer {
         indicatorLightFrontLeft = new IndicatorLighting.Light(this, HardwareDevices.indicatorLightFrontLeft);
         indicatorLightFrontRight = new IndicatorLighting.Light(this, HardwareDevices.indicatorLightFrontRight);
         indicatorLightBack = new IndicatorLighting.Light(this, HardwareDevices.indicatorLightBack);
+        allIndicatorLights = new IndicatorLighting.Group(this);
         allIndicatorLights.addLight(indicatorLightFrontLeft);
         allIndicatorLights.addLight(indicatorLightFrontRight);
         allIndicatorLights.addLight(indicatorLightBack);
@@ -242,7 +246,7 @@ public class RobotContainer {
     public void init() {
         HardwareDevices.allHubs = hardwareMap.getAll(LynxModule.class);
         HardwareDevices.controlHub = hardwareMap.get(LynxModule.class, "Control Hub");
-        HardwareDevices.expansionHub = hardwareMap.get(LynxModule.class, "Expansion Hub 2"); // this should be 1 because the expansion hub on the swerve is that one, we should upgrade to 2 though
+        HardwareDevices.expansionHub = hardwareMap.get(LynxModule.class, "Expansion Hub 2");
         for (LynxModule hub : HardwareDevices.allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }

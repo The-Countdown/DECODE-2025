@@ -5,8 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
-import org.firstinspires.ftc.teamcode.other.ADG728;
-import org.firstinspires.ftc.teamcode.subsystems.HuskyLensFunctions;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "TeleOp")
 public class TeleOp extends OpMode {
@@ -14,10 +12,7 @@ public class TeleOp extends OpMode {
     public static double CURRENT_LOOP_TIME_MS;
     public static double CURRENT_LOOP_TIME_AVG_MS;
     public static boolean fieldOriented = false;
-
     private int currentServo = -1;
-
-    private HuskyLensFunctions lens;
 
     @Override
     public void init() {
@@ -30,8 +25,6 @@ public class TeleOp extends OpMode {
         robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
         robotContainer.telemetry.addLine("OpMode Initialized");
         robotContainer.telemetry.update();
-
-        lens = new HuskyLensFunctions(robotContainer, RobotContainer.HardwareDevices.huskyLens1);
     }
 
     @Override
@@ -42,7 +35,6 @@ public class TeleOp extends OpMode {
         robotContainer.delayedActionManager.update();
         robotContainer.gamepadEx1.update();
         robotContainer.gamepadEx2.update();
-
 
         if (gamepad1.dpad_up) {
             currentServo = 0;
@@ -59,7 +51,6 @@ public class TeleOp extends OpMode {
         } else if (fieldOriented && robotContainer.gamepadEx1.cross.wasJustPressed()) {
             fieldOriented = false;
         }
-
 
         if (Status.isDrivingActive) {
             if (Constants.useHeadingPIDForTurning) {
@@ -88,63 +79,7 @@ public class TeleOp extends OpMode {
             }
         }
 
-        if (robotContainer.gamepadEx1.ps.isHeldFor(0.75) && Status.lightsOn) {
-            robotContainer.allIndicatorLights.flashingReset();
-            Status.lightsOn = false;
-
-            robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
-
-            Status.isDrivingActive = false;
-        }
-
-        if (robotContainer.gamepadEx1.ps.wasJustPressed() && !Status.lightsOn) {
-            Status.lightsOn = true;
-            robotContainer.delayedActionManager.schedule(() -> Status.isDrivingActive = true, 1000);
-        }
-
-        if (robotContainer.gamepadEx1.circle.wasJustPressed() && !Status.policeOn) {
-            Status.policeOn = true;
-        }
-
-        if (robotContainer.gamepadEx1.circle.wasJustPressed() && Status.policeOn) {
-            Status.policeOn = false;
-        }
-
-        if (!Status.lightsOn) {
-            robotContainer.allIndicatorLights.flashing(Constants.LED_COLOR.ORANGE, Constants.LED_COLOR.OFF, 8, 2);
-        }
-
-        if (Status.lightsOn && !Status.policeOn) {
-            if (robotContainer.gamepadEx1.leftStickX() > 0.1) {
-                robotContainer.indicatorLightFrontRight.flashing(Constants.LED_COLOR.ORANGE, Constants.LED_COLOR.WHITE, 2);
-                robotContainer.indicatorLightFrontLeft.setColor(Constants.LED_COLOR.WHITE);
-            } else if (robotContainer.gamepadEx1.leftStickX() < -0.1) {
-                robotContainer.indicatorLightFrontLeft.flashing(Constants.LED_COLOR.ORANGE, Constants.LED_COLOR.WHITE, 2);
-                robotContainer.indicatorLightFrontRight.setColor(Constants.LED_COLOR.WHITE);
-            } else if (robotContainer.gamepadEx1.leftStickY() > 0.1) {
-                robotContainer.indicatorLightFrontRight.rainbow();
-                robotContainer.indicatorLightFrontLeft.rainbow();
-            } else {
-                robotContainer.indicatorLightFrontRight.setColor(Constants.LED_COLOR.WHITE);
-                robotContainer.indicatorLightFrontLeft.setColor(Constants.LED_COLOR.WHITE);
-            }
-
-            if (robotContainer.gamepadEx1.leftStickY() < -0.1) {
-                robotContainer.indicatorLightBack.flashing(Constants.LED_COLOR.RED, Constants.LED_COLOR.WHITE, 2);
-            } else if (robotContainer.gamepadEx1.leftStickY() > 0.1) {
-                robotContainer.indicatorLightBack.rainbow();
-            } else {
-                robotContainer.indicatorLightBack.setColor(Constants.LED_COLOR.RED);
-            }
-
-            if (robotContainer.gamepadEx1.leftStickY.wasJustReleased()) {
-                robotContainer.allIndicatorLights.rainbowReset();
-            }
-        }
-
-        if (Status.policeOn) {
-            robotContainer.allIndicatorLights.police();
-        }
+        robotContainer.allIndicatorLights.lightsUpdater();
 
         robotContainer.telemetry(currentServo, 0, CURRENT_LOOP_TIME_MS, CURRENT_LOOP_TIME_AVG_MS);
 

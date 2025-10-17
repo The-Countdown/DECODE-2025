@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
+import org.firstinspires.ftc.teamcode.main.Status;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +15,11 @@ public class IndicatorLighting {
     public static class Group {
         private final List<Light> lights = new ArrayList<>();
         private final ElapsedTime flashingTimer = new ElapsedTime();
+        private final RobotContainer robotContainer;
+
+        public Group(RobotContainer robotContainer) {
+            this.robotContainer = robotContainer;
+        }
 
         public void addLight(RobotContainer container, ServoImplEx hardware) {
             lights.add(new Light(container, hardware));
@@ -68,6 +74,66 @@ public class IndicatorLighting {
         public void off() {
             for (Light light : lights) {
                 light.off();
+            }
+        }
+
+        public void lightsUpdater() {
+            if (robotContainer.gamepadEx1.ps.isHeldFor(0.75) && Status.lightsOn) {
+                robotContainer.allIndicatorLights.flashingReset();
+                Status.lightsOn = false;
+
+                robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
+
+                Status.isDrivingActive = false;
+            }
+
+            if (robotContainer.gamepadEx1.ps.wasJustPressed() && !Status.lightsOn) {
+                Status.lightsOn = true;
+                robotContainer.delayedActionManager.schedule(() -> Status.isDrivingActive = true, 1000);
+            }
+
+            if (robotContainer.gamepadEx1.circle.wasJustPressed() && !Status.policeOn) {
+                Status.policeOn = true;
+            }
+
+            if (robotContainer.gamepadEx1.circle.wasJustPressed() && Status.policeOn) {
+                Status.policeOn = false;
+            }
+
+            if (!Status.lightsOn) {
+                robotContainer.allIndicatorLights.flashing(Constants.LED_COLOR.ORANGE, Constants.LED_COLOR.OFF, 8, 2);
+            }
+
+            if (Status.lightsOn && !Status.policeOn) {
+                if (robotContainer.gamepadEx1.leftStickX() > 0.1) {
+                    robotContainer.indicatorLightFrontRight.flashing(Constants.LED_COLOR.ORANGE, Constants.LED_COLOR.WHITE, 2);
+                    robotContainer.indicatorLightFrontLeft.setColor(Constants.LED_COLOR.WHITE);
+                } else if (robotContainer.gamepadEx1.leftStickX() < -0.1) {
+                    robotContainer.indicatorLightFrontLeft.flashing(Constants.LED_COLOR.ORANGE, Constants.LED_COLOR.WHITE, 2);
+                    robotContainer.indicatorLightFrontRight.setColor(Constants.LED_COLOR.WHITE);
+                } else if (robotContainer.gamepadEx1.leftStickY() > 0.1) {
+                    robotContainer.indicatorLightFrontRight.rainbow();
+                    robotContainer.indicatorLightFrontLeft.rainbow();
+                } else {
+                    robotContainer.indicatorLightFrontRight.setColor(Constants.LED_COLOR.WHITE);
+                    robotContainer.indicatorLightFrontLeft.setColor(Constants.LED_COLOR.WHITE);
+                }
+
+                if (robotContainer.gamepadEx1.leftStickY() < -0.1) {
+                    robotContainer.indicatorLightBack.flashing(Constants.LED_COLOR.RED, Constants.LED_COLOR.WHITE, 2);
+                } else if (robotContainer.gamepadEx1.leftStickY() > 0.1) {
+                    robotContainer.indicatorLightBack.rainbow();
+                } else {
+                    robotContainer.indicatorLightBack.setColor(Constants.LED_COLOR.RED);
+                }
+
+                if (robotContainer.gamepadEx1.leftStickY.wasJustReleased()) {
+                    robotContainer.allIndicatorLights.rainbowReset();
+                }
+            }
+
+            if (Status.policeOn) {
+                robotContainer.allIndicatorLights.police();
             }
         }
 
