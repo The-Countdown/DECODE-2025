@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.other;
+package org.firstinspires.ftc.teamcode.drivetrain.pathplanning;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;

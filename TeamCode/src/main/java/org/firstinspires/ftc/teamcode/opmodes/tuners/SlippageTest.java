@@ -9,11 +9,8 @@ import org.firstinspires.ftc.teamcode.main.Status;
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "SlippageTest", group = "Auto")
 public class SlippageTest extends OpMode {
-    public static double CURRENT_LOOP_TIME_AVG_MS;
     private RobotContainer robotContainer;
-    public static double CURRENT_LOOP_TIME_MS;
     private static final ElapsedTime turretAccelerationTimer = new ElapsedTime();
-    private int currentServo = -1;
 
     @Override
     public void init() {
@@ -48,21 +45,10 @@ public class SlippageTest extends OpMode {
 
     @Override
     public void loop() {
-        CURRENT_LOOP_TIME_MS = robotContainer.updateLoopTime("teleOp");
-        CURRENT_LOOP_TIME_AVG_MS = robotContainer.getRollingAverageLoopTime("teleOp");
+        robotContainer.updateLoopTime("teleOp");
         robotContainer.refreshData();
 
-        if (gamepad1.dpad_up) {
-            currentServo = 0;
-        } else if (gamepad1.dpad_right) {
-            currentServo = 1;
-        } else if (gamepad1.dpad_down) {
-            currentServo = 2;
-        } else if (gamepad1.dpad_left) {
-            currentServo = 3;
-        }
-
-        robotContainer.telemetry(currentServo, 0, CURRENT_LOOP_TIME_MS, CURRENT_LOOP_TIME_AVG_MS);
+        robotContainer.telemetry("teleOp");
 
         Thread.yield();
     }

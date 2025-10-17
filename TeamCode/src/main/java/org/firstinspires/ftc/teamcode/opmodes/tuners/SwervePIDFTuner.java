@@ -12,11 +12,8 @@ import java.util.Objects;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "SwervePIDFTuner", group = "Tuner")
 public class SwervePIDFTuner extends OpMode {
-    public static double CURRENT_LOOP_TIME_AVG_MS;
     private RobotContainer robotContainer;
-    public static double CURRENT_LOOP_TIME_MS;
     private final ElapsedTime targetTimer = new ElapsedTime();
-    private int currentServo = -1;
 
     @Override
     public void init() {
@@ -50,8 +47,7 @@ public class SwervePIDFTuner extends OpMode {
 
     @Override
     public void loop() {
-        CURRENT_LOOP_TIME_MS = robotContainer.updateLoopTime("teleOp");
-        CURRENT_LOOP_TIME_AVG_MS = robotContainer.getRollingAverageLoopTime("teleOp");
+        robotContainer.updateLoopTime("teleOp");
         robotContainer.refreshData();
         robotContainer.gamepadEx1.update();
         robotContainer.gamepadEx2.update();
@@ -68,19 +64,9 @@ public class SwervePIDFTuner extends OpMode {
             targetTimer.reset();
         }
 
-        if (gamepad1.dpad_up) {
-            currentServo = 0;
-        } else if (gamepad1.dpad_right) {
-            currentServo = 1;
-        } else if (gamepad1.dpad_down) {
-            currentServo = 2;
-        } else if (gamepad1.dpad_left) {
-            currentServo = 3;
-        }
-
         robotContainer.allIndicatorLights.off();
 
-        robotContainer.telemetry(currentServo, 0, CURRENT_LOOP_TIME_MS, CURRENT_LOOP_TIME_AVG_MS);
+        robotContainer.telemetry("teleOp");
     }
 
     @Override

@@ -11,9 +11,7 @@ import java.util.Objects;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "SwerveAnalogServoZeroer", group = "Tuner")
 public class SwerveAnalogServoZeroer extends OpMode {
-    public static double CURRENT_LOOP_TIME_AVG_MS;
     private RobotContainer robotContainer;
-    public static double CURRENT_LOOP_TIME_MS;
     private int currentServo = -1;
     private final double[] offset = {0, 0, 0, 0};
     private final double[] power = {0.2, 0.2, 0.2, 0.2};
@@ -41,7 +39,7 @@ public class SwerveAnalogServoZeroer extends OpMode {
     public void start() {
         robotContainer.start(this);
         Status.opModeIsActive = true;
-        robotContainer.drivetrain.swerveSetTargets(offset, power);
+        robotContainer.drivetrain.setTargets(offset, power);
         Objects.requireNonNull(robotContainer.loopTimers.get("teleOp")).reset();
         if (RobotContainer.HardwareDevices.pinpoint.getDeviceStatus() != GoBildaPinpointDriver.DeviceStatus.READY) {
             robotContainer.addRetainedTelemetry("WARNING, PINPOINT STATUS:", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
@@ -50,8 +48,7 @@ public class SwerveAnalogServoZeroer extends OpMode {
 
     @Override
     public void loop() {
-        CURRENT_LOOP_TIME_MS = robotContainer.updateLoopTime("teleOp");
-        CURRENT_LOOP_TIME_AVG_MS = robotContainer.getRollingAverageLoopTime("teleOp");
+        robotContainer.updateLoopTime("teleOp");
         robotContainer.refreshData();
         robotContainer.gamepadEx1.update();
         robotContainer.gamepadEx2.update();
@@ -74,7 +71,7 @@ public class SwerveAnalogServoZeroer extends OpMode {
                 robotContainer.swerveModules[currentServo].servo.setTargetAngle(robotContainer.swerveServosPIDF[currentServo].getTargetAngle() - 0.3);
                 offset[currentServo] -= 0.3;
             }
-            robotContainer.telemetry(currentServo, offset[currentServo], CURRENT_LOOP_TIME_MS, CURRENT_LOOP_TIME_AVG_MS);
+            robotContainer.telemetry("teleOp");
         }
 
         robotContainer.allIndicatorLights.off();

@@ -21,7 +21,7 @@ public class DrivetrainUpdater extends Thread {
     private final double[] currentPowers = new double[4];
     private final ElapsedTime deltaTimer = new ElapsedTime();
 
-    public boolean enabled;
+    public boolean enabled = true;
 
     public DrivetrainUpdater(RobotContainer robotContainer) {
         this.robotContainer = robotContainer;

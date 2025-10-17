@@ -16,7 +16,6 @@ import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
-import org.firstinspires.ftc.teamcode.util.LinkedServos;
 
 public class LimelightLogic {
     private RobotContainer robot;
@@ -55,11 +54,11 @@ public class LimelightLogic {
     public void trackGoal() {
         if (limelight.getLatestResult().isValid() && Math.abs(limelight.getLatestResult().getTx()) > 1) {
             p += limelight.getLatestResult().getTx() * Constants.TRACK_GOAL_P;
-            robot.turret.setTurretTargetAngle(p);
+            robot.turret.setTargetAngle(p);
             telemetry.addData("TX", limelight.getLatestResult().getTx());
             telemetry.addData("p", p);
         } else {
-            robot.turret.setTurretTargetAngle(177.5);
+            robot.turret.setTargetAngle(177.5);
         }
     }
 

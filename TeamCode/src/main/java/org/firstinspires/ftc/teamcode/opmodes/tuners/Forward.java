@@ -73,7 +73,7 @@ public class Forward extends OpMode {
 
         robotContainer.allIndicatorLights.off();
 
-        robotContainer.telemetry(currentServo, 0, CURRENT_LOOP_TIME_MS, CURRENT_LOOP_TIME_AVG_MS);
+        robotContainer.telemetry("teleOp");
     }
 
     @Override

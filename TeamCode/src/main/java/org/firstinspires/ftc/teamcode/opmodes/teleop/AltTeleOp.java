@@ -9,8 +9,6 @@ import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
 import org.firstinspires.ftc.teamcode.subsystems.HuskyLensFunctions;
 
-import java.util.Arrays;
-
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "AltTeleOp", group = "TeleOp")
 public class AltTeleOp extends OpMode {
     private RobotContainer robotContainer;
@@ -35,7 +33,7 @@ public class AltTeleOp extends OpMode {
         robotContainer.telemetry.update();
         lens = new HuskyLensFunctions(robotContainer, RobotContainer.HardwareDevices.huskyLens1);
 
-        robotContainer.turret.setTurretTargetAngle(177.5);
+        robotContainer.turret.setTargetAngle(177.5);
     }
 
     @Override
@@ -50,9 +48,6 @@ public class AltTeleOp extends OpMode {
         Status.isDrivingActive = true;
         RobotContainer.HardwareDevices.limelight.start();
         robotContainer.start(this);
-
-//        robotContainer.drivetrainUpdater.enabled = false;
-        robotContainer.telemetry.setMsTransmissionInterval(50);
     }
 
     @Override

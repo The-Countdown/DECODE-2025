@@ -65,11 +65,11 @@ public class HeadingPIDTuner extends OpMode {
 
         double power = robotContainer.headingPID.calculate(Status.currentHeading);
         double[] powers = {power,power,power,power};
-        robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_ROTATION_FORMATION_DEGREES, powers);
+        robotContainer.drivetrain.setTargets(Constants.SWERVE_ROTATION_FORMATION_DEGREES, powers);
 
         robotContainer.allIndicatorLights.off();
 
-        robotContainer.telemetry(-1, 0, CURRENT_LOOP_TIME_MS, CURRENT_LOOP_TIME_AVG_MS);
+        robotContainer.telemetry("teleOp");
     }
 
     @Override

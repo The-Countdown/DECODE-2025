@@ -30,13 +30,22 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
     /**
      * This method calculates and sets the target angles and powers for each swerve module based on directional inputs.
      *
-     * @param x             The x-axis translational input from -1 to 1.
-     * @param y             The y-axis translational input from -1 to 1.
-     * @param rX            The rotational input from -1 to 1.
-     * @param fieldOriented A boolean indicating whether to use field-oriented driving.
      */
-    public void swerveDirectionalInput(double x, double y, double rX, boolean fieldOriented) {
+    public void controlUpdate() {
+        if (!Status.isDrivingActive) {
+            return;
+        }
+
+        double x = joystickScaler(-robotContainer.gamepadEx1.leftStickX());
+        double y = joystickScaler(robotContainer.gamepadEx1.leftStickY());
+        double rX = Constants.useHeadingPIDForTurning ? joystickScaler(-robotContainer.gamepadEx1.rightStickX()) : 0;
         double rotationalMagnitude = Math.abs(rX);
+
+        if (robotContainer.gamepadEx1.cross.wasJustPressed()) Status.fieldOriented = !Status.fieldOriented;
+
+        if (Constants.useHeadingPIDForTurning && Math.abs(robotContainer.gamepadEx1.rightStickX()) > 0.05) {
+            robotContainer.headingPID.setTargetHeading((robotContainer.headingPID.getTargetHeading() - Constants.turningRate * robotContainer.getLoopTime("teleOp") * robotContainer.gamepadEx1.rightStickX()));
+        }
 
         if (robotContainer.gamepadEx1.rightStickX.wasJustReleased()) {
             robotContainer.headingPID.setTargetHeading(Status.currentHeading);
@@ -50,18 +59,18 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
                 robotContainer.gamepadEx1.leftStickY.wasJustReleased() ||
                 robotContainer.gamepadEx1.rightStickX.wasJustReleased()) &&
                 Status.robotHeadingTargetReached && x == 0 && y == 0 && rX == 0) {
-            swerveSetTargets(lastAngles, Constants.SWERVE_NO_POWER);
+            setTargets(lastAngles, Constants.SWERVE_NO_POWER);
             stopTimer.reset();
             return;
         }
 
         if (Status.robotHeadingTargetReached && x == 0 && y == 0 && rX == 0 && stopTimer.seconds() >= 1) {
-            swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
+            setTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
             return;
         }
 
         if (Status.robotHeadingTargetReached && x == 0 && y == 0 && rX == 0) {
-            swerveSetTargets(lastAngles, Constants.SWERVE_NO_POWER);
+            setTargets(lastAngles, Constants.SWERVE_NO_POWER);
             return;
         }
 
@@ -78,7 +87,7 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
         double currentHeading = HelperFunctions.normalizeAngle(Status.currentHeading);
         // Adjust the translational angle for field-oriented driving if enabled.
         translationalAngle = HelperFunctions.normalizeAngle(Math.toDegrees(translationalAngle));
-        translationalAngle = fieldOriented ? translationalAngle + currentHeading : translationalAngle;
+        translationalAngle = Status.fieldOriented ? translationalAngle + currentHeading : translationalAngle;
         translationalAngle = HelperFunctions.normalizeAngle(translationalAngle);
 
         translationalAngle = Math.toRadians(translationalAngle);
@@ -86,12 +95,12 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
         double[] calculatedAngles = new double[robotContainer.swerveModules.length];
         double[] calculatedPowers = new double[robotContainer.swerveModules.length];
 
+        // Calculate the x and y components of translational movement.
+        double translationalX = translationalMagnitude * Math.cos(translationalAngle) * translationalDirection;
+        double translationalY = translationalMagnitude * Math.sin(translationalAngle) * translationalDirection;
+
         // Iterate through each swerve module to calculate its target angle and power.
         for (int i = 0; i < robotContainer.swerveModules.length; i++) {
-            // Calculate the x and y components of translational movement.
-            double translationalX = translationalMagnitude * Math.cos(translationalAngle) * translationalDirection;
-            double translationalY = translationalMagnitude * Math.sin(translationalAngle) * translationalDirection;
-
             // Calculate the x and y components of rotational movement.
             double rotationalX = rotationalMagnitude * Constants.SWERVE_ROTATION_FORMATION_COSINES_RADIANS[i] * rotationalDirection;
             double rotationalY = rotationalMagnitude * Constants.SWERVE_ROTATION_FORMATION_SINES_RADIANS[i] * rotationalDirection;
@@ -111,7 +120,8 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
         if (!Arrays.stream(calculatedAngles).allMatch(v -> Math.abs(v) <= 0.01)) {
             lastAngles = calculatedAngles;
         }
-        swerveSetTargets(calculatedAngles, calculatedPowers);
+
+        setTargets(calculatedAngles, calculatedPowers);
     }
 
     /**
@@ -119,7 +129,7 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
      * @param targetAngles An array of target angles for each swerve module.
      * @param targetPowers An array of target powers for each swerve module.
      */
-    public void swerveSetTargets(double[] targetAngles, double[] targetPowers) {
+    public void setTargets(double[] targetAngles, double[] targetPowers) {
         if (!Arrays.stream(targetPowers).allMatch(v -> v == 0)) {
             targetPowers = scalePowers(targetPowers);
         }

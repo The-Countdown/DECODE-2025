@@ -11,12 +11,9 @@ import java.util.Arrays;
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Rotate", group = "Auto")
 public class Rotate extends OpMode {
-    public static double CURRENT_LOOP_TIME_AVG_MS;
     private RobotContainer robotContainer;
-    public static double CURRENT_LOOP_TIME_MS;
     private static final ElapsedTime turretAccelerationTimer = new ElapsedTime();
     private static final ElapsedTime rotateTimer = new ElapsedTime();
-    private int currentServo = -1;
     double[] angles = {0, 0, 0, 0};
     double angle = 0;
 
@@ -51,8 +48,7 @@ public class Rotate extends OpMode {
 
     @Override
     public void loop() {
-        CURRENT_LOOP_TIME_MS = robotContainer.updateLoopTime("teleOp");
-        CURRENT_LOOP_TIME_AVG_MS = robotContainer.getRollingAverageLoopTime("teleOp");
+        robotContainer.updateLoopTime("teleOp");
         robotContainer.refreshData();
 
         if (rotateTimer.seconds() > 1) {
@@ -68,19 +64,9 @@ public class Rotate extends OpMode {
             angle = 0;
         }
 
-        if (gamepad1.dpad_up) {
-            currentServo = 0;
-        } else if (gamepad1.dpad_right) {
-            currentServo = 1;
-        } else if (gamepad1.dpad_down) {
-            currentServo = 2;
-        } else if (gamepad1.dpad_left) {
-            currentServo = 3;
-        }
+        robotContainer.drivetrain.setTargets(angles, Constants.SWERVE_NO_POWER);
 
-        robotContainer.drivetrain.swerveSetTargets(angles, Constants.SWERVE_NO_POWER);
-
-        robotContainer.telemetry(currentServo, 0, CURRENT_LOOP_TIME_MS, CURRENT_LOOP_TIME_AVG_MS);
+        robotContainer.telemetry("teleOp");
         Thread.yield();
     }
 

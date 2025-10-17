@@ -67,11 +67,11 @@ public class PathPlanner {
             }
 
 
-            robot.drivetrain.swerveSetTargets(angles, powers);
+            robot.drivetrain.setTargets(angles, powers);
 //            robot.pathPlanner.waitForTarget();
         }
         double[] emptyAngles = {0, 0, 0, 0};
-        robot.drivetrain.swerveSetTargets(emptyAngles, Constants.SWERVE_NO_POWER);
+        robot.drivetrain.setTargets(emptyAngles, Constants.SWERVE_NO_POWER);
     }
 
     public void driveThroughPath () {

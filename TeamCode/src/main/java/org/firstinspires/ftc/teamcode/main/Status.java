@@ -42,4 +42,5 @@ public class Status {
     public static boolean policeOn = false;
 
     public static boolean isDrivingActive = false;
+    public static boolean fieldOriented = false;
 }

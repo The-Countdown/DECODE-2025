@@ -35,6 +35,10 @@ public class GamepadWrapper {
             return currState;
         }
 
+        public boolean isPressed() {
+            return currState;
+        }
+
         /**
          * Checks if the button has been held down for the specified number of seconds.
          * @param seconds The number of seconds to check for.

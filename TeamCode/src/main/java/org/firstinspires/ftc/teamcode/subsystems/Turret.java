@@ -6,15 +6,14 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
-import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 import org.firstinspires.ftc.teamcode.util.LinkedMotors;
 import org.firstinspires.ftc.teamcode.util.LinkedServos;
 
 public class Turret extends RobotContainer.HardwareDevices {
     private RobotContainer robotContainer;
-    private LinkedMotors flyWheelMotors;
-    private LinkedServos turretServos;
-    private ServoImplEx hoodServo;
+    private final LinkedMotors flyWheelMotors;
+    private final LinkedServos turretServos;
+    private final ServoImplEx hoodServo;
 
     public Turret(RobotContainer robotContainer, LinkedMotors flyWheelMotors, ServoImplEx hoodServo, LinkedServos turretServos) {
         this.robotContainer = robotContainer;
@@ -23,52 +22,30 @@ public class Turret extends RobotContainer.HardwareDevices {
         this.turretServos = turretServos;
     }
 
-    //turret hood change by degree
-    //turret turn with 180 - -180 degrees
-    //flywheel turn input 0-1 output velocity
-
-    //example angles 10-45
-    //not taking into account the gear ratios
-    public void setHoodTargetAngle(double angle) {
-        if (angle > 45) {
-            angle = 45;
-        } else if (angle < 10) {
-            angle = 10;
-        }
-        hoodServo.setPosition(angle/355);
-    }
-
     /**
      * assuming 1:1 ratio for turret
      * need calculate gear ratio when go home
     */
-    public void setTurretTargetPosition(double position) {
+    public void setTargetPosition(double position) {
         turretServos.setPosition((position + 1)/2);
     }
 
-    public void setTurretTargetRaw(double position) {
+    public void setTargetRaw(double position) {
         turretServos.setPosition(position);
     }
 
-    public void setTurretTargetAngle(double angle) {
+    public void setTargetAngle(double angle) {
         if (angle > 355) {
             angle = angle % 355;
         }
         turretServos.setPosition(angle/355);
     }
 
-    public double getTurretPosition() {
+    public double getPosition() {
         return turretServos.getPosition();
     }
 
-    //ticks per second
-    //param 0-1
-    //drive train updater go look at
-    public void setFlywheelTargetVelocity(double power) {
-        flyWheelMotors.setVelocity(Constants.SWERVE_MOTOR_MAX_VELOCITY_TICKS_PER_SECOND * power);
-    }
-
-    public void setTurretServosPower(double power) {
+    public void setServosPower(double power) {
         if (power > 1) {
             power = 1;
         } else if (power < -1) {
@@ -81,8 +58,26 @@ public class Turret extends RobotContainer.HardwareDevices {
         double xDiff = Constants.GOAL_POSE.getX(DistanceUnit.INCH) - Status.currentPose.getX(DistanceUnit.INCH);
         double yDiff = Constants.GOAL_POSE.getY(DistanceUnit.INCH) - Status.currentPose.getY(DistanceUnit.INCH);
         double angleToFaceGoal = Math.atan(yDiff/xDiff) - Status.currentHeading;
-        setTurretTargetAngle(angleToFaceGoal);
+        setTargetAngle(angleToFaceGoal);
     }
 
+    public class Flywheel {
+        public void setTargetVelocity(double power) {
+            flyWheelMotors.setVelocity(Constants.SWERVE_MOTOR_MAX_VELOCITY_TICKS_PER_SECOND * power);
+        }
+    }
 
+    public class Hood {
+        public void setTargetAngle(double angle) {
+            if (angle > 45) {
+                angle = 45;
+            } else if (angle < 10) {
+                angle = 10;
+            }
+            hoodServo.setPosition(angle/355);
+        }
+    }
+
+    Flywheel flywheel = new Flywheel();
+    Hood hood = new Hood();
 }

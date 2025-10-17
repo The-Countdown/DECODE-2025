@@ -77,12 +77,12 @@ public class IndicatorLighting {
             }
         }
 
-        public void lightsUpdater() {
+        public void lightsUpdate() {
             if (robotContainer.gamepadEx1.ps.isHeldFor(0.75) && Status.lightsOn) {
                 robotContainer.allIndicatorLights.flashingReset();
                 Status.lightsOn = false;
 
-                robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
+                robotContainer.drivetrain.setTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
 
                 Status.isDrivingActive = false;
             }

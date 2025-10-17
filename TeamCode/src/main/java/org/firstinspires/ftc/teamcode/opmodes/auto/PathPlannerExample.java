@@ -25,7 +25,7 @@ public class PathPlannerExample extends OpMode {
         robotContainer.refreshData();
         RobotContainer.HardwareDevices.imu.resetYaw();
         RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU();
-        robotContainer.drivetrain.swerveSetTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
+        robotContainer.drivetrain.setTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
         robotContainer.telemetry.addLine("Auto Initialized");
         robotContainer.telemetry.update();
         robotContainer.pathPlanner = new PathPlanner(robotContainer.telemetry, robotContainer);
