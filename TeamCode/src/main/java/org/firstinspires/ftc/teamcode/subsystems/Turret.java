@@ -58,7 +58,9 @@ public class Turret extends RobotContainer.HardwareDevices {
         double xDiff = Constants.GOAL_POSE.getX(DistanceUnit.INCH) - Status.currentPose.getX(DistanceUnit.INCH);
         double yDiff = Constants.GOAL_POSE.getY(DistanceUnit.INCH) - Status.currentPose.getY(DistanceUnit.INCH);
         double angleToFaceGoal = Math.atan(yDiff/xDiff) - Status.currentHeading;
-        setTargetAngle(angleToFaceGoal);
+        if (!Double.isNaN(angleToFaceGoal)) {
+            setTargetAngle(angleToFaceGoal);
+        }
     }
 
     public class Flywheel {

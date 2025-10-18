@@ -110,10 +110,10 @@ public class AltTeleOp extends OpMode {
 //        RobotContainer.HardwareDevices.spindexServo.setPower(robotContainer.gamepadEx1.leftStickX() * 0.2);
         beamBreakBoolean = RobotContainer.HardwareDevices.beamBreak.isPressed();
 
-        if (beamBreakButton.getHoldDuration() > Constants.INTAKE_DELAY_SECONDS) {
-            robotContainer.intake.setIntakeVelocity(0.9);
-            robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setIntakeVelocity(0), Constants.INTAKE_RUNTIME_MS);
-        }
+//        if (beamBreakButton.getHoldDuration() > Constants.INTAKE_DELAY_SECONDS) {
+//            robotContainer.intake.setIntakeVelocity(0.9);
+//            robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setIntakeVelocity(0), Constants.INTAKE_RUNTIME_MS);
+//        }
         robotContainer.telemetry.addData("beam break", beamBreakBoolean);
         robotContainer.telemetry.update();
 
