@@ -66,8 +66,8 @@ public class AltTeleOp extends OpMode {
 
         if (robotContainer.gamepadEx1 != null && robotContainer.gamepadEx1.cross.isHeld()) {
             // constants for motor speed, different speed based off of position
-            RobotContainer.HardwareDevices.flyWheelMotorMaster.setPower(Math.min(robotContainer.gamepadEx1.cross.getHoldDuration() * Constants.FLYWHEEL_CURVE, Constants.FLYWHEEL_SPEED));
-            RobotContainer.HardwareDevices.flyWheelMotorSlave.setPower(Math.min(robotContainer.gamepadEx1.cross.getHoldDuration() * Constants.FLYWHEEL_CURVE, Constants.FLYWHEEL_SPEED));
+            RobotContainer.HardwareDevices.flyWheelMotorMaster.setPower(Math.min(robotContainer.gamepadEx1.cross.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, Constants.Turret.FLYWHEEL_SPEED));
+            RobotContainer.HardwareDevices.flyWheelMotorSlave.setPower(Math.min(robotContainer.gamepadEx1.cross.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, Constants.Turret.FLYWHEEL_SPEED));
         } else {
             RobotContainer.HardwareDevices.flyWheelMotorMaster.setPower(0);
             RobotContainer.HardwareDevices.flyWheelMotorSlave.setPower(0);
@@ -88,9 +88,9 @@ public class AltTeleOp extends OpMode {
 
         //turret speed factor * current loop time is how far u want it to move per how many millisecond(loop time)
         if (robotContainer.gamepadEx1.rightStickX() > 0.1) {
-            turretPos += (Constants.TURRET_SPEED_FACTOR * CURRENT_LOOP_TIME_MS) * Math.pow(robotContainer.gamepadEx1.rightStickX(), 2);
+            turretPos += (Constants.Turret.TURRET_SPEED_FACTOR * CURRENT_LOOP_TIME_MS) * Math.pow(robotContainer.gamepadEx1.rightStickX(), 2);
         } else if (robotContainer.gamepadEx1.rightStickX() < -0.1) {
-            turretPos -= (Constants.TURRET_SPEED_FACTOR * CURRENT_LOOP_TIME_MS) * Math.pow(robotContainer.gamepadEx1.rightStickX(), 2);
+            turretPos -= (Constants.Turret.TURRET_SPEED_FACTOR * CURRENT_LOOP_TIME_MS) * Math.pow(robotContainer.gamepadEx1.rightStickX(), 2);
         }
 
         if (turretPos > 1) {

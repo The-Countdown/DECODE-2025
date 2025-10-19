@@ -67,13 +67,13 @@ public class SwerveModule {
          * @return The current angle of the module in degrees, normalized at -180 to 180.
          */
         public double getAngle() {
-            if (!Constants.SERVO_ANALOG_ACTIVE) {
+            if (!Constants.Swerve.SERVO_ANALOG_ACTIVE) {
                 return 0;
             }
 
-            double angle = (analogEncoder.getVoltage() / Constants.ANALOG_MAX_VOLTAGE) * 360;
+            double angle = (analogEncoder.getVoltage() / Constants.System.ANALOG_MAX_VOLTAGE) * 360;
 
-            angle += Constants.SWERVE_SERVO_ANGLE_OFFSET[moduleIndex];
+            angle += Constants.Swerve.SERVO_ANGLE_OFFSET[moduleIndex];
 
             angle = HelperFunctions.normalizeAngle(angle);
 
@@ -99,7 +99,7 @@ public class SwerveModule {
         * Sets the velocity of the motor from 0-1, because it is specific to this swerve motor so the value will be consistent with the multiplier.
          */
         public void setVelocity(double velocity) {
-            drivingMotor.setVelocity(velocity * Constants.SWERVE_MOTOR_MAX_VELOCITY_TICKS_PER_SECOND);
+            drivingMotor.setVelocity(velocity * Constants.Swerve.MOTOR_MAX_VELOCITY_TICKS_PER_SECOND);
         }
 
         public double getVelocity() {

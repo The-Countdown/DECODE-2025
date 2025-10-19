@@ -18,9 +18,9 @@ public class Status {
     public static Pose2D targetPose;
     public static Pose2D currentPose = new Pose2D(DistanceUnit.CM,0,0, AngleUnit.DEGREES,0);
     public static double currentHeading = 0;
-    public static Constants.MOTIF motif;
+    public static Constants.Game.MOTIF motif;
 
-    public static Constants.ALLIANCE alliance;
+    public static Constants.Game.ALLIANCE alliance;
 
     /**
      * A map to store the status of each swerve servo.

@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.drivetrain;
 
-import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.main.Constants;
@@ -29,7 +28,7 @@ public class SwervePIDF {
     public SwervePIDF(RobotContainer robotContainer, int module) {
         this.robotContainer = robotContainer;
         this.module = module;
-        this.targetAngle = Constants.SWERVE_STOP_FORMATION[module];
+        this.targetAngle = Constants.Swerve.STOP_FORMATION[module];
         this.iTimer = new ElapsedTime();
     }
 
@@ -70,16 +69,16 @@ public class SwervePIDF {
 
         error = getError();
 
-        p = Constants.SWERVE_SERVO_KP[module] * error;
-        i = Constants.SWERVE_SERVO_KI[module] * iTimer.milliseconds() * Math.signum(error);
+        p = Constants.Swerve.SERVO_KP[module] * error;
+        i = Constants.Swerve.SERVO_KI[module] * iTimer.milliseconds() * Math.signum(error);
         // ff = Constants.SWERVE_SERVO_KF[module] * Math.signum(error);
 
-        swerveConstantPower = (Constants.SWERVE_SERVO_KF[module] * (1 - (robotContainer.swerveModules[module].motor.targetPower * Constants.SWERVE_SERVO_MOTOR_FACTOR[module])));
+        swerveConstantPower = (Constants.Swerve.SERVO_KF[module] * (1 - (robotContainer.swerveModules[module].motor.targetPower * Constants.Swerve.SERVO_MOTOR_FACTOR[module])));
         if (swerveConstantPower < 0) {
             swerveConstantPower = 0;
         }
         ff = swerveConstantPower * Math.signum(error);
-        d = Math.signum(error) * (Constants.SWERVE_SERVO_KD[module] * (lastError - error));
+        d = Math.signum(error) * (Constants.Swerve.SERVO_KD[module] * (lastError - error));
 
 //        robotContainer.telemetry.addData("p " + module + " : " , p);
 //        robotContainer.telemetry.addData("i " + module + " : ", i);

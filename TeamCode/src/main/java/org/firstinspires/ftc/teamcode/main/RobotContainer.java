@@ -70,8 +70,8 @@ public class RobotContainer {
     public final Map<String, ElapsedTime> loopTimers = new HashMap<>();
     private final ArrayList<String> retainedTelemetryCaptions = new ArrayList<>();
     private final ArrayList<Object> retainedTelemetryValues = new ArrayList<>();
-    public final SwerveModule[] swerveModules = new SwerveModule[Constants.NUM_SWERVE_MOTORS];
-    public SwervePIDF[] swerveServosPIDF = new SwervePIDF[Constants.NUM_SWERVE_SERVOS];
+    public final SwerveModule[] swerveModules = new SwerveModule[Constants.Swerve.NUM_MOTORS];
+    public SwervePIDF[] swerveServosPIDF = new SwervePIDF[Constants.Swerve.NUM_SERVOS];
     public LocalizationUpdater localizationUpdater;
     public DrivetrainUpdater drivetrainUpdater;
     public ADGUpdater adgUpdater;
@@ -112,15 +112,15 @@ public class RobotContainer {
         public static ServoImplEx indicatorLightBack;
 
         // Gobilda 5000 Series
-        public static DcMotorImplEx[] swerveMotors = new DcMotorImplEx[Constants.NUM_SWERVE_MOTORS];
-            public static String[] motorNames = new String[Constants.NUM_SWERVE_MOTORS];
+        public static DcMotorImplEx[] swerveMotors = new DcMotorImplEx[Constants.Swerve.NUM_MOTORS];
+            public static String[] motorNames = new String[Constants.Swerve.NUM_MOTORS];
 
         // Axon Mini+
-        public static CRServoImplEx[] swerveServos = new CRServoImplEx[Constants.NUM_SWERVE_SERVOS];
-            public static String[] servoNames = new String[Constants.NUM_SWERVE_SERVOS];
+        public static CRServoImplEx[] swerveServos = new CRServoImplEx[Constants.Swerve.NUM_SERVOS];
+            public static String[] servoNames = new String[Constants.Swerve.NUM_SERVOS];
 
-        public static AnalogInput[] swerveAnalogs = new AnalogInput[Constants.NUM_SWERVE_ANALOGS];
-            public static String[] analogNames = new String[Constants.NUM_SWERVE_ANALOGS];
+        public static AnalogInput[] swerveAnalogs = new AnalogInput[Constants.Swerve.NUM_ANALOGS];
+            public static String[] analogNames = new String[Constants.Swerve.NUM_ANALOGS];
 
         // Turret
         public static DcMotorImplEx flyWheelMotorMaster;
@@ -148,13 +148,13 @@ public class RobotContainer {
         this.telemetry = new MultipleTelemetry(opMode.telemetry, FtcDashboard.getInstance().getTelemetry());
 
         HardwareDevices.imu = getHardwareDevice(IMU.class, "imu");
-        HardwareDevices.imu.initialize(Constants.imuParameters);
+        HardwareDevices.imu.initialize(Constants.Robot.imuParameters);
 
         HardwareDevices.pinpoint = getHardwareDevice(GoBildaPinpointDriver.class, "pinpoint");
-        HardwareDevices.pinpoint.setOffsets(Constants.PINPOINT_X_OFFSET_MM, Constants.PINPOINT_Y_OFFSET_MM, DistanceUnit.MM);
-        HardwareDevices.pinpoint.setEncoderResolution(Constants.PINPOINT_ODOM_POD);
-        HardwareDevices.pinpoint.setEncoderDirections(Constants.PINPOINT_X_ENCODER_DIRECTION, Constants.PINPOINT_Y_ENCODER_DIRECTION);
-        HardwareDevices.pinpoint.setPosition(Constants.startingPose);
+        HardwareDevices.pinpoint.setOffsets(Constants.Pathing.PINPOINT_X_OFFSET_MM, Constants.Pathing.PINPOINT_Y_OFFSET_MM, DistanceUnit.MM);
+        HardwareDevices.pinpoint.setEncoderResolution(Constants.Pathing.PINPOINT_ODOM_POD);
+        HardwareDevices.pinpoint.setEncoderDirections(Constants.Pathing.PINPOINT_X_ENCODER_DIRECTION, Constants.Pathing.PINPOINT_Y_ENCODER_DIRECTION);
+        HardwareDevices.pinpoint.setPosition(Constants.Robot.startingPose);
 
         HardwareDevices.limelight = getHardwareDevice(Limelight3A.class, "limelight");
         HardwareDevices.huskyLens1 = getHardwareDevice(HuskyLens.class, "huskyLens1");
@@ -183,9 +183,9 @@ public class RobotContainer {
             HardwareDevices.swerveMotors[i].setMode(DcMotorImplEx.RunMode.RUN_USING_ENCODER);
 
             swerveServosPIDF[i] = new SwervePIDF(this, i);
-            swerveModules[i] = new SwerveModule(this, HardwareDevices.swerveMotors[i], HardwareDevices.swerveServos[i], swerveServosPIDF[i], HardwareDevices.swerveAnalogs[i], Constants.SWERVE_POWER_MULTIPLIER[i], i);  //is it best to pass in a constant?
+            swerveModules[i] = new SwerveModule(this, HardwareDevices.swerveMotors[i], HardwareDevices.swerveServos[i], swerveServosPIDF[i], HardwareDevices.swerveAnalogs[i], Constants.Swerve.POWER_MULTIPLIER[i], i);  //is it best to pass in a constant?
 
-            if (Constants.SERVO_ANALOG_ACTIVE) {
+            if (Constants.Swerve.SERVO_ANALOG_ACTIVE) {
                 int analogPortNumber = Character.getNumericValue(HardwareDevices.swerveAnalogs[i].getConnectionInfo().charAt(HardwareDevices.swerveAnalogs[i].getConnectionInfo().length() - 1));
                 if (analogPortNumber != i) {
                     addRetainedTelemetry("WARNING: Swerve Analog Encoder " + i + " is connected to port " + analogPortNumber + ", should be port " + i, null);
@@ -250,7 +250,7 @@ public class RobotContainer {
         for (LynxModule hub : HardwareDevices.allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }
-        telemetry.setMsTransmissionInterval(Constants.TELEMETRY_UPDATE_INTERVAL_MS);
+        telemetry.setMsTransmissionInterval(Constants.System.TELEMETRY_UPDATE_INTERVAL_MS);
     }
 
     public void start(OpMode opmode) {
@@ -408,7 +408,7 @@ public class RobotContainer {
         double dt = timer.milliseconds();
         timer.reset();
         times.add(dt);
-        if (times.size() > Constants.LOOP_AVERAGE_WINDOW_SIZE) {
+        if (times.size() > Constants.System.LOOP_AVERAGE_WINDOW_SIZE) {
             times.removeFirst();
         }
         return dt;
@@ -430,10 +430,10 @@ public class RobotContainer {
     }
 
     public void telemetry (String opMode) {
-        telemetry.addData("Control Hub Voltage", getVoltage(Constants.CONTROL_HUB_INDEX) + " V");
-        telemetry.addData("Expansion Hub Voltage", getVoltage(Constants.EXPANSION_HUB_INDEX) + " V");
-        telemetry.addData("Control Hub Current", getCurrent(Constants.CONTROL_HUB_INDEX) + " A");
-        telemetry.addData("Expansion Hub Current", getCurrent(Constants.EXPANSION_HUB_INDEX) + " A");
+        telemetry.addData("Control Hub Voltage", getVoltage(Constants.Robot.CONTROL_HUB_INDEX) + " V");
+        telemetry.addData("Expansion Hub Voltage", getVoltage(Constants.Robot.EXPANSION_HUB_INDEX) + " V");
+        telemetry.addData("Control Hub Current", getCurrent(Constants.Robot.CONTROL_HUB_INDEX) + " A");
+        telemetry.addData("Expansion Hub Current", getCurrent(Constants.Robot.EXPANSION_HUB_INDEX) + " A");
         telemetry.addLine();
         telemetry.addData("Pinpoint X", Status.currentPose.getX(DistanceUnit.CM) + " cm");
         telemetry.addData("Pinpoint Y", Status.currentPose.getY(DistanceUnit.CM) + " cm");

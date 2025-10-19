@@ -26,13 +26,13 @@ public class SwerveAutoTuner extends OpMode {
         robotContainer = new RobotContainer(this);
         robotContainer.isRunning = true;
         robotContainer.init();
-        robotContainer.indicatorLightFrontLeft.setColor(Constants.LED_COLOR.RED);
+        robotContainer.indicatorLightFrontLeft.setColor(Constants.LED.LED_COLOR.RED);
         robotContainer.refreshData();
         RobotContainer.HardwareDevices.imu.resetYaw();
         RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU();
         robotContainer.opMode.telemetry.addLine("OpMode Initialized");
         robotContainer.opMode.telemetry.update();
-        robotContainer.indicatorLightFrontLeft.setColor(Constants.LED_COLOR.GREEN);
+        robotContainer.indicatorLightFrontLeft.setColor(Constants.LED.LED_COLOR.GREEN);
     }
 
     @Override
@@ -82,12 +82,12 @@ public class SwerveAutoTuner extends OpMode {
 
         averagedError = Status.currentHeading - targetHeading + averagedError / 2;
 
-        for (int i = 0; i < Constants.NUM_SWERVE_SERVOS; i++) {
+        for (int i = 0; i < Constants.Swerve.NUM_SERVOS; i++) {
             if (System.currentTimeMillis() - timer2 >= PIDTuneTime) {
-                double kp = Constants.SWERVE_SERVO_KP[i];
-                double ki = Constants.SWERVE_SERVO_KI[i];
-                double kd = Constants.SWERVE_SERVO_KD[i];
-                double kf = Constants.SWERVE_SERVO_KF[i];
+                double kp = Constants.Swerve.SERVO_KP[i];
+                double ki = Constants.Swerve.SERVO_KI[i];
+                double kd = Constants.Swerve.SERVO_KD[i];
+                double kf = Constants.Swerve.SERVO_KF[i];
                 // Calculate the error and its derivative
                 double error = averagedError;
                 double derivative = (error - previousError) / 0.1;
@@ -108,15 +108,15 @@ public class SwerveAutoTuner extends OpMode {
                 previousError = error;
 
                 if (error < -Math.PI) {
-                    Constants.SWERVE_SERVO_KP[i] = kp;
-                    Constants.SWERVE_SERVO_KI[i] = ki;
-                    Constants.SWERVE_SERVO_KD[i] = kd;
-                    Constants.SWERVE_SERVO_KF[i] = kf;
+                    Constants.Swerve.SERVO_KP[i] = kp;
+                    Constants.Swerve.SERVO_KI[i] = ki;
+                    Constants.Swerve.SERVO_KD[i] = kd;
+                    Constants.Swerve.SERVO_KF[i] = kf;
                 } else if (error > Math.PI) {
-                    Constants.SWERVE_SERVO_KP[i] = kp;
-                    Constants.SWERVE_SERVO_KI[i] = ki;
-                    Constants.SWERVE_SERVO_KD[i] = kd;
-                    Constants.SWERVE_SERVO_KF[i] = kf;
+                    Constants.Swerve.SERVO_KP[i] = kp;
+                    Constants.Swerve.SERVO_KI[i] = ki;
+                    Constants.Swerve.SERVO_KD[i] = kd;
+                    Constants.Swerve.SERVO_KF[i] = kf;
                 }
 
                 if (i == 0) {

@@ -18,13 +18,13 @@ public class WheelPower extends OpMode {
         robotContainer = new RobotContainer(this);
         robotContainer.isRunning = true;
         robotContainer.init();
-        robotContainer.indicatorLightFrontLeft.setColor(Constants.LED_COLOR.RED);
+        robotContainer.indicatorLightFrontLeft.setColor(Constants.LED.LED_COLOR.RED);
         robotContainer.refreshData();
         RobotContainer.HardwareDevices.imu.resetYaw();
         RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU();
         robotContainer.opMode.telemetry.addLine("OpMode Initialized");
         robotContainer.opMode.telemetry.update();
-        robotContainer.indicatorLightFrontLeft.setColor(Constants.LED_COLOR.GREEN);
+        robotContainer.indicatorLightFrontLeft.setColor(Constants.LED.LED_COLOR.GREEN);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class WheelPower extends OpMode {
             robotContainer.addRetainedTelemetry("WARNING, PINPOINT STATUS:", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
         }
 
-        for (int i = 0; i < Constants.NUM_SWERVE_MOTORS; i++) {
+        for (int i = 0; i < Constants.Swerve.NUM_MOTORS; i++) {
             if (robotContainer.swerveModules[i].getPowerMultiplier() != 0) {
                 // Are you sure you want to continue.
             }

@@ -18,7 +18,7 @@ public class TeleOp extends OpMode {
         robotContainer.refreshData();
         RobotContainer.HardwareDevices.imu.resetYaw();
         RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU(); // TODO: Run at start of auto instead
-        robotContainer.drivetrain.setTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
+        robotContainer.drivetrain.setTargets(Constants.Swerve.STOP_FORMATION, Constants.Swerve.NO_POWER);
         robotContainer.telemetry.addLine("OpMode Initialized");
         robotContainer.telemetry.update();
     }
@@ -56,7 +56,7 @@ public class TeleOp extends OpMode {
 
     @Override
     public void stop() {
-        robotContainer.drivetrain.setTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
+        robotContainer.drivetrain.setTargets(Constants.Swerve.STOP_FORMATION, Constants.Swerve.NO_POWER);
 
         Status.opModeIsActive = false;
         robotContainer.isRunning = false;

@@ -17,7 +17,7 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
 
     private static final ElapsedTime stopTimer = new ElapsedTime();
 
-    double[] lastAngles = Constants.SWERVE_STOP_FORMATION;
+    double[] lastAngles = Constants.Swerve.STOP_FORMATION;
 
     /**
      * Constructor for the Drivetrain class.
@@ -38,13 +38,13 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
 
         double x = joystickScaler(-robotContainer.gamepadEx1.leftStickX());
         double y = joystickScaler(robotContainer.gamepadEx1.leftStickY());
-        double rX = Constants.useHeadingPIDForTurning ? joystickScaler(-robotContainer.gamepadEx1.rightStickX()) : 0;
+        double rX = Constants.Pathing.useHeadingPIDForTurning ? joystickScaler(-robotContainer.gamepadEx1.rightStickX()) : 0;
         double rotationalMagnitude = Math.abs(rX);
 
         if (robotContainer.gamepadEx1.cross.wasJustPressed()) Status.fieldOriented = !Status.fieldOriented;
 
-        if (Constants.useHeadingPIDForTurning && Math.abs(robotContainer.gamepadEx1.rightStickX()) > 0.05) {
-            robotContainer.headingPID.setTargetHeading((robotContainer.headingPID.getTargetHeading() - Constants.turningRate * robotContainer.getLoopTime("teleOp") * robotContainer.gamepadEx1.rightStickX()));
+        if (Constants.Pathing.useHeadingPIDForTurning && Math.abs(robotContainer.gamepadEx1.rightStickX()) > 0.05) {
+            robotContainer.headingPID.setTargetHeading((robotContainer.headingPID.getTargetHeading() - Constants.Pathing.turningRate * robotContainer.getLoopTime("teleOp") * robotContainer.gamepadEx1.rightStickX()));
         }
 
         if (robotContainer.gamepadEx1.rightStickX.wasJustReleased()) {
@@ -59,18 +59,18 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
                 robotContainer.gamepadEx1.leftStickY.wasJustReleased() ||
                 robotContainer.gamepadEx1.rightStickX.wasJustReleased()) &&
                 Status.robotHeadingTargetReached && x == 0 && y == 0 && rX == 0) {
-            setTargets(lastAngles, Constants.SWERVE_NO_POWER);
+            setTargets(lastAngles, Constants.Swerve.NO_POWER);
             stopTimer.reset();
             return;
         }
 
         if (Status.robotHeadingTargetReached && x == 0 && y == 0 && rX == 0 && stopTimer.seconds() >= 1) {
-            setTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
+            setTargets(Constants.Swerve.STOP_FORMATION, Constants.Swerve.NO_POWER);
             return;
         }
 
         if (Status.robotHeadingTargetReached && x == 0 && y == 0 && rX == 0) {
-            setTargets(lastAngles, Constants.SWERVE_NO_POWER);
+            setTargets(lastAngles, Constants.Swerve.NO_POWER);
             return;
         }
 
@@ -102,8 +102,8 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
         // Iterate through each swerve module to calculate its target angle and power.
         for (int i = 0; i < robotContainer.swerveModules.length; i++) {
             // Calculate the x and y components of rotational movement.
-            double rotationalX = rotationalMagnitude * Constants.SWERVE_ROTATION_FORMATION_COSINES_RADIANS[i] * rotationalDirection;
-            double rotationalY = rotationalMagnitude * Constants.SWERVE_ROTATION_FORMATION_SINES_RADIANS[i] * rotationalDirection;
+            double rotationalX = rotationalMagnitude * Constants.Swerve.ROTATION_FORMATION_COSINES_RADIANS[i] * rotationalDirection;
+            double rotationalY = rotationalMagnitude * Constants.Swerve.ROTATION_FORMATION_SINES_RADIANS[i] * rotationalDirection;
 
             // Combine the translational and rotational components into a single vector.
             double vectorX = translationalX + rotationalX;
@@ -139,13 +139,13 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
             double error = targetAngles[i] - currentAngle;
             error = HelperFunctions.normalizeAngle(error);
 
-            if (!Constants.SWERVE_MODULE_FLIPPED[i] && Math.abs(error) > Constants.SWERVE_MODULE_FLIP_SWITCH_ON) {
-                Constants.SWERVE_MODULE_FLIPPED[i] = true;
-            } else if (Constants.SWERVE_MODULE_FLIPPED[i] && Math.abs(error) <  Constants.SWERVE_MODULE_FLIP_SWITCH_OFF) {
-                Constants.SWERVE_MODULE_FLIPPED[i] = false;
+            if (!Constants.Swerve.MODULE_FLIPPED[i] && Math.abs(error) > Constants.Swerve.MODULE_FLIP_SWITCH_ON) {
+                Constants.Swerve.MODULE_FLIPPED[i] = true;
+            } else if (Constants.Swerve.MODULE_FLIPPED[i] && Math.abs(error) <  Constants.Swerve.MODULE_FLIP_SWITCH_OFF) {
+                Constants.Swerve.MODULE_FLIPPED[i] = false;
             }
 
-            if (Constants.SWERVE_MODULE_FLIPPED[i]) {
+            if (Constants.Swerve.MODULE_FLIPPED[i]) {
                 targetAngles[i] = HelperFunctions.normalizeAngle(targetAngles[i] + 180);
                 robotContainer.swerveModules[i].motor.setTargetPower(-targetPowers[i]);
             } else {
@@ -153,7 +153,7 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
             }
 
             robotContainer.swerveModules[i].servo.setTargetAngle(targetAngles[i]);
-            Constants.SWERVE_MODULE_FLIPPED[i] = false;
+            Constants.Swerve.MODULE_FLIPPED[i] = false;
         }
     }
 
@@ -187,6 +187,6 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
      * @return the scaled power
      */
     public double joystickScaler(double input) {
-        return Math.pow(Math.abs(input), Constants.JOYSTICK_SCALER_EXPONENT) * input;
+        return Math.pow(Math.abs(input), Constants.Control.JOYSTICK_SCALER_EXPONENT) * input;
     }
 }
