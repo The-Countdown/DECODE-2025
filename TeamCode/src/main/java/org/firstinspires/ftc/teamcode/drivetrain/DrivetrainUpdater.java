@@ -77,7 +77,7 @@ public class DrivetrainUpdater extends Thread {
 
                     robotContainer.swerveModules[i].motor.setVelocity(acceleratedMotorPower);
                 } else {
-                    robotContainer.swerveModules[i].servo.setPower(robotContainer.swerveServosPIDF[i].calculate() * (1 - (acceleratedMotorPower * Constants.Swerve.SERVO_PIDF_SCALER)));
+                    robotContainer.swerveModules[i].servo.setPower(robotContainer.swerveServosPIDF[i].calculate());
                     Status.swerveServoStatus[i] = Status.ServoStatus.MOVING;
 
                     robotContainer.swerveModules[i].motor.setVelocity(acceleratedMotorPower * Math.abs(Math.cos(Math.toRadians(robotContainer.swerveServosPIDF[i].getError()))));

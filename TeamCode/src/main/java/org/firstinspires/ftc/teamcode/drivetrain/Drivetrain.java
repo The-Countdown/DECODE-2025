@@ -38,10 +38,12 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
 
         double x = joystickScaler(-robotContainer.gamepadEx1.leftStickX());
         double y = joystickScaler(robotContainer.gamepadEx1.leftStickY());
-        double rX = Constants.Pathing.useHeadingPIDForTurning ? joystickScaler(-robotContainer.gamepadEx1.rightStickX()) : 0;
+        double rX = joystickScaler(-robotContainer.gamepadEx1.rightStickX());
         double rotationalMagnitude = Math.abs(rX);
 
-        if (robotContainer.gamepadEx1.cross.wasJustPressed()) Status.fieldOriented = !Status.fieldOriented;
+        if (robotContainer.gamepadEx1.cross.wasJustPressed()) {
+            Status.fieldOriented = !Status.fieldOriented;
+        }
 
         if (Constants.Pathing.useHeadingPIDForTurning && Math.abs(robotContainer.gamepadEx1.rightStickX()) > 0.05) {
             robotContainer.headingPID.setTargetHeading((robotContainer.headingPID.getTargetHeading() - Constants.Pathing.turningRate * robotContainer.getLoopTime("teleOp") * robotContainer.gamepadEx1.rightStickX()));

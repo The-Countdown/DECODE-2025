@@ -82,8 +82,7 @@ public class RobotContainer {
     public DelayedActionManager delayedActionManager = new DelayedActionManager();
     public Drivetrain drivetrain;
     public HeadingPID headingPID;
-    public IndicatorLighting.Light indicatorLightFrontLeft;
-    public IndicatorLighting.Light indicatorLightFrontRight;
+    public IndicatorLighting.Light indicatorLightFront;
     public IndicatorLighting.Light indicatorLightBack;
     public IndicatorLighting.Group allIndicatorLights;
     public Turret turret;
@@ -107,8 +106,7 @@ public class RobotContainer {
         public static AnalogInput muxAnalog1;
 
         // Gobilda RGB indicator light
-        public static ServoImplEx indicatorLightFrontLeft;
-        public static ServoImplEx indicatorLightFrontRight;
+        public static ServoImplEx indicatorLightFront;
         public static ServoImplEx indicatorLightBack;
 
         // Gobilda 5000 Series
@@ -164,8 +162,7 @@ public class RobotContainer {
         HardwareDevices.muxAnalog1 = getHardwareDevice(AnalogInput.class, "muxA1");
 //        HardwareDevices.mux1.attachAnalog(HardwareDevices.muxAnalog1);
 
-        HardwareDevices.indicatorLightFrontLeft = getHardwareDevice(ServoImplEx.class, "indicatorLightFrontLeft");
-        HardwareDevices.indicatorLightFrontRight = getHardwareDevice(ServoImplEx.class, "indicatorLightFrontRight");
+        HardwareDevices.indicatorLightFront = getHardwareDevice(ServoImplEx.class, "indicatorLightFront");
         HardwareDevices.indicatorLightBack = getHardwareDevice(ServoImplEx.class, "indicatorLightBack");
 
         for (int i = 0; i < swerveModules.length; i++) {
@@ -228,12 +225,10 @@ public class RobotContainer {
         spindexer = new Spindexer(this, HardwareDevices.spindexServo, HardwareDevices.spindexAnalog);
         colorSensor = new ColorSensorFunctions(this, HardwareDevices.colorSensor);
 
-        indicatorLightFrontLeft = new IndicatorLighting.Light(this, HardwareDevices.indicatorLightFrontLeft);
-        indicatorLightFrontRight = new IndicatorLighting.Light(this, HardwareDevices.indicatorLightFrontRight);
+        indicatorLightFront = new IndicatorLighting.Light(this, HardwareDevices.indicatorLightFront);
         indicatorLightBack = new IndicatorLighting.Light(this, HardwareDevices.indicatorLightBack);
         allIndicatorLights = new IndicatorLighting.Group(this);
-        allIndicatorLights.addLight(indicatorLightFrontLeft);
-        allIndicatorLights.addLight(indicatorLightFrontRight);
+        allIndicatorLights.addLight(indicatorLightFront);
         allIndicatorLights.addLight(indicatorLightBack);
 
         drivetrain = new Drivetrain(this);
@@ -462,6 +457,7 @@ public class RobotContainer {
         telemetry.addData("Motor 1 Current Velocity", swerveModules[1].motor.getVelocity());
         telemetry.addData("Motor 2 Current Velocity", swerveModules[2].motor.getVelocity());
         telemetry.addData("Motor 3 Current Velocity", swerveModules[3].motor.getVelocity());
+        telemetry.addData("Field Oriented", Status.fieldOriented);
 
         int selectedServo = -1;
         if (gamepadEx1.dpadUp.isPressed()) {
