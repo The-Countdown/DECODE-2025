@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorImplEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
@@ -221,6 +222,7 @@ public class RobotContainer {
         huskyLensLogic1 = new HuskyLensFunctions(this, RobotContainer.HardwareDevices.huskyLens1);
         huskyLensLogic2 = new HuskyLensFunctions(this, RobotContainer.HardwareDevices.huskyLens2);
         turret = new Turret(this, flyWheelMotors, HardwareDevices.hoodServo, turretServos);
+        HardwareDevices.intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         intake = new Intake(this, HardwareDevices.intakeMotor);
         spindexer = new Spindexer(this, HardwareDevices.spindexServo, HardwareDevices.spindexAnalog);
         colorSensor = new ColorSensorFunctions(this, HardwareDevices.colorSensor);
@@ -458,6 +460,7 @@ public class RobotContainer {
         telemetry.addData("Motor 2 Current Velocity", swerveModules[2].motor.getVelocity());
         telemetry.addData("Motor 3 Current Velocity", swerveModules[3].motor.getVelocity());
         telemetry.addData("Field Oriented", Status.fieldOriented);
+        telemetry.addData("Intake Enabled", Status.intakeEnabled);
 
         int selectedServo = -1;
         if (gamepadEx1.dpadUp.isPressed()) {

@@ -95,7 +95,7 @@ public class Constants {
          * The angle offset for each swerve servo, used to correct any mechanical misalignment.
          * Index 4 is global, and the rest are in order (module 0, 1, 2, 3) see {@link SwerveModule}.
          */
-        public static double[] SERVO_ANGLE_OFFSET = {230, 20, 20, 50};
+        public static double[] SERVO_ANGLE_OFFSET = {230, 20, 20, 60};
 
         /**
          * The desired servo angles for the swerve modules when in the rotation formation

@@ -43,4 +43,6 @@ public class Status {
 
     public static boolean isDrivingActive = false;
     public static boolean fieldOriented = false;
+
+    public static boolean intakeEnabled = false;
 }
