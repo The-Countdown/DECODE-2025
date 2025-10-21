@@ -13,7 +13,6 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorImplEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
@@ -38,6 +37,7 @@ import org.firstinspires.ftc.teamcode.other.ADGUpdater;
 import org.firstinspires.ftc.teamcode.other.IndicatorLighting;
 import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.LocalizationUpdater;
 import org.firstinspires.ftc.teamcode.subsystems.Spindexer;
+import org.firstinspires.ftc.teamcode.subsystems.Transfer;
 import org.firstinspires.ftc.teamcode.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.util.DelayedActionManager;
 import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
@@ -89,6 +89,7 @@ public class RobotContainer {
     public Turret turret;
     public Intake intake;
     public Spindexer spindexer;
+    public Transfer transfer;
     public ColorSensorFunctions colorSensor;
 
     public static class HardwareDevices {
@@ -129,7 +130,9 @@ public class RobotContainer {
         public static ServoImplEx hoodServo;
 
         // Spindexer
-        public static CRServoImplEx transferServo;
+        public static CRServoImplEx transferServoLow;
+        public static CRServoImplEx transferServoHigh;
+
         public static CRServoImplEx spindexServo;
         public static AnalogInput spindexAnalog;
 
@@ -200,7 +203,8 @@ public class RobotContainer {
         HardwareDevices.turretServoMaster = getHardwareDevice(ServoImplEx.class, "turretServoMaster");
         HardwareDevices.turretServoSlave = getHardwareDevice(ServoImplEx.class, "turretServoSlave");
         HardwareDevices.hoodServo = getHardwareDevice(ServoImplEx.class, "hoodServo");
-        HardwareDevices.transferServo = getHardwareDevice(CRServoImplEx.class, "transferServo");
+        HardwareDevices.transferServoLow = getHardwareDevice(CRServoImplEx.class, "transferServoLow");
+        HardwareDevices.transferServoHigh = getHardwareDevice(CRServoImplEx.class, "transferServoHigh");
         HardwareDevices.spindexServo = getHardwareDevice(CRServoImplEx.class, "spindexServo");
         HardwareDevices.intakeMotor = getHardwareDevice(DcMotorImplEx.class, "intakeMotor");
         HardwareDevices.flyWheelMotorMaster = getHardwareDevice(DcMotorImplEx.class, "flyWheelMotorMaster");
@@ -222,9 +226,10 @@ public class RobotContainer {
         huskyLensLogic1 = new HuskyLensFunctions(this, RobotContainer.HardwareDevices.huskyLens1);
         huskyLensLogic2 = new HuskyLensFunctions(this, RobotContainer.HardwareDevices.huskyLens2);
         turret = new Turret(this, flyWheelMotors, HardwareDevices.hoodServo, turretServos);
-        HardwareDevices.intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        HardwareDevices.intakeMotor.setDirection(DcMotor.Direction.REVERSE);
         intake = new Intake(this, HardwareDevices.intakeMotor);
         spindexer = new Spindexer(this, HardwareDevices.spindexServo, HardwareDevices.spindexAnalog);
+        transfer = new Transfer(this, HardwareDevices.transferServoLow, HardwareDevices.transferServoHigh);
         colorSensor = new ColorSensorFunctions(this, HardwareDevices.colorSensor);
 
         indicatorLightFront = new IndicatorLighting.Light(this, HardwareDevices.indicatorLightFront);

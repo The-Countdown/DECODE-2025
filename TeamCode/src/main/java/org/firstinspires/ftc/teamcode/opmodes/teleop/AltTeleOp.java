@@ -73,6 +73,9 @@ public class AltTeleOp extends OpMode {
             RobotContainer.HardwareDevices.flyWheelMotorSlave.setPower(0);
         }
 
+        robotContainer.transfer.setLowPower(robotContainer.gamepadEx1.leftTriggerRaw());
+        robotContainer.transfer.setHighPower(robotContainer.gamepadEx1.rightTriggerRaw());
+
         robotContainer.telemetry.addData("flywheel speed", RobotContainer.HardwareDevices.flyWheelMotorMaster.getVelocity());
         robotContainer.telemetry.addData("flywheel current mA", RobotContainer.HardwareDevices.flyWheelMotorMaster.getCurrent(CurrentUnit.MILLIAMPS));
         robotContainer.telemetry.addData("upper flywheel speed", RobotContainer.HardwareDevices.flyWheelMotorSlave.getVelocity());
