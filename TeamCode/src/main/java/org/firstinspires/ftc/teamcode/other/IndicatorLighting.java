@@ -106,17 +106,13 @@ public class IndicatorLighting {
 
             if (Status.lightsOn && !Status.policeOn) {
                 if (robotContainer.gamepadEx1.leftStickX() > 0.1) {
-                    robotContainer.indicatorLightFrontRight.flashing(Constants.LED_COLOR.ORANGE, Constants.LED_COLOR.WHITE, 2);
-                    robotContainer.indicatorLightFrontLeft.setColor(Constants.LED_COLOR.WHITE);
+                    robotContainer.indicatorLightFront.setColor(Constants.LED_COLOR.WHITE);
                 } else if (robotContainer.gamepadEx1.leftStickX() < -0.1) {
-                    robotContainer.indicatorLightFrontLeft.flashing(Constants.LED_COLOR.ORANGE, Constants.LED_COLOR.WHITE, 2);
-                    robotContainer.indicatorLightFrontRight.setColor(Constants.LED_COLOR.WHITE);
+                    robotContainer.indicatorLightFront.flashing(Constants.LED_COLOR.ORANGE, Constants.LED_COLOR.WHITE, 2);
                 } else if (robotContainer.gamepadEx1.leftStickY() > 0.1) {
-                    robotContainer.indicatorLightFrontRight.rainbow();
-                    robotContainer.indicatorLightFrontLeft.rainbow();
+                    robotContainer.indicatorLightFront.rainbow();
                 } else {
-                    robotContainer.indicatorLightFrontRight.setColor(Constants.LED_COLOR.WHITE);
-                    robotContainer.indicatorLightFrontLeft.setColor(Constants.LED_COLOR.WHITE);
+                    robotContainer.indicatorLightFront.setColor(Constants.LED_COLOR.WHITE);
                 }
 
                 if (robotContainer.gamepadEx1.leftStickY() < -0.1) {

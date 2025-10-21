@@ -82,8 +82,7 @@ public class RobotContainer {
     public DelayedActionManager delayedActionManager = new DelayedActionManager();
     public Drivetrain drivetrain;
     public HeadingPID headingPID;
-    public IndicatorLighting.Light indicatorLightFrontLeft;
-    public IndicatorLighting.Light indicatorLightFrontRight;
+    public IndicatorLighting.Light indicatorLightFront;
     public IndicatorLighting.Light indicatorLightBack;
     public IndicatorLighting.Group allIndicatorLights;
     public Turret turret;
@@ -164,8 +163,7 @@ public class RobotContainer {
         HardwareDevices.muxAnalog1 = getHardwareDevice(AnalogInput.class, "muxA1");
 //        HardwareDevices.mux1.attachAnalog(HardwareDevices.muxAnalog1);
 
-        HardwareDevices.indicatorLightFrontLeft = getHardwareDevice(ServoImplEx.class, "indicatorLightFrontLeft");
-        HardwareDevices.indicatorLightFrontRight = getHardwareDevice(ServoImplEx.class, "indicatorLightFrontRight");
+        HardwareDevices.indicatorLightFrontLeft = getHardwareDevice(ServoImplEx.class, "indicatorLightFront");
         HardwareDevices.indicatorLightBack = getHardwareDevice(ServoImplEx.class, "indicatorLightBack");
 
         for (int i = 0; i < swerveModules.length; i++) {
@@ -228,12 +226,10 @@ public class RobotContainer {
         spindexer = new Spindexer(this, HardwareDevices.spindexServo, HardwareDevices.spindexAnalog);
         colorSensor = new ColorSensorFunctions(this, HardwareDevices.colorSensor);
 
-        indicatorLightFrontLeft = new IndicatorLighting.Light(this, HardwareDevices.indicatorLightFrontLeft);
-        indicatorLightFrontRight = new IndicatorLighting.Light(this, HardwareDevices.indicatorLightFrontRight);
+        indicatorLightFront = new IndicatorLighting.Light(this, HardwareDevices.indicatorLightFrontLeft);
         indicatorLightBack = new IndicatorLighting.Light(this, HardwareDevices.indicatorLightBack);
         allIndicatorLights = new IndicatorLighting.Group(this);
-        allIndicatorLights.addLight(indicatorLightFrontLeft);
-        allIndicatorLights.addLight(indicatorLightFrontRight);
+        allIndicatorLights.addLight(indicatorLightFront);
         allIndicatorLights.addLight(indicatorLightBack);
 
         drivetrain = new Drivetrain(this);

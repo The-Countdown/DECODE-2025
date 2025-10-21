@@ -21,13 +21,13 @@ public class SwerveAnalogServoZeroer extends OpMode {
         robotContainer = new RobotContainer(this);
         robotContainer.isRunning = true;
         robotContainer.init();
-        robotContainer.indicatorLightFrontLeft.setColor(Constants.LED_COLOR.RED);
+        robotContainer.indicatorLightFront.setColor(Constants.LED_COLOR.RED);
         robotContainer.refreshData();
         RobotContainer.HardwareDevices.imu.resetYaw();
         RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU();
         robotContainer.opMode.telemetry.addLine("OpMode Initialized");
         robotContainer.opMode.telemetry.update();
-        robotContainer.indicatorLightFrontLeft.setColor(Constants.LED_COLOR.GREEN);
+        robotContainer.indicatorLightFront.setColor(Constants.LED_COLOR.GREEN);
     }
 
     @Override
