@@ -64,7 +64,7 @@ public class AltTeleOp extends OpMode {
         }
         beamBreakButton.update(beamBreakBoolean);
 
-        if (robotContainer.gamepadEx1 != null && robotContainer.gamepadEx1.cross.isHeld()) {
+        if (robotContainer.gamepadEx1.cross.isHeld()) {
             // constants for motor speed, different speed based off of position
             RobotContainer.HardwareDevices.flyWheelMotorMaster.setPower(Math.min(robotContainer.gamepadEx1.cross.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, Constants.Turret.FLYWHEEL_SPEED));
             RobotContainer.HardwareDevices.flyWheelMotorSlave.setPower(Math.min(robotContainer.gamepadEx1.cross.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, Constants.Turret.FLYWHEEL_SPEED));
@@ -82,7 +82,7 @@ public class AltTeleOp extends OpMode {
         robotContainer.telemetry.addData("upper flywheel current mA", RobotContainer.HardwareDevices.flyWheelMotorSlave.getCurrent(CurrentUnit.MILLIAMPS));
 
 
-        if (robotContainer.gamepadEx1 != null && robotContainer.gamepadEx1.circle.isHeld()) {
+        if (robotContainer.gamepadEx1.circle.isHeld()) {
             robotContainer.intake.setIntakeVelocity(Math.min(robotContainer.gamepadEx1.circle.getHoldDuration(), 1));
         }
         else {

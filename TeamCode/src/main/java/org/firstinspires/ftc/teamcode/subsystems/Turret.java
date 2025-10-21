@@ -22,10 +22,8 @@ public class Turret extends RobotContainer.HardwareDevices {
         this.turretServos = turretServos;
     }
 
-    /**
-     * assuming 1:1 ratio for turret
-     * need calculate gear ratio when go home
-    */
+    // TODO: Limit angle of rotation, and have that be configurable in constants
+
     public void setTargetPosition(double position) {
         turretServos.setPosition((position + 1)/2);
     }
