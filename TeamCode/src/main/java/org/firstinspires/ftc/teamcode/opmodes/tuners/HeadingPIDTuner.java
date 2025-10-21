@@ -22,13 +22,13 @@ public class HeadingPIDTuner extends OpMode {
         robotContainer = new RobotContainer(this);
         robotContainer.isRunning = true;
         robotContainer.init();
-        robotContainer.indicatorLightFront.setColor(Constants.LED_COLOR.RED);
+        robotContainer.indicatorLightFront.setColor(Constants.LED.LED_COLOR.RED);
         robotContainer.refreshData();
         RobotContainer.HardwareDevices.imu.resetYaw();
         RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU();
         robotContainer.opMode.telemetry.addLine("OpMode Initialized");
         robotContainer.opMode.telemetry.update();
-        robotContainer.indicatorLightFront.setColor(Constants.LED_COLOR.GREEN);
+        robotContainer.indicatorLightFront.setColor(Constants.LED.LED_COLOR.GREEN);
     }
 
     @Override
@@ -65,7 +65,7 @@ public class HeadingPIDTuner extends OpMode {
 
         double power = robotContainer.headingPID.calculate(Status.currentHeading);
         double[] powers = {power,power,power,power};
-        robotContainer.drivetrain.setTargets(Constants.SWERVE_ROTATION_FORMATION_DEGREES, powers);
+        robotContainer.drivetrain.setTargets(Constants.Swerve.ROTATION_FORMATION_DEGREES, powers);
 
         robotContainer.allIndicatorLights.off();
 

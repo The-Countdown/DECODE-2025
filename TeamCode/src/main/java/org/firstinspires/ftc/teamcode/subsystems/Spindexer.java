@@ -38,9 +38,9 @@ public class Spindexer {
     }
 
     public double getAngle() {
-        double angle = (spindexAnalog.getVoltage() / Constants.ANALOG_MAX_VOLTAGE) * 360;
+        double angle = (spindexAnalog.getVoltage() / Constants.System.ANALOG_MAX_VOLTAGE) * 360;
 
-        angle += Constants.SPINDEXER_ANGLE_OFFSET;
+        angle += Constants.Spindexer.SPINDEXER_ANGLE_OFFSET;
 
         angle = HelperFunctions.normalizeAngle(angle);
 
@@ -68,10 +68,10 @@ public class Spindexer {
 
             error = getError();
 
-            p = Constants.SPINDEXER_KP * error;
-            i = Constants.SPINDEXER_KI * iTimer.milliseconds() * Math.signum(error);
-            d = Math.signum(error) * (Constants.SPINDEXER_KD * (lastError - error));
-            ff = Constants.SPINDEXER_KF * Math.signum(error);
+            p = Constants.Spindexer.SPINDEXER_KP * error;
+            i = Constants.Spindexer.SPINDEXER_KI * iTimer.milliseconds() * Math.signum(error);
+            d = Math.signum(error) * (Constants.Spindexer.SPINDEXER_KD * (lastError - error));
+            ff = Constants.Spindexer.SPINDEXER_KF * Math.signum(error);
 
 
             if (Math.signum(error) > 0) { // Current sign pos

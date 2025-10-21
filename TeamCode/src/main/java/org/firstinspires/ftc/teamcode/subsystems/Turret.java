@@ -55,8 +55,8 @@ public class Turret extends RobotContainer.HardwareDevices {
     }
 
     public void pointAtGoal() {
-        double xDiff = Constants.GOAL_POSE.getX(DistanceUnit.INCH) - Status.currentPose.getX(DistanceUnit.INCH);
-        double yDiff = Constants.GOAL_POSE.getY(DistanceUnit.INCH) - Status.currentPose.getY(DistanceUnit.INCH);
+        double xDiff = Constants.Game.GOAL_POSE.getX(DistanceUnit.INCH) - Status.currentPose.getX(DistanceUnit.INCH);
+        double yDiff = Constants.Game.GOAL_POSE.getY(DistanceUnit.INCH) - Status.currentPose.getY(DistanceUnit.INCH);
         double angleToFaceGoal = Math.atan(yDiff/xDiff) - Status.currentHeading;
         if (!Double.isNaN(angleToFaceGoal)) {
             setTargetAngle(angleToFaceGoal);
@@ -65,7 +65,7 @@ public class Turret extends RobotContainer.HardwareDevices {
 
     public class Flywheel {
         public void setTargetVelocity(double power) {
-            flyWheelMotors.setVelocity(Constants.SWERVE_MOTOR_MAX_VELOCITY_TICKS_PER_SECOND * power);
+            flyWheelMotors.setVelocity(Constants.Swerve.MOTOR_MAX_VELOCITY_TICKS_PER_SECOND * power);
         }
     }
 

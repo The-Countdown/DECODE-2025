@@ -17,239 +17,267 @@ import java.util.HashMap;
  * The `Constants` class provides a centralized location for all the fixed values and
  * configurations used throughout the robot's code.
  */
-@Config
 public class Constants {
 
-    public enum ALLIANCE {
-        BLUE,
-        RED
-    }
-
-    public static Pose2D GOAL_POSE =
-            Status.alliance == ALLIANCE.BLUE ?
-            new Pose2D(DistanceUnit.INCH, 72, -72, AngleUnit.DEGREES, -45) :
-            Status.alliance == ALLIANCE.RED ?
-            new Pose2D(DistanceUnit.INCH, 72, 72, AngleUnit.DEGREES, 45) :
-            new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
-
-    public static Pose2D ORIGIN = new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
-
-    public enum MOTIF {
-        GPP,
-        PGP,
-        PPG
-    }
-
-    public static final IMU.Parameters imuParameters = new IMU.Parameters(
-            new RevHubOrientationOnRobot(
-                    RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                    RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
-            )
-    );
-
-    public static boolean useHeadingPIDForTurning = false;
-    public static double turningRate = 0.20;
-    public static double startingX = 0, startingY = 0, startingHeading = 0;
-    public static Pose2D startingPose = new Pose2D(DistanceUnit.CM,startingX,startingY, AngleUnit.DEGREES,startingHeading);
-    public static boolean SERVO_ANALOG_ACTIVE = true;
-
-    public static final int
-            CONTROL_HUB_INDEX = 0,
-            EXPANSION_HUB_INDEX = 1;
-
-    public static final int LOOP_AVERAGE_WINDOW_SIZE = 30;
-
-    public static final int TELEMETRY_UPDATE_INTERVAL_MS = 50;
-
-    public static final int
-            NUM_SWERVE_MOTORS = 4,
-            NUM_SWERVE_SERVOS = 4,
-            NUM_SWERVE_ANALOGS = 4;
-
-    public static final double
-            WHEELBASE_WIDTH_MM = 320,
-            WHEELBASE_LENGTH_MM = 285.68668;
-
-    public static final double
-            WHEELBASE_ICR_X = WHEELBASE_LENGTH_MM / 2,
-            WHEELBASE_ICR_Y = WHEELBASE_WIDTH_MM / 2;
-
-    public static final boolean[] SWERVE_MODULE_FLIPPED = new boolean[NUM_SWERVE_SERVOS];
-
-    public static final double SWERVE_MODULE_FLIP_SWITCH_TOLERANCE_DEGREES = 2;
-
-    public static final double SWERVE_MODULE_FLIP_SWITCH_ON = 90 + SWERVE_MODULE_FLIP_SWITCH_TOLERANCE_DEGREES;
-
-    public static final double SWERVE_MODULE_FLIP_SWITCH_OFF = 90 - SWERVE_MODULE_FLIP_SWITCH_TOLERANCE_DEGREES;
-
-    /**
-     * The angle offset for each swerve servo, used to correct any mechanical misalignment.
-     * Index 4 is global, and the rest are in order (module 0, 1, 2, 3) see {@link SwerveModule}.
-     */
-    public static double[] SWERVE_SERVO_ANGLE_OFFSET = {45, 245, 38, 130};
-
-    /**
-     * The desired servo angles for the swerve modules when in the rotation formation
-     * These values are not exactly 45 degrees because the drivebase is not a perfect square
-     */
-    public static final double[] SWERVE_ROTATION_FORMATION_DEGREES = {
-            HelperFunctions.normalizeAngle(Math.toDegrees(Math.atan2(WHEELBASE_ICR_Y, WHEELBASE_ICR_X))),
-            HelperFunctions.normalizeAngle(Math.toDegrees(Math.atan2(-WHEELBASE_ICR_Y, WHEELBASE_ICR_X))),
-            HelperFunctions.normalizeAngle(Math.toDegrees(Math.atan2(-WHEELBASE_ICR_Y, -WHEELBASE_ICR_X))),
-            HelperFunctions.normalizeAngle(Math.toDegrees(Math.atan2(WHEELBASE_ICR_Y, -WHEELBASE_ICR_X))),
-    };
-
-    public static final double[] SWERVE_ROTATION_FORMATION_RADIANS = {
-            Math.atan2(WHEELBASE_ICR_Y, WHEELBASE_ICR_X),
-            Math.atan2(-WHEELBASE_ICR_Y, WHEELBASE_ICR_X),
-            Math.atan2(-WHEELBASE_ICR_Y, -WHEELBASE_ICR_X),
-            Math.atan2(WHEELBASE_ICR_Y, -WHEELBASE_ICR_X),
-    };
-
-    public static final double[] SWERVE_ROTATION_FORMATION_COSINES_RADIANS = {
-            Math.cos(SWERVE_ROTATION_FORMATION_RADIANS[0]),
-            Math.cos(SWERVE_ROTATION_FORMATION_RADIANS[1]),
-            Math.cos(SWERVE_ROTATION_FORMATION_RADIANS[2]),
-            Math.cos(SWERVE_ROTATION_FORMATION_RADIANS[3]),
-    };
-
-    public static final double[] SWERVE_ROTATION_FORMATION_SINES_RADIANS = {
-            Math.sin(SWERVE_ROTATION_FORMATION_RADIANS[0]),
-            Math.sin(SWERVE_ROTATION_FORMATION_RADIANS[1]),
-            Math.sin(SWERVE_ROTATION_FORMATION_RADIANS[2]),
-            Math.sin(SWERVE_ROTATION_FORMATION_RADIANS[3]),
-    };
-
-    /**
-     * The desired servo angles for the swerve modules when in the stop formation.
-     */
-    public static final double[] SWERVE_STOP_FORMATION = {
-            180 - SWERVE_ROTATION_FORMATION_DEGREES[0],
-            180 - SWERVE_ROTATION_FORMATION_DEGREES[1],
-            180 - SWERVE_ROTATION_FORMATION_DEGREES[2],
-            180 - SWERVE_ROTATION_FORMATION_DEGREES[3],
-    };
-
-    /**
-     * An array of power values for each swerve motor that sets them to no power.
-     */
-    public static final double[] SWERVE_NO_POWER = {0, 0, 0, 0};
-
-    public static final double[] SWERVE_POWER_MULTIPLIER = {
-        0, // Front Right
-        0, // Front Left
-        0, // Back Left
-        0, // Back Right
-    };
-
-    /**
-     * Scales the PIDF values for the swerve drive servos based off the speed of the motor being driven,
-     * to compensate for the lesser friction when the robot is moving.
-     */
-    public static double SWERVE_SERVO_PIDF_SCALER = 0.5;
-
-    /**
-     * PIDF values for the swerve drive servos.
-     * These values will need to be tuned.
-     */
-    public static double[]
-            SWERVE_SERVO_KP = {0.0055, 0.0035, 0.0025, 0.0045},
-            SWERVE_SERVO_KI = {0.00006, 0.00006, 0.00006, 0.00006},
-            SWERVE_SERVO_I_MAX = {0.1, 0.1, 0.1, 0.1},
-            SWERVE_SERVO_KD = {-0.02, -0.02, -0.02, -0.02},
-            SWERVE_SERVO_KF = {0, 0, 0, 0},
-            SWERVE_SERVO_MOTOR_FACTOR = {10, 10, 10, 10};
-
-    public static double
-            HEADING_KP = 0.02,
-            HEADING_KI = 0,
-            HEADING_I_MAX = 0.8,
-            HEADING_KD = 0.0006,
-            HEADING_KF = 0.05;
-
-    public static final double
-        // Pinpoint might be backwards, check this!!!
-            PINPOINT_X_OFFSET_MM = 145,
-            PINPOINT_Y_OFFSET_MM = 0;
-
-    public static final GoBildaPinpointDriver.GoBildaOdometryPods
-            PINPOINT_ODOM_POD = GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD;
-
-    public static final GoBildaPinpointDriver.EncoderDirection
-            PINPOINT_X_ENCODER_DIRECTION = GoBildaPinpointDriver.EncoderDirection.FORWARD,
-            PINPOINT_Y_ENCODER_DIRECTION = GoBildaPinpointDriver.EncoderDirection.REVERSED;
-    
-    public static final double PATHING_ERROR_MARGIN_CM = 1;
-
-    public static final double ANALOG_MAX_VOLTAGE = 3.3;
-
-    public static double HEADING_PID_TOLERANCE_DEGREES = 360;
-
-    public static double SWERVE_SERVO_PIDF_TOLERANCE_DEGREES = 1;
-
-    public static final int SWERVE_MOTOR_RPM_TESTED_MAX = 5800;
-
-    public static final int SWERVE_MOTOR_TICKS_PER_REVOLUTION = 28;
-
-    public static final double SWERVE_MOTOR_TO_WHEEL_GEAR_RATIO = 6.74;
-
-    public static final double WHEEL_DIAMETER_MM = 62;
-
-    public static final double WHEEL_CALCULATED_MAX_RPM = SWERVE_MOTOR_RPM_TESTED_MAX / SWERVE_MOTOR_TO_WHEEL_GEAR_RATIO;
-
-    public static final double ROBOT_CALCULATED_MAX_SPEED_METERS_PER_SECOND = (Math.PI * (WHEEL_DIAMETER_MM / 1000)) * (WHEEL_CALCULATED_MAX_RPM / 60);
-
-    public static final int SWERVE_MOTOR_MAX_VELOCITY_TICKS_PER_SECOND = ((SWERVE_MOTOR_RPM_TESTED_MAX / 60) * SWERVE_MOTOR_TICKS_PER_REVOLUTION) - 328;
-
-    public static double JOYSTICK_SCALER_EXPONENT = 0.4;
-
-    //power per second
-    public static double MAX_DRIVE_ACCELERATION = 10;
-
-    public static double ZERO_POWER_TOLERANCE = 0.03;
-    public static double TURRET_SPEED_FACTOR = 0.001;
-    public static double FLYWHEEL_SPEED = 0.9;
-    public static double FLYWHEEL_CURVE = 4;
-    public static int INTAKE_RUNTIME_MS = 800;
-    public static double INTAKE_DELAY_SECONDS = 0.2;
-    public static double TRACK_GOAL_P = -0.2;
-    public static double SPINDEXER_ANGLE_OFFSET = 0;
-    public static double SPINDEXER_KP = 0;
-    public static double SPINDEXER_KI = 0;
-    public static double SPINDEXER_KD = 0;
-    public static double SPINDEXER_KF = 0;
-
-    public enum LED_COLOR {
-        OFF,
-        RED,
-        ORANGE,
-        YELLOW,
-        SAGE,
-        GREEN,
-        AZURE,
-        BLUE,
-        INDIGO,
-        VIOLET,
-        WHITE
-    }
-
-    public static final HashMap<LED_COLOR, LED_COLOR_VALUES> LED_COLOR_MAP = new HashMap<LED_COLOR, LED_COLOR_VALUES>() {{
-        put(LED_COLOR.OFF, new LED_COLOR_VALUES(500, 0.0));
-        put(LED_COLOR.RED, new LED_COLOR_VALUES(1100, 0.279));
-        put(LED_COLOR.ORANGE, new LED_COLOR_VALUES(1200, 0.333));
-        put(LED_COLOR.YELLOW, new LED_COLOR_VALUES(1300, 0.388));
-        put(LED_COLOR.SAGE, new LED_COLOR_VALUES(1400, 0.444));
-        put(LED_COLOR.GREEN, new LED_COLOR_VALUES(1500, 0.500));
-        put(LED_COLOR.AZURE, new LED_COLOR_VALUES(1600, 0.555));
-        put(LED_COLOR.BLUE, new LED_COLOR_VALUES(1700, 0.611));
-        put(LED_COLOR.INDIGO, new LED_COLOR_VALUES(1800, 0.666));
-        put(LED_COLOR.VIOLET, new LED_COLOR_VALUES(1900, 0.722));
-        put(LED_COLOR.WHITE, new LED_COLOR_VALUES(2500, 1.0));
-    }};
-    public static class LED_COLOR_VALUES {
-        public final int MICROSECONDS; public final double ANALOG;
-        public LED_COLOR_VALUES(int MICROSECONDS, double ANALOG) {
-            this.MICROSECONDS = MICROSECONDS; this.ANALOG = ANALOG;
+    @Config
+    public static class Game {
+        public enum ALLIANCE {
+            BLUE,
+            RED
         }
+
+        public static Pose2D GOAL_POSE =
+                Status.alliance == ALLIANCE.BLUE ?
+                        new Pose2D(DistanceUnit.INCH, 72, -72, AngleUnit.DEGREES, -45) :
+                        Status.alliance == ALLIANCE.RED ?
+                                new Pose2D(DistanceUnit.INCH, 72, 72, AngleUnit.DEGREES, 45) :
+                                new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
+
+        public static Pose2D ORIGIN = new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
+
+        public enum MOTIF {
+            GPP,
+            PGP,
+            PPG
+        }
+    }
+
+    @Config
+    public static class Robot {
+        public static final IMU.Parameters imuParameters = new IMU.Parameters(
+                new RevHubOrientationOnRobot(
+                        RevHubOrientationOnRobot.LogoFacingDirection.UP,
+                        RevHubOrientationOnRobot.UsbFacingDirection.LEFT
+                )
+        );
+
+        public static double startingX = 0, startingY = 0, startingHeading = 0;
+        public static Pose2D startingPose = new Pose2D(DistanceUnit.CM,startingX,startingY, AngleUnit.DEGREES,startingHeading);
+
+        public static final int
+                CONTROL_HUB_INDEX = 0,
+                EXPANSION_HUB_INDEX = 1;
+
+        public static final double
+                WHEELBASE_WIDTH_MM = 320,
+                WHEELBASE_LENGTH_MM = 285.68668;
+
+        public static final double
+                WHEELBASE_ICR_X = WHEELBASE_LENGTH_MM / 2,
+                WHEELBASE_ICR_Y = WHEELBASE_WIDTH_MM / 2;
+
+
+        public static final double WHEEL_DIAMETER_MM = 62;
+
+        public static final double WHEEL_CALCULATED_MAX_RPM = Swerve.MOTOR_RPM_TESTED_MAX / Swerve.MOTOR_TO_WHEEL_GEAR_RATIO;
+
+        public static final double ROBOT_CALCULATED_MAX_SPEED_METERS_PER_SECOND = (Math.PI * (WHEEL_DIAMETER_MM / 1000)) * (WHEEL_CALCULATED_MAX_RPM / 60);
+    }
+
+    @Config
+    public static class Swerve {
+        public static boolean SERVO_ANALOG_ACTIVE = true;
+
+        public static final int
+                NUM_MOTORS = 4,
+                NUM_SERVOS = 4,
+                NUM_ANALOGS = 4;
+
+        public static final boolean[] MODULE_FLIPPED = new boolean[NUM_SERVOS];
+
+        public static final double MODULE_FLIP_SWITCH_TOLERANCE_DEGREES = 2;
+
+        public static final double MODULE_FLIP_SWITCH_ON = 90 + MODULE_FLIP_SWITCH_TOLERANCE_DEGREES;
+
+        public static final double MODULE_FLIP_SWITCH_OFF = 90 - MODULE_FLIP_SWITCH_TOLERANCE_DEGREES;
+
+        /**
+         * The angle offset for each swerve servo, used to correct any mechanical misalignment.
+         * Index 4 is global, and the rest are in order (module 0, 1, 2, 3) see {@link SwerveModule}.
+         */
+        public static double[] SERVO_ANGLE_OFFSET = {230, 20, 20, 60};
+
+        /**
+         * The desired servo angles for the swerve modules when in the rotation formation
+         * These values are not exactly 45 degrees because the drivebase is not a perfect square
+         */
+        public static final double[] ROTATION_FORMATION_DEGREES = {
+                HelperFunctions.normalizeAngle(Math.toDegrees(Math.atan2(Robot.WHEELBASE_ICR_Y, Robot.WHEELBASE_ICR_X))),
+                HelperFunctions.normalizeAngle(Math.toDegrees(Math.atan2(-Robot.WHEELBASE_ICR_Y, Robot.WHEELBASE_ICR_X))),
+                HelperFunctions.normalizeAngle(Math.toDegrees(Math.atan2(-Robot.WHEELBASE_ICR_Y, -Robot.WHEELBASE_ICR_X))),
+                HelperFunctions.normalizeAngle(Math.toDegrees(Math.atan2(Robot.WHEELBASE_ICR_Y, -Robot.WHEELBASE_ICR_X))),
+        };
+
+        public static final double[] ROTATION_FORMATION_RADIANS = {
+                Math.atan2(Robot.WHEELBASE_ICR_Y, Robot.WHEELBASE_ICR_X),
+                Math.atan2(-Robot.WHEELBASE_ICR_Y, Robot.WHEELBASE_ICR_X),
+                Math.atan2(-Robot.WHEELBASE_ICR_Y, -Robot.WHEELBASE_ICR_X),
+                Math.atan2(Robot.WHEELBASE_ICR_Y, -Robot.WHEELBASE_ICR_X),
+        };
+
+        public static final double[] ROTATION_FORMATION_COSINES_RADIANS = {
+                Math.cos(ROTATION_FORMATION_RADIANS[0]),
+                Math.cos(ROTATION_FORMATION_RADIANS[1]),
+                Math.cos(ROTATION_FORMATION_RADIANS[2]),
+                Math.cos(ROTATION_FORMATION_RADIANS[3]),
+        };
+
+        public static final double[] ROTATION_FORMATION_SINES_RADIANS = {
+                Math.sin(ROTATION_FORMATION_RADIANS[0]),
+                Math.sin(ROTATION_FORMATION_RADIANS[1]),
+                Math.sin(ROTATION_FORMATION_RADIANS[2]),
+                Math.sin(ROTATION_FORMATION_RADIANS[3]),
+        };
+
+        /**
+         * The desired servo angles for the swerve modules when in the stop formation.
+         */
+        public static final double[] STOP_FORMATION = {
+                180 - ROTATION_FORMATION_DEGREES[0],
+                180 - ROTATION_FORMATION_DEGREES[1],
+                180 - ROTATION_FORMATION_DEGREES[2],
+                180 - ROTATION_FORMATION_DEGREES[3],
+        };
+
+        /**
+         * An array of power values for each swerve motor that sets them to no power.
+         */
+        public static final double[] NO_POWER = {0, 0, 0, 0};
+
+        public static final double[] POWER_MULTIPLIER = {
+                0, // Front Right
+                0, // Front Left
+                0, // Back Left
+                0, // Back Right
+        };
+
+        /**
+         * Scales the PIDF values for the swerve drive servos based off the speed of the motor being driven,
+         * to compensate for the lesser friction when the robot is moving.
+         */
+        public static double SERVO_PIDF_SCALER = 0.5;
+
+        /**
+         * PIDF values for the swerve drive servos.
+         * These values will need to be tuned.
+         */
+        public static double[]
+                SERVO_KP = {0.009, 0.009, 0.009, 0.009},
+                SERVO_KI = {0, 0, 0, 0},
+                SERVO_I_MAX = {0.1, 0.1, 0.1, 0.1},
+                SERVO_KD = {0, 0, 0, 0},
+                SERVO_KF = {0, 0, 0, 0},
+                SERVO_MOTOR_FACTOR = {10, 10, 10, 10};
+
+        public static double SERVO_PIDF_TOLERANCE_DEGREES = 1;
+
+        public static final int MOTOR_RPM_TESTED_MAX = 5800;
+
+        public static final int MOTOR_TICKS_PER_REVOLUTION = 28;
+
+        public static final double MOTOR_TO_WHEEL_GEAR_RATIO = 6.74;
+
+        public static final int MOTOR_MAX_VELOCITY_TICKS_PER_SECOND = ((MOTOR_RPM_TESTED_MAX / 60) * MOTOR_TICKS_PER_REVOLUTION) - 328;
+    }
+
+    @Config
+    public static class System {
+        public static final int LOOP_AVERAGE_WINDOW_SIZE = 30;
+
+        public static final int TELEMETRY_UPDATE_INTERVAL_MS = 50;
+
+        public static final double ANALOG_MAX_VOLTAGE = 3.3;
+    }
+
+    @Config
+    public static class Control {
+        public static double JOYSTICK_SCALER_EXPONENT = 0.4;
+        //power per second
+        public static double MAX_DRIVE_ACCELERATION = 10;
+        public static double ZERO_POWER_TOLERANCE = 0.03;
+    }
+
+    @Config
+    public static class Pathing {
+        public static final double
+            // Pinpoint might be backwards, check this!!!
+                PINPOINT_X_OFFSET_MM = 145;
+        public static final double PINPOINT_Y_OFFSET_MM = 0;
+        public static final GoBildaPinpointDriver.GoBildaOdometryPods
+                PINPOINT_ODOM_POD = GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD;
+        public static final GoBildaPinpointDriver.EncoderDirection
+                PINPOINT_X_ENCODER_DIRECTION = GoBildaPinpointDriver.EncoderDirection.FORWARD;
+        public static final GoBildaPinpointDriver.EncoderDirection PINPOINT_Y_ENCODER_DIRECTION = GoBildaPinpointDriver.EncoderDirection.REVERSED;
+        public static boolean useHeadingPIDForTurning = false;
+        public static double turningRate = 0.20;
+        public static double
+                HEADING_KP = 0.02,
+                HEADING_KI = 0,
+                HEADING_I_MAX = 0.8,
+                HEADING_KD = 0.0006,
+                HEADING_KF = 0.05;
+        public static double PATHING_ERROR_MARGIN_CM = 1;
+        public static double HEADING_PID_TOLERANCE_DEGREES = 360;
+    }
+
+    @Config
+    public static class LED {
+        public static final HashMap<LED_COLOR, LED_COLOR_VALUES> LED_COLOR_MAP = new HashMap<LED_COLOR, LED_COLOR_VALUES>() {{
+            put(LED_COLOR.OFF, new LED_COLOR_VALUES(500, 0.0));
+            put(LED_COLOR.RED, new LED_COLOR_VALUES(1100, 0.279));
+            put(LED_COLOR.ORANGE, new LED_COLOR_VALUES(1200, 0.333));
+            put(LED_COLOR.YELLOW, new LED_COLOR_VALUES(1300, 0.388));
+            put(LED_COLOR.SAGE, new LED_COLOR_VALUES(1400, 0.444));
+            put(LED_COLOR.GREEN, new LED_COLOR_VALUES(1500, 0.500));
+            put(LED_COLOR.AZURE, new LED_COLOR_VALUES(1600, 0.555));
+            put(LED_COLOR.BLUE, new LED_COLOR_VALUES(1700, 0.611));
+            put(LED_COLOR.INDIGO, new LED_COLOR_VALUES(1800, 0.666));
+            put(LED_COLOR.VIOLET, new LED_COLOR_VALUES(1900, 0.722));
+            put(LED_COLOR.WHITE, new LED_COLOR_VALUES(2500, 1.0));
+        }};
+
+        public enum LED_COLOR {
+            OFF,
+            RED,
+            ORANGE,
+            YELLOW,
+            SAGE,
+            GREEN,
+            AZURE,
+            BLUE,
+            INDIGO,
+            VIOLET,
+            WHITE
+        }
+
+        public static class LED_COLOR_VALUES {
+            public final int MICROSECONDS; public final double ANALOG;
+            public LED_COLOR_VALUES(int MICROSECONDS, double ANALOG) {
+                this.MICROSECONDS = MICROSECONDS; this.ANALOG = ANALOG;
+            }
+        }
+    }
+
+    @Config
+    public static class Turret {
+        public static double TURRET_SPEED_FACTOR = 0.001;
+        public static double FLYWHEEL_SPEED = 0.9;
+        public static double FLYWHEEL_CURVE = 4;
+        public static double TRACK_GOAL_P = -0.2;
+    }
+
+    @Config
+    public static class Spindexer {
+        public static double SPINDEXER_ANGLE_OFFSET = 0;
+        public static double SPINDEXER_KP = 0;
+        public static double SPINDEXER_KI = 0;
+        public static double SPINDEXER_KD = 0;
+        public static double SPINDEXER_KF = 0;
+    }
+
+    @Config
+    public static class Intake {
+        public static int INTAKE_RUNTIME_MS = 800;
+        public static double INTAKE_DELAY_SECONDS = 0.2;
     }
 }

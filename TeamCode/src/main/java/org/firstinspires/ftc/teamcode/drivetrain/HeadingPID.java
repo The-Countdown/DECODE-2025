@@ -54,7 +54,7 @@ public class HeadingPID {
             timer.reset();
             if (currentTime < 1e-6) currentTime = 1e-6;
 
-            if (Math.abs(error) < Constants.HEADING_PID_TOLERANCE_DEGREES) {
+            if (Math.abs(error) < Constants.Pathing.HEADING_PID_TOLERANCE_DEGREES) {
                 lastError = error;
                 Status.robotHeadingTargetReached = true;
                 return 0;
@@ -64,16 +64,16 @@ public class HeadingPID {
 
             if (dt < 1e-4) dt = 1e-4;  // safety clamp
 
-            p = Constants.HEADING_KP * error;
+            p = Constants.Pathing.HEADING_KP * error;
 
-            i += Constants.HEADING_KI * error * currentTime;
-            i = Math.max(-Constants.HEADING_I_MAX, Math.min(Constants.HEADING_I_MAX, i));
+            i += Constants.Pathing.HEADING_KI * error * currentTime;
+            i = Math.max(-Constants.Pathing.HEADING_I_MAX, Math.min(Constants.Pathing.HEADING_I_MAX, i));
 
-            d = -Constants.HEADING_KD * (error - lastError) / currentTime;
+            d = -Constants.Pathing.HEADING_KD * (error - lastError) / currentTime;
 
             lastError = error;
 
-            return p + i + d + Constants.HEADING_KF;
+            return p + i + d + Constants.Pathing.HEADING_KF;
         }
         else {
             return 0;

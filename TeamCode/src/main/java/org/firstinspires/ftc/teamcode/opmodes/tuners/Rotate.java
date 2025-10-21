@@ -64,7 +64,7 @@ public class Rotate extends OpMode {
             angle = 0;
         }
 
-        robotContainer.drivetrain.setTargets(angles, Constants.SWERVE_NO_POWER);
+        robotContainer.drivetrain.setTargets(angles, Constants.Swerve.NO_POWER);
 
         robotContainer.telemetry("teleOp");
         Thread.yield();

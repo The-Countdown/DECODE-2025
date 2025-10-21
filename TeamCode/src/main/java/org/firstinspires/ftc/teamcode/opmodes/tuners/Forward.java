@@ -23,13 +23,13 @@ public class Forward extends OpMode {
         robotContainer = new RobotContainer(this);
         robotContainer.isRunning = true;
         robotContainer.init();
-        robotContainer.indicatorLightFront.setColor(Constants.LED_COLOR.RED);
+        robotContainer.indicatorLightFront.setColor(Constants.LED.LED_COLOR.RED);
         robotContainer.refreshData();
         RobotContainer.HardwareDevices.imu.resetYaw();
         RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU();
         robotContainer.opMode.telemetry.addLine("OpMode Initialized");
         robotContainer.opMode.telemetry.update();
-        robotContainer.indicatorLightFront.setColor(Constants.LED_COLOR.GREEN);
+        robotContainer.indicatorLightFront.setColor(Constants.LED.LED_COLOR.GREEN);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class Forward extends OpMode {
         robotContainer.gamepadEx1.update();
         robotContainer.gamepadEx2.update();
 
-        for (int i = 0; i < Constants.NUM_SWERVE_SERVOS; i++) {
+        for (int i = 0; i < Constants.Swerve.NUM_SERVOS; i++) {
             robotContainer.swerveModules[i].servo.setTargetAngle(90);
             robotContainer.swerveModules[i].motor.setTargetPower(0.2);
         }

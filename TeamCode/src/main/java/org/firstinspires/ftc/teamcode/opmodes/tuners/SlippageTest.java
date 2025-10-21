@@ -38,7 +38,7 @@ public class SlippageTest extends OpMode {
         Status.isDrivingActive = false;
 
         turretAccelerationTimer.reset();
-        for (int i = 0; i < Constants.NUM_SWERVE_SERVOS; i++) {
+        for (int i = 0; i < Constants.Swerve.NUM_SERVOS; i++) {
             robotContainer.swerveModules[i].servo.setPower(1);
         }
     }

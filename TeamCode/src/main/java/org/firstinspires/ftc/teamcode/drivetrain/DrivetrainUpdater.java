@@ -55,11 +55,11 @@ public class DrivetrainUpdater extends Thread {
             for (int i = 0; i < robotContainer.swerveModules.length; i++) {
                 double target = robotContainer.swerveModules[i].motor.targetPower;
 
-                if (Math.abs(target) < Constants.ZERO_POWER_TOLERANCE) {
+                if (Math.abs(target) < Constants.Control.ZERO_POWER_TOLERANCE) {
                     currentPowers[i] = 0;
                 } else {
                     double error = target - currentPowers[i];
-                    double maxDelta = Constants.MAX_DRIVE_ACCELERATION * deltaTime;
+                    double maxDelta = Constants.Control.MAX_DRIVE_ACCELERATION * deltaTime;
 
                     if (Math.signum(error) == Math.signum(target) && Math.signum(target) != 0) {
                         double delta = Math.copySign(Math.min(Math.abs(error), maxDelta), error);
@@ -71,13 +71,13 @@ public class DrivetrainUpdater extends Thread {
 
                 double acceleratedMotorPower = currentPowers[i];
 
-                if (Math.abs(robotContainer.swerveServosPIDF[i].getError()) <= Constants.SWERVE_SERVO_PIDF_TOLERANCE_DEGREES) {
+                if (Math.abs(robotContainer.swerveServosPIDF[i].getError()) <= Constants.Swerve.SERVO_PIDF_TOLERANCE_DEGREES) {
                     Status.swerveServoStatus[i] = Status.ServoStatus.TARGET_REACHED;
                     robotContainer.swerveModules[i].servo.setPower(0);
 
                     robotContainer.swerveModules[i].motor.setVelocity(acceleratedMotorPower);
                 } else {
-                    robotContainer.swerveModules[i].servo.setPower(robotContainer.swerveServosPIDF[i].calculate() * (1 - (acceleratedMotorPower * Constants.SWERVE_SERVO_PIDF_SCALER)));
+                    robotContainer.swerveModules[i].servo.setPower(robotContainer.swerveServosPIDF[i].calculate());
                     Status.swerveServoStatus[i] = Status.ServoStatus.MOVING;
 
                     robotContainer.swerveModules[i].motor.setVelocity(acceleratedMotorPower * Math.abs(Math.cos(Math.toRadians(robotContainer.swerveServosPIDF[i].getError()))));

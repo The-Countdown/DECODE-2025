@@ -53,7 +53,7 @@ public class LimelightLogic {
 
     public void trackGoal() {
         if (limelight.getLatestResult().isValid() && Math.abs(limelight.getLatestResult().getTx()) > 1) {
-            p += limelight.getLatestResult().getTx() * Constants.TRACK_GOAL_P;
+            p += limelight.getLatestResult().getTx() * Constants.Turret.TRACK_GOAL_P;
             robot.turret.setTargetAngle(p);
             telemetry.addData("TX", limelight.getLatestResult().getTx());
             telemetry.addData("p", p);
@@ -70,13 +70,13 @@ public class LimelightLogic {
         }
     }
 
-    public Constants.MOTIF checkMotif(LLResultTypes.FiducialResult aprilTag) {
+    public Constants.Game.MOTIF checkMotif(LLResultTypes.FiducialResult aprilTag) {
         if (aprilTag.getFiducialId() == 21) {
-            return Constants.MOTIF.GPP;
+            return Constants.Game.MOTIF.GPP;
         } else if (aprilTag.getFiducialId() == 22) {
-            return Constants.MOTIF.PGP;
+            return Constants.Game.MOTIF.PGP;
         } else if (aprilTag.getFiducialId() == 23) {
-            return Constants.MOTIF.PPG;
+            return Constants.Game.MOTIF.PPG;
         }
         return null;
     }
@@ -90,11 +90,11 @@ public class LimelightLogic {
         }
     }
 
-    public Constants.ALLIANCE checkAlliance(LLResultTypes.FiducialResult aprilTag) {
+    public Constants.Game.ALLIANCE checkAlliance(LLResultTypes.FiducialResult aprilTag) {
         if (aprilTag.getFiducialId() == 20) {
-            return Constants.ALLIANCE.BLUE;
+            return Constants.Game.ALLIANCE.BLUE;
         } else if (aprilTag.getFiducialId() == 24) {
-            return Constants.ALLIANCE.RED;
+            return Constants.Game.ALLIANCE.RED;
         } else
             return null;
     }

@@ -9,6 +9,8 @@ import org.firstinspires.ftc.teamcode.main.Status;
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "TeleOp")
 public class TeleOp extends OpMode {
     private RobotContainer robotContainer;
+    public static double CURRENT_LOOP_TIME_MS;
+    public double turretPos = 0;
 
     @Override
     public void init() {
@@ -18,7 +20,7 @@ public class TeleOp extends OpMode {
         robotContainer.refreshData();
         RobotContainer.HardwareDevices.imu.resetYaw();
         RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU(); // TODO: Run at start of auto instead
-        robotContainer.drivetrain.setTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
+        robotContainer.drivetrain.setTargets(Constants.Swerve.STOP_FORMATION, Constants.Swerve.NO_POWER);
         robotContainer.telemetry.addLine("OpMode Initialized");
         robotContainer.telemetry.update();
     }
@@ -39,7 +41,7 @@ public class TeleOp extends OpMode {
 
     @Override
     public void loop() {
-        robotContainer.updateLoopTime("teleOp");
+        CURRENT_LOOP_TIME_MS = robotContainer.updateLoopTime("teleOp");
         robotContainer.refreshData();
         robotContainer.delayedActionManager.update();
         robotContainer.gamepadEx1.update();
@@ -51,12 +53,46 @@ public class TeleOp extends OpMode {
 
         robotContainer.telemetry("teleOp");
 
+        //turret speed factor * current loop time is how far u want it to move per how many millisecond(loop time)
+        if (robotContainer.gamepadEx1.rightStickY() > 0.1) {
+            turretPos += (Constants.Turret.TURRET_SPEED_FACTOR * CURRENT_LOOP_TIME_MS) * Math.pow(robotContainer.gamepadEx1.rightStickY(), 2);
+        } else if (robotContainer.gamepadEx1.rightStickY() < -0.1) {
+            turretPos -= (Constants.Turret.TURRET_SPEED_FACTOR * CURRENT_LOOP_TIME_MS) * Math.pow(robotContainer.gamepadEx1.rightStickY(), 2);
+        }
+
+        if (turretPos > 1) {
+            turretPos = 1;
+        } else if (turretPos < -1) {
+            turretPos = -1;
+        }
+
+        robotContainer.turret.setTargetPosition(turretPos);
+
+        if (robotContainer.gamepadEx1 != null && robotContainer.gamepadEx1.triangle.isHeld()) {
+            // constants for motor speed, different speed based off of position
+            RobotContainer.HardwareDevices.flyWheelMotorMaster.setPower(Math.min(robotContainer.gamepadEx1.cross.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, Constants.Turret.FLYWHEEL_SPEED));
+            RobotContainer.HardwareDevices.flyWheelMotorSlave.setPower(Math.min(robotContainer.gamepadEx1.cross.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, Constants.Turret.FLYWHEEL_SPEED));
+        } else {
+            RobotContainer.HardwareDevices.flyWheelMotorMaster.setPower(0);
+            RobotContainer.HardwareDevices.flyWheelMotorSlave.setPower(0);
+        }
+
+        if (robotContainer != null && robotContainer.gamepadEx1.circle.wasJustPressed()) {
+            Status.intakeEnabled = !Status.intakeEnabled;
+        }
+
+        if (Status.intakeEnabled) {
+            robotContainer.intake.setIntakeVelocity(1);
+        } else {
+            robotContainer.intake.setIntakeVelocity(0);
+        }
+
         Thread.yield();
     }
 
     @Override
     public void stop() {
-        robotContainer.drivetrain.setTargets(Constants.SWERVE_STOP_FORMATION, Constants.SWERVE_NO_POWER);
+        robotContainer.drivetrain.setTargets(Constants.Swerve.STOP_FORMATION, Constants.Swerve.NO_POWER);
 
         Status.opModeIsActive = false;
         robotContainer.isRunning = false;
