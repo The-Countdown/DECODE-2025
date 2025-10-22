@@ -51,21 +51,17 @@ public class TeleOp extends OpMode {
 
         robotContainer.allIndicatorLights.lightsUpdate();
 
-        turretPos += (Constants.Turret.TURRET_SPEED_FACTOR * CURRENT_LOOP_TIME_MS) * Math.pow(robotContainer.gamepadEx1.rightStickY(), 3);
+        turretPos += robotContainer.gamepadEx1.rightStickX() != 0 ? (Constants.Turret.TURRET_SPEED_FACTOR * CURRENT_LOOP_TIME_MS) * Math.pow(robotContainer.gamepadEx1.rightStickX(), 3) : 0;
         robotContainer.turret.setTargetPosition(turretPos);
 
-        robotContainer.turret.flywheel.setTargetVelocity(Math.min(robotContainer.gamepadEx1.cross.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, Constants.Turret.FLYWHEEL_TOP_SPEED));
+//        robotContainer.turret.flywheel.setTargetVelocity(Math.min(robotContainer.gamepadEx1.cross.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, Constants.Turret.FLYWHEEL_TOP_SPEED));
 
         Status.intakeEnabled = robotContainer.gamepadEx1.circle.wasJustPressed() != Status.intakeEnabled;
         robotContainer.intake.setIntakeVelocity(Status.intakeEnabled ? 1 : 0);
 
         robotContainer.telemetry("teleOp");
 
-        try {
-            Thread.sleep(1);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        Thread.yield();
     }
 
     @Override

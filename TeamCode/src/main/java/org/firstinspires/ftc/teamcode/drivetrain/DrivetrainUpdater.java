@@ -36,11 +36,7 @@ public class DrivetrainUpdater extends Thread {
          return;
         }
         while (!Status.opModeIsActive) {
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            Thread.yield();
         }
         deltaTimer.reset();
         robotContainer.refreshData();
@@ -87,10 +83,7 @@ public class DrivetrainUpdater extends Thread {
                     robotContainer.swerveModules[i].motor.setVelocity(acceleratedMotorPower * Math.abs(Math.cos(Math.toRadians(robotContainer.swerveServosPIDF[i].getError()))));
                 }
             }
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }        }
+            Thread.yield();
+        }
     }
 }

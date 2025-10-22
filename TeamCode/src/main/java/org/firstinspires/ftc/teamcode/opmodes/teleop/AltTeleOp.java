@@ -63,6 +63,7 @@ public class AltTeleOp extends OpMode {
             robotContainer.gamepadEx2.update();
         }
         beamBreakButton.update(beamBreakBoolean);
+        robotContainer.drivetrain.controlUpdate();
 
         if (robotContainer.gamepadEx1.cross.isHeld()) {
             // constants for motor speed, different speed based off of position
@@ -114,6 +115,7 @@ public class AltTeleOp extends OpMode {
 //            robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setIntakeVelocity(0), Constants.INTAKE_RUNTIME_MS);
 //        }
         robotContainer.telemetry.addData("beam break", beamBreakBoolean);
+        robotContainer.telemetry.addData("loop time", CURRENT_LOOP_TIME_MS);
         robotContainer.telemetry.update();
 
         try {

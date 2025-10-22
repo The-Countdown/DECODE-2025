@@ -69,6 +69,8 @@ public class RobotContainer {
     public final Map<String, LinkedList<Double>> loopTimesMap = new HashMap<>();
     public final Map<String, ElapsedTime> loopTimers = new HashMap<>();
     private final ElapsedTime telemetryLoopTimer = new ElapsedTime();
+    private final ElapsedTime timer1 = new ElapsedTime();
+    private final ElapsedTime timer2 = new ElapsedTime();
     private final ArrayList<String> retainedTelemetryCaptions = new ArrayList<>();
     private final ArrayList<Object> retainedTelemetryValues = new ArrayList<>();
     public final SwerveModule[] swerveModules = new SwerveModule[Constants.Swerve.NUM_MOTORS];
@@ -467,6 +469,16 @@ public class RobotContainer {
         telemetry.addData("Motor 3 Current Velocity", swerveModules[3].motor.getVelocity());
         telemetry.addData("Field Oriented", Status.fieldOriented);
         telemetry.addData("Intake Enabled", Status.intakeEnabled);
+//        telemetry.addData("Color Sensor", RobotContainer.HardwareDevices.colorSensor.getLightDetected());
+//        telemetry.addData("Color Sensor Raw", RobotContainer.HardwareDevices.colorSensor.getRawLightDetected());
+        timer1.reset();
+        HardwareDevices.flyWheelMotorMaster.getVelocity();
+        telemetry.addData("timer1", timer1.milliseconds());
+        timer2.reset();
+        HardwareDevices.flyWheelMotorMaster.getVelocity();
+        telemetry.addData("timer2", timer2.milliseconds());
+//        telemetry.addData("Color Sensor Red", HardwareDevices.colorSensor.red());
+//        telemetry.addData("Color Sensor Blue", HardwareDevices.colorSensor.blue());
 
         int selectedServo = -1;
         if (gamepadEx1.dpadUp.isPressed()) {
