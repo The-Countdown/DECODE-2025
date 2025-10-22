@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -12,6 +13,7 @@ public class Spindexer {
     private final RobotContainer robotContainer;
     private final CRServoImplEx spindexerServo;
     private final AnalogInput spindexAnalog;
+    private final RevColorSensorV3 colorSensor;
     private static double targetAngle = 0;
     private double error;
     private double lastError;
@@ -22,10 +24,11 @@ public class Spindexer {
     private double ff;
     private ElapsedTime iTimer;
 
-    public Spindexer (RobotContainer robotContainer, CRServoImplEx spindexerServo, AnalogInput spindexAnalog) {
+    public Spindexer (RobotContainer robotContainer, CRServoImplEx spindexerServo, AnalogInput spindexAnalog, RevColorSensorV3 colorSensor) {
         this.robotContainer = robotContainer;
         this.spindexerServo = spindexerServo;
         this.spindexAnalog = spindexAnalog;
+        this.colorSensor = colorSensor;
         this.iTimer = new ElapsedTime();
     }
 
@@ -40,7 +43,7 @@ public class Spindexer {
     public double getAngle() {
         double angle = (spindexAnalog.getVoltage() / Constants.System.ANALOG_MAX_VOLTAGE) * 360;
 
-        angle += Constants.Spindexer.SPINDEXER_ANGLE_OFFSET;
+        angle += Constants.Spindexer.ANGLE_OFFSET;
 
         angle = HelperFunctions.normalizeAngle(angle);
 
@@ -68,10 +71,10 @@ public class Spindexer {
 
             error = getError();
 
-            p = Constants.Spindexer.SPINDEXER_KP * error;
-            i = Constants.Spindexer.SPINDEXER_KI * iTimer.milliseconds() * Math.signum(error);
-            d = Math.signum(error) * (Constants.Spindexer.SPINDEXER_KD * (lastError - error));
-            ff = Constants.Spindexer.SPINDEXER_KF * Math.signum(error);
+            p = Constants.Spindexer.KP * error;
+            i = Constants.Spindexer.KI * iTimer.milliseconds() * Math.signum(error);
+            d = Math.signum(error) * (Constants.Spindexer.KD * (lastError - error));
+            ff = Constants.Spindexer.KF * Math.signum(error);
 
 
             if (Math.signum(error) > 0) { // Current sign pos

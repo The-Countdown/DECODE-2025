@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.util.LinkedMotors;
 import org.firstinspires.ftc.teamcode.util.LinkedServos;
 
 public class Turret extends RobotContainer.HardwareDevices {
-    private RobotContainer robotContainer;
+    private final RobotContainer robotContainer;
     private final LinkedMotors flyWheelMotors;
     private final LinkedServos turretServos;
     private final ServoImplEx hoodServo;

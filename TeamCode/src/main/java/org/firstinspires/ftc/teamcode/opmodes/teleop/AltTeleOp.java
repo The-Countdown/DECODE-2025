@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
-import org.firstinspires.ftc.teamcode.subsystems.HuskyLensFunctions;
+import org.firstinspires.ftc.teamcode.subsystems.HuskyLensLogic;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "AltTeleOp", group = "TeleOp")
 public class AltTeleOp extends OpMode {
@@ -18,7 +18,7 @@ public class AltTeleOp extends OpMode {
     public boolean beamBreakBoolean;
     public GamepadWrapper.ButtonReader beamBreakButton = new GamepadWrapper.ButtonReader();
 
-    private HuskyLensFunctions lens;
+    private HuskyLensLogic lens;
 
     @Override
     public void init() {
@@ -31,7 +31,7 @@ public class AltTeleOp extends OpMode {
         RobotContainer.HardwareDevices.limelight.pipelineSwitch(0);
         robotContainer.telemetry.addLine("OpMode Initialized");
         robotContainer.telemetry.update();
-        lens = new HuskyLensFunctions(robotContainer, RobotContainer.HardwareDevices.huskyLens1);
+        lens = new HuskyLensLogic(robotContainer, RobotContainer.HardwareDevices.huskyLens1);
 
         robotContainer.turret.setTargetAngle(177.5);
     }

@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.configuration.annotations.I2cDeviceType;
 @I2cDeviceType
 @DeviceProperties(name = "MCP9808 Temperature Sensor", description = "an MCP9808 temperature sensor", xmlTag = "MCP9808")
 public class ADG728 extends I2cDeviceSynchDevice<I2cDeviceSynch> {
-    private double[] volteges = new double[9];
+    private double[] voltages = new double[9];
     private int activePort;
     private AnalogInput muxAnalog;
 
@@ -80,19 +80,19 @@ public class ADG728 extends I2cDeviceSynchDevice<I2cDeviceSynch> {
     }
 
     public double getTempF(int port) {
-        double voltage = volteges[port];
+        double voltage = voltages[port];
         // Convert to F
         return voltage;
     }
 
     public double getTempC(int port) {
-        double voltage = volteges[port];
+        double voltage = voltages[port];
         // Convert to C
         return voltage;
     }
 
     public void saveVoltage() {
-        volteges[activePort] = muxAnalog.getVoltage();
+        voltages[activePort] = muxAnalog.getVoltage();
     }
 
     public double getVoltageRaw() {
@@ -100,7 +100,7 @@ public class ADG728 extends I2cDeviceSynchDevice<I2cDeviceSynch> {
     }
 
     public double[] getVoltages() {
-        return volteges;
+        return voltages;
     }
 
     // Useless crap

@@ -26,13 +26,13 @@ public class SwerveAutoTuner extends OpMode {
         robotContainer = new RobotContainer(this);
         robotContainer.isRunning = true;
         robotContainer.init();
-        robotContainer.indicatorLightFront.setColor(Constants.LED.LED_COLOR.RED);
+        robotContainer.indicatorLightFront.setColor(Constants.LED.COLOR.RED);
         robotContainer.refreshData();
         RobotContainer.HardwareDevices.imu.resetYaw();
         RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU();
         robotContainer.opMode.telemetry.addLine("OpMode Initialized");
         robotContainer.opMode.telemetry.update();
-        robotContainer.indicatorLightFront.setColor(Constants.LED.LED_COLOR.GREEN);
+        robotContainer.indicatorLightFront.setColor(Constants.LED.COLOR.GREEN);
     }
 
     @Override

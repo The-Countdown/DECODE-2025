@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.drivetrain.pathplanning;
 
-import com.qualcomm.robotcore.util.ElapsedTime;
-
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
@@ -11,7 +9,6 @@ public class LocalizationUpdater extends Thread {
     private final RobotContainer robotContainer;
     public double CURRENT_LOOP_TIME_MS = 0;
     public double CURRENT_LOOP_TIME_AVG_MS = 0;
-    private final ElapsedTime waitTimer = new ElapsedTime();
 
     /**
      * The pinpoint takes more time than a normal device, however, I don't know how much that is,

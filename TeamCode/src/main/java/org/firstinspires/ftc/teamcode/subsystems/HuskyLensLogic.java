@@ -2,17 +2,17 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import com.qualcomm.hardware.dfrobot.HuskyLens;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 
-public class HuskyLensFunctions {
-    private RobotContainer robotContainer;
+public class HuskyLensLogic {
+    private final RobotContainer robotContainer;
 
-    private HuskyLens huskyLens;
+    private final HuskyLens huskyLens;
 
     public enum Color {
         GREEN,
         PURPLE,
-        NONE;
+        NONE
     }
-    public HuskyLensFunctions(RobotContainer robotContainer, HuskyLens lens) {
+    public HuskyLensLogic(RobotContainer robotContainer, HuskyLens lens) {
         this.robotContainer = robotContainer;
         this.huskyLens = lens;
     }
@@ -47,7 +47,7 @@ public class HuskyLensFunctions {
     }
     public String nearestBall(){
         HuskyLens.Block[] blocks = huskyLens.blocks();
-        double distance = 0;
+        double distance;
         double nearestGreenDistance = 999;
         double nearestGreenX = 0;
         double nearestGreenY = 0;
@@ -59,20 +59,20 @@ public class HuskyLensFunctions {
             robotContainer.telemetry.addData("Seen ball: ", Color.NONE);
             return "Nearest ball: None";
         }else {
-            for (int i = 0; i < blocks.length; i++) {
-                if (blocks[i].id == 1) {
-                    distance = Math.sqrt(Math.pow(getX(blocks[i].x), 2) + Math.pow(getY(blocks[i].y), 2));
+            for (HuskyLens.Block block : blocks) {
+                if (block.id == 1) {
+                    distance = Math.sqrt(Math.pow(getX(block.x), 2) + Math.pow(getY(block.y), 2));
                     if (distance < nearestGreenDistance) {
                         nearestGreenDistance = distance;
-                        nearestGreenX = getX(blocks[i].x);
-                        nearestGreenY = getY(blocks[i].y);
+                        nearestGreenX = getX(block.x);
+                        nearestGreenY = getY(block.y);
                     }
-                } else if (blocks[i].id == 2) {
-                    distance = Math.sqrt(Math.pow(getX(blocks[i].x), 2) + Math.pow(getY(blocks[i].y), 2));
+                } else if (block.id == 2) {
+                    distance = Math.sqrt(Math.pow(getX(block.x), 2) + Math.pow(getY(block.y), 2));
                     if (distance < nearestPurpleDistance) {
                         nearestPurpleDistance = distance;
-                        nearestPurpleX = getX(blocks[i].x);
-                        nearestPurpleY = getY(blocks[i].y);
+                        nearestPurpleX = getX(block.x);
+                        nearestPurpleY = getY(block.y);
                     }
                 }
             }
@@ -88,7 +88,7 @@ public class HuskyLensFunctions {
         robotContainer.telemetry.addData("Nearest Purple y: ", nearestPurpleY);
         robotContainer.telemetry.update();
 
-        return String.valueOf("Nearest ball: " + blocks[0].x + " , " + blocks[0].y + " , " + checkColor());
+        return "Nearest ball: " + blocks[0].x + " , " + blocks[0].y + " , " + checkColor();
     }
 
     // GOAL: return the nearest green and the nearest purple ball

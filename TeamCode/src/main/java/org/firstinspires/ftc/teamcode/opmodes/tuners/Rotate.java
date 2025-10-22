@@ -12,7 +12,6 @@ import java.util.Arrays;
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Rotate", group = "Auto")
 public class Rotate extends OpMode {
     private RobotContainer robotContainer;
-    private static final ElapsedTime turretAccelerationTimer = new ElapsedTime();
     private static final ElapsedTime rotateTimer = new ElapsedTime();
     double[] angles = {0, 0, 0, 0};
     double angle = 0;
@@ -37,13 +36,9 @@ public class Rotate extends OpMode {
     @Override
     public void start() {
         robotContainer.start(this);
-
         Status.opModeIsActive = true;
         Status.lightsOn = false;
         Status.isDrivingActive = false;
-
-        turretAccelerationTimer.reset();
-
     }
 
     @Override

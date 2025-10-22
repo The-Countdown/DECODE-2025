@@ -14,7 +14,6 @@ import java.util.Objects;
 public class IndicatorLighting {
     public static class Group {
         private final List<Light> lights = new ArrayList<>();
-        private final ElapsedTime flashingTimer = new ElapsedTime();
         private final RobotContainer robotContainer;
 
         public Group(RobotContainer robotContainer) {
@@ -29,7 +28,7 @@ public class IndicatorLighting {
             lights.add(light);
         }
 
-        public void setColor(Constants.LED.LED_COLOR color) {
+        public void setColor(Constants.LED.COLOR color) {
             for (Light light : lights) {
                 light.setColor(color);
             }
@@ -42,9 +41,9 @@ public class IndicatorLighting {
         }
 
         public void police() {
-            lights.get(0).flashing(Constants.LED.LED_COLOR.RED, Constants.LED.LED_COLOR.BLUE, 1);
-            lights.get(1).flashing(Constants.LED.LED_COLOR.BLUE, Constants.LED.LED_COLOR.RED, 1);
-            lights.get(2).flashing(Constants.LED.LED_COLOR.RED, Constants.LED.LED_COLOR.BLUE, 2);
+            lights.get(0).flashing(Constants.LED.COLOR.RED, Constants.LED.COLOR.BLUE, 1);
+            lights.get(1).flashing(Constants.LED.COLOR.BLUE, Constants.LED.COLOR.RED, 1);
+            lights.get(2).flashing(Constants.LED.COLOR.RED, Constants.LED.COLOR.BLUE, 2);
         }
 
         public void rainbowReset() {
@@ -53,13 +52,13 @@ public class IndicatorLighting {
             }
         }
 
-        public void flashing(Constants.LED.LED_COLOR color1, Constants.LED.LED_COLOR color2, double hz) {
+        public void flashing(Constants.LED.COLOR color1, Constants.LED.COLOR color2, double hz) {
             for (Light light : lights) {
                 light.flashing(color1, color2, hz);
             }
         }
 
-        public void flashing(Constants.LED.LED_COLOR color1, Constants.LED.LED_COLOR color2, double hz, int repeat) {
+        public void flashing(Constants.LED.COLOR color1, Constants.LED.COLOR color2, double hz, int repeat) {
             for (Light light : lights) {
                 light.flashing(color1, color2, hz, repeat);
             }
@@ -101,26 +100,26 @@ public class IndicatorLighting {
             }
 
             if (!Status.lightsOn) {
-                robotContainer.allIndicatorLights.flashing(Constants.LED.LED_COLOR.ORANGE, Constants.LED.LED_COLOR.OFF, 8, 2);
+                robotContainer.allIndicatorLights.flashing(Constants.LED.COLOR.ORANGE, Constants.LED.COLOR.OFF, 8, 2);
             }
 
             if (Status.lightsOn && !Status.policeOn) {
                 if (robotContainer.gamepadEx1.leftStickX() > 0.1) {
-                    robotContainer.indicatorLightFront.setColor(Constants.LED.LED_COLOR.WHITE);
+                    robotContainer.indicatorLightFront.setColor(Constants.LED.COLOR.WHITE);
                 } else if (robotContainer.gamepadEx1.leftStickX() < -0.1) {
-                    robotContainer.indicatorLightFront.flashing(Constants.LED.LED_COLOR.ORANGE, Constants.LED.LED_COLOR.WHITE, 2);
+                    robotContainer.indicatorLightFront.flashing(Constants.LED.COLOR.ORANGE, Constants.LED.COLOR.WHITE, 2);
                 } else if (robotContainer.gamepadEx1.leftStickY() > 0.1) {
                     robotContainer.indicatorLightFront.rainbow();
                 } else {
-                    robotContainer.indicatorLightFront.setColor(Constants.LED.LED_COLOR.WHITE);
+                    robotContainer.indicatorLightFront.setColor(Constants.LED.COLOR.WHITE);
                 }
 
                 if (robotContainer.gamepadEx1.leftStickY() < -0.1) {
-                    robotContainer.indicatorLightBack.flashing(Constants.LED.LED_COLOR.RED, Constants.LED.LED_COLOR.WHITE, 2);
+                    robotContainer.indicatorLightBack.flashing(Constants.LED.COLOR.RED, Constants.LED.COLOR.WHITE, 2);
                 } else if (robotContainer.gamepadEx1.leftStickY() > 0.1) {
                     robotContainer.indicatorLightBack.rainbow();
                 } else {
-                    robotContainer.indicatorLightBack.setColor(Constants.LED.LED_COLOR.RED);
+                    robotContainer.indicatorLightBack.setColor(Constants.LED.COLOR.RED);
                 }
 
                 if (robotContainer.gamepadEx1.leftStickY.wasJustReleased()) {
@@ -152,8 +151,8 @@ public class IndicatorLighting {
             this.indicatorLight = indicatorLight;
         }
 
-        public void setColor(Constants.LED.LED_COLOR color) {
-            indicatorLight.setPosition(Objects.requireNonNull(Constants.LED.LED_COLOR_MAP.get(color)).ANALOG);
+        public void setColor(Constants.LED.COLOR color) {
+            indicatorLight.setPosition(Objects.requireNonNull(Constants.LED.COLOR_MAP.get(color)).ANALOG);
         }
 
         public void rainbow() {
@@ -175,7 +174,7 @@ public class IndicatorLighting {
             rainbowTimer.reset();
         }
 
-        public void flashing(Constants.LED.LED_COLOR color, Constants.LED.LED_COLOR colorTwo, double hz) {
+        public void flashing(Constants.LED.COLOR color, Constants.LED.COLOR colorTwo, double hz) {
             if (flashingTimer.seconds() <= 1 / hz) {
                 setColor(color);
             } else if (flashingTimer.seconds() <= 2 / hz) {
@@ -185,7 +184,7 @@ public class IndicatorLighting {
             }
         }
 
-        public void flashing(Constants.LED.LED_COLOR color, Constants.LED.LED_COLOR colorTwo, double hz, int timesRepeated) {
+        public void flashing(Constants.LED.COLOR color, Constants.LED.COLOR colorTwo, double hz, int timesRepeated) {
             if (flashingTimer.seconds() <= 1 / hz) {
                 setColor(color);
             } else if (flashingTimer.seconds() <= 2 / hz) {
@@ -202,15 +201,15 @@ public class IndicatorLighting {
         }
 
         public void off() {
-            setColor(Constants.LED.LED_COLOR.OFF);
+            setColor(Constants.LED.COLOR.OFF);
         }
 
         public double scalePosition(double position) {
             return (
                     position *
-                            (Objects.requireNonNull(Constants.LED.LED_COLOR_MAP.get(Constants.LED.LED_COLOR.VIOLET)).ANALOG -
-                                    Objects.requireNonNull(Constants.LED.LED_COLOR_MAP.get(Constants.LED.LED_COLOR.RED)).ANALOG)) +
-                    Objects.requireNonNull(Constants.LED.LED_COLOR_MAP.get(Constants.LED.LED_COLOR.RED)).ANALOG;
+                            (Objects.requireNonNull(Constants.LED.COLOR_MAP.get(Constants.LED.COLOR.VIOLET)).ANALOG -
+                                    Objects.requireNonNull(Constants.LED.COLOR_MAP.get(Constants.LED.COLOR.RED)).ANALOG)) +
+                    Objects.requireNonNull(Constants.LED.COLOR_MAP.get(Constants.LED.COLOR.RED)).ANALOG;
         }
     }
 }

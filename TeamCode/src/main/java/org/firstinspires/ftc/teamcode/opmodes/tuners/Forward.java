@@ -16,20 +16,19 @@ public class Forward extends OpMode {
     private RobotContainer robotContainer;
     public static double CURRENT_LOOP_TIME_MS;
     private final ElapsedTime targetTimer = new ElapsedTime();
-    private int currentServo = -1;
 
     @Override
     public void init() {
         robotContainer = new RobotContainer(this);
         robotContainer.isRunning = true;
         robotContainer.init();
-        robotContainer.indicatorLightFront.setColor(Constants.LED.LED_COLOR.RED);
+        robotContainer.indicatorLightFront.setColor(Constants.LED.COLOR.RED);
         robotContainer.refreshData();
         RobotContainer.HardwareDevices.imu.resetYaw();
         RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU();
         robotContainer.opMode.telemetry.addLine("OpMode Initialized");
         robotContainer.opMode.telemetry.update();
-        robotContainer.indicatorLightFront.setColor(Constants.LED.LED_COLOR.GREEN);
+        robotContainer.indicatorLightFront.setColor(Constants.LED.COLOR.GREEN);
     }
 
     @Override
@@ -59,16 +58,6 @@ public class Forward extends OpMode {
         for (int i = 0; i < Constants.Swerve.NUM_SERVOS; i++) {
             robotContainer.swerveModules[i].servo.setTargetAngle(90);
             robotContainer.swerveModules[i].motor.setTargetPower(0.2);
-        }
-
-        if (gamepad1.dpad_up) {
-            currentServo = 0;
-        } else if (gamepad1.dpad_right) {
-            currentServo = 1;
-        } else if (gamepad1.dpad_down) {
-            currentServo = 2;
-        } else if (gamepad1.dpad_left) {
-            currentServo = 3;
         }
 
         robotContainer.allIndicatorLights.off();

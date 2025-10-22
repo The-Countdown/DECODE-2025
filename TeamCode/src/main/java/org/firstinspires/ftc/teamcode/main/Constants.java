@@ -221,21 +221,21 @@ public class Constants {
 
     @Config
     public static class LED {
-        public static final HashMap<LED_COLOR, LED_COLOR_VALUES> LED_COLOR_MAP = new HashMap<LED_COLOR, LED_COLOR_VALUES>() {{
-            put(LED_COLOR.OFF, new LED_COLOR_VALUES(500, 0.0));
-            put(LED_COLOR.RED, new LED_COLOR_VALUES(1100, 0.279));
-            put(LED_COLOR.ORANGE, new LED_COLOR_VALUES(1200, 0.333));
-            put(LED_COLOR.YELLOW, new LED_COLOR_VALUES(1300, 0.388));
-            put(LED_COLOR.SAGE, new LED_COLOR_VALUES(1400, 0.444));
-            put(LED_COLOR.GREEN, new LED_COLOR_VALUES(1500, 0.500));
-            put(LED_COLOR.AZURE, new LED_COLOR_VALUES(1600, 0.555));
-            put(LED_COLOR.BLUE, new LED_COLOR_VALUES(1700, 0.611));
-            put(LED_COLOR.INDIGO, new LED_COLOR_VALUES(1800, 0.666));
-            put(LED_COLOR.VIOLET, new LED_COLOR_VALUES(1900, 0.722));
-            put(LED_COLOR.WHITE, new LED_COLOR_VALUES(2500, 1.0));
+        public static final HashMap<COLOR, LED_COLOR_VALUES> COLOR_MAP = new HashMap<COLOR, LED_COLOR_VALUES>() {{
+            put(COLOR.OFF, new LED_COLOR_VALUES(500, 0.0));
+            put(COLOR.RED, new LED_COLOR_VALUES(1100, 0.279));
+            put(COLOR.ORANGE, new LED_COLOR_VALUES(1200, 0.333));
+            put(COLOR.YELLOW, new LED_COLOR_VALUES(1300, 0.388));
+            put(COLOR.SAGE, new LED_COLOR_VALUES(1400, 0.444));
+            put(COLOR.GREEN, new LED_COLOR_VALUES(1500, 0.500));
+            put(COLOR.AZURE, new LED_COLOR_VALUES(1600, 0.555));
+            put(COLOR.BLUE, new LED_COLOR_VALUES(1700, 0.611));
+            put(COLOR.INDIGO, new LED_COLOR_VALUES(1800, 0.666));
+            put(COLOR.VIOLET, new LED_COLOR_VALUES(1900, 0.722));
+            put(COLOR.WHITE, new LED_COLOR_VALUES(2500, 1.0));
         }};
 
-        public enum LED_COLOR {
+        public enum COLOR {
             OFF,
             RED,
             ORANGE,
@@ -267,16 +267,17 @@ public class Constants {
 
     @Config
     public static class Spindexer {
-        public static double SPINDEXER_ANGLE_OFFSET = 0;
-        public static double SPINDEXER_KP = 0;
-        public static double SPINDEXER_KI = 0;
-        public static double SPINDEXER_KD = 0;
-        public static double SPINDEXER_KF = 0;
+        public static double ANGLE_OFFSET = 0;
+        public static double[] TRANSFER_SLOT_ANGLES = {0, 0, 0};
+        public static double KP = 0;
+        public static double KI = 0;
+        public static double KD = 0;
+        public static double KF = 0;
     }
 
     @Config
     public static class Intake {
-        public static int INTAKE_RUNTIME_MS = 800;
-        public static double INTAKE_DELAY_SECONDS = 0.2;
+        public static int RUNTIME_MS = 800;
+        public static double DELAY_SECONDS = 0.2;
     }
 }

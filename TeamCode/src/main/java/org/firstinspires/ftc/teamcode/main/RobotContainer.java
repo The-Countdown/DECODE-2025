@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.main;
 
-import com.acmerobotics.dashboard.DashboardCore;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.hardware.dfrobot.HuskyLens;
@@ -28,8 +27,7 @@ import org.firstinspires.ftc.teamcode.drivetrain.DrivetrainUpdater;
 import org.firstinspires.ftc.teamcode.drivetrain.HeadingPID;
 import org.firstinspires.ftc.teamcode.drivetrain.SwerveModule;
 import org.firstinspires.ftc.teamcode.drivetrain.SwervePIDF;
-import org.firstinspires.ftc.teamcode.subsystems.ColorSensorFunctions;
-import org.firstinspires.ftc.teamcode.subsystems.HuskyLensFunctions;
+import org.firstinspires.ftc.teamcode.subsystems.HuskyLensLogic;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.LimelightLogic;
 import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.PathPlanner;
@@ -80,8 +78,8 @@ public class RobotContainer {
     public ADGUpdater adgUpdater;
     public PathPlanner pathPlanner;
     public LimelightLogic limelightLogic;
-    public HuskyLensFunctions huskyLensLogic1;
-    public HuskyLensFunctions huskyLensLogic2;
+    public HuskyLensLogic huskyLensLogic1;
+    public HuskyLensLogic huskyLensLogic2;
     public DelayedActionManager delayedActionManager = new DelayedActionManager();
     public Drivetrain drivetrain;
     public HeadingPID headingPID;
@@ -92,7 +90,6 @@ public class RobotContainer {
     public Intake intake;
     public Spindexer spindexer;
     public Transfer transfer;
-    public ColorSensorFunctions colorSensor;
 
     public static class HardwareDevices {
         public static List<LynxModule> allHubs;
@@ -224,14 +221,13 @@ public class RobotContainer {
         pathPlanner = new PathPlanner(telemetry, this);
 
         limelightLogic = new LimelightLogic(this, telemetry, HardwareDevices.limelight);
-        huskyLensLogic1 = new HuskyLensFunctions(this, RobotContainer.HardwareDevices.huskyLens1);
-        huskyLensLogic2 = new HuskyLensFunctions(this, RobotContainer.HardwareDevices.huskyLens2);
+        huskyLensLogic1 = new HuskyLensLogic(this, RobotContainer.HardwareDevices.huskyLens1);
+        huskyLensLogic2 = new HuskyLensLogic(this, RobotContainer.HardwareDevices.huskyLens2);
         turret = new Turret(this, flyWheelMotors, HardwareDevices.hoodServo, turretServos);
         HardwareDevices.intakeMotor.setDirection(DcMotor.Direction.REVERSE);
         intake = new Intake(this, HardwareDevices.intakeMotor);
-        spindexer = new Spindexer(this, HardwareDevices.spindexServo, HardwareDevices.spindexAnalog);
+        spindexer = new Spindexer(this, HardwareDevices.spindexServo, HardwareDevices.spindexAnalog, HardwareDevices.colorSensor);
         transfer = new Transfer(this, HardwareDevices.transferServoLow, HardwareDevices.transferServoHigh);
-        colorSensor = new ColorSensorFunctions(this, HardwareDevices.colorSensor);
 
         indicatorLightFront = new IndicatorLighting.Light(this, HardwareDevices.indicatorLightFront);
         indicatorLightBack = new IndicatorLighting.Light(this, HardwareDevices.indicatorLightBack);
