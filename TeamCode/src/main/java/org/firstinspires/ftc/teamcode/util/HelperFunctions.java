@@ -26,14 +26,6 @@ public class HelperFunctions {
      * @return The normalized angle.
      */
     public static double normalizeAngle(double angle) {
-        // On this edge case the servo will not move. If fixing the problem is less expensive than this, please do so.
-        if (angle == 90) {
-            angle = 89.999;
-        }
-        if (angle == -90 || angle == -180) {
-            angle += 0.001;
-        }
-
         // Check if the angle is already in the desired range.
         if (angle >= -180 && angle < 180) {
             return angle;
@@ -53,5 +45,9 @@ public class HelperFunctions {
         }
 
         return normalizedAngle;
+    }
+
+    public static double clamp(double value, double min, double max) {
+        return Math.max(min, Math.min(max, value));
     }
 }

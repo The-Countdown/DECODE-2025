@@ -183,15 +183,14 @@ public class Constants {
     @Config
     public static class System {
         public static final int LOOP_AVERAGE_WINDOW_SIZE = 30;
-
-        public static final int TELEMETRY_UPDATE_INTERVAL_MS = 50;
-
+        public static int TELEMETRY_UPDATE_INTERVAL_MS = 750;
         public static final double ANALOG_MAX_VOLTAGE = 3.3;
     }
 
     @Config
     public static class Control {
         public static double JOYSTICK_SCALER_EXPONENT = 0.4;
+
         //power per second
         public static double MAX_DRIVE_ACCELERATION = 10;
         public static double ZERO_POWER_TOLERANCE = 0.03;
@@ -200,7 +199,6 @@ public class Constants {
     @Config
     public static class Pathing {
         public static final double
-            // Pinpoint might be backwards, check this!!!
                 PINPOINT_X_OFFSET_MM = 145;
         public static final double PINPOINT_Y_OFFSET_MM = 0;
         public static final GoBildaPinpointDriver.GoBildaOdometryPods
@@ -218,6 +216,7 @@ public class Constants {
                 HEADING_KF = 0.05;
         public static double PATHING_ERROR_MARGIN_CM = 1;
         public static double HEADING_PID_TOLERANCE_DEGREES = 360;
+        public static int PINPOINT_UPDATE_DELAY_MS = 50;
     }
 
     @Config
@@ -261,7 +260,7 @@ public class Constants {
     @Config
     public static class Turret {
         public static double TURRET_SPEED_FACTOR = 0.001;
-        public static double FLYWHEEL_SPEED = 0.9;
+        public static double FLYWHEEL_TOP_SPEED = 0.95;
         public static double FLYWHEEL_CURVE = 4;
         public static double TRACK_GOAL_P = -0.2;
     }

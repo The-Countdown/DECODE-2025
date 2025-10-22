@@ -51,44 +51,21 @@ public class TeleOp extends OpMode {
 
         robotContainer.allIndicatorLights.lightsUpdate();
 
-        //turret speed factor * current loop time is how far u want it to move per how many millisecond(loop time)
-        if (robotContainer.gamepadEx1.rightStickY() > 0.1) {
-            turretPos += (Constants.Turret.TURRET_SPEED_FACTOR * CURRENT_LOOP_TIME_MS) * Math.pow(robotContainer.gamepadEx1.rightStickY(), 2);
-        } else if (robotContainer.gamepadEx1.rightStickY() < -0.1) {
-            turretPos -= (Constants.Turret.TURRET_SPEED_FACTOR * CURRENT_LOOP_TIME_MS) * Math.pow(robotContainer.gamepadEx1.rightStickY(), 2);
-        }
-
-        // TODO: Remove in the future and clamp inside the function instead
-        if (turretPos > 1) {
-            turretPos = 1;
-        } else if (turretPos < -1) {
-            turretPos = -1;
-        }
-
+        turretPos += (Constants.Turret.TURRET_SPEED_FACTOR * CURRENT_LOOP_TIME_MS) * Math.pow(robotContainer.gamepadEx1.rightStickY(), 3);
         robotContainer.turret.setTargetPosition(turretPos);
 
-        if (robotContainer.gamepadEx1.triangle.isHeld()) {
-            // constants for motor speed, different speed based off of position
-            RobotContainer.HardwareDevices.flyWheelMotorMaster.setPower(Math.min(robotContainer.gamepadEx1.cross.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, Constants.Turret.FLYWHEEL_SPEED));
-            RobotContainer.HardwareDevices.flyWheelMotorSlave.setPower(Math.min(robotContainer.gamepadEx1.cross.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, Constants.Turret.FLYWHEEL_SPEED));
-        } else {
-            RobotContainer.HardwareDevices.flyWheelMotorMaster.setPower(0);
-            RobotContainer.HardwareDevices.flyWheelMotorSlave.setPower(0);
-        }
+        robotContainer.turret.flywheel.setTargetVelocity(Math.min(robotContainer.gamepadEx1.cross.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, Constants.Turret.FLYWHEEL_TOP_SPEED));
 
-        if (robotContainer.gamepadEx1.circle.wasJustPressed()) {
-            Status.intakeEnabled = !Status.intakeEnabled;
-        }
-
-        if (Status.intakeEnabled) {
-            robotContainer.intake.setIntakeVelocity(1);
-        } else {
-            robotContainer.intake.setIntakeVelocity(0);
-        }
+        Status.intakeEnabled = robotContainer.gamepadEx1.circle.wasJustPressed() != Status.intakeEnabled;
+        robotContainer.intake.setIntakeVelocity(Status.intakeEnabled ? 1 : 0);
 
         robotContainer.telemetry("teleOp");
 
-        Thread.yield();
+        try {
+            Thread.sleep(1);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

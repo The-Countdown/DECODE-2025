@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.drivetrain.pathplanning;
 
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 
@@ -8,6 +11,7 @@ public class LocalizationUpdater extends Thread {
     private final RobotContainer robotContainer;
     public double CURRENT_LOOP_TIME_MS = 0;
     public double CURRENT_LOOP_TIME_AVG_MS = 0;
+    private final ElapsedTime waitTimer = new ElapsedTime();
 
     /**
      * The pinpoint takes more time than a normal device, however, I don't know how much that is,
@@ -22,7 +26,7 @@ public class LocalizationUpdater extends Thread {
 
     @Override
     public void run() {
-        while (Status.opModeIsActive || Status.competitionMode) {
+        while (Status.opModeIsActive) {
             RobotContainer.HardwareDevices.pinpoint.update();
             Status.currentPose = RobotContainer.HardwareDevices.pinpoint.getPosition();
             Status.currentHeading = Status.currentPose.getHeading(AngleUnit.DEGREES);
@@ -30,12 +34,16 @@ public class LocalizationUpdater extends Thread {
             CURRENT_LOOP_TIME_AVG_MS = robotContainer.getRollingAverageLoopTime("pinpointUpdater");
             if (Status.isDrivingActive) {
                 try {
-                    Thread.sleep(50);
+                    Thread.sleep(Constants.Pathing.PINPOINT_UPDATE_DELAY_MS);
                 } catch (InterruptedException e) {
-                    break;
+                    throw new RuntimeException(e);
                 }
             } else {
-                Thread.yield();
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
     }

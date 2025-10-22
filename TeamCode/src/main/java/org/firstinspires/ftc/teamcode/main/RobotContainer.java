@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.main;
 
+import com.acmerobotics.dashboard.DashboardCore;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.hardware.dfrobot.HuskyLens;
@@ -69,6 +70,7 @@ public class RobotContainer {
     public GamepadWrapper gamepadEx2;
     public final Map<String, LinkedList<Double>> loopTimesMap = new HashMap<>();
     public final Map<String, ElapsedTime> loopTimers = new HashMap<>();
+    private final ElapsedTime telemetryLoopTimer = new ElapsedTime();
     private final ArrayList<String> retainedTelemetryCaptions = new ArrayList<>();
     private final ArrayList<Object> retainedTelemetryValues = new ArrayList<>();
     public final SwerveModule[] swerveModules = new SwerveModule[Constants.Swerve.NUM_MOTORS];
@@ -209,15 +211,14 @@ public class RobotContainer {
         HardwareDevices.intakeMotor = getHardwareDevice(DcMotorImplEx.class, "intakeMotor");
         HardwareDevices.flyWheelMotorMaster = getHardwareDevice(DcMotorImplEx.class, "flyWheelMotorMaster");
         HardwareDevices.flyWheelMotorSlave = getHardwareDevice(DcMotorImplEx.class, "flyWheelMotorSlave");
-        HardwareDevices.flyWheelMotorMaster.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        HardwareDevices.flyWheelMotorSlave.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
         //sensor
         HardwareDevices.colorSensor = getHardwareDevice(RevColorSensorV3.class, "colorSensor");
         HardwareDevices.beamBreak = getHardwareDevice(RevTouchSensor.class, "beamBreak");
 
-        HardwareDevices.flyWheelMotorSlave.setDirection(DcMotorImplEx.Direction.REVERSE);
         LinkedMotors flyWheelMotors = new LinkedMotors(HardwareDevices.flyWheelMotorMaster, HardwareDevices.flyWheelMotorSlave);
+        HardwareDevices.flyWheelMotorSlave.setDirection(DcMotorImplEx.Direction.REVERSE);
+        flyWheelMotors.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         LinkedServos turretServos = new LinkedServos(HardwareDevices.turretServoMaster, HardwareDevices.turretServoSlave);
 
         pathPlanner = new PathPlanner(telemetry, this);
@@ -262,6 +263,7 @@ public class RobotContainer {
         localizationUpdater.start();
         drivetrainUpdater = new DrivetrainUpdater(this);
         drivetrainUpdater.start();
+        telemetryLoopTimer.reset();
 //        adgUpdater = new ADGUpdater(HardwareDevices.mux1, this);
 //        adgUpdater.start();
     }
@@ -432,6 +434,9 @@ public class RobotContainer {
     }
 
     public void telemetry (String opMode) {
+        if (telemetryLoopTimer.milliseconds() < Constants.System.TELEMETRY_UPDATE_INTERVAL_MS) {
+            return;
+        }
         telemetry.addData("Control Hub Voltage", getVoltage(Constants.Robot.CONTROL_HUB_INDEX) + " V");
         telemetry.addData("Expansion Hub Voltage", getVoltage(Constants.Robot.EXPANSION_HUB_INDEX) + " V");
         telemetry.addData("Control Hub Current", getCurrent(Constants.Robot.CONTROL_HUB_INDEX) + " A");

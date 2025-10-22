@@ -36,14 +36,18 @@ public class DrivetrainUpdater extends Thread {
          return;
         }
         while (!Status.opModeIsActive) {
-            Thread.yield();
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
         deltaTimer.reset();
         robotContainer.refreshData();
         for (int i = 0; i < robotContainer.swerveModules.length; i++) {
                 currentPowers[i] = RobotContainer.HardwareDevices.swerveMotors[i].getPower();
             }
-        while (Status.opModeIsActive || Status.competitionMode) {
+        while (Status.opModeIsActive) {
             robotContainer.refreshData();
 
             CURRENT_LOOP_TIME_MS = robotContainer.updateLoopTime("drivetrainUpdater");
@@ -83,7 +87,10 @@ public class DrivetrainUpdater extends Thread {
                     robotContainer.swerveModules[i].motor.setVelocity(acceleratedMotorPower * Math.abs(Math.cos(Math.toRadians(robotContainer.swerveServosPIDF[i].getError()))));
                 }
             }
-            Thread.yield();
-        }
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }        }
     }
 }

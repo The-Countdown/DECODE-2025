@@ -14,9 +14,9 @@ import java.util.Arrays;
  */
 public class Drivetrain extends RobotContainer.HardwareDevices {
     private final RobotContainer robotContainer;
-
     private static final ElapsedTime stopTimer = new ElapsedTime();
-
+    double[] calculatedAngles = new double[Constants.Swerve.NUM_SERVOS];
+    double[] calculatedPowers = new double[Constants.Swerve.NUM_MOTORS];
     double[] lastAngles = Constants.Swerve.STOP_FORMATION;
 
     /**
@@ -88,14 +88,7 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
 
         double currentHeading = HelperFunctions.normalizeAngle(Status.currentHeading);
         // Adjust the translational angle for field-oriented driving if enabled.
-        translationalAngle = HelperFunctions.normalizeAngle(Math.toDegrees(translationalAngle));
-        translationalAngle = Status.fieldOriented ? translationalAngle + currentHeading : translationalAngle;
-        translationalAngle = HelperFunctions.normalizeAngle(translationalAngle);
-
-        translationalAngle = Math.toRadians(translationalAngle);
-
-        double[] calculatedAngles = new double[robotContainer.swerveModules.length];
-        double[] calculatedPowers = new double[robotContainer.swerveModules.length];
+        translationalAngle = Status.fieldOriented ? translationalAngle + Math.toRadians(currentHeading) : translationalAngle;
 
         // Calculate the x and y components of translational movement.
         double translationalX = translationalMagnitude * Math.cos(translationalAngle) * translationalDirection;
@@ -119,7 +112,14 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
             calculatedPowers[i] = vectorMagnitude;
         }
 
-        if (!Arrays.stream(calculatedAngles).allMatch(v -> Math.abs(v) <= 0.01)) {
+        boolean anyNonZero = false;
+        for (double v : calculatedAngles) {
+            if (Math.abs(v) > 0.01) {
+                anyNonZero = true;
+                break;
+            }
+        }
+        if (anyNonZero) {
             lastAngles = calculatedAngles;
         }
 

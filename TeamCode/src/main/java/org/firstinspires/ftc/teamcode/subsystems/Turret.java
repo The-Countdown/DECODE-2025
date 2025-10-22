@@ -43,15 +43,6 @@ public class Turret extends RobotContainer.HardwareDevices {
         return turretServos.getPosition();
     }
 
-    public void setServosPower(double power) {
-        if (power > 1) {
-            power = 1;
-        } else if (power < -1) {
-            power = -1;
-        }
-        turretServos.setPower(power);
-    }
-
     public void pointAtGoal() {
         double xDiff = Constants.Game.GOAL_POSE.getX(DistanceUnit.INCH) - Status.currentPose.getX(DistanceUnit.INCH);
         double yDiff = Constants.Game.GOAL_POSE.getY(DistanceUnit.INCH) - Status.currentPose.getY(DistanceUnit.INCH);
@@ -78,6 +69,6 @@ public class Turret extends RobotContainer.HardwareDevices {
         }
     }
 
-    Flywheel flywheel = new Flywheel();
-    Hood hood = new Hood();
+    public final Flywheel flywheel = new Flywheel();
+    public final Hood hood = new Hood();
 }
