@@ -471,14 +471,24 @@ public class RobotContainer {
         telemetry.addData("Intake Enabled", Status.intakeEnabled);
 //        telemetry.addData("Color Sensor", RobotContainer.HardwareDevices.colorSensor.getLightDetected());
 //        telemetry.addData("Color Sensor Raw", RobotContainer.HardwareDevices.colorSensor.getRawLightDetected());
-        timer1.reset();
-        HardwareDevices.flyWheelMotorMaster.getVelocity();
-        telemetry.addData("timer1", timer1.milliseconds());
-        timer2.reset();
-        HardwareDevices.flyWheelMotorMaster.getVelocity();
-        telemetry.addData("timer2", timer2.milliseconds());
-//        telemetry.addData("Color Sensor Red", HardwareDevices.colorSensor.red());
-//        telemetry.addData("Color Sensor Blue", HardwareDevices.colorSensor.blue());
+//        timer1.reset();
+//        HardwareDevices.flyWheelMotorMaster.getVelocity();
+//        telemetry.addData("timer1", timer1.milliseconds());
+//        timer2.reset();
+//        HardwareDevices.flyWheelMotorMaster.getVelocity();
+//        telemetry.addData("timer2", timer2.milliseconds());
+        double blue = HardwareDevices.colorSensor.blue();
+        double green = HardwareDevices.colorSensor.green();
+
+        if (blue > green) {
+            telemetry.addLine("Purple");
+        } else if (green > blue) {
+            if (green < 100) {
+                telemetry.addLine("Empty");
+            } else {
+                telemetry.addLine("Green");
+            }
+        }
 
         int selectedServo = -1;
         if (gamepadEx1.dpadUp.isPressed()) {
