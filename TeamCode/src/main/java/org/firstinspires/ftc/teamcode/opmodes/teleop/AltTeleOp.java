@@ -102,13 +102,9 @@ public class AltTeleOp extends OpMode {
             turretPos = -1;
         }
 
-        robotContainer.limelightLogic.trackGoal();
-
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.turret.pointAtGoal(), () -> beamBreakBoolean);
-        robotContainer.turret.pointAtGoal();
-
-//        robotContainer.turret.setTurretTargetPosition(Math.min(Math.max(turretPos, -1), 1));
+        robotContainer.turret.setTargetPosition(Math.min(Math.max(turretPos, -1), 1));
         robotContainer.telemetry.addData("turret pos",turretPos);
+        robotContainer.telemetry.addData("slave servo", RobotContainer.HardwareDevices.turretServoSlave.getPosition());
 
 //        RobotContainer.HardwareDevices.spindexServo.setPower(robotContainer.gamepadEx1.leftStickX() * 0.2);
         beamBreakBoolean = RobotContainer.HardwareDevices.beamBreak.isPressed();
