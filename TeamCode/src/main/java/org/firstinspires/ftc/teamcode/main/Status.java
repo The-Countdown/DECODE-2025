@@ -19,8 +19,8 @@ public class Status {
     public static Pose2D currentPose = new Pose2D(DistanceUnit.CM,0,0, AngleUnit.DEGREES,0);
     public static double currentHeading = 0;
     public static Constants.Game.MOTIF motif;
-
     public static Constants.Game.ALLIANCE alliance;
+    public static Constants.Game.ARTIFACT_COLOR[] slotColor = {Constants.Game.ARTIFACT_COLOR.UNKNOWN, Constants.Game.ARTIFACT_COLOR.UNKNOWN, Constants.Game.ARTIFACT_COLOR.UNKNOWN};
 
     /**
      * A map to store the status of each swerve servo.

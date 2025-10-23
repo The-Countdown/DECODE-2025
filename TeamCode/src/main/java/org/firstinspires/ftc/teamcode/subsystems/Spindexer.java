@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
+import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
 public class Spindexer {
@@ -50,6 +51,43 @@ public class Spindexer {
         return angle;
     }
 
+    public Constants.Game.ARTIFACT_COLOR getArtifactColor(int index, double blue, double green) {
+        if (blue > green) {
+            return Constants.Game.ARTIFACT_COLOR.PURPLE;
+        } else if (green > blue) {
+            if (green < 100) {
+                return Constants.Game.ARTIFACT_COLOR.NONE;
+            } else {
+                return Constants.Game.ARTIFACT_COLOR.GREEN;
+            }
+        }
+        return Constants.Game.ARTIFACT_COLOR.UNKNOWN;
+    }
+
+    public void slotsUpdate() {
+        double blue = -1;
+        double green = -1;
+        if (robotContainer.spindexer.getAngle() > Constants.Spindexer.INTAKE_SLOT_ANGLES[0] - 10 && robotContainer.spindexer.getAngle() < Constants.Spindexer.INTAKE_SLOT_ANGLES[0] + 10 && Status.slotColor[0] == Constants.Game.ARTIFACT_COLOR.UNKNOWN) {
+            blue = RobotContainer.HardwareDevices.colorSensor.blue();
+            green = RobotContainer.HardwareDevices.colorSensor.green();
+            Status.slotColor[0] = getArtifactColor(0, blue, green);
+        }
+        if (robotContainer.spindexer.getAngle() > Constants.Spindexer.INTAKE_SLOT_ANGLES[1] - 10 && robotContainer.spindexer.getAngle() < Constants.Spindexer.INTAKE_SLOT_ANGLES[1] + 10 && Status.slotColor[1] == Constants.Game.ARTIFACT_COLOR.UNKNOWN) {
+            if (blue == -1) {
+                blue = RobotContainer.HardwareDevices.colorSensor.blue();
+                green = RobotContainer.HardwareDevices.colorSensor.green();
+            }
+            Status.slotColor[1] = getArtifactColor(1, blue, green);
+        }
+        if (robotContainer.spindexer.getAngle() > Constants.Spindexer.INTAKE_SLOT_ANGLES[2] - 10 && robotContainer.spindexer.getAngle() < Constants.Spindexer.INTAKE_SLOT_ANGLES[2] + 10 && Status.slotColor[2] == Constants.Game.ARTIFACT_COLOR.UNKNOWN) {
+            if (green == -1) {
+                blue = RobotContainer.HardwareDevices.colorSensor.blue();
+                green = RobotContainer.HardwareDevices.colorSensor.green();
+            }
+            Status.slotColor[2] = getArtifactColor(2, blue, green);
+        }
+    }
+
     public class PIDF {
         public double getError() {
             double error = targetAngle - robotContainer.spindexer.getAngle();
@@ -87,4 +125,5 @@ public class Spindexer {
             return p + i + ff + d;
         }
     }
+    public PIDF pidf = new PIDF();
 }
