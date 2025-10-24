@@ -43,6 +43,11 @@ public class Turret extends RobotContainer.HardwareDevices {
         return turretServos.getPosition();
     }
 
+    // Assuming point 1 is less than point 2
+    public double interpolate(double point1, double point2, double persentageSplit) {
+        return point1 + ((point2 - point1) * persentageSplit);
+    }
+
     public void pointAtGoal() {
         double xDiff = Constants.Game.GOAL_POSE.getX(DistanceUnit.INCH) - Status.currentPose.getX(DistanceUnit.INCH);
         double yDiff = Constants.Game.GOAL_POSE.getY(DistanceUnit.INCH) - Status.currentPose.getY(DistanceUnit.INCH);
