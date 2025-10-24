@@ -10,7 +10,7 @@ import java.lang.Thread;
 public class DelayedActionManager extends Thread {
     private final List<DelayedAction> delayedActions = new ArrayList<>();
     List<Double> timeAtPause = new ArrayList<>();
-    boolean enabled = false;
+    boolean enabled = true;
 
     @Override
     public void run() {

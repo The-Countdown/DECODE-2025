@@ -132,7 +132,7 @@ public class RobotContainer {
         public static ServoImplEx hoodServo;
 
         // Spindexer
-        public static CRServoImplEx transferServoLow;
+        public static ServoImplEx transferServoLow;
         public static CRServoImplEx transferServoHigh;
 
         public static CRServoImplEx spindexServo;
@@ -205,7 +205,7 @@ public class RobotContainer {
         HardwareDevices.turretServoMaster = getHardwareDevice(ServoImplEx.class, "turretServoMaster");
         HardwareDevices.turretServoSlave = getHardwareDevice(ServoImplEx.class, "turretServoSlave");
         HardwareDevices.hoodServo = getHardwareDevice(ServoImplEx.class, "hoodServo");
-        HardwareDevices.transferServoLow = getHardwareDevice(CRServoImplEx.class, "transferServoLow");
+        HardwareDevices.transferServoLow = getHardwareDevice(ServoImplEx.class, "transferServoLow");
         HardwareDevices.transferServoHigh = getHardwareDevice(CRServoImplEx.class, "transferServoHigh");
         HardwareDevices.spindexServo = getHardwareDevice(CRServoImplEx.class, "spindexServo");
         HardwareDevices.spindexAnalog = getHardwareDevice(AnalogInput.class, "spindexAnalog");

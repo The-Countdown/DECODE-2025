@@ -59,13 +59,17 @@ public class Turret extends RobotContainer.HardwareDevices {
     }
 
     public class Hood {
-        public void setTargetAngle(double angle) {
-            if (angle > 45) {
-                angle = 45;
-            } else if (angle < 10) {
-                angle = 10;
-            }
-            hoodServo.setPosition(angle/355);
+//        public void setTargetAngle(double angle) {
+//            if (angle > 45) {
+//                angle = 45;
+//            } else if (angle < 10) {
+//                angle = 10;
+//            }
+//            hoodServo.setPosition(angle/355);
+//        }
+
+        public void setPos(double pos) {
+            hoodServo.setPosition(pos);
         }
     }
 

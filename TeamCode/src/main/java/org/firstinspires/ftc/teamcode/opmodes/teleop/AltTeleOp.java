@@ -74,7 +74,18 @@ public class AltTeleOp extends OpMode {
             RobotContainer.HardwareDevices.flyWheelMotorSlave.setPower(0);
         }
 
-        robotContainer.transfer.setLowPower(robotContainer.gamepadEx1.leftTriggerRaw());
+        //transfer test (make automated once it works)
+        if (robotContainer.gamepadEx1.square.wasJustPressed()) {
+            robotContainer.transfer.flapUp();
+            robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapDown(), Constants.Transfer.FLIP_TIME);
+        }
+        robotContainer.telemetry.addData("lower servo pos", RobotContainer.HardwareDevices.transferServoLow.getPosition());
+
+        if (robotContainer.gamepadEx1.triangle.wasJustPressed()) {
+            robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[1]);
+        }
+
+
         robotContainer.transfer.setHighPower(robotContainer.gamepadEx1.rightTriggerRaw());
 
         robotContainer.telemetry.addData("flywheel speed", RobotContainer.HardwareDevices.flyWheelMotorMaster.getVelocity());
