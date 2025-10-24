@@ -41,6 +41,10 @@ public class Spindexer {
         targetAngle = HelperFunctions.normalizeAngle(angle);
     }
 
+    public double getTargetAngle() {
+        return targetAngle;
+    }
+
     public double getAngle() {
         double angle = (spindexAnalog.getVoltage() / Constants.System.ANALOG_MAX_VOLTAGE) * 360;
 
@@ -51,7 +55,7 @@ public class Spindexer {
         return angle;
     }
 
-    public Constants.Game.ARTIFACT_COLOR getArtifactColor(int index, double blue, double green) {
+    public Constants.Game.ARTIFACT_COLOR getArtifactColor(double blue, double green) {
         if (blue > green) {
             return Constants.Game.ARTIFACT_COLOR.PURPLE;
         } else if (green > blue) {
@@ -70,30 +74,27 @@ public class Spindexer {
         if (robotContainer.spindexer.getAngle() > Constants.Spindexer.INTAKE_SLOT_ANGLES[0] - 10 && robotContainer.spindexer.getAngle() < Constants.Spindexer.INTAKE_SLOT_ANGLES[0] + 10 && Status.slotColor[0] == Constants.Game.ARTIFACT_COLOR.UNKNOWN) {
             blue = RobotContainer.HardwareDevices.colorSensor.blue();
             green = RobotContainer.HardwareDevices.colorSensor.green();
-            Status.slotColor[0] = getArtifactColor(0, blue, green);
+            Status.slotColor[0] = getArtifactColor(blue, green);
         }
         if (robotContainer.spindexer.getAngle() > Constants.Spindexer.INTAKE_SLOT_ANGLES[1] - 10 && robotContainer.spindexer.getAngle() < Constants.Spindexer.INTAKE_SLOT_ANGLES[1] + 10 && Status.slotColor[1] == Constants.Game.ARTIFACT_COLOR.UNKNOWN) {
             if (blue == -1) {
                 blue = RobotContainer.HardwareDevices.colorSensor.blue();
                 green = RobotContainer.HardwareDevices.colorSensor.green();
             }
-            Status.slotColor[1] = getArtifactColor(1, blue, green);
+            Status.slotColor[1] = getArtifactColor(blue, green);
         }
         if (robotContainer.spindexer.getAngle() > Constants.Spindexer.INTAKE_SLOT_ANGLES[2] - 10 && robotContainer.spindexer.getAngle() < Constants.Spindexer.INTAKE_SLOT_ANGLES[2] + 10 && Status.slotColor[2] == Constants.Game.ARTIFACT_COLOR.UNKNOWN) {
             if (green == -1) {
                 blue = RobotContainer.HardwareDevices.colorSensor.blue();
                 green = RobotContainer.HardwareDevices.colorSensor.green();
             }
-            Status.slotColor[2] = getArtifactColor(2, blue, green);
+            Status.slotColor[2] = getArtifactColor(blue, green);
         }
     }
 
     public class PIDF {
         public double getError() {
-            double error = targetAngle - robotContainer.spindexer.getAngle();
-            error = HelperFunctions.normalizeAngle(error);
-
-            return error;
+            return error = targetAngle - robotContainer.spindexer.getAngle();
         }
         public double calculate() {
             // If current sign and last sign are different reset I.

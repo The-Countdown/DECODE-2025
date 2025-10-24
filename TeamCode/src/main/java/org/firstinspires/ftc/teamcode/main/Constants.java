@@ -190,7 +190,7 @@ public class Constants {
     @Config
     public static class System {
         public static final int LOOP_AVERAGE_WINDOW_SIZE = 30;
-        public static int TELEMETRY_UPDATE_INTERVAL_MS = 750;
+        public static int TELEMETRY_UPDATE_INTERVAL_MS = 50;
         public static final double ANALOG_MAX_VOLTAGE = 3.3;
     }
 

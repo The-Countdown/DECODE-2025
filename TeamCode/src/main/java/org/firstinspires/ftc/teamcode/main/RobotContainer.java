@@ -45,6 +45,7 @@ import org.firstinspires.ftc.teamcode.util.LinkedServos;
 
 import java.lang.Thread;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -207,6 +208,7 @@ public class RobotContainer {
         HardwareDevices.transferServoLow = getHardwareDevice(CRServoImplEx.class, "transferServoLow");
         HardwareDevices.transferServoHigh = getHardwareDevice(CRServoImplEx.class, "transferServoHigh");
         HardwareDevices.spindexServo = getHardwareDevice(CRServoImplEx.class, "spindexServo");
+        HardwareDevices.spindexAnalog = getHardwareDevice(AnalogInput.class, "spindexAnalog");
         HardwareDevices.intakeMotor = getHardwareDevice(DcMotorImplEx.class, "intakeMotor");
         HardwareDevices.flyWheelMotorMaster = getHardwareDevice(DcMotorImplEx.class, "flyWheelMotorMaster");
         HardwareDevices.flyWheelMotorSlave = getHardwareDevice(DcMotorImplEx.class, "flyWheelMotorSlave");
@@ -469,6 +471,13 @@ public class RobotContainer {
         telemetry.addData("Motor 3 Current Velocity", swerveModules[3].motor.getVelocity());
         telemetry.addData("Field Oriented", Status.fieldOriented);
         telemetry.addData("Intake Enabled", Status.intakeEnabled);
+        telemetry.addLine();
+        telemetry.addData("Spindexer Angle", spindexer.getAngle());
+        telemetry.addData("Spindexer Slot Colors", Arrays.toString(Status.slotColor));
+        telemetry.addData("Spindexer Target angle", spindexer.getTargetAngle());
+        telemetry.addData("Spindexer error angle", spindexer.pidf.getError());
+        telemetry.addData("Spindexer Servo Power", HardwareDevices.spindexServo.getPower());
+        telemetry.addData("Spindexer calc power", spindexer.pidf.calculate());
 
         int selectedServo = -1;
         if (gamepadEx1.dpadUp.isPressed()) {

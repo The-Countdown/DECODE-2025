@@ -59,6 +59,17 @@ public class TeleOp extends OpMode {
         Status.intakeEnabled = robotContainer.gamepadEx1.circle.wasJustPressed() != Status.intakeEnabled;
         robotContainer.intake.setIntakeVelocity(Status.intakeEnabled ? 1 : 0);
 
+        if (robotContainer.gamepadEx2.dpadUp.isPressed()) {
+            robotContainer.spindexer.setTargetAngle(Constants.Spindexer.INTAKE_SLOT_ANGLES[0]);
+        } else if (robotContainer.gamepadEx2.dpadDown.isPressed()) {
+            robotContainer.spindexer.setTargetAngle(Constants.Spindexer.INTAKE_SLOT_ANGLES[1]);
+        } else if (robotContainer.gamepadEx2.dpadRight.isPressed()) {
+            robotContainer.spindexer.setTargetAngle(Constants.Spindexer.INTAKE_SLOT_ANGLES[2]);
+        }
+        RobotContainer.HardwareDevices.spindexServo.setPower(robotContainer.spindexer.pidf.calculate());
+
+        robotContainer.spindexer.slotsUpdate();
+
         robotContainer.telemetry("teleOp");
 
         Thread.yield();
