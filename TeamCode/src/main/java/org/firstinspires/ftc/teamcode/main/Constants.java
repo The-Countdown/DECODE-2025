@@ -270,6 +270,11 @@ public class Constants {
         public static double FLYWHEEL_TOP_SPEED = 0.95;
         public static double FLYWHEEL_CURVE = 4;
         public static double TRACK_GOAL_P = -0.2;
+
+        public static double HOOD_POS_1 = 0.2;
+        public static double HOOD_POS_2 = 0.4;
+        public static double HOOD_POS_3 = 0.6;
+        public static double HOOD_POS_4 = 0.8;
     }
 
     @Config
