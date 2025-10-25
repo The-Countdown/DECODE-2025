@@ -2,12 +2,9 @@ package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
-import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
-import org.firstinspires.ftc.teamcode.subsystems.HuskyLensLogic;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "AltTeleOp", group = "TeleOp")
 public class AltTeleOp extends OpMode {
@@ -82,10 +79,10 @@ public class AltTeleOp extends OpMode {
         robotContainer.transfer.setHighPower(robotContainer.gamepadEx1.rightTriggerRaw());
 
         if (robotContainer.gamepadEx1.circle.isHeld()) {
-            robotContainer.intake.setIntakeVelocity(Math.min(robotContainer.gamepadEx1.circle.getHoldDuration(), 1));
+            robotContainer.intake.setVelocity(Math.min(robotContainer.gamepadEx1.circle.getHoldDuration(), 1));
         }
         else {
-            robotContainer.intake.setIntakeVelocity(0);
+            robotContainer.intake.setVelocity(0);
         }
 
         //turret speed factor * current loop time is how far u want it to move per how many millisecond(loop time)

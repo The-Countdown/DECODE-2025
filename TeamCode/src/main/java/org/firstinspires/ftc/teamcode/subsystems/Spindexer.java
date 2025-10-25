@@ -92,6 +92,115 @@ public class Spindexer {
         }
     }
 
+    public int getCurrentIntakeSlot() {
+        double currentAngle = getAngle();
+
+        int closestIndex = 0;
+        double smallestDistance = Math.abs(HelperFunctions.normalizeAngle(currentAngle - Constants.Spindexer.INTAKE_SLOT_ANGLES[0]));
+
+        for (int i = 1; i < Constants.Spindexer.INTAKE_SLOT_ANGLES.length; i++) {
+            double distance = Math.abs(HelperFunctions.normalizeAngle(currentAngle - Constants.Spindexer.INTAKE_SLOT_ANGLES[i]));
+            if (distance < smallestDistance) {
+                smallestDistance = distance;
+                closestIndex = i;
+            }
+        }
+
+        return closestIndex;
+    }
+
+    public int getCurrentTransferSlot() {
+        double currentAngle = getAngle();
+
+        int closestIndex = 0;
+        double smallestDistance = Math.abs(HelperFunctions.normalizeAngle(currentAngle - Constants.Spindexer.TRANSFER_SLOT_ANGLES[0]));
+
+        for (int i = 1; i < Constants.Spindexer.TRANSFER_SLOT_ANGLES.length; i++) {
+            double distance = Math.abs(HelperFunctions.normalizeAngle(currentAngle - Constants.Spindexer.TRANSFER_SLOT_ANGLES[i]));
+            if (distance < smallestDistance) {
+                smallestDistance = distance;
+                closestIndex = i;
+            }
+        }
+
+        return closestIndex;
+    }
+
+    public void goToNextIntakeSlot() {
+        robotContainer.spindexer.slotsUpdate();
+        boolean intakeFound = false;
+
+        for (int i = 1; i <= Constants.Spindexer.INTAKE_SLOT_ANGLES.length; i++) {
+            int nextSlot = (robotContainer.spindexer.getCurrentIntakeSlot() + i) % Constants.Spindexer.INTAKE_SLOT_ANGLES.length;
+
+            if (Status.slotColor[nextSlot] == Constants.Game.ARTIFACT_COLOR.UNKNOWN || Status.slotColor[nextSlot] == Constants.Game.ARTIFACT_COLOR.NONE) {
+                robotContainer.spindexer.setTargetAngle(Constants.Spindexer.INTAKE_SLOT_ANGLES[nextSlot]);
+                intakeFound = true;
+                break;
+            }
+        }
+
+        if (!intakeFound) {
+            Status.turretToggle = true;
+            robotContainer.delayedActionManager.schedule(() -> Status.intakeToggle = false, 300);
+        }
+    }
+
+    public void goToNextTransferSlot() {
+        boolean turretFound = false;
+
+        for (int i = 1; i <= Constants.Spindexer.TRANSFER_SLOT_ANGLES.length; i++) {
+            int nextSlot = (robotContainer.spindexer.getCurrentTransferSlot() + i) % Constants.Spindexer.TRANSFER_SLOT_ANGLES.length;
+
+            if (Status.slotColor[nextSlot] == Constants.Game.ARTIFACT_COLOR.PURPLE || Status.slotColor[nextSlot] == Constants.Game.ARTIFACT_COLOR.GREEN) {
+                robotContainer.spindexer.setTargetAngle(Constants.Spindexer.TRANSFER_SLOT_ANGLES[nextSlot]);
+                turretFound = true;
+                break;
+            }
+        }
+
+        if (!turretFound) {
+            Status.turretToggle = false;
+            Status.intakeToggle = true;
+        }
+    }
+
+    public void goToNextGreenSlot() {
+        boolean turretFound = false;
+
+        for (int i = 1; i <= Constants.Spindexer.TRANSFER_SLOT_ANGLES.length; i++) {
+            int nextSlot = (robotContainer.spindexer.getCurrentTransferSlot() + i) % Constants.Spindexer.TRANSFER_SLOT_ANGLES.length;
+
+            if (Status.slotColor[nextSlot] == Constants.Game.ARTIFACT_COLOR.GREEN) {
+                robotContainer.spindexer.setTargetAngle(Constants.Spindexer.TRANSFER_SLOT_ANGLES[nextSlot]);
+                turretFound = true;
+                break;
+            }
+        }
+
+        if (!turretFound) {
+            robotContainer.gamepadEx2.rumble();
+        }
+    }
+
+    public void goToNextPurpleSlot() {
+        boolean turretFound = false;
+
+        for (int i = 1; i <= Constants.Spindexer.TRANSFER_SLOT_ANGLES.length; i++) {
+            int nextSlot = (robotContainer.spindexer.getCurrentTransferSlot() + i) % Constants.Spindexer.TRANSFER_SLOT_ANGLES.length;
+
+            if (Status.slotColor[nextSlot] == Constants.Game.ARTIFACT_COLOR.PURPLE) {
+                robotContainer.spindexer.setTargetAngle(Constants.Spindexer.TRANSFER_SLOT_ANGLES[nextSlot]);
+                turretFound = true;
+                break;
+            }
+        }
+
+        if (!turretFound) {
+            robotContainer.gamepadEx2.rumble();
+        }
+    }
+
     public class PIDF {
         public double getError() {
             return error = targetAngle - robotContainer.spindexer.getAngle();

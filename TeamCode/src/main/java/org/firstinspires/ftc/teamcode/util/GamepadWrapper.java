@@ -144,6 +144,10 @@ public class GamepadWrapper {
 
     }
 
+    public void rumble() {
+        gamepad.rumble(250);
+    }
+
     public float leftStickX() {
         return gamepad.left_stick_x;
     }

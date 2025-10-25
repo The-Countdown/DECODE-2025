@@ -44,5 +44,5 @@ public class Status {
     public static boolean fieldOriented = false;
 
     public static boolean intakeToggle = false;
-    public static boolean flywheelToggle = false;
+    public static boolean turretToggle = false;
 }

@@ -39,7 +39,7 @@ public class LimelightLogic {
 //        limelight.uploadFieldmap(field, null);
     }
 
-    public void updateLimelight() {
+    public void update() {
         if (limelight.getLatestResult().isValid()) {
             result = limelight.getLatestResult();
             if (Status.motif == null) findMotif();
