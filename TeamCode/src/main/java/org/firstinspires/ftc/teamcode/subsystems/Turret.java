@@ -44,8 +44,8 @@ public class Turret extends RobotContainer.HardwareDevices {
     }
 
     // Assuming point 1 is less than point 2
-    public double interpolate(double point1, double point2, double persentageSplit) {
-        return point1 + ((point2 - point1) * persentageSplit);
+    public double interpolate(double point1, double point2, double percentageSplit) {
+        return point1 + ((point2 - point1) * percentageSplit);
     }
 
     public void pointAtGoal() {

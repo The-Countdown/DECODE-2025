@@ -437,6 +437,9 @@ public class RobotContainer {
         if (telemetryLoopTimer.milliseconds() < Constants.System.TELEMETRY_UPDATE_INTERVAL_MS) {
             return;
         }
+        if (Status.competitionMode) {
+            return;
+        }
         telemetry.addData("Control Hub Voltage", getVoltage(Constants.Robot.CONTROL_HUB_INDEX) + " V");
         telemetry.addData("Expansion Hub Voltage", getVoltage(Constants.Robot.EXPANSION_HUB_INDEX) + " V");
         telemetry.addData("Control Hub Current", getCurrent(Constants.Robot.CONTROL_HUB_INDEX) + " A");
@@ -470,7 +473,7 @@ public class RobotContainer {
         telemetry.addData("Motor 2 Current Velocity", swerveModules[2].motor.getVelocity());
         telemetry.addData("Motor 3 Current Velocity", swerveModules[3].motor.getVelocity());
         telemetry.addData("Field Oriented", Status.fieldOriented);
-        telemetry.addData("Intake Enabled", Status.intakeEnabled);
+        telemetry.addData("Intake Enabled", Status.intakeToggle);
         telemetry.addLine();
         telemetry.addData("Spindexer Angle", spindexer.getAngle());
         telemetry.addData("Spindexer Slot Colors", Arrays.toString(Status.slotColor));
@@ -478,6 +481,16 @@ public class RobotContainer {
         telemetry.addData("Spindexer error angle", spindexer.pidf.getError());
         telemetry.addData("Spindexer Servo Power", HardwareDevices.spindexServo.getPower());
         telemetry.addData("Spindexer calc power", spindexer.pidf.calculate());
+        telemetry.addLine();
+        telemetry.addData("lower servo pos", HardwareDevices.transferServoLow.getPosition());
+        telemetry.addData("flywheel speed", HardwareDevices.flyWheelMotorMaster.getVelocity());
+        telemetry.addData("flywheel current mA", HardwareDevices.flyWheelMotorMaster.getCurrent(CurrentUnit.MILLIAMPS));
+        telemetry.addData("upper flywheel speed", HardwareDevices.flyWheelMotorSlave.getVelocity());
+        telemetry.addData("upper flywheel current mA", HardwareDevices.flyWheelMotorSlave.getCurrent(CurrentUnit.MILLIAMPS));
+        telemetry.addData("turret pos", turret.getPosition());
+        telemetry.addData("slave servo", HardwareDevices.turretServoSlave.getPosition());
+        telemetry.addLine();
+        telemetry.addData("beam break", HardwareDevices.beamBreak.isPressed());
 
         int selectedServo = -1;
         if (gamepadEx1.dpadUp.isPressed()) {

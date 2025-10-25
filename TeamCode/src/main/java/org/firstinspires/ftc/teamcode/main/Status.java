@@ -12,7 +12,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
  * of the robot's overall configuration at any given time.
  */
 public class Status {
-
     public static boolean competitionMode = false;
 
     public static Pose2D targetPose;
@@ -44,5 +43,6 @@ public class Status {
     public static boolean isDrivingActive = false;
     public static boolean fieldOriented = false;
 
-    public static boolean intakeEnabled = false;
+    public static boolean intakeToggle = false;
+    public static boolean flywheelToggle = false;
 }

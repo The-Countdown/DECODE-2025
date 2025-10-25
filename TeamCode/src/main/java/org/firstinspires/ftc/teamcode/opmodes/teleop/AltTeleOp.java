@@ -15,10 +15,6 @@ public class AltTeleOp extends OpMode {
     public static double CURRENT_LOOP_TIME_MS;
     public static double CURRENT_LOOP_TIME_AVG_MS;
     public double turretPos = 0;
-    public boolean beamBreakBoolean;
-    public GamepadWrapper.ButtonReader beamBreakButton = new GamepadWrapper.ButtonReader();
-
-    private HuskyLensLogic lens;
 
     @Override
     public void init() {
@@ -31,7 +27,6 @@ public class AltTeleOp extends OpMode {
         RobotContainer.HardwareDevices.limelight.pipelineSwitch(0);
         robotContainer.telemetry.addLine("OpMode Initialized");
         robotContainer.telemetry.update();
-        lens = new HuskyLensLogic(robotContainer, RobotContainer.HardwareDevices.huskyLens1);
 
         robotContainer.turret.setTargetAngle(177.5);
     }
@@ -62,7 +57,6 @@ public class AltTeleOp extends OpMode {
         if (robotContainer.gamepadEx2 != null){
             robotContainer.gamepadEx2.update();
         }
-        beamBreakButton.update(beamBreakBoolean);
         robotContainer.drivetrain.controlUpdate();
 
         if (robotContainer.gamepadEx1.cross.isHeld()) {
@@ -79,7 +73,6 @@ public class AltTeleOp extends OpMode {
             robotContainer.transfer.flapUp();
             robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapDown(), Constants.Transfer.FLIP_TIME);
         }
-        robotContainer.telemetry.addData("lower servo pos", RobotContainer.HardwareDevices.transferServoLow.getPosition());
 
         if (robotContainer.gamepadEx1.triangle.wasJustPressed()) {
             robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[1]);
@@ -87,12 +80,6 @@ public class AltTeleOp extends OpMode {
 
 
         robotContainer.transfer.setHighPower(robotContainer.gamepadEx1.rightTriggerRaw());
-
-        robotContainer.telemetry.addData("flywheel speed", RobotContainer.HardwareDevices.flyWheelMotorMaster.getVelocity());
-        robotContainer.telemetry.addData("flywheel current mA", RobotContainer.HardwareDevices.flyWheelMotorMaster.getCurrent(CurrentUnit.MILLIAMPS));
-        robotContainer.telemetry.addData("upper flywheel speed", RobotContainer.HardwareDevices.flyWheelMotorSlave.getVelocity());
-        robotContainer.telemetry.addData("upper flywheel current mA", RobotContainer.HardwareDevices.flyWheelMotorSlave.getCurrent(CurrentUnit.MILLIAMPS));
-
 
         if (robotContainer.gamepadEx1.circle.isHeld()) {
             robotContainer.intake.setIntakeVelocity(Math.min(robotContainer.gamepadEx1.circle.getHoldDuration(), 1));
@@ -115,19 +102,6 @@ public class AltTeleOp extends OpMode {
         }
 
         robotContainer.turret.setTargetPosition(Math.min(Math.max(turretPos, -1), 1));
-        robotContainer.telemetry.addData("turret pos",turretPos);
-        robotContainer.telemetry.addData("slave servo", RobotContainer.HardwareDevices.turretServoSlave.getPosition());
-
-//        RobotContainer.HardwareDevices.spindexServo.setPower(robotContainer.gamepadEx1.leftStickX() * 0.2);
-        beamBreakBoolean = RobotContainer.HardwareDevices.beamBreak.isPressed();
-
-//        if (beamBreakButton.getHoldDuration() > Constants.INTAKE_DELAY_SECONDS) {
-//            robotContainer.intake.setIntakeVelocity(0.9);
-//            robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setIntakeVelocity(0), Constants.INTAKE_RUNTIME_MS);
-//        }
-        robotContainer.telemetry.addData("beam break", beamBreakBoolean);
-        robotContainer.telemetry.addData("loop time", CURRENT_LOOP_TIME_MS);
-        robotContainer.telemetry.update();
 
         try {
             Thread.sleep(1);
