@@ -127,42 +127,48 @@ public class Spindexer {
     }
 
     public void goToNextIntakeSlot() {
-        robotContainer.spindexer.slotsUpdate();
-        boolean intakeFound = false;
+//        robotContainer.spindexer.slotsUpdate();
+//        boolean intakeFound = false;
 
-        for (int i = 1; i <= Constants.Spindexer.INTAKE_SLOT_ANGLES.length; i++) {
-            int nextSlot = (robotContainer.spindexer.getCurrentIntakeSlot() + i) % Constants.Spindexer.INTAKE_SLOT_ANGLES.length;
+        int nextSlot = (robotContainer.spindexer.getCurrentIntakeSlot() + 1) % Constants.Spindexer.INTAKE_SLOT_ANGLES.length;
+        robotContainer.spindexer.setTargetAngle(Constants.Spindexer.INTAKE_SLOT_ANGLES[nextSlot]);
 
-            if (Status.slotColor[nextSlot] == Constants.Game.ARTIFACT_COLOR.UNKNOWN || Status.slotColor[nextSlot] == Constants.Game.ARTIFACT_COLOR.NONE) {
-                robotContainer.spindexer.setTargetAngle(Constants.Spindexer.INTAKE_SLOT_ANGLES[nextSlot]);
-                intakeFound = true;
-                break;
-            }
-        }
-
-        if (!intakeFound) {
-            Status.turretToggle = true;
-            robotContainer.delayedActionManager.schedule(() -> Status.intakeToggle = false, 300);
-        }
+//        for (int i = 1; i <= Constants.Spindexer.INTAKE_SLOT_ANGLES.length; i++) {
+//            int nextSlot = (robotContainer.spindexer.getCurrentIntakeSlot() + i) % Constants.Spindexer.INTAKE_SLOT_ANGLES.length;
+//
+//            if (Status.slotColor[nextSlot] == Constants.Game.ARTIFACT_COLOR.UNKNOWN || Status.slotColor[nextSlot] == Constants.Game.ARTIFACT_COLOR.NONE) {
+//                robotContainer.spindexer.setTargetAngle(Constants.Spindexer.INTAKE_SLOT_ANGLES[nextSlot]);
+//                intakeFound = true;
+//                break;
+//            }
+//        }
+//
+//        if (!intakeFound) {
+//            Status.turretToggle = true;
+//            robotContainer.delayedActionManager.schedule(() -> Status.intakeToggle = false, 300);
+//        }
     }
 
     public void goToNextTransferSlot() {
-        boolean turretFound = false;
+//        boolean turretFound = false;
 
-        for (int i = 1; i <= Constants.Spindexer.TRANSFER_SLOT_ANGLES.length; i++) {
-            int nextSlot = (robotContainer.spindexer.getCurrentTransferSlot() + i) % Constants.Spindexer.TRANSFER_SLOT_ANGLES.length;
+        int nextSlot = (robotContainer.spindexer.getCurrentTransferSlot() + 1) % Constants.Spindexer.TRANSFER_SLOT_ANGLES.length;
+        robotContainer.spindexer.setTargetAngle(Constants.Spindexer.TRANSFER_SLOT_ANGLES[nextSlot]);
 
-            if (Status.slotColor[nextSlot] == Constants.Game.ARTIFACT_COLOR.PURPLE || Status.slotColor[nextSlot] == Constants.Game.ARTIFACT_COLOR.GREEN) {
-                robotContainer.spindexer.setTargetAngle(Constants.Spindexer.TRANSFER_SLOT_ANGLES[nextSlot]);
-                turretFound = true;
-                break;
-            }
-        }
-
-        if (!turretFound) {
-            Status.turretToggle = false;
-            Status.intakeToggle = true;
-        }
+//        for (int i = 1; i <= Constants.Spindexer.TRANSFER_SLOT_ANGLES.length; i++) {
+//            int nextSlot = (robotContainer.spindexer.getCurrentTransferSlot() + i) % Constants.Spindexer.TRANSFER_SLOT_ANGLES.length;
+//
+//            if (Status.slotColor[nextSlot] == Constants.Game.ARTIFACT_COLOR.PURPLE || Status.slotColor[nextSlot] == Constants.Game.ARTIFACT_COLOR.GREEN) {
+//                robotContainer.spindexer.setTargetAngle(Constants.Spindexer.TRANSFER_SLOT_ANGLES[nextSlot]);
+//                turretFound = true;
+//                break;
+//            }
+//        }
+//
+//        if (!turretFound) {
+//            Status.turretToggle = false;
+//            Status.intakeToggle = true;
+//        }
     }
 
     public void goToNextGreenSlot() {
@@ -203,7 +209,7 @@ public class Spindexer {
 
     public class PIDF {
         public double getError() {
-            return error = targetAngle - robotContainer.spindexer.getAngle();
+            return error = HelperFunctions.normalizeAngle(targetAngle - robotContainer.spindexer.getAngle());
         }
         public double calculate() {
             // If current sign and last sign are different reset I.

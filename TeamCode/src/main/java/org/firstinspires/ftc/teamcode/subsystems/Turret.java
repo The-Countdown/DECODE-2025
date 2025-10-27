@@ -36,7 +36,7 @@ public class Turret extends RobotContainer.HardwareDevices {
         if (angle > 355) {
             angle = angle % 355;
         }
-        turretServos.setPosition(angle/355);
+        turretServos.setPosition(Math.max(Math.min(angle/355, 45), -45));
     }
 
     public double getPosition() {

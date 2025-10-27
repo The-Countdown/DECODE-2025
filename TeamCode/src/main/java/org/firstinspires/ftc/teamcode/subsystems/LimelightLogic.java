@@ -45,7 +45,7 @@ public class LimelightLogic {
             if (Status.motif == null) findMotif();
             if (Status.alliance == null) findAlliance();
             if (Status.motif != null) {
-                result.getFiducialResults().removeIf(tag -> tag.getFiducialId() == 21 || tag.getFiducialId() == 22 || tag.getFiducialId() == 23);
+                result.getFiducialResults().removeIf(tag -> tag.getFiducialId() == 21 || tag.getFiducialId() == 22 || tag.getFiducialId() == 23 || tag.getFiducialId() == 24);
                 RobotContainer.HardwareDevices.pinpoint.setPosition(HelperFunctions.to2D(result.getBotpose()));
             }
         }

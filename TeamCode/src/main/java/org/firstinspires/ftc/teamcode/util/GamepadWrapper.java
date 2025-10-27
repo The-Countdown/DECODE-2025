@@ -15,10 +15,10 @@ public class GamepadWrapper {
             prevState = currState;
             currState = newState;
 
-            if(wasJustPressed()) {
+            if (wasJustPressed()) {
                 holdDuration.reset();
                 isTiming = true;
-            } else {
+            } else if (!currState) {
                 isTiming = false;
             }
         }
