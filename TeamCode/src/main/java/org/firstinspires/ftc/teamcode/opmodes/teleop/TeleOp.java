@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
+import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "TeleOp")
 public class TeleOp extends OpMode {
@@ -26,6 +27,7 @@ public class TeleOp extends OpMode {
         RobotContainer.HardwareDevices.imu.resetYaw();
         RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU(); // TODO: Run at start of auto instead
         robotContainer.drivetrain.setTargets(Constants.Swerve.STOP_FORMATION, Constants.Swerve.NO_POWER);
+        robotContainer.spindexer.setTargetAngle(Constants.Spindexer.INTAKE_SLOT_ANGLES[0]);
         robotContainer.telemetry.addLine("OpMode Initialized");
         robotContainer.telemetry.update();
     }
@@ -40,6 +42,11 @@ public class TeleOp extends OpMode {
         Status.opModeIsActive = true;
         Status.lightsOn = true;
         Status.isDrivingActive = true;
+        Status.intakeToggle = false;
+        Status.turretToggle = false;
+        Status.slotColor[0] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;
+        Status.slotColor[1] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;
+        Status.slotColor[2] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;
         RobotContainer.HardwareDevices.limelight.start();
         robotContainer.start(this);
     }
@@ -63,7 +70,7 @@ public class TeleOp extends OpMode {
 
         //intake -circle
         Status.intakeToggle = robotContainer.gamepadEx2.circle.wasJustPressed() != Status.intakeToggle;
-        robotContainer.intake.setVelocity(Status.intakeToggle ? 1 : 0);
+        robotContainer.intake.setVelocity(Status.intakeToggle ? robotContainer.gamepadEx1.rightTriggerRaw() - robotContainer.gamepadEx1.leftTriggerRaw() : 0);
 
         //gamepad 2
 
@@ -74,43 +81,39 @@ public class TeleOp extends OpMode {
             Status.turretToggle = false;
         }
 
-        if (robotContainer.gamepadEx1.triangle.isPressed()) {
-            robotContainer.intake.setVelocity(-1);
-        }
+        robotContainer.turret.hood.setPos(robotContainer.gamepadEx1.cross.isPressed() ? Constants.Turret.HOOD_PRESETS[1] : Constants.Turret.HOOD_PRESETS[0]);
 
-        if (robotContainer.gamepadEx1.cross.isPressed()) {
-            robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[1]);
-        } else {
-            robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[0]);
+        if (turretToggleButton.wasJustPressed()) {
+            robotContainer.spindexer.goToNextTransferSlot();
         }
-
-//        if (turretToggleButton.wasJustPressed()) {
-//            robotContainer.spindexer.goToNextTransferSlot();
-//        }
         robotContainer.turret.flywheel.setTargetVelocity(Math.min(turretToggleButton.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, Constants.Turret.FLYWHEEL_TOP_SPEED));
 
-
-        //turret turn -right stick X
-//        turretPos += robotContainer.gamepadEx2.rightStickX() != 0 ? (Constants.Turret.TURRET_SPEED_FACTOR * CURRENT_LOOP_TIME_MS) * Math.pow(robotContainer.gamepadEx2.rightStickX(), 3) : 0;
-//        robotContainer.turret.setTargetPosition(turretPos);
+//        turret turn -right stick X
+        turretPos += robotContainer.gamepadEx2.rightStickX() != 0 ? (Constants.Turret.TURRET_SPEED_FACTOR * CURRENT_LOOP_TIME_MS) * Math.pow(robotContainer.gamepadEx2.rightStickX(), 3) : 0;
+        turretPos = HelperFunctions.clamp(turretPos, Constants.Turret.TURRET_LIMIT_MIN, Constants.Turret.TURRET_LIMIT_MAX);
+        robotContainer.turret.setTargetPosition(turretPos);
 
         //turret flywheels -cross
 //        robotContainer.turret.flywheel.setTargetVelocity(Math.min(robotContainer.gamepadEx2.cross.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, Constants.Turret.FLYWHEEL_TOP_SPEED));
 
-//        if (robotContainer.gamepadEx1.dpadLeft.wasJustPressed()) {
-//            robotContainer.spindexer.goToNextIntakeSlot();
-//        } else if (robotContainer.gamepadEx1.dpadRight.wasJustPressed()) {
-//            robotContainer.spindexer.goToNextTransferSlot();
-//        }
-//
-//        if (Math.abs(robotContainer.spindexer.pidf.getError()) > 8) {
-//            robotContainer.spindexer.setPower(Math.min(robotContainer.spindexer.pidf.calculate()*spindexAccel.seconds(), 0.5));
-//        } else {
-//            spindexAccel.reset();
-//            robotContainer.spindexer.setPower(0);
-//        }
+        if (robotContainer.gamepadEx1.dpadLeft.wasJustPressed()) {
+            robotContainer.spindexer.goToNextIntakeSlot();
+        } else if (robotContainer.gamepadEx1.dpadRight.wasJustPressed()) {
+            robotContainer.spindexer.goToNextTransferSlot();
+        }
 
-        robotContainer.spindexer.setPower(robotContainer.gamepadEx2.leftTriggerRaw() - robotContainer.gamepadEx2.rightTriggerRaw());
+        if (beamBreakToggleButton.wasJustReleased()) {
+            robotContainer.spindexer.goToNextIntakeSlot();
+        }
+
+        if (Math.abs(robotContainer.spindexer.pidf.getError()) > 8) {
+            robotContainer.spindexer.setPower(Math.min(robotContainer.spindexer.pidf.calculate() * spindexAccel.seconds(), 0.5));
+        } else {
+            spindexAccel.reset();
+            robotContainer.spindexer.setPower(0);
+        }
+
+//        robotContainer.spindexer.setPower(robotContainer.gamepadEx2.leftTriggerRaw() - robotContainer.gamepadEx2.rightTriggerRaw());
 
         //transfer -right bumper
         if (robotContainer.gamepadEx2.leftBumper.wasJustPressed()) {
@@ -126,10 +129,10 @@ public class TeleOp extends OpMode {
         //manual transfer top wheel -right trigger
         robotContainer.transfer.setHighPower(robotContainer.gamepadEx2.square.isPressed() ? -1 : 0);
 
-//        if (robotContainer.gamepadEx2.cross.wasJustPressed()) {
-//            Status.slotColor[robotContainer.spindexer.getCurrentTransferSlot()] = Constants.Game.ARTIFACT_COLOR.NONE;
-//            robotContainer.spindexer.goToNextTransferSlot();
-//        }
+        if (robotContainer.gamepadEx2.cross.wasJustPressed()) {
+            Status.slotColor[robotContainer.spindexer.getCurrentTransferSlot()] = Constants.Game.ARTIFACT_COLOR.NONE;
+            robotContainer.spindexer.goToNextTransferSlot();
+        }
 
         //hood preset -triangle
 //        if (robotContainer.gamepadEx2.triangle.wasJustPressed()) {

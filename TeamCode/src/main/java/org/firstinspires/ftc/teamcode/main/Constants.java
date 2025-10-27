@@ -270,7 +270,13 @@ public class Constants {
         public static double FLYWHEEL_TOP_SPEED = 0.95;
         public static double FLYWHEEL_CURVE = 4;
         public static double TRACK_GOAL_P = -0.2;
-        public static double[] HOOD_PRESETS = {0.5, 0.05};
+        public static double[] HOOD_PRESETS = {0.53, 0.05};
+        public static double TURRET_LIMIT_MIN_ANGLE = 30;
+        public static double TURRET_LIMIT_MAX_ANGLE = 265;
+        public static double TURRET_LIMIT_MIN_SERVO = TURRET_LIMIT_MIN_ANGLE / 355;
+        public static double TURRET_LIMIT_MAX_SERVO = TURRET_LIMIT_MAX_ANGLE / 355;
+        public static double TURRET_LIMIT_MIN = (TURRET_LIMIT_MIN_SERVO * 2) - 1;
+        public static double TURRET_LIMIT_MAX = (TURRET_LIMIT_MAX_SERVO * 2) - 1;
     }
 
     @Config

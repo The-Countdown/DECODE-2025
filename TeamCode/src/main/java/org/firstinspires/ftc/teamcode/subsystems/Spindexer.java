@@ -71,19 +71,19 @@ public class Spindexer {
     public void slotsUpdate() {
         double blue = -1;
         double green = -1;
-        if (robotContainer.spindexer.getAngle() > Constants.Spindexer.INTAKE_SLOT_ANGLES[0] - 10 && robotContainer.spindexer.getAngle() < Constants.Spindexer.INTAKE_SLOT_ANGLES[0] + 10 && Status.slotColor[0] == Constants.Game.ARTIFACT_COLOR.UNKNOWN) {
+        if (robotContainer.spindexer.getAngle() > Constants.Spindexer.INTAKE_SLOT_ANGLES[0] - 10 && robotContainer.spindexer.getAngle() < Constants.Spindexer.INTAKE_SLOT_ANGLES[0] + 10 && (Status.slotColor[0] == Constants.Game.ARTIFACT_COLOR.UNKNOWN || Status.slotColor[0] == Constants.Game.ARTIFACT_COLOR.NONE)) {
             blue = RobotContainer.HardwareDevices.colorSensor.blue();
             green = RobotContainer.HardwareDevices.colorSensor.green();
             Status.slotColor[0] = getArtifactColor(blue, green);
         }
-        if (robotContainer.spindexer.getAngle() > Constants.Spindexer.INTAKE_SLOT_ANGLES[1] - 10 && robotContainer.spindexer.getAngle() < Constants.Spindexer.INTAKE_SLOT_ANGLES[1] + 10 && Status.slotColor[1] == Constants.Game.ARTIFACT_COLOR.UNKNOWN) {
+        if (robotContainer.spindexer.getAngle() > Constants.Spindexer.INTAKE_SLOT_ANGLES[1] - 10 && robotContainer.spindexer.getAngle() < Constants.Spindexer.INTAKE_SLOT_ANGLES[1] + 10 && (Status.slotColor[1] == Constants.Game.ARTIFACT_COLOR.UNKNOWN || Status.slotColor[1] == Constants.Game.ARTIFACT_COLOR.NONE)) {
             if (blue == -1) {
                 blue = RobotContainer.HardwareDevices.colorSensor.blue();
                 green = RobotContainer.HardwareDevices.colorSensor.green();
             }
             Status.slotColor[1] = getArtifactColor(blue, green);
         }
-        if (robotContainer.spindexer.getAngle() > Constants.Spindexer.INTAKE_SLOT_ANGLES[2] - 10 && robotContainer.spindexer.getAngle() < Constants.Spindexer.INTAKE_SLOT_ANGLES[2] + 10 && Status.slotColor[2] == Constants.Game.ARTIFACT_COLOR.UNKNOWN) {
+        if (robotContainer.spindexer.getAngle() > Constants.Spindexer.INTAKE_SLOT_ANGLES[2] - 10 && robotContainer.spindexer.getAngle() < Constants.Spindexer.INTAKE_SLOT_ANGLES[2] + 10 && (Status.slotColor[2] == Constants.Game.ARTIFACT_COLOR.UNKNOWN || Status.slotColor[2] == Constants.Game.ARTIFACT_COLOR.NONE)) {
             if (green == -1) {
                 blue = RobotContainer.HardwareDevices.colorSensor.blue();
                 green = RobotContainer.HardwareDevices.colorSensor.green();
@@ -127,48 +127,43 @@ public class Spindexer {
     }
 
     public void goToNextIntakeSlot() {
-//        robotContainer.spindexer.slotsUpdate();
-//        boolean intakeFound = false;
+        robotContainer.spindexer.slotsUpdate();
+        boolean intakeSlotFound = false;
 
-        int nextSlot = (robotContainer.spindexer.getCurrentIntakeSlot() + 1) % Constants.Spindexer.INTAKE_SLOT_ANGLES.length;
-        robotContainer.spindexer.setTargetAngle(Constants.Spindexer.INTAKE_SLOT_ANGLES[nextSlot]);
+        for (int i = 1; i <= Constants.Spindexer.INTAKE_SLOT_ANGLES.length; i++) {
+            int nextSlot = (robotContainer.spindexer.getCurrentIntakeSlot() + i) % Constants.Spindexer.INTAKE_SLOT_ANGLES.length;
 
-//        for (int i = 1; i <= Constants.Spindexer.INTAKE_SLOT_ANGLES.length; i++) {
-//            int nextSlot = (robotContainer.spindexer.getCurrentIntakeSlot() + i) % Constants.Spindexer.INTAKE_SLOT_ANGLES.length;
-//
-//            if (Status.slotColor[nextSlot] == Constants.Game.ARTIFACT_COLOR.UNKNOWN || Status.slotColor[nextSlot] == Constants.Game.ARTIFACT_COLOR.NONE) {
-//                robotContainer.spindexer.setTargetAngle(Constants.Spindexer.INTAKE_SLOT_ANGLES[nextSlot]);
-//                intakeFound = true;
-//                break;
-//            }
-//        }
-//
-//        if (!intakeFound) {
-//            Status.turretToggle = true;
-//            robotContainer.delayedActionManager.schedule(() -> Status.intakeToggle = false, 300);
-//        }
+            if (Status.slotColor[nextSlot] == Constants.Game.ARTIFACT_COLOR.UNKNOWN || Status.slotColor[nextSlot] == Constants.Game.ARTIFACT_COLOR.NONE) {
+                robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.setTargetAngle(Constants.Spindexer.INTAKE_SLOT_ANGLES[nextSlot]), 250);
+                intakeSlotFound = true;
+                break;
+            }
+        }
+
+        if (!intakeSlotFound) {
+            Status.turretToggle = true;
+            robotContainer.delayedActionManager.schedule(() -> Status.intakeToggle = false, 300);
+        }
     }
 
     public void goToNextTransferSlot() {
-//        boolean turretFound = false;
+        boolean turretSlotFound = false;
 
-        int nextSlot = (robotContainer.spindexer.getCurrentTransferSlot() + 1) % Constants.Spindexer.TRANSFER_SLOT_ANGLES.length;
-        robotContainer.spindexer.setTargetAngle(Constants.Spindexer.TRANSFER_SLOT_ANGLES[nextSlot]);
+        for (int i = 1; i <= Constants.Spindexer.TRANSFER_SLOT_ANGLES.length; i++) {
+            int nextSlot = (robotContainer.spindexer.getCurrentTransferSlot() + i) % Constants.Spindexer.TRANSFER_SLOT_ANGLES.length;
 
-//        for (int i = 1; i <= Constants.Spindexer.TRANSFER_SLOT_ANGLES.length; i++) {
-//            int nextSlot = (robotContainer.spindexer.getCurrentTransferSlot() + i) % Constants.Spindexer.TRANSFER_SLOT_ANGLES.length;
-//
-//            if (Status.slotColor[nextSlot] == Constants.Game.ARTIFACT_COLOR.PURPLE || Status.slotColor[nextSlot] == Constants.Game.ARTIFACT_COLOR.GREEN) {
-//                robotContainer.spindexer.setTargetAngle(Constants.Spindexer.TRANSFER_SLOT_ANGLES[nextSlot]);
-//                turretFound = true;
-//                break;
-//            }
-//        }
-//
-//        if (!turretFound) {
-//            Status.turretToggle = false;
-//            Status.intakeToggle = true;
-//        }
+            if (Status.slotColor[nextSlot] == Constants.Game.ARTIFACT_COLOR.PURPLE || Status.slotColor[nextSlot] == Constants.Game.ARTIFACT_COLOR.GREEN) {
+                robotContainer.spindexer.setTargetAngle(Constants.Spindexer.TRANSFER_SLOT_ANGLES[nextSlot]);
+                turretSlotFound = true;
+                break;
+            }
+        }
+
+        if (!turretSlotFound) {
+            Status.turretToggle = false;
+            Status.intakeToggle = true;
+            goToNextIntakeSlot();
+        }
     }
 
     public void goToNextGreenSlot() {

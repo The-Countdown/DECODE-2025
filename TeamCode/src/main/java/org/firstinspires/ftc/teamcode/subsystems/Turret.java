@@ -6,6 +6,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
+import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 import org.firstinspires.ftc.teamcode.util.LinkedMotors;
 import org.firstinspires.ftc.teamcode.util.LinkedServos;
 
@@ -25,7 +26,7 @@ public class Turret extends RobotContainer.HardwareDevices {
     // TODO: Limit angle of rotation, and have that be configurable in constants
 
     public void setTargetPosition(double position) {
-        turretServos.setPosition((position + 1)/2);
+        turretServos.setPosition(HelperFunctions.clamp(((position + 1) / 2), Constants.Turret.TURRET_LIMIT_MIN_SERVO, Constants.Turret.TURRET_LIMIT_MAX_SERVO));
     }
 
     public void setTargetRaw(double position) {
@@ -33,10 +34,7 @@ public class Turret extends RobotContainer.HardwareDevices {
     }
 
     public void setTargetAngle(double angle) {
-        if (angle > 355) {
-            angle = angle % 355;
-        }
-        turretServos.setPosition(Math.max(Math.min(angle/355, 45), -45));
+        turretServos.setPosition((HelperFunctions.clamp(angle > 355 ? angle % 355 : angle, Constants.Turret.TURRET_LIMIT_MIN_ANGLE, Constants.Turret.TURRET_LIMIT_MAX_ANGLE)) / 355);
     }
 
     public double getPosition() {

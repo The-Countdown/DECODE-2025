@@ -86,7 +86,7 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
         // Set the initial translational direction to forward.
         int translationalDirection = 1;
 
-        double currentHeading = HelperFunctions.normalizeAngle(Status.currentHeading);
+        double currentHeading = HelperFunctions.normalizeAngle(Status.currentHeading + (Status.alliance == Constants.Game.ALLIANCE.RED ? 90 : -90));
         // Adjust the translational angle for field-oriented driving if enabled.
         translationalAngle = Status.fieldOriented ? translationalAngle + Math.toRadians(currentHeading) : translationalAngle;
 
