@@ -7,17 +7,10 @@ import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.lang.Thread;
 
-public class DelayedActionManager extends Thread {
+public class DelayedActionManager {
     private final List<DelayedAction> delayedActions = new ArrayList<>();
     List<Double> timeAtPause = new ArrayList<>();
     boolean enabled = true;
-
-    @Override
-    public void run() {
-        while (enabled) {
-            update();
-        }
-    }
 
     public void schedule(DelayedAction delayedAction) {
         delayedActions.add(delayedAction);

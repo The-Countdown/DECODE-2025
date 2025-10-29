@@ -142,7 +142,8 @@ public class Spindexer {
 
         if (!intakeSlotFound) {
             Status.turretToggle = true;
-            robotContainer.delayedActionManager.schedule(() -> Status.intakeToggle = false, 300);
+            goToNextTransferSlot();
+            robotContainer.delayedActionManager.schedule(() -> Status.intakeToggle = false, 80);
         }
     }
 
@@ -203,9 +204,11 @@ public class Spindexer {
     }
 
     public class PIDF {
+
         public double getError() {
             return error = HelperFunctions.normalizeAngle(targetAngle - robotContainer.spindexer.getAngle());
         }
+
         public double calculate() {
             // If current sign and last sign are different reset I.
             if (Math.signum(error) > 0) { // Current sign pos

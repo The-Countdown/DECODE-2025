@@ -75,7 +75,7 @@ public class PathPlanner {
     }
 
     public void driveThroughPath () {
-        delayedActionManager.run();
+//        delayedActionManager.run();
         for (int i = 0; i < poses.size(); i++) {
             driveToPose(i);
         }

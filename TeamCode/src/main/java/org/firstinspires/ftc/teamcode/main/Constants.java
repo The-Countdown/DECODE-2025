@@ -190,7 +190,7 @@ public class Constants {
     @Config
     public static class System {
         public static final int LOOP_AVERAGE_WINDOW_SIZE = 30;
-        public static int TELEMETRY_UPDATE_INTERVAL_MS = 50;
+        public static int TELEMETRY_UPDATE_INTERVAL_MS = 750;
         public static final double ANALOG_MAX_VOLTAGE = 3.3;
     }
 
@@ -293,10 +293,10 @@ public class Constants {
         public static double ANGLE_OFFSET = 0;
         public static double[] TRANSFER_SLOT_ANGLES = {179, 60, -60};
         public static double [] INTAKE_SLOT_ANGLES = {0, -120, 120};
-        public static double KP = 0.005;
-        public static double KI = 0;
+        public static double KP = 0.017;
+        public static double KI = 0.0000005;
         public static double KD = 0;
-        public static double KF = 0.02;
+        public static double KF = 0.05;
     }
 
     @Config

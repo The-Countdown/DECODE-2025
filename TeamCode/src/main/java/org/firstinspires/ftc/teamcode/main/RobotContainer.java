@@ -264,8 +264,6 @@ public class RobotContainer {
         drivetrainUpdater = new DrivetrainUpdater(this);
         drivetrainUpdater.start();
         telemetryLoopTimer.reset();
-//        adgUpdater = new ADGUpdater(HardwareDevices.mux1, this);
-//        adgUpdater.start();
     }
 
     /**
@@ -440,38 +438,38 @@ public class RobotContainer {
         if (Status.competitionMode) {
             return;
         }
-        telemetry.addData("Control Hub Voltage", getVoltage(Constants.Robot.CONTROL_HUB_INDEX) + " V");
-        telemetry.addData("Expansion Hub Voltage", getVoltage(Constants.Robot.EXPANSION_HUB_INDEX) + " V");
-        telemetry.addData("Control Hub Current", getCurrent(Constants.Robot.CONTROL_HUB_INDEX) + " A");
-        telemetry.addData("Expansion Hub Current", getCurrent(Constants.Robot.EXPANSION_HUB_INDEX) + " A");
-        telemetry.addLine();
-        telemetry.addData("Pinpoint X", Status.currentPose.getX(DistanceUnit.CM) + " cm");
-        telemetry.addData("Pinpoint Y", Status.currentPose.getY(DistanceUnit.CM) + " cm");
-        telemetry.addData("Pinpoint Heading", Status.currentHeading + "°");
-        telemetry.addData("PINPOINT STATUS", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
+//        telemetry.addData("Control Hub Voltage", getVoltage(Constants.Robot.CONTROL_HUB_INDEX) + " V");
+//        telemetry.addData("Expansion Hub Voltage", getVoltage(Constants.Robot.EXPANSION_HUB_INDEX) + " V");
+//        telemetry.addData("Control Hub Current", getCurrent(Constants.Robot.CONTROL_HUB_INDEX) + " A");
+//        telemetry.addData("Expansion Hub Current", getCurrent(Constants.Robot.EXPANSION_HUB_INDEX) + " A");
+//        telemetry.addLine();
+//        telemetry.addData("Pinpoint X", Status.currentPose.getX(DistanceUnit.CM) + " cm");
+//        telemetry.addData("Pinpoint Y", Status.currentPose.getY(DistanceUnit.CM) + " cm");
+//        telemetry.addData("Pinpoint Heading", Status.currentHeading + "°");
+//        telemetry.addData("PINPOINT STATUS", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
         telemetry.addLine();
         telemetry.addData("OpMode Avg Loop Time", (int) getRollingAverageLoopTime(opMode) + " ms");
         telemetry.addData("OpMode Loop Time", (int) getLoopTime(opMode) + " ms");
         telemetry.addLine();
         telemetry.addData("DriveTrain Avg Loop Time", (int) drivetrainUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms");
         telemetry.addData("DriveTrain Loop Time", (int) drivetrainUpdater.CURRENT_LOOP_TIME_MS + " ms");
-        telemetry.addLine();
-        telemetry.addData("Pinpoint Avg Loop Time", (int) localizationUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms");
-        telemetry.addData("Pinpoint Loop Time", (int) localizationUpdater.CURRENT_LOOP_TIME_MS + " ms");
-        telemetry.addLine();
-        telemetry.addData("Heading PID Target", headingPID.getTargetHeading());
-        telemetry.addData("Heading PID Target Reached", Status.robotHeadingTargetReached);
-        telemetry.addData("Heading PID Output", headingPID.calculate(Status.currentHeading));
-        telemetry.addLine();
-        telemetry.addData("Left Stick Y", gamepadEx1.leftStickY());
-        telemetry.addData("Left Stick X", gamepadEx1.leftStickX());
-        telemetry.addData("Right Stick Y", gamepadEx1.rightStickY());
-        telemetry.addData("Right Stick X", gamepadEx1.rightStickX());
-        telemetry.addLine();
-        telemetry.addData("Motor 0 Current Velocity", swerveModules[0].motor.getVelocity());
-        telemetry.addData("Motor 1 Current Velocity", swerveModules[1].motor.getVelocity());
-        telemetry.addData("Motor 2 Current Velocity", swerveModules[2].motor.getVelocity());
-        telemetry.addData("Motor 3 Current Velocity", swerveModules[3].motor.getVelocity());
+//        telemetry.addLine();
+//        telemetry.addData("Pinpoint Avg Loop Time", (int) localizationUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms");
+//        telemetry.addData("Pinpoint Loop Time", (int) localizationUpdater.CURRENT_LOOP_TIME_MS + " ms");
+//        telemetry.addLine();
+//        telemetry.addData("Heading PID Target", headingPID.getTargetHeading());
+//        telemetry.addData("Heading PID Target Reached", Status.robotHeadingTargetReached);
+//        telemetry.addData("Heading PID Output", headingPID.calculate(Status.currentHeading));
+//        telemetry.addLine();
+//        telemetry.addData("Left Stick Y", gamepadEx1.leftStickY());
+//        telemetry.addData("Left Stick X", gamepadEx1.leftStickX());
+//        telemetry.addData("Right Stick Y", gamepadEx1.rightStickY());
+//        telemetry.addData("Right Stick X", gamepadEx1.rightStickX());
+//        telemetry.addLine();
+//        telemetry.addData("Motor 0 Current Velocity", swerveModules[0].motor.getVelocity());
+//        telemetry.addData("Motor 1 Current Velocity", swerveModules[1].motor.getVelocity());
+//        telemetry.addData("Motor 2 Current Velocity", swerveModules[2].motor.getVelocity());
+//        telemetry.addData("Motor 3 Current Velocity", swerveModules[3].motor.getVelocity());
         telemetry.addData("Field Oriented", Status.fieldOriented);
         telemetry.addData("Intake Enabled", Status.intakeToggle);
         telemetry.addLine();
@@ -495,27 +493,27 @@ public class RobotContainer {
 //        telemetry.addData("blue", HardwareDevices.colorSensor.blue());
 //        telemetry.addData("green", HardwareDevices.colorSensor.green());
 
-        int selectedServo = -1;
-        if (gamepadEx1.dpadUp.isPressed()) {
-            selectedServo = 0;
-        } else if (gamepadEx1.dpadRight.isPressed()) {
-            selectedServo = 1;
-        } else if (gamepadEx1.dpadDown.isPressed()) {
-            selectedServo = 2;
-        } else if (gamepadEx1.dpadLeft.isPressed()) {
-            selectedServo = 3;
-        }
-        if (selectedServo >= 0) {
-            telemetry.addLine();
-            telemetry.addData("Selected Servo", selectedServo);
-            telemetry.addData("Servo Angle", swerveModules[selectedServo].servo.getAngle());
-            telemetry.addData("Servo Target", swerveServosPIDF[selectedServo].getTargetAngle());
-            telemetry.addData("Servo Set Power", swerveServosPIDF[selectedServo].calculate());
-            telemetry.addData("Servo Error", swerveServosPIDF[selectedServo].getError());
-            telemetry.addData("Motor Target Power", swerveModules[selectedServo].motor.targetPower);
-            telemetry.addData("Motor Current Velocity", swerveModules[selectedServo].motor.getVelocity());
-            telemetry.addData("Motor Current Power", RobotContainer.HardwareDevices.swerveMotors[selectedServo].getPower());
-        }
+//        int selectedServo = -1;
+//        if (gamepadEx1.dpadUp.isPressed()) {
+//            selectedServo = 0;
+//        } else if (gamepadEx1.dpadRight.isPressed()) {
+//            selectedServo = 1;
+//        } else if (gamepadEx1.dpadDown.isPressed()) {
+//            selectedServo = 2;
+//        } else if (gamepadEx1.dpadLeft.isPressed()) {
+//            selectedServo = 3;
+//        }
+//        if (selectedServo >= 0) {
+//            telemetry.addLine();
+//            telemetry.addData("Selected Servo", selectedServo);
+//            telemetry.addData("Servo Angle", swerveModules[selectedServo].servo.getAngle());
+//            telemetry.addData("Servo Target", swerveServosPIDF[selectedServo].getTargetAngle());
+//            telemetry.addData("Servo Set Power", swerveServosPIDF[selectedServo].calculate());
+//            telemetry.addData("Servo Error", swerveServosPIDF[selectedServo].getError());
+//            telemetry.addData("Motor Target Power", swerveModules[selectedServo].motor.targetPower);
+//            telemetry.addData("Motor Current Velocity", swerveModules[selectedServo].motor.getVelocity());
+//            telemetry.addData("Motor Current Power", RobotContainer.HardwareDevices.swerveMotors[selectedServo].getPower());
+//        }
         telemetry.addLine();
         displayRetainedTelemetry();
         telemetry.update();
