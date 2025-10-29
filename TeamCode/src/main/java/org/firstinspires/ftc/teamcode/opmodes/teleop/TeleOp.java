@@ -70,11 +70,13 @@ public class TeleOp extends OpMode {
 
         robotContainer.drivetrain.controlUpdate();
 
+        robotContainer.turret.hood.setPos(robotContainer.gamepadEx1.cross.isPressed() ? Constants.Turret.HOOD_PRESETS[1] : Constants.Turret.HOOD_PRESETS[0]);
+
+        //gamepad 2
+
         //intake -circle
         Status.intakeToggle = robotContainer.gamepadEx2.circle.wasJustPressed() != Status.intakeToggle;
         robotContainer.intake.setVelocity(Status.intakeToggle ? robotContainer.gamepadEx1.rightTriggerRaw() - robotContainer.gamepadEx1.leftTriggerRaw() : 0);
-
-        //gamepad 2
 
         //flywheel -automated
         if (robotContainer.gamepadEx2.circle.wasJustReleased() && !Status.intakeToggle) {
@@ -82,9 +84,6 @@ public class TeleOp extends OpMode {
         } else if (robotContainer.gamepadEx2.circle.wasJustReleased() && Status.intakeToggle) {
             Status.turretToggle = false;
         }
-
-        robotContainer.turret.hood.setPos(robotContainer.gamepadEx1.cross.isPressed() ? Constants.Turret.HOOD_PRESETS[1] : Constants.Turret.HOOD_PRESETS[0]);
-
 
         if (turretToggleButton.wasJustPressed()) {
             robotContainer.spindexer.goToNextTransferSlot();
@@ -114,12 +113,8 @@ public class TeleOp extends OpMode {
 
         if (Math.abs(lastError - error) > 50) {
             spindexAccel.reset();
-            robotContainer.telemetry.addData("Reset Timer", "Spindexer");
         }
 
-        robotContainer.telemetry.addData("Error", error);    
-        robotContainer.telemetry.addData("Last error", lastError);    
-        robotContainer.telemetry.addData("Diff error", Math.abs(lastError - error));    
         if (error > 4) {
             if (spindexAccel.seconds() <= 1) {
                 robotContainer.spindexer.setPower(Math.min(robotContainer.spindexer.pidf.calculate() * spindexAccel.seconds(), 0.5));
@@ -132,8 +127,6 @@ public class TeleOp extends OpMode {
             robotContainer.spindexer.setPower(0);
         }
         lastError = error;
-
-//        robotContainer.spindexer.setPower(robotContainer.gamepadEx2.leftTriggerRaw() - robotContainer.gamepadEx2.rightTriggerRaw());
 
         //transfer -right bumper
 //        if (robotContainer.gamepadEx2.leftBumper.wasJustPressed()) {
