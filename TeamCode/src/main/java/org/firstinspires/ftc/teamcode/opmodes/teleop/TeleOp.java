@@ -157,9 +157,9 @@ public class TeleOp extends OpMode {
 
         robotContainer.telemetry.addData("hood angle", robotContainer.turret.hoodServo.getPosition());
         if (robotContainer.limelightLogic.limelight.getLatestResult().isValid()) {
-            robotContainer.telemetry.addData("robot pos on field", robotContainer.limelightLogic.getLimelightPos());
+            robotContainer.telemetry.addData("robot pos on field", robotContainer.limelightLogic.getBotPos());
         } else {
-            robotContainer.telemetry.addData("robot pos on field", robotContainer.limelightLogic.getLimelightPos());
+            robotContainer.telemetry.addData("robot pos on field", "null");
         }
 
         //hood preset -triangle
