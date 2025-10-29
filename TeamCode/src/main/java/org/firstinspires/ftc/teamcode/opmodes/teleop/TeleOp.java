@@ -136,18 +136,18 @@ public class TeleOp extends OpMode {
 //        robotContainer.spindexer.setPower(robotContainer.gamepadEx2.leftTriggerRaw() - robotContainer.gamepadEx2.rightTriggerRaw());
 
         //transfer -right bumper
-        if (robotContainer.gamepadEx2.leftBumper.wasJustPressed()) {
-            robotContainer.transfer.setHighPower(1);
-            robotContainer.transfer.flapUp();
-            robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapDown(), Constants.Transfer.FLIP_TIME);
-        } else if (robotContainer.gamepadEx2.leftBumper.wasJustReleased()) {
-            robotContainer.transfer.setHighPower(0);
-        }
+//        if (robotContainer.gamepadEx2.leftBumper.wasJustPressed()) {
+//            robotContainer.transfer.setHighPower(1);
+//            robotContainer.transfer.flapUp();
+//            robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapDown(), Constants.Transfer.FLIP_TIME);
+//        } else if (robotContainer.gamepadEx2.leftBumper.wasJustReleased()) {
+//            robotContainer.transfer.setHighPower(0);
+//        }
 
 //        robotContainer.spindexer.setPower(robotContainer.gamepadEx1.leftTriggerRaw() - robotContainer.gamepadEx1.rightTriggerRaw());
 
         //manual transfer top wheel -right trigger
-        robotContainer.transfer.setHighPower(robotContainer.gamepadEx2.square.isPressed() ? -1 : 0);
+//        robotContainer.transfer.setHighPower(robotContainer.gamepadEx2.square.isPressed() ? -1 : 0);
 
         if (robotContainer.gamepadEx2.cross.wasJustPressed()) {
             Status.slotColor[robotContainer.spindexer.getCurrentTransferSlot()] = Constants.Game.ARTIFACT_COLOR.NONE;
@@ -155,11 +155,10 @@ public class TeleOp extends OpMode {
         }
 
         if (robotContainer.gamepadEx2.leftBumper.wasJustPressed()) {
-            robotContainer.transfer.
+            robotContainer.transfer.flapUp();
+        } else if (robotContainer.gamepadEx2.rightBumper.wasJustPressed()) {
+            robotContainer.transfer.flapDown();
         }
-
-        robotContainer.spindexer.setPower(Math.pow(robotContainer.gamepadEx2.leftStickX(), 3));
-
 
         //TODO DA HOOD
 

@@ -21,7 +21,12 @@ public class Transfer extends RobotContainer.HardwareDevices {
         transferServoRight.setPosition(0);
     }
     public void flapUp() {
-        transferServoRight.setPosition(Constants.Transfer.UP);}
+        transferServoRight.setPosition(Constants.Transfer.UP);
+        transferServoLeft.setPosition(Constants.Transfer.UP);
+    }
+
     public void flapDown() {
-        transferServoRight.setPosition(Constants.Transfer.DOWN);}
+        transferServoRight.setPosition(Constants.Transfer.DOWN);
+        transferServoLeft.setPosition(Constants.Transfer.DOWN);
+    }
 }

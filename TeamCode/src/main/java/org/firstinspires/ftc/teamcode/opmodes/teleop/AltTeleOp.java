@@ -76,7 +76,7 @@ public class AltTeleOp extends OpMode {
         }
 
 
-        robotContainer.transfer.setHighPower(robotContainer.gamepadEx1.rightTriggerRaw());
+//        robotContainer.transfer.setHighPower(robotContainer.gamepadEx1.rightTriggerRaw());
 
         if (robotContainer.gamepadEx1.circle.isHeld()) {
             robotContainer.intake.setVelocity(Math.min(robotContainer.gamepadEx1.circle.getHoldDuration(), 1));
