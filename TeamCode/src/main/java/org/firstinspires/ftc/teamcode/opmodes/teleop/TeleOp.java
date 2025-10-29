@@ -18,6 +18,8 @@ public class TeleOp extends OpMode {
     private final GamepadWrapper.ButtonReader beamBreakToggleButton = new GamepadWrapper.ButtonReader();
     private final ElapsedTime spindexAccel = new ElapsedTime();
 
+    private double lastError = 0;
+
     @Override
     public void init() {
         robotContainer = new RobotContainer(this);
@@ -107,12 +109,29 @@ public class TeleOp extends OpMode {
             robotContainer.spindexer.goToNextIntakeSlot();
         }
 
-        if (Math.abs(robotContainer.spindexer.pidf.getError()) > 8) {
-            robotContainer.spindexer.setPower(Math.min(robotContainer.spindexer.pidf.calculate() * spindexAccel.seconds(), 0.5));
+        double error = Math.abs(robotContainer.spindexer.pidf.getError());
+        // If the error changes by a lot in a short period of time reset the timer
+
+        if (Math.abs(lastError - error) > 50) {
+            spindexAccel.reset();
+            robotContainer.telemetry.addData("Reset Timer", "Spindexer");
+        }
+
+        robotContainer.telemetry.addData("Error", error);    
+        robotContainer.telemetry.addData("Last error", lastError);    
+        robotContainer.telemetry.addData("Diff error", Math.abs(lastError - error));    
+        if (error > 4) {
+            if (spindexAccel.seconds() <= 1) {
+                robotContainer.spindexer.setPower(Math.min(robotContainer.spindexer.pidf.calculate() * spindexAccel.seconds(), 0.5));
+            } else {
+                 robotContainer.spindexer.setPower(robotContainer.spindexer.pidf.calculate());
+//                robotContainer.spindexer.setPower(0.5);
+            }
         } else {
             spindexAccel.reset();
             robotContainer.spindexer.setPower(0);
         }
+        lastError = error;
 
 //        robotContainer.spindexer.setPower(robotContainer.gamepadEx2.leftTriggerRaw() - robotContainer.gamepadEx2.rightTriggerRaw());
 
