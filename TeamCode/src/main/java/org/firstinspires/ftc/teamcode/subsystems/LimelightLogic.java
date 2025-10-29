@@ -10,9 +10,6 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
-import org.firstinspires.ftc.robotcore.external.navigation.Position;
-import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
@@ -60,11 +57,10 @@ public class LimelightLogic {
         }
     }
 
-    public Pose2D getLimelightPos() {
-        Pose2D limelightBotPos = new Pose2D(DistanceUnit.CM,0,0,AngleUnit.DEGREES, 0);
-        double a = Turret.turretServoMaster.getPosition();
-        double r = 6.8; //6819323
-        return new Pose2D(DistanceUnit.CM, limelightBotPos.getX(DistanceUnit.CM) + (Math.cos(a) * r), (limelightBotPos.getY(DistanceUnit.CM) + (Math.sin(a)) * r), AngleUnit.DEGREES, 0);
+    public Pose2D getBotPos() {
+        double a = Turret.turretServoMaster.getPosition() - 0.5;
+        double r = 6.8; //68.19323mm
+        return new Pose2D(DistanceUnit.CM, result.getBotpose_MT2().getPosition().x * 100 + (Math.cos(a) * r), (result.getBotpose_MT2().getPosition().y * 100 + (Math.sin(a)) * r), AngleUnit.DEGREES, 0);
     }
 
     public Constants.Game.MOTIF checkMotif(LLResultTypes.FiducialResult aprilTag) {

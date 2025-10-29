@@ -60,7 +60,7 @@ public class TeleOp extends OpMode {
         robotContainer.delayedActionManager.update();
         robotContainer.gamepadEx1.update();
         robotContainer.gamepadEx2.update();
-//        robotContainer.limelightLogic.update();
+        robotContainer.limelightLogic.update();
         turretToggleButton.update(Status.turretToggle);
         beamBreakToggleButton.update(RobotContainer.HardwareDevices.beamBreak.isPressed());
 
@@ -108,7 +108,7 @@ public class TeleOp extends OpMode {
             if (spindexAccel.seconds() <= 1) {
                 robotContainer.spindexer.setPower(Math.min(robotContainer.spindexer.pidf.calculate() * spindexAccel.seconds(), 0.5));
             } else {
-                robotContainer.spindexer.setPower(robotContainer.spindexer.pidf.calculate());
+                 robotContainer.spindexer.setPower(robotContainer.spindexer.pidf.calculate());
 //                robotContainer.spindexer.setPower(0.5);
             }
         } else {
@@ -164,11 +164,23 @@ public class TeleOp extends OpMode {
 
         //TODO DA HOOD
 
-//        robotContainer.telemetry.addData("hood angle", robotContainer.turret.hoodServo.getPosition());
-//        if (robotContainer.limelightLogic.limelight.getLatestResult().isValid()) {
-//            robotContainer.telemetry.addData("robot pos on field", robotContainer.limelightLogic.getLimelightPos());
-//        } else {
-//            robotContainer.telemetry.addData("robot pos on field", robotContainer.limelightLogic.getLimelightPos());
+        robotContainer.telemetry.addData("hood angle", robotContainer.turret.hoodServo.getPosition());
+        if (robotContainer.limelightLogic.limelight.getLatestResult().isValid()) {
+            robotContainer.telemetry.addData("robot pos on field", robotContainer.limelightLogic.getBotPos());
+        } else {
+            robotContainer.telemetry.addData("robot pos on field", "null");
+        }
+
+        //hood preset -triangle
+//        if (robotContainer.gamepadEx2.triangle.wasJustPressed()) {
+//            robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[1]);
+//        }
+//
+//        if (robotContainer.gamepadEx2.dpadUp.wasJustPressed()) {
+//            robotContainer.spindexer.goToNextGreenSlot();
+//        }
+//        if (robotContainer.gamepadEx2.dpadDown.wasJustPressed()) {
+//            robotContainer.spindexer.goToNextPurpleSlot();
 //        }
 
 //        robotContainer.limelightLogic.trackGoal();
