@@ -132,8 +132,8 @@ public class RobotContainer {
         public static ServoImplEx hoodServo;
 
         // Spindexer
-        public static ServoImplEx transferServoLow;
-        public static CRServoImplEx transferServoHigh;
+        public static ServoImplEx transferServoLeft;
+        public static ServoImplEx transferServoRight;
 
         public static CRServoImplEx spindexServo;
         public static AnalogInput spindexAnalog;
@@ -205,8 +205,8 @@ public class RobotContainer {
         HardwareDevices.turretServoMaster = getHardwareDevice(ServoImplEx.class, "turretServoMaster");
         HardwareDevices.turretServoSlave = getHardwareDevice(ServoImplEx.class, "turretServoSlave");
         HardwareDevices.hoodServo = getHardwareDevice(ServoImplEx.class, "hoodServo");
-        HardwareDevices.transferServoLow = getHardwareDevice(ServoImplEx.class, "transferServoLow");
-        HardwareDevices.transferServoHigh = getHardwareDevice(CRServoImplEx.class, "transferServoHigh");
+        HardwareDevices.transferServoLeft = getHardwareDevice(ServoImplEx.class, "transferServoLeft");
+        HardwareDevices.transferServoRight = getHardwareDevice(ServoImplEx.class, "transferServoRight");
         HardwareDevices.spindexServo = getHardwareDevice(CRServoImplEx.class, "spindexServo");
         HardwareDevices.spindexAnalog = getHardwareDevice(AnalogInput.class, "spindexAnalog");
         HardwareDevices.intakeMotor = getHardwareDevice(DcMotorImplEx.class, "intakeMotor");
@@ -231,7 +231,7 @@ public class RobotContainer {
         HardwareDevices.intakeMotor.setDirection(DcMotor.Direction.REVERSE);
         intake = new Intake(this, HardwareDevices.intakeMotor);
         spindexer = new Spindexer(this, HardwareDevices.spindexServo, HardwareDevices.spindexAnalog, HardwareDevices.colorSensor);
-        transfer = new Transfer(this, HardwareDevices.transferServoLow, HardwareDevices.transferServoHigh);
+        transfer = new Transfer(this, HardwareDevices.transferServoLeft, HardwareDevices.transferServoRight);
 
         indicatorLightFront = new IndicatorLighting.Light(this, HardwareDevices.indicatorLightFront);
         indicatorLightBack = new IndicatorLighting.Light(this, HardwareDevices.indicatorLightBack);
@@ -482,7 +482,7 @@ public class RobotContainer {
         telemetry.addData("Spindexer Servo Power", HardwareDevices.spindexServo.getPower());
         telemetry.addData("Spindexer calc power", spindexer.pidf.calculate());
         telemetry.addLine();
-        telemetry.addData("lower servo pos", HardwareDevices.transferServoLow.getPosition());
+        telemetry.addData("lower servo pos", HardwareDevices.transferServoLeft.getPosition());
         telemetry.addData("flywheel speed", HardwareDevices.flyWheelMotorMaster.getVelocity());
         telemetry.addData("flywheel current mA", HardwareDevices.flyWheelMotorMaster.getCurrent(CurrentUnit.MILLIAMPS));
         telemetry.addData("upper flywheel speed", HardwareDevices.flyWheelMotorSlave.getVelocity());

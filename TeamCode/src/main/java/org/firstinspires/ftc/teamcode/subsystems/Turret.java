@@ -14,7 +14,7 @@ public class Turret extends RobotContainer.HardwareDevices {
     private final RobotContainer robotContainer;
     private final LinkedMotors flyWheelMotors;
     private final LinkedServos turretServos;
-    private final ServoImplEx hoodServo;
+    public final ServoImplEx hoodServo;
 
     public Turret(RobotContainer robotContainer, LinkedMotors flyWheelMotors, ServoImplEx hoodServo, LinkedServos turretServos) {
         this.robotContainer = robotContainer;

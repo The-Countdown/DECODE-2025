@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 
 import org.firstinspires.ftc.teamcode.main.Constants;
@@ -8,23 +7,21 @@ import org.firstinspires.ftc.teamcode.main.RobotContainer;
 
 public class Transfer extends RobotContainer.HardwareDevices {
     private RobotContainer robotContainer;
-    private final ServoImplEx transferServoLow;
-    private final CRServoImplEx transferServoHigh;
+    private final ServoImplEx transferServoRight;
+    private final ServoImplEx transferServoLeft;
 
-    public Transfer(RobotContainer robotContainer, ServoImplEx transferServoLow, CRServoImplEx transferServoHigh) {
+    public Transfer(RobotContainer robotContainer, ServoImplEx transferServoRight, ServoImplEx transferServoLeft) {
         this.robotContainer = robotContainer;
-        this.transferServoLow = transferServoLow;
-        this.transferServoHigh = transferServoHigh;
+        this.transferServoRight = transferServoRight;
+        this.transferServoLeft = transferServoLeft;
     }
 
-//    public void setLowPower(double power) {
-//        transferServoLow.setPower(power);
-//    }
-
-    public void setHighPower(double power) {
-        transferServoHigh.setPower(power);
+    public void zeroServo() {
+        transferServoLeft.setPosition(0);
+        transferServoRight.setPosition(0);
     }
-
-    public void flapUp() {transferServoLow.setPosition(Constants.Transfer.UP);}
-    public void flapDown() {transferServoLow.setPosition(Constants.Transfer.DOWN);}
+    public void flapUp() {
+        transferServoRight.setPosition(Constants.Transfer.UP);}
+    public void flapDown() {
+        transferServoRight.setPosition(Constants.Transfer.DOWN);}
 }

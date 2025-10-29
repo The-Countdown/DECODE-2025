@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
@@ -20,7 +21,7 @@ import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 public class LimelightLogic {
     private RobotContainer robot;
     private Telemetry telemetry;
-    private Limelight3A limelight;
+    public Limelight3A limelight;
     private LLResult result;
     private ElapsedTime turretTime = new ElapsedTime();
     private double p = 177.5;
@@ -28,7 +29,6 @@ public class LimelightLogic {
         this.robot = robot;
         this.telemetry = telemetry;
         this.limelight = limelight;
-
 
         LLFieldMap field = new LLFieldMap();
 //        List<Double> transform = List.of(1.1, 2.1, 3.1);
@@ -57,17 +57,14 @@ public class LimelightLogic {
             robot.turret.setTargetAngle(p);
             telemetry.addData("TX", limelight.getLatestResult().getTx());
             telemetry.addData("p", p);
-        } else {
-            robot.turret.setTargetAngle(177.5);
         }
     }
 
-    public Pose3D getPose() {
-        if (limelight.getLatestResult().isValid()) {
-            return result.getBotpose();
-        } else {
-            return new Pose3D(new Position(DistanceUnit.CM, 0, 0, 0, 0), new YawPitchRollAngles(AngleUnit.DEGREES, 0, 0, 0, 0));
-        }
+    public Pose2D getLimelightPos() {
+        Pose2D limelightBotPos = new Pose2D(DistanceUnit.CM,0,0,AngleUnit.DEGREES, 0);
+        double a = Turret.turretServoMaster.getPosition();
+        double r = 6.8; //6819323
+        return new Pose2D(DistanceUnit.CM, limelightBotPos.getX(DistanceUnit.CM) + (Math.cos(a) * r), (limelightBotPos.getY(DistanceUnit.CM) + (Math.sin(a)) * r), AngleUnit.DEGREES, 0);
     }
 
     public Constants.Game.MOTIF checkMotif(LLResultTypes.FiducialResult aprilTag) {

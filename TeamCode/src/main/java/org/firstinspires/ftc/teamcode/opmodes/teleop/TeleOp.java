@@ -83,6 +83,7 @@ public class TeleOp extends OpMode {
 
         robotContainer.turret.hood.setPos(robotContainer.gamepadEx1.cross.isPressed() ? Constants.Turret.HOOD_PRESETS[1] : Constants.Turret.HOOD_PRESETS[0]);
 
+
         if (turretToggleButton.wasJustPressed()) {
             robotContainer.spindexer.goToNextTransferSlot();
         }
@@ -132,6 +133,22 @@ public class TeleOp extends OpMode {
         if (robotContainer.gamepadEx2.cross.wasJustPressed()) {
             Status.slotColor[robotContainer.spindexer.getCurrentTransferSlot()] = Constants.Game.ARTIFACT_COLOR.NONE;
             robotContainer.spindexer.goToNextTransferSlot();
+        }
+
+        if (robotContainer.gamepadEx2.leftBumper.wasJustPressed()) {
+            robotContainer.transfer.
+        }
+
+        robotContainer.spindexer.setPower(Math.pow(robotContainer.gamepadEx2.leftStickX(), 3));
+
+
+        //TODO DA HOOD
+
+        robotContainer.telemetry.addData("hood angle", robotContainer.turret.hoodServo.getPosition());
+        if (robotContainer.limelightLogic.limelight.getLatestResult().isValid()) {
+            robotContainer.telemetry.addData("robot pos on field", robotContainer.limelightLogic.getLimelightPos());
+        } else {
+            robotContainer.telemetry.addData("robot pos on field", robotContainer.limelightLogic.getLimelightPos());
         }
 
         //hood preset -triangle
