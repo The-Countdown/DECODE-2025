@@ -8,7 +8,9 @@ public class GamepadWrapper {
         private boolean prevState = false;
         private boolean currState = false;
         private final ElapsedTime holdDuration = new ElapsedTime();
+        private final ElapsedTime letGoDuration = new ElapsedTime();
         private boolean isTiming = false;
+        private boolean isTiming2 = false;
         private boolean alreadyTriggered = false;
 
         public void update(boolean newState) {
@@ -18,8 +20,11 @@ public class GamepadWrapper {
             if (wasJustPressed()) {
                 holdDuration.reset();
                 isTiming = true;
-            } else if (!currState) {
+                isTiming2 = false;
+            } else if (wasJustReleased()) {
                 isTiming = false;
+                isTiming2 = true;
+                letGoDuration.reset();
             }
         }
 
@@ -72,6 +77,13 @@ public class GamepadWrapper {
         public double getHoldDuration() {
             if (isTiming) {
                 return holdDuration.seconds();
+            } else {
+                return 0;
+            }
+        }
+        public double getLetGoDuration() {
+            if (isTiming2) {
+                return letGoDuration.seconds();
             } else {
                 return 0;
             }

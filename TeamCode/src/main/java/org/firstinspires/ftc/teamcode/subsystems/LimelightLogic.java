@@ -22,6 +22,8 @@ public class LimelightLogic {
     private LLResult result;
     private ElapsedTime turretTime = new ElapsedTime();
     private double p = 177.5;
+    // 50, 100, 160
+    private double[] table = {0.363, 0.43, 0.6};
     public LimelightLogic(RobotContainer robot, Telemetry telemetry, Limelight3A limelight) {
         this.robot = robot;
         this.telemetry = telemetry;
@@ -57,10 +59,31 @@ public class LimelightLogic {
         }
     }
 
-    public Pose2D getBotPos() {
-        double a = Turret.turretServoMaster.getPosition() - 0.5;
-        double r = 6.8; //68.19323mm
-        return new Pose2D(DistanceUnit.CM, result.getBotpose_MT2().getPosition().x * 100 + (Math.cos(a) * r), (result.getBotpose_MT2().getPosition().y * 100 + (Math.sin(a)) * r), AngleUnit.DEGREES, 0);
+    public Pose2D logicBotPose() {
+        if (result != null) {
+            double a = Turret.turretServoMaster.getPosition() - 0.5;
+            double r = 6.819323 / 2.54; //68.19323mm
+            return new Pose2D(DistanceUnit.INCH, -((result.getBotpose().getPosition().x * 100) / 2.54) + (Math.cos(a) * r), (((result.getBotpose().getPosition().y * 100) / 2.54) + (Math.sin(a)) * r), AngleUnit.DEGREES, 0);
+        } else {
+            return null;
+        }
+    }
+
+    public double disToGoal() {
+        if (result != null) {
+            Pose2D botPose = logicBotPose();
+            double xDiff = Constants.Game.GOAL_POSE.getX(DistanceUnit.INCH) - botPose.getX(DistanceUnit.INCH);
+            double yDiff = Constants.Game.GOAL_POSE.getY(DistanceUnit.INCH) - botPose.getY(DistanceUnit.INCH);
+            return Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
+        } else {
+            return 0;
+        }
+    }
+
+    public double disToGoalPinpoint() {
+            double xDiff = Constants.Game.GOAL_POSE.getX(DistanceUnit.INCH) - Status.currentPose.getX(DistanceUnit.INCH);
+            double yDiff = Constants.Game.GOAL_POSE.getY(DistanceUnit.INCH) - Status.currentPose.getY(DistanceUnit.INCH);
+            return Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
     }
 
     public Constants.Game.MOTIF checkMotif(LLResultTypes.FiducialResult aprilTag) {
@@ -99,6 +122,26 @@ public class LimelightLogic {
                 robot.addRetainedTelemetry("Alliance Found" , checkAlliance(tag));
             }
         }
+    }
+    // Assuming point 1 is less than point 2
+    public double interpolate(double point1, double point2, double percentageSplit) {
+        return point1 + ((point2 - point1) * percentageSplit);
+    }
+
+    public double useInterpolate() {
+        // variable
+        double dist = disToGoal();
+        double turretSpeed = 0;
+        if (dist == 0) {
+            return 0;
+        } else {
+            if (dist < 100) {
+                turretSpeed = interpolate(table[0], table[1], (dist - 50) / (100 - 50));
+            } else {
+                turretSpeed = interpolate(table[1], table[2], (dist - 100) / (160 - 100));
+            }
+        }
+        return turretSpeed;
     }
 
 

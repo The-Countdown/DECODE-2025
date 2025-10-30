@@ -67,11 +67,10 @@ public class RobotContainer {
     public boolean isRunning = false;
     public GamepadWrapper gamepadEx1;
     public GamepadWrapper gamepadEx2;
+    public final GamepadWrapper.ButtonReader beamBreakToggleButton = new GamepadWrapper.ButtonReader();
     public final Map<String, LinkedList<Double>> loopTimesMap = new HashMap<>();
     public final Map<String, ElapsedTime> loopTimers = new HashMap<>();
     private final ElapsedTime telemetryLoopTimer = new ElapsedTime();
-    private final ElapsedTime timer1 = new ElapsedTime();
-    private final ElapsedTime timer2 = new ElapsedTime();
     private final ArrayList<String> retainedTelemetryCaptions = new ArrayList<>();
     private final ArrayList<Object> retainedTelemetryValues = new ArrayList<>();
     public final SwerveModule[] swerveModules = new SwerveModule[Constants.Swerve.NUM_MOTORS];
@@ -216,6 +215,7 @@ public class RobotContainer {
         //sensor
         HardwareDevices.colorSensor = getHardwareDevice(RevColorSensorV3.class, "colorSensor");
         HardwareDevices.beamBreak = getHardwareDevice(RevTouchSensor.class, "beamBreak");
+
 
         LinkedMotors flyWheelMotors = new LinkedMotors(HardwareDevices.flyWheelMotorMaster, HardwareDevices.flyWheelMotorSlave);
         HardwareDevices.flyWheelMotorSlave.setDirection(DcMotorImplEx.Direction.REVERSE);
@@ -443,10 +443,11 @@ public class RobotContainer {
 //        telemetry.addData("Control Hub Current", getCurrent(Constants.Robot.CONTROL_HUB_INDEX) + " A");
 //        telemetry.addData("Expansion Hub Current", getCurrent(Constants.Robot.EXPANSION_HUB_INDEX) + " A");
 //        telemetry.addLine();
-//        telemetry.addData("Pinpoint X", Status.currentPose.getX(DistanceUnit.CM) + " cm");
-//        telemetry.addData("Pinpoint Y", Status.currentPose.getY(DistanceUnit.CM) + " cm");
-//        telemetry.addData("Pinpoint Heading", Status.currentHeading + "°");
-//        telemetry.addData("PINPOINT STATUS", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
+        telemetry.addData("Dist pinpoint", limelightLogic.disToGoalPinpoint());
+        telemetry.addData("Pinpoint X", Status.currentPose.getX(DistanceUnit.CM) + " cm");
+        telemetry.addData("Pinpoint Y", Status.currentPose.getY(DistanceUnit.CM) + " cm");
+        telemetry.addData("Pinpoint Heading", Status.currentHeading + "°");
+        telemetry.addData("PINPOINT STATUS", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
         telemetry.addLine();
         telemetry.addData("OpMode Avg Loop Time", (int) getRollingAverageLoopTime(opMode) + " ms");
         telemetry.addData("OpMode Loop Time", (int) getLoopTime(opMode) + " ms");

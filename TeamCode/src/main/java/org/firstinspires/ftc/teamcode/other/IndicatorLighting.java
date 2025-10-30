@@ -43,7 +43,6 @@ public class IndicatorLighting {
         public void police() {
             lights.get(0).flashing(Constants.LED.COLOR.RED, Constants.LED.COLOR.BLUE, 1);
             lights.get(1).flashing(Constants.LED.COLOR.BLUE, Constants.LED.COLOR.RED, 1);
-            lights.get(2).flashing(Constants.LED.COLOR.RED, Constants.LED.COLOR.BLUE, 2);
         }
 
         public void rainbowReset() {
@@ -77,58 +76,15 @@ public class IndicatorLighting {
         }
 
         public void lightsUpdate() {
-            if (robotContainer.gamepadEx1.ps.isHeldFor(0.75) && Status.lightsOn) {
-                robotContainer.allIndicatorLights.flashingReset();
-                Status.lightsOn = false;
-
-                robotContainer.drivetrain.setTargets(Constants.Swerve.STOP_FORMATION, Constants.Swerve.NO_POWER);
-
-                Status.isDrivingActive = false;
-            }
-
-            if (robotContainer.gamepadEx1.ps.wasJustPressed() && !Status.lightsOn) {
-                Status.lightsOn = true;
-                robotContainer.delayedActionManager.schedule(() -> Status.isDrivingActive = true, 1000);
-            }
-
-            if (robotContainer.gamepadEx1.circle.wasJustPressed() && !Status.policeOn) {
-                Status.policeOn = true;
-            }
-
-            if (robotContainer.gamepadEx1.circle.wasJustPressed() && Status.policeOn) {
-                Status.policeOn = false;
-            }
-
-            if (!Status.lightsOn) {
-                robotContainer.allIndicatorLights.flashing(Constants.LED.COLOR.ORANGE, Constants.LED.COLOR.OFF, 8, 2);
-            }
-
-            if (Status.lightsOn && !Status.policeOn) {
-                if (robotContainer.gamepadEx1.leftStickX() > 0.1) {
-                    robotContainer.indicatorLightFront.setColor(Constants.LED.COLOR.WHITE);
-                } else if (robotContainer.gamepadEx1.leftStickX() < -0.1) {
-                    robotContainer.indicatorLightFront.flashing(Constants.LED.COLOR.ORANGE, Constants.LED.COLOR.WHITE, 2);
-                } else if (robotContainer.gamepadEx1.leftStickY() > 0.1) {
-                    robotContainer.indicatorLightFront.rainbow();
-                } else {
-                    robotContainer.indicatorLightFront.setColor(Constants.LED.COLOR.WHITE);
-                }
-
-                if (robotContainer.gamepadEx1.leftStickY() < -0.1) {
-                    robotContainer.indicatorLightBack.flashing(Constants.LED.COLOR.RED, Constants.LED.COLOR.WHITE, 2);
-                } else if (robotContainer.gamepadEx1.leftStickY() > 0.1) {
-                    robotContainer.indicatorLightBack.rainbow();
-                } else {
-                    robotContainer.indicatorLightBack.setColor(Constants.LED.COLOR.RED);
-                }
-
-                if (robotContainer.gamepadEx1.leftStickY.wasJustReleased()) {
-                    robotContainer.allIndicatorLights.rainbowReset();
-                }
-            }
-
-            if (Status.policeOn) {
-                robotContainer.allIndicatorLights.police();
+            // see if i can lower the timer (0.4)
+            if (robotContainer.beamBreakToggleButton.getLetGoDuration() < 0.4 && Status.slotColor[robotContainer.spindexer.getCurrentIntakeSlot()] == Constants.Game.ARTIFACT_COLOR.PURPLE) {
+                robotContainer.allIndicatorLights.setColor(Constants.LED.COLOR.VIOLET);
+            } else if (robotContainer.beamBreakToggleButton.getLetGoDuration() < 0.4 && Status.slotColor[robotContainer.spindexer.getCurrentIntakeSlot()] == Constants.Game.ARTIFACT_COLOR.GREEN) {
+                robotContainer.allIndicatorLights.setColor(Constants.LED.COLOR.GREEN);
+            }  else if (Status.intakeToggle) {
+                robotContainer.allIndicatorLights.setColor(Constants.LED.COLOR.ORANGE);
+            } else if (Status.turretToggle) {
+                robotContainer.allIndicatorLights.setColor(Constants.LED.COLOR.RED);
             }
         }
 
@@ -157,7 +113,7 @@ public class IndicatorLighting {
 
         public void rainbow() {
             if (rainbowTimer.milliseconds() >= 2) {
-                rainbowValue += (0.005 * rainbowSign);
+                rainbowValue += (0.0025 * rainbowSign);
                 rainbowTimer.reset();
                 if (rainbowValue >= 1) {
                     rainbowSign = -1;

@@ -15,7 +15,6 @@ public class TeleOp extends OpMode {
     public static double CURRENT_LOOP_TIME_MS;
     public double turretPos = 0;
     private final GamepadWrapper.ButtonReader turretToggleButton = new GamepadWrapper.ButtonReader();
-    private final GamepadWrapper.ButtonReader beamBreakToggleButton = new GamepadWrapper.ButtonReader();
     private final ElapsedTime spindexAccel = new ElapsedTime();
 
     private double lastError = 0;
@@ -37,6 +36,7 @@ public class TeleOp extends OpMode {
     @Override
     public void init_loop() {
         robotContainer.refreshData();
+        robotContainer.allIndicatorLights.rainbow();
     }
 
     @Override
@@ -62,7 +62,7 @@ public class TeleOp extends OpMode {
         robotContainer.gamepadEx2.update();
         robotContainer.limelightLogic.update();
         turretToggleButton.update(Status.turretToggle);
-        beamBreakToggleButton.update(RobotContainer.HardwareDevices.beamBreak.isPressed());
+        robotContainer.beamBreakToggleButton.update(RobotContainer.HardwareDevices.beamBreak.isPressed());
 
         robotContainer.allIndicatorLights.lightsUpdate();
 
@@ -86,14 +86,16 @@ public class TeleOp extends OpMode {
             Status.turretToggle = false;
         }
 
-        robotContainer.turret.flywheel.setTargetVelocity(Math.min(turretToggleButton.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, Constants.Turret.FLYWHEEL_TOP_SPEED));
+        robotContainer.turret.flywheel.setTargetVelocity(Math.min(turretToggleButton.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, robotContainer.limelightLogic.useInterpolate()));
 
 //        turret turn -right stick X
-        turretPos -= robotContainer.gamepadEx2.rightStickX() != 0 ? (Constants.Turret.TURRET_SPEED_FACTOR * CURRENT_LOOP_TIME_MS) * Math.pow(robotContainer.gamepadEx2.rightStickX(), 3) : 0;
-        turretPos = HelperFunctions.clamp(turretPos, Constants.Turret.TURRET_LIMIT_MIN, Constants.Turret.TURRET_LIMIT_MAX);
-        robotContainer.turret.setTargetPosition(turretPos);
+//        turretPos -= robotContainer.gamepadEx2.rightStickX() != 0 ? (Constants.Turret.TURRET_SPEED_FACTOR * CURRENT_LOOP_TIME_MS) * Math.pow(robotContainer.gamepadEx2.rightStickX(), 3) : 0;
+//        turretPos = HelperFunctions.clamp(turretPos, Constants.Turret.TURRET_LIMIT_MIN, Constants.Turret.TURRET_LIMIT_MAX);
+//        robotContainer.turret.setTargetPosition(turretPos);
 
-        if (beamBreakToggleButton.wasJustReleased()) {
+        robotContainer.turret.pointAtGoal();
+
+        if (robotContainer.beamBreakToggleButton.wasJustReleased()) {
             robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.goToNextIntakeSlot(), 60);
         }
 
@@ -166,10 +168,13 @@ public class TeleOp extends OpMode {
 
         robotContainer.telemetry.addData("hood angle", robotContainer.turret.hoodServo.getPosition());
         if (robotContainer.limelightLogic.limelight.getLatestResult().isValid()) {
-            robotContainer.telemetry.addData("robot pos on field", robotContainer.limelightLogic.getBotPos());
-        } else {
-            robotContainer.telemetry.addData("robot pos on field", "null");
+            robotContainer.telemetry.addData("robot pos on field", robotContainer.limelightLogic.logicBotPose());
+            robotContainer.telemetry.addData("disTANCE to goal", robotContainer.limelightLogic.disToGoal());
+        } else if (robotContainer.limelightLogic.limelight.getLatestResult() == null){
+            robotContainer.telemetry.addLine("robot pos on field no see");
         }
+
+        robotContainer.telemetry.addData("turret interpolation", robotContainer.limelightLogic.useInterpolate());
 
         //hood preset -triangle
 //        if (robotContainer.gamepadEx2.triangle.wasJustPressed()) {

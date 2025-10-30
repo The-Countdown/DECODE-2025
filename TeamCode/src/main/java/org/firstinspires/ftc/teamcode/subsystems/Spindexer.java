@@ -143,7 +143,7 @@ public class Spindexer {
         if (!intakeSlotFound) {
             Status.turretToggle = true;
             goToNextTransferSlot();
-            robotContainer.delayedActionManager.schedule(() -> Status.intakeToggle = false, 80);
+            Status.intakeToggle = false;
         }
     }
 
