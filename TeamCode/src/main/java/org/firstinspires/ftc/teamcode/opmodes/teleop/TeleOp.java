@@ -3,11 +3,12 @@ package org.firstinspires.ftc.teamcode.opmodes.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
-import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "TeleOp")
 public class TeleOp extends OpMode {
@@ -16,21 +17,18 @@ public class TeleOp extends OpMode {
     public double turretPos = 0;
     private final GamepadWrapper.ButtonReader turretToggleButton = new GamepadWrapper.ButtonReader();
     private final ElapsedTime spindexAccel = new ElapsedTime();
-
     private double lastError = 0;
+    RobotContainer crasher;
 
     @Override
     public void init() {
-        robotContainer = new RobotContainer(this);
-        robotContainer.isRunning = true;
-        robotContainer.init();
-        robotContainer.refreshData();
-        RobotContainer.HardwareDevices.imu.resetYaw();
-        RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU(); // TODO: Run at start of auto instead
-        robotContainer.drivetrain.setTargets(Constants.Swerve.STOP_FORMATION, Constants.Swerve.NO_POWER);
-        robotContainer.spindexer.setTargetAngle(Constants.Spindexer.INTAKE_SLOT_ANGLES[0]);
-        robotContainer.telemetry.addLine("OpMode Initialized");
-        robotContainer.telemetry.update();
+        Object temp = blackboard.getOrDefault("robot", new RobotContainer(this));
+        robotContainer = temp;
+        if (robotContainer == null) {
+            robotContainer = new RobotContainer(this);
+            robotContainer.init();
+            crasher.init();
+        }
     }
 
     @Override
@@ -70,7 +68,7 @@ public class TeleOp extends OpMode {
 
         robotContainer.drivetrain.controlUpdate();
 
-        robotContainer.turret.hood.setPos(robotContainer.gamepadEx1.cross.isPressed() ? Constants.Turret.HOOD_PRESETS[1] : Constants.Turret.HOOD_PRESETS[0]);
+        robotContainer.turret.hood.setPos(robotContainer.gamepadEx1.circle.isPressed() ? Constants.Turret.HOOD_PRESETS[1] : Constants.Turret.HOOD_PRESETS[0]);
 
         //gamepad 2
 
@@ -135,6 +133,17 @@ public class TeleOp extends OpMode {
             Status.slotColor[0] = Constants.Game.ARTIFACT_COLOR.NONE;
             Status.slotColor[1] = Constants.Game.ARTIFACT_COLOR.NONE;
             Status.slotColor[2] = Constants.Game.ARTIFACT_COLOR.NONE;
+        }
+
+        //if all are none or unknown, turret toggle
+        if ((Status.slotColor[0] != Constants.Game.ARTIFACT_COLOR.NONE && Status.slotColor[1] != Constants.Game.ARTIFACT_COLOR.NONE && Status.slotColor[2] != Constants.Game.ARTIFACT_COLOR.NONE) || (Status.slotColor[0] != Constants.Game.ARTIFACT_COLOR.UNKNOWN && Status.slotColor[1] != Constants.Game.ARTIFACT_COLOR.UNKNOWN && Status.slotColor[2] != Constants.Game.ARTIFACT_COLOR.UNKNOWN)) {
+            Status.turretToggle = true;
+        }
+
+        if (robotContainer.gamepadEx1.triangle.wasJustPressed()) {
+            Pose2D botPose = robotContainer.limelightLogic.logicBotPose();
+            RobotContainer.HardwareDevices.pinpoint.setPosX(botPose.getX(DistanceUnit.CM), DistanceUnit.CM);
+            RobotContainer.HardwareDevices.pinpoint.setPosY(botPose.getY(DistanceUnit.CM), DistanceUnit.CM);
         }
 
 //        robotContainer.spindexer.setPower(robotContainer.gamepadEx2.rightTriggerRaw() - robotContainer.gamepadEx2.leftTriggerRaw());

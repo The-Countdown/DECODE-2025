@@ -20,21 +20,10 @@ public class PathPlannerExample extends OpMode {
     @Override
     public void init() {
         robotContainer = new RobotContainer(this);
-        robotContainer.isRunning = true;
         robotContainer.init();
-        robotContainer.refreshData();
-        RobotContainer.HardwareDevices.imu.resetYaw();
-        RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU();
-        robotContainer.drivetrain.setTargets(Constants.Swerve.STOP_FORMATION, Constants.Swerve.NO_POWER);
-        robotContainer.telemetry.addLine("Auto Initialized");
-        robotContainer.telemetry.update();
-        robotContainer.pathPlanner = new PathPlanner(robotContainer.telemetry, robotContainer);
+        blackboard.put("robot", robotContainer);
 
         robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, 0, 100, AngleUnit.DEGREES, 300));
-        robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, 100, 0, AngleUnit.DEGREES, 300));
-        robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, 0, 100, AngleUnit.DEGREES, 300));
-        robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, 100, 100, AngleUnit.DEGREES, 300));
-        robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, 0, 0, AngleUnit.DEGREES, 300));
 
 
     }
@@ -48,10 +37,7 @@ public class PathPlannerExample extends OpMode {
         robotContainer.start(this);
 
         robotContainer.pathPlanner.driveToPose(0);
-        robotContainer.pathPlanner.driveToPose(1);
-        robotContainer.pathPlanner.driveToPose(2);
-        robotContainer.pathPlanner.driveToPose(3);
-        robotContainer.pathPlanner.driveToPose(4);
+        blackboard.
     }
 
     @Override

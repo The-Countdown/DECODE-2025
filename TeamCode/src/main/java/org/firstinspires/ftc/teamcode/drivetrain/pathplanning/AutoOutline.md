@@ -21,7 +21,7 @@
 ### Path Following Controller
 - [ ] Accepts current pose from Pinpoint.
 - [ ] Computes target position and heading on the path based on time or distance.
-- [ ] Outputs desired robot velocity vector and angular velocity.
+- [ ] Outputs desired robotContainer velocity vector and angular velocity.
 
 ### Error Calculation
 - [ ] Position error (`x`, `y`)

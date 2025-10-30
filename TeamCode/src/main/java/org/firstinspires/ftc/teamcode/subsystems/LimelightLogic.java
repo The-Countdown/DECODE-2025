@@ -21,6 +21,7 @@ public class LimelightLogic {
     public Limelight3A limelight;
     private LLResult result;
     private ElapsedTime turretTime = new ElapsedTime();
+    private Pose2D botPose = new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
     private double p = 177.5;
     // 50, 100, 160
     private double[] table = {0.363, 0.43, 0.6};
@@ -44,8 +45,8 @@ public class LimelightLogic {
             if (Status.motif == null) findMotif();
             if (Status.alliance == null) findAlliance();
             if (Status.motif != null) {
-                result.getFiducialResults().removeIf(tag -> tag.getFiducialId() == 21 || tag.getFiducialId() == 22 || tag.getFiducialId() == 23 || tag.getFiducialId() == 24);
-                RobotContainer.HardwareDevices.pinpoint.setPosition(HelperFunctions.to2D(result.getBotpose()));
+                result.getFiducialResults().removeIf(tag -> tag.getFiducialId() == 21 || tag.getFiducialId() == 22 || tag.getFiducialId() == 23);
+//                RobotContainer.HardwareDevices.pinpoint.setPosition(HelperFunctions.to2D(result.getBotpose()));
             }
         }
     }
@@ -63,10 +64,9 @@ public class LimelightLogic {
         if (result != null) {
             double a = Turret.turretServoMaster.getPosition() - 0.5;
             double r = 6.819323 / 2.54; //68.19323mm
-            return new Pose2D(DistanceUnit.INCH, -((result.getBotpose().getPosition().x * 100) / 2.54) + (Math.cos(a) * r), (((result.getBotpose().getPosition().y * 100) / 2.54) + (Math.sin(a)) * r), AngleUnit.DEGREES, 0);
-        } else {
-            return null;
+            botPose = new Pose2D(DistanceUnit.INCH, -((result.getBotpose().getPosition().x * 100) / 2.54) + (Math.cos(a) * r), (((result.getBotpose().getPosition().y * 100) / 2.54) + (Math.sin(a)) * r), AngleUnit.DEGREES, 0);
         }
+        return botPose;
     }
 
     public double disToGoal() {

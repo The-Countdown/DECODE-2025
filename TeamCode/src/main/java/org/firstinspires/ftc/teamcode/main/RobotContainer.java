@@ -247,6 +247,13 @@ public class RobotContainer {
     }
 
     public void init() {
+        this.isRunning = true;
+        RobotContainer.HardwareDevices.imu.resetYaw();
+        RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU();
+        this.drivetrain.setTargets(Constants.Swerve.STOP_FORMATION, Constants.Swerve.NO_POWER);
+        this.telemetry.addLine("Auto Initialized");
+        this.telemetry.update();
+        this.pathPlanner = new PathPlanner(this.telemetry, this);
         HardwareDevices.allHubs = hardwareMap.getAll(LynxModule.class);
         HardwareDevices.controlHub = hardwareMap.get(LynxModule.class, "Control Hub");
         HardwareDevices.expansionHub = hardwareMap.get(LynxModule.class, "Expansion Hub 2");

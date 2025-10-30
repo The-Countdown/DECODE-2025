@@ -3,12 +3,12 @@
 This repository contains the public FTC SDK for the DECODE (2025-2026) competition season.
 
 ## Welcome!
-This GitHub repository contains the source code that is used to build an Android app to control a *FIRST* Tech Challenge competition robot.  To use this SDK, download/clone the entire project to your local computer.
+This GitHub repository contains the source code that is used to build an Android app to control a *FIRST* Tech Challenge competition robotContainer.  To use this SDK, download/clone the entire project to your local computer.
 
 ## Requirements
 To use this Android Studio project, you will need Android Studio Ladybug (2024.2) or later.
 
-To program your robot in Blocks or OnBot Java, you do not need Android Studio.
+To program your robotContainer in Blocks or OnBot Java, you do not need Android Studio.
 
 ## Getting Started
 If you are new to robotics or new to the *FIRST* Tech Challenge, then you should consider reviewing the [FTC Blocks Tutorial](https://ftc-docs.firstinspires.org/programming_resources/blocks/Blocks-Tutorial.html) to get familiar with how to use the control system:
@@ -18,7 +18,7 @@ If you are new to robotics or new to the *FIRST* Tech Challenge, then you should
 Even if you are an advanced Java programmer, it is helpful to start with the [FTC Blocks tutorial](https://ftc-docs.firstinspires.org/programming_resources/blocks/Blocks-Tutorial.html), and then migrate to the [OnBot Java Tool](https://ftc-docs.firstinspires.org/programming_resources/onbot_java/OnBot-Java-Tutorial.html) or to [Android Studio](https://ftc-docs.firstinspires.org/programming_resources/android_studio_java/Android-Studio-Tutorial.html) afterwards.
 
 ## Downloading the Project
-If you are an Android Studio programmer, there are several ways to download this repo.  Note that if you use the Blocks or OnBot Java Tool to program your robot, then you do not need to download this repository.
+If you are an Android Studio programmer, there are several ways to download this repo.  Note that if you use the Blocks or OnBot Java Tool to program your robotContainer, then you do not need to download this repository.
 
 * If you are a git user, you can clone the most current version of the repository:
 
@@ -34,7 +34,7 @@ Once you have downloaded and uncompressed (if needed) your folder, you can use A
 
 ## Getting Help
 ### User Documentation and Tutorials
-*FIRST* maintains online documentation with information and tutorials on how to use the *FIRST* Tech Challenge software and robot control system.  You can access this documentation using the following link:
+*FIRST* maintains online documentation with information and tutorials on how to use the *FIRST* Tech Challenge software and robotContainer control system.  You can access this documentation using the following link:
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[FIRST Tech Challenge Documentation](https://ftc-docs.firstinspires.org/index.html)
 
@@ -51,7 +51,7 @@ For technical questions regarding the Control System or the FTC SDK, please visi
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[FIRST Tech Challenge Community](https://ftc-community.firstinspires.org/)
 
 ### Sample OpModes
-This project contains a large selection of Sample OpModes (robot code examples) which can be cut and pasted into your /teamcode folder to be used as-is, or modified to suit your team's needs.
+This project contains a large selection of Sample OpModes (robotContainer code examples) which can be cut and pasted into your /teamcode folder to be used as-is, or modified to suit your team's needs.
 
 Samples Folder: &nbsp;&nbsp; [/FtcRobotController/src/main/java/org/firstinspires/ftc/robotcontroller/external/samples](FtcRobotController/src/main/java/org/firstinspires/ftc/robotcontroller/external/samples)
 
@@ -80,7 +80,7 @@ The readme.md file located in the [/TeamCode/src/main/java/org/firstinspires/ftc
   * Best-fit preview shape called `circleFit`, an alternate to the existing `boxFit`
   * Sample OpMode `ConceptVisionColorLocator_Circle`, an alternate to the renamed `ConceptVisionColorLocator_Rectangle`
 * The Driver Station app play button has a green background with a white play symbol if
-  * the driver station and robot controller are connected and have the same team number
+  * the driver station and robotContainer controller are connected and have the same team number
   * there is at least one gamepad attached
   * the timer is enabled (for an Autonomous OpMode)
 * Updated AprilTag Library for DECODE. Notably, getCurrentGameTagLibrary() now returns DECODE tags.
@@ -99,17 +99,17 @@ The readme.md file located in the [/TeamCode/src/main/java/org/firstinspires/ftc
 * The behavior of setGlobalErrorMsg() is changed.  Note that this is an SDK internal method that is not 
   meant to be used by team software or third party libraries.  Teams or libraries using this method should
   find another means to communicate failure.  The design intent of setGlobalErrorMsg() is to report an 
-  error and force the user to restart the robot, which in certain circumstances when used inappropriately
-  could cause a robot to continue running while Driver Station controls are disabled.  To prevent this,
-  processing of a call to setGlobalErrorMsg() is deferred until the robot is in a known safe state.  This may
+  error and force the user to restart the robotContainer, which in certain circumstances when used inappropriately
+  could cause a robotContainer to continue running while Driver Station controls are disabled.  To prevent this,
+  processing of a call to setGlobalErrorMsg() is deferred until the robotContainer is in a known safe state.  This may
   mean that a call to setGlobalErrorMsg() that does not also result in stopping a running OpMode will appear
-  as though nothing happened until the robot is stopped, at which point, if clearGlobalErrorMsg() has not 
+  as though nothing happened until the robotContainer is stopped, at which point, if clearGlobalErrorMsg() has not 
   been called the message will appear on the Driver Station and a restart will be required.
   Addresses issue [1381](https://github.com/FIRST-Tech-Challenge/FtcRobotController/issues/1381)
 * Fixes getLatestResult in Limelight3A so if the Limelight hasn't provided data yet, it still returns an LLResult but valid will be false
   * If you previously used to check and see if this was `null` to see if the Limelight had been contacted, you now need to use `isValid()` on the result.  That is because now it always returns an LLResult even before it talks to the Limelight, but if it doesn't have valid data, the `isValid()` will be `false`.
 * Changed all omni samples to use front_left_drive, front_right_drive, back_left_drive, back_right_drive
-  * This is only breaking for you if you copy one of the changed samples to your own project and expect to use the same robot configuration as before.
+  * This is only breaking for you if you copy one of the changed samples to your own project and expect to use the same robotContainer configuration as before.
 
 ### Known Issues
 * The redesigned OnBotJava new file workflow allows the user to use a lowercase letter as the first character of a filename.
@@ -120,7 +120,7 @@ The readme.md file located in the [/TeamCode/src/main/java/org/firstinspires/ftc
 * Improved the OBJ new file creation flow workflow. The new flow allows you to easily use samples, craft new custom OpModes and make new Java classes.
 * Added support for gamepad edge detection.
   * A new sample program `ConceptGamepadEdgeDetection` demonstrates its use.
-* Adds a blackboard member to the Opmode that maintains state between opmodes (but not between robot resets).  See the ConceptBlackboard sample for how to use it.
+* Adds a blackboard member to the Opmode that maintains state between opmodes (but not between robotContainer resets).  See the ConceptBlackboard sample for how to use it.
 * Updated PredominantColorProcessor to also return the predominant color in RGB, HSV and YCrCb color spaces.  Updated ConceptVisionColorSensor sample OpMode to display the getAnalysis() result in all three color spaces.
 * Adds support for the GoBilda Pinpoint 
   * Also adds `SensorGoBildaPinpoint` sample to show how to use it
@@ -128,7 +128,7 @@ The readme.md file located in the [/TeamCode/src/main/java/org/firstinspires/ftc
 * Added `filterByCriteria()` and `sortByCriteria()` to ColorBlobLocatorProcessor.Util.
   * The filter and sort methods for specific criteria have been deprecated.
   * The updated sample program `ConceptVisionColorLocator` provides more details on the new syntax.
-* Add Help menu item and Help page that is available when connected to the robot controller via Program and Manage. The Help page has links to team resources such as [FTC Documentation](https://ftc-docs.firstinspires.org/), [FTC Discussion Forums](https://ftc-community.firstinspires.org), [Java FTC SDK API Documentation](https://javadoc.io/doc/org.firstinspires.ftc), and [FTC Game Information](https://ftc.game/).
+* Add Help menu item and Help page that is available when connected to the robotContainer controller via Program and Manage. The Help page has links to team resources such as [FTC Documentation](https://ftc-docs.firstinspires.org/), [FTC Discussion Forums](https://ftc-community.firstinspires.org), [Java FTC SDK API Documentation](https://javadoc.io/doc/org.firstinspires.ftc), and [FTC Game Information](https://ftc.game/).
 * Self inspection changes:
   * List both the Driver Station Name and Robot Controller Name when inspecting the Driver Station.
   * Report if the team number portion of the device names do not match.
@@ -445,23 +445,23 @@ This is a bug fix only release to address the following four issues.
   * To learn how to use the new `IMU` interface, see https://ftc-docs.firstinspires.org/programming_resources/imu/imu.html. The `SensorIMU` Blocks sample was also updated to use the new `IMU` interface, and the following Java samples were added:
     * `SensorIMUOrthogonal`
       * Use this sample if your REV Hub is mounted so that it is parallel or perpendicular to the
-        bottom of your robot.
+        bottom of your robotContainer.
     * `SensorIMUNonOrthogonal`
-      * Use this sample if your REV Hub is mounted to your robot in any other orientation
+      * Use this sample if your REV Hub is mounted to your robotContainer in any other orientation
     * `ConceptExploringIMUOrientations`
       * This OpMode is a tool to help you understand how the orthogonal orientations work, and
-        which one applies to your robot.
+        which one applies to your robotContainer.
   * The BHI260AP IMU can only be accessed via the new `IMU` interface. The BNO055 IMU can be
     programmed using the new `IMU` interface, or you can continue to program it using the old `BNO055IMU`
     interface. If you want to be able to quickly switch to a new Control Hub that may contain the
     BHI260AP IMU, you should migrate your code to use the new `IMU` interface.
   * Unlike the old `BNO055IMU` interface, which only worked correctly when the REV Hub was mounted flat
-    on your robot, the `IMU` interface allows you to specify the orientation of the REV Hub on your
-    robot. It will account for this, and give you your orientation in a Robot Coordinate System,
+    on your robotContainer, the `IMU` interface allows you to specify the orientation of the REV Hub on your
+    robotContainer. It will account for this, and give you your orientation in a Robot Coordinate System,
     instead of a special coordinate system for the REV Hub. As a result, your pitch and yaw will be
-    0 when your *robot* is level, instead of when the REV Hub is level, which will result in much
+    0 when your *robotContainer* is level, instead of when the REV Hub is level, which will result in much
     more reliable orientation angle values for most mounting orientations.
-  * Because of the new robot-centric coordinate system, the pitch and roll angles returned by the
+  * Because of the new robotContainer-centric coordinate system, the pitch and roll angles returned by the
     `IMU` interface will be different from the ones returned by the `BNO055IMU` interface. When you are
     migrating your code, pay careful attention to the documentation.
   * If you have calibrated your BNO055, you can provide that calibration data to the new `IMU`
@@ -521,11 +521,11 @@ This is a bug fix only release to address the following four issues.
 ### Enhancements
 * Uncaught exceptions in OpModes no longer require a Restart Robot
   * A blue screen popping up with a stacktrace is not an SDK error; this replaces the red text in the telemetry area.
-  * Since the very first SDK release, OpMode crashes have put the robot into "EMERGENCY STOP" state, only showing the first line of the exception, and requiring the user to press "Restart Robot" to continue
+  * Since the very first SDK release, OpMode crashes have put the robotContainer into "EMERGENCY STOP" state, only showing the first line of the exception, and requiring the user to press "Restart Robot" to continue
   * Exceptions during an OpMode now open a popup window with the same color scheme as the log viewer, containing 15 lines of the exception stacktrace to allow easily tracing down the offending line without needing to connect to view logs over ADB or scroll through large amounts of logs in the log viewer.
   * The exception text in the popup window is both zoomable and scrollable just like a webpage.
   * Pressing the "OK" button in the popup window will return to the main screen of the Driver Station and allow an OpMode to be run again immediately, without the need to perform a "Restart Robot"
-* Adds new Java sample to demonstrate using a hardware class to abstract robot actuators, and share them across multiple OpModes.
+* Adds new Java sample to demonstrate using a hardware class to abstract robotContainer actuators, and share them across multiple OpModes.
   * Sample OpMode is [ConceptExternalHardwareClass.java](FtcRobotController/src/main/java/org/firstinspires/ftc/robotcontroller/external/samples/ConceptExternalHardwareClass.java)
   * Abstracted hardware class is [RobotHardware.java](FtcRobotController/src/main/java/org/firstinspires/ftc/robotcontroller/external/samples/RobotHardware.java)
 * Updates RobotAutoDriveByGyro_Linear Java sample to use REV Control/Expansion hub IMU.
@@ -641,14 +641,14 @@ This is a bug fix only release to address the following four issues.
     * The LED ring on the Xbox360 gamepad and the RGB LED bar on the PS4 gamepad is used to indicate the driver position the gamepad is bound to.
     * The rumble motors on the Xbox360, PS4, and Etpark gamepads can be controlled from OpModes.
     * The 2-point touchpad on the PS4 gamepad can be read from OpModes.
-    * The "back" and "guide" buttons on the gamepad can now be safely bound to robot controls (Previously, on many devices, Android would intercept these buttons as home button presses and close the app).
+    * The "back" and "guide" buttons on the gamepad can now be safely bound to robotContainer controls (Previously, on many devices, Android would intercept these buttons as home button presses and close the app).
     * Advanced Gamepad features are enabled by default, but may be disabled through the settings menu in order to revert to gamepad support provided natively by Android.
 * Improves accuracy of ping measurement.
-    * Fixes issue where the ping time showed as being higher than reality when initially connecting to or restarting the robot.
+    * Fixes issue where the ping time showed as being higher than reality when initially connecting to or restarting the robotContainer.
     * To see the full improvement, you must update both the Robot Controller and Driver Station apps.
 * Updates samples located at [/FtcRobotController/src/main/java/org/firstinspires/ftc/robotcontroller/external/samples](FtcRobotController/src/main/java/org/firstinspires/ftc/robotcontroller/external/samples).
     * Added ConceptGamepadRumble and ConceptGamepadTouchpad samples to illustrate the use of these new gampad capabilities.
-    * Condensed existing Vuforia samples into just 2 samples (ConceptVuforiaFieldNavigation & ConceptVuforiaFieldNavigationWebcam) showing how to determine the robot's location on the field using Vuforia. These both use the current season's Target images.
+    * Condensed existing Vuforia samples into just 2 samples (ConceptVuforiaFieldNavigation & ConceptVuforiaFieldNavigationWebcam) showing how to determine the robotContainer's location on the field using Vuforia. These both use the current season's Target images.
     * Added ConceptVuforiaDriveToTargetWebcam to illustrate an easy way to drive directly to any visible Vuforia target.
 * Makes many improvements to the warning system and individual warnings.
     * Warnings are now much more spaced out, so that they are easier to read.
@@ -703,7 +703,7 @@ This is a bug fix only release to address the following four issues.
 * Fixes issue where a Control Hub with a configured USB-connected Expansion Hub would not work if the Expansion Hub was missing at startup
 * Fixes potential issues caused by having mismatched Control/Expansion Hub firmware versions
 * Fixes [ftc_app issue 673](https://github.com/ftctechnh/ftc_app/issues/673) Latest matchlog is being deleted instead of old ones by RobotLog
-* Fixes ConceptVuforiaUltimateGoalNavigationWebcam sample opmode by correctly orienting camera on robot.
+* Fixes ConceptVuforiaUltimateGoalNavigationWebcam sample opmode by correctly orienting camera on robotContainer.
 * Fixes issue where logcat would be spammed with InterruptedExceptions when stop is requested from the Driver Station (this behavior was accidentally introduced in v5.3). This change has no impact on functionality.
 * Fixes issue where the blocks editor fails to load if the name of any TeleOp opmode contains an apostrophe.
 
@@ -918,11 +918,11 @@ Version 5.5 requires Android Studio 4.0 or later.
 
 ## Version 5.4 (20200108-101156)
 * Fixes [SkyStone issue #88](https://github.com/FIRST-Tech-Challenge/SkyStone/issues/88)
-* Adds an inspection item that notes when a robot controller (Control Hub) is using the factory default password.
+* Adds an inspection item that notes when a robotContainer controller (Control Hub) is using the factory default password.
 * Fixes [SkyStone issue #61](https://github.com/FIRST-Tech-Challenge/SkyStone/issues/61)
 * Fixes [SkyStone issue #142](https://github.com/FIRST-Tech-Challenge/SkyStone/issues/142)
 * Fixes [ftc_app issue #417](https://github.com/ftctechnh/ftc_app/issues/417) by adding more current and voltage monitoring capabilities for REV Hubs.
-* Fixes [a crash sometimes caused by OnBotJava activity](https://ftcforum.firstinspires.org/forum/ftc-technology/76217-onbotjava-crashes-robot-controller)
+* Fixes [a crash sometimes caused by OnBotJava activity](https://ftcforum.firstinspires.org/forum/ftc-technology/76217-onbotjava-crashes-robotContainer-controller)
 * Improves OnBotJava autosave functionality [ftc_app #738](https://github.com/ftctechnh/ftc_app/issues/738)
 * Fixes system responsiveness issue when an Expansion Hub is disconnected
 * Fixes issue where IMU initialization could prevent OpModes from stopping
@@ -941,7 +941,7 @@ Version 5.5 requires Android Studio 4.0 or later.
         * Specifies that this condition requires a Robot Restart before the hub can be used.
         * The hub light will now accurately reflect this state
     * Improves logging and reduces log spam during these conditions
-* Syncs the Control Hub time and timezone to a connected web browser programming the robot, if a Driver Station is not available.
+* Syncs the Control Hub time and timezone to a connected web browser programming the robotContainer, if a Driver Station is not available.
 * Adds bulk read functionality for REV Hubs
   * A bulk caching mode must be set at the Hub level with `LynxModule#setBulkCachingMode()`. This applies to all relevant SDK hardware classes that reference that Hub.
   * The following following Hub bulk caching modes are available:
@@ -1014,7 +1014,7 @@ Version 5.5 requires Android Studio 4.0 or later.
 * Adds many Star Wars sounds to RobotController resources.
 * Added Skystone Sounds Chooser Sample Program.
 * Switches out startup, connect chimes, and error/warning sounds for Star Wars sounds
-* Updates OnBot Java to use a WebSocket for communication with the robot
+* Updates OnBot Java to use a WebSocket for communication with the robotContainer
     * The OnBot Java page no longer has to do a full refresh when a user switches from editing one file to another
 
 Known issues:
@@ -1285,7 +1285,7 @@ Known issues:
 
 This version of the software provides support for the REV Robotics Expansion Hub.  This version also includes improvements in the USB communication layer in an effort to enhance system resiliency.  If you were using a 2.x version of the software previously, updating to version 3.1 requires that you also update your Driver Station software in addition to updating the Robot Controller software.
 
-Also note that in version 3.10 software, the setMaxSpeed and getMaxSpeed methods are no longer available (not deprecated, they have been removed from the SDK). Also note that the new 3.x software incorporates motor profiles that a user can select as he/she configures the robot.
+Also note that in version 3.10 software, the setMaxSpeed and getMaxSpeed methods are no longer available (not deprecated, they have been removed from the SDK). Also note that the new 3.x software incorporates motor profiles that a user can select as he/she configures the robotContainer.
 
 Changes include:
  * Blocks changes
@@ -1301,8 +1301,8 @@ Additional Notes Regarding Version 3.00 (built on 17.04.13)
 
 In addition to the release changes listed below (see section labeled "Version 3.00 (built on 17.04.013)"), version 3.00 has the following important changes:
 
-1. Version 3.00 software uses a new version of the FTC Robocol (robot protocol).  If you upgrade to v3.0 on the Robot Controller and/or Android Studio side, you must also upgrade the Driver Station software to match the new Robocol.
-2. Version 3.00 software removes the setMaxSpeed and getMaxSpeed methods from the DcMotor class.  If you have an OpMode that formerly used these methods, you will need to remove the references/calls to these methods.  Instead, v3.0 provides the max speed information through the use of motor profiles that are selected by the user during robot configuration.
+1. Version 3.00 software uses a new version of the FTC Robocol (robotContainer protocol).  If you upgrade to v3.0 on the Robot Controller and/or Android Studio side, you must also upgrade the Driver Station software to match the new Robocol.
+2. Version 3.00 software removes the setMaxSpeed and getMaxSpeed methods from the DcMotor class.  If you have an OpMode that formerly used these methods, you will need to remove the references/calls to these methods.  Instead, v3.0 provides the max speed information through the use of motor profiles that are selected by the user during robotContainer configuration.
 3. Version 3.00 software currently does not have a mechanism to disable extra i2c sensors.  We hope to re-introduce this function with a release in the near future.
 
 **************************************************************************************
@@ -1433,7 +1433,7 @@ Changes include:
      - Added support for OpMode flavor (“Autonomous” or “TeleOp”) and group.
   * Changes to Samples to prevent tutorial issues.
   * Incorporated suggested changes from public pull 216 (“Replace .. paths”).
-  * Remove Servo Glitches when robot stopped.
+  * Remove Servo Glitches when robotContainer stopped.
   * if user hits “Cancels” when editing a configuration file, clears the unsaved changes and reverts to original unmodified configuration.
   * Added log info to help diagnose why the Robot Controller app was terminated (for example, by watch dog function).
   * Added ability to transfer log from the controller.
@@ -1496,7 +1496,7 @@ Changes include:
     - support for LED.
     - support for color sensor.
     - support for CRServo
-    - prompt user to configure robot before using programming mode.
+    - prompt user to configure robotContainer before using programming mode.
  * Provides ability to disable audio cues.
  * various bug fixes and improvements.
 
@@ -1514,17 +1514,17 @@ Changes include:
  * Some changes have been made (new methods added) on how a user can access items from the hardware map.
  * Users can now set the zero power behavior for a DC motor so that the motor will brake or float when power is zero.
  * Prototype Blockly Programming Mode has been added to FTC Robot Controller.  Users can place the Robot Controller into this mode, and then use a device (such as a laptop) that has a Javascript enabled browser to write Blockly-based OpModes directly onto the Robot Controller.
- * Users can now configure the robot remotely through the FTC Driver Station app.
+ * Users can now configure the robotContainer remotely through the FTC Driver Station app.
  * Android Studio project supports Android Studio 2.1.x and compile SDK Version 23 (Marshmallow).
  * Vuforia Computer Vision SDK integrated into FTC SDK.  Users can use sample vision targets to get localization information on a standard FTC field.
  * Project structure has been reorganized so that there is now a TeamCode package that users can use to place their local/custom OpModes into this package.
  * Inspection function has been integrated into the FTC Robot Controller and Driver Station Apps (Thanks Team HazMat… 9277 & 10650!).
  * Audio cues have been incorporated into FTC SDK.
- * Swap mechanism added to FTC Robot Controller configuration activity.  For example, if you have two motor controllers on a robot, and you misidentified them in your configuration file, you can use the Swap button to swap the devices within the configuration file (so you do not have to manually re-enter in the configuration info for the two devices).
- * Fix mechanism added to all user to replace an electronic module easily.  For example, suppose a servo controller dies on your robot. You replace the broken module with a new module, which has a different serial number from the original servo controller.  You can use the Fix button to automatically reconfigure your configuration file to use the serial number of the new module.
+ * Swap mechanism added to FTC Robot Controller configuration activity.  For example, if you have two motor controllers on a robotContainer, and you misidentified them in your configuration file, you can use the Swap button to swap the devices within the configuration file (so you do not have to manually re-enter in the configuration info for the two devices).
+ * Fix mechanism added to all user to replace an electronic module easily.  For example, suppose a servo controller dies on your robotContainer. You replace the broken module with a new module, which has a different serial number from the original servo controller.  You can use the Fix button to automatically reconfigure your configuration file to use the serial number of the new module.
  * Improvements made to fix resiliency and responsiveness of the system.
  * For LinearOpMode the user now must for a telemetry.update() to update the telemetry data on the driver station.  This update() mechanism ensures that the driver station gets the updated data properly and at the same time.
- * The Auto Configure function of the Robot Controller is now template based.  If there is a commonly used robot configuration, a template can be created so that the Auto Configure mechanism can be used to quickly configure a robot of this type.
+ * The Auto Configure function of the Robot Controller is now template based.  If there is a commonly used robotContainer configuration, a template can be created so that the Auto Configure mechanism can be used to quickly configure a robotContainer of this type.
  * The logic to detect a runaway OpMode (both in the LinearOpMode and OpMode types) and to abort the run, then auto recover has been improved/implemented.
  * Fix has been incorporated so that Logitech F310 gamepad mappings will be correct for Marshmallow users.
 
@@ -1550,7 +1550,7 @@ Changes include:
     - For legacy module (NXT compatible), user no longer has to toggle between read and write modes when reading from or writing to a legacy device.
  * Changes made to enhance reliability/robustness during ESD event.
  * Changes made to make code thread safe.
- * Debug keystore added so that user-generated robot controller APKs will all use the same signed key (to avoid conflicts if a team has multiple developer laptops for example).
+ * Debug keystore added so that user-generated robotContainer controller APKs will all use the same signed key (to avoid conflicts if a team has multiple developer laptops for example).
  * Firmware version information for Modern Robotics modules are now logged.
  * Changes made to improve USB comm reliability and robustness.
  * Added support for voltage indicator for legacy (NXT-compatible) motor controllers.
@@ -1560,7 +1560,7 @@ Changes include:
  * Driver Station UI modified to display lowest measured voltage below current voltage (12V battery).
  * Driver Station UI modified to have color background for current voltage (green=good, yellow=caution, red=danger, extremely low voltage).
  * javadoc improved (edits and additional classes).
- * Added app build time to About activity for driver station and robot controller apps.
+ * Added app build time to About activity for driver station and robotContainer controller apps.
  * Display local IP addresses on Driver Station About activity.
  * Added I2cDeviceSynchImpl.
  * Added I2cDeviceSync interface.
@@ -1576,7 +1576,7 @@ Changes include:
  * Improved battery checker feature so that voltage values get refreshed regularly (every 250 msec) on Driver Station (DS) user interface.
  * Improved software so that Robot Controller (RC) is much more resilient and “self-healing” to USB disconnects:
     - If user attempts to start/restart RC with one or more module missing, it will display a warning but still start up.
-    - When running an OpMode, if one or more modules gets disconnected, the RC & DS will display warnings,and robot will keep on working in spite of the missing module(s).
+    - When running an OpMode, if one or more modules gets disconnected, the RC & DS will display warnings,and robotContainer will keep on working in spite of the missing module(s).
     - If a disconnected module gets physically reconnected the RC will auto detect the module and the user will regain control of the recently connected module.
     - Warning messages are more helpful (identifies the type of module that’s missing plus its USB serial number).
  * Code changes to fix the null gamepad reference when users try to reference the gamepads in the init() portion of their OpMode.
@@ -1604,7 +1604,7 @@ Changes include:
  * added formatting variants to DbgLog and RobotLog APIs
  * code modified to allow for a long list of OpMode names.
  * changes to improve thread safety of RobocolDatagramSocket
- * Fix for "missing hardware leaves robot controller disconnected from driver station" error
+ * Fix for "missing hardware leaves robotContainer controller disconnected from driver station" error
  * fix for "fast tapping of Init/Start causes problems" (toast is now only instantiated on UI thread).
  * added some log statements for thread life cycle.
  * moved gamepad reset logic inside of initActiveOpMode() for robustness
@@ -1664,7 +1664,7 @@ Changes include:
 
  * Added support for Legacy Matrix 9.6V motor/servo controller.
  * Cleaned up build.gradle file.
- * Minor UI and bug fixes for driver station and robot controller apps.
+ * Minor UI and bug fixes for driver station and robotContainer controller apps.
  * Throws error if Ultrasonic sensor (NXT) is not configured for legacy module port 4 or 5.
 
 
