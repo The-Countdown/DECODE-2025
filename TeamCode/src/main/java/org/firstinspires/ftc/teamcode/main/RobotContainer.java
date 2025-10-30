@@ -61,6 +61,7 @@ import java.util.Map;
  * approach to managing complex robotic systems.
  */
 public class RobotContainer {
+    public static boolean completedAuto = false;
     public OpMode opMode;
     public HardwareMap hardwareMap;
     public Telemetry telemetry;
@@ -251,8 +252,6 @@ public class RobotContainer {
         RobotContainer.HardwareDevices.imu.resetYaw();
         RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU();
         this.drivetrain.setTargets(Constants.Swerve.STOP_FORMATION, Constants.Swerve.NO_POWER);
-        this.telemetry.addLine("Auto Initialized");
-        this.telemetry.update();
         this.pathPlanner = new PathPlanner(this.telemetry, this);
         HardwareDevices.allHubs = hardwareMap.getAll(LynxModule.class);
         HardwareDevices.controlHub = hardwareMap.get(LynxModule.class, "Control Hub");

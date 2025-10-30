@@ -22,18 +22,17 @@ public class TeleOp extends OpMode {
 
     @Override
     public void init() {
-        Object temp = blackboard.getOrDefault("robot", new RobotContainer(this));
-        robotContainer = temp;
-        if (robotContainer == null) {
-            robotContainer = new RobotContainer(this);
+        robotContainer = (RobotContainer) blackboard.getOrDefault("robot", new RobotContainer(this));
+        if (robotContainer.completedAuto == false) {
             robotContainer.init();
-            crasher.init();
+            robotContainer.telemetry.addData("New Robot", "Created New robot");
+            // crasher.init();
         }
     }
 
     @Override
     public void init_loop() {
-        robotContainer.refreshData();
+        // robotContainer.refreshData();
         robotContainer.allIndicatorLights.rainbow();
     }
 
