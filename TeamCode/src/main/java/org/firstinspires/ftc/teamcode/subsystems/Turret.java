@@ -53,8 +53,14 @@ public class Turret extends RobotContainer.HardwareDevices {
     }
 
     public class Flywheel {
+        double targetVelocity = 0;
         public void setTargetVelocity(double power) {
-            flyWheelMotors.setVelocity(Constants.Turret.FLYWHEEL_MAX_VELOCITY * power);
+            targetVelocity = Constants.Turret.FLYWHEEL_MAX_VELOCITY * power;
+            flyWheelMotors.setVelocity(targetVelocity);
+        }
+
+        public boolean atTargetVelocity() {
+            return flyWheelMotors.getAverageVelocity() - targetVelocity < 100;
         }
     }
 

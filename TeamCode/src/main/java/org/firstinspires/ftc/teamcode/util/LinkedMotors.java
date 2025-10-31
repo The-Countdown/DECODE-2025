@@ -35,6 +35,20 @@ public class LinkedMotors {
         }
     }
 
+    public double getVelocity() {
+        return masterMotor.getVelocity();
+    }
+
+    public double getAverageVelocity() {
+        double totalVelocity;
+        totalVelocity = masterMotor.getVelocity();
+        for (DcMotorImplEx slaveMotor : slaveMotors) {
+            totalVelocity += slaveMotor.getVelocity();
+        }
+        int motorCount = 1 + slaveMotors.size();
+        return totalVelocity / motorCount;
+    }
+
     // Get the power output of only the master motor.
     public double getPower() {
         return masterMotor.getPower();
