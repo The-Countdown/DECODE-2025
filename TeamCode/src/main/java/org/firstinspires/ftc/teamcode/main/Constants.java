@@ -27,10 +27,10 @@ public class Constants {
         }
 
         public static Pose2D GOAL_POSE =
-                Status.alliance == ALLIANCE.BLUE ?
-                        new Pose2D(DistanceUnit.INCH, 66, -60, AngleUnit.DEGREES, -45) :
-                        Status.alliance == ALLIANCE.RED ?
-                                new Pose2D(DistanceUnit.INCH, 66, 60, AngleUnit.DEGREES, 45) :
+                Status.alliance == ALLIANCE.RED ?
+                        new Pose2D(DistanceUnit.INCH, 66, -70, AngleUnit.DEGREES, -45) :
+                        Status.alliance == ALLIANCE.BLUE ?
+                                new Pose2D(DistanceUnit.INCH, 66, 70, AngleUnit.DEGREES, 45) :
                                 new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
 
         public static Pose2D ORIGIN = new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
@@ -291,13 +291,13 @@ public class Constants {
     @Config
     public static class Spindexer {
         public static int NUM_SLOTS = 3;
-        public static double ANGLE_OFFSET = 30;
+        public static double ANGLE_OFFSET = 35;
         public static double[] TRANSFER_SLOT_ANGLES = {179, 60, -60};
         public static double [] INTAKE_SLOT_ANGLES = {0, -120, 120};
-        public static double KP = 0.015;
+        public static double KP = 0.01;
         public static double KI = 0;
-        public static double KD = 0.0001;
-        public static double KF = 0;
+        public static double KD = 0.01;
+        public static double KF = 0.02;
     }
 
     @Config

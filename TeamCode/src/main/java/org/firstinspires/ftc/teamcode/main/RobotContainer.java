@@ -260,6 +260,7 @@ public class RobotContainer {
         }
         telemetry.setMsTransmissionInterval(Constants.System.TELEMETRY_UPDATE_INTERVAL_MS);
         this.drivetrain.setTargets(Constants.Swerve.STOP_FORMATION, Constants.Swerve.NO_POWER);
+        transfer.flapDown();
     }
 
     public void start(OpMode opmode) {

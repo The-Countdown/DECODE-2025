@@ -15,6 +15,7 @@ public class Turret extends RobotContainer.HardwareDevices {
     private final LinkedMotors flyWheelMotors;
     private final LinkedServos turretServos;
     public final ServoImplEx hoodServo;
+    private double targetPosition = 0;
 
     public Turret(RobotContainer robotContainer, LinkedMotors flyWheelMotors, ServoImplEx hoodServo, LinkedServos turretServos) {
         this.robotContainer = robotContainer;
@@ -26,13 +27,13 @@ public class Turret extends RobotContainer.HardwareDevices {
     // TODO: Limit angle of rotation, and have that be configurable in constants
 
     public void setTargetPosition(double position) {
+        targetPosition = position;
         turretServos.setPosition(HelperFunctions.clamp(((position + 1) / 2), Constants.Turret.TURRET_LIMIT_MIN_SERVO, Constants.Turret.TURRET_LIMIT_MAX_SERVO));
     }
 
     public void setTargetRaw(double position) {
         turretServos.setPosition(position);
     }
-
     public void setTargetAngle(double angle) {
         turretServos.setPosition((HelperFunctions.clamp(angle > 355 || angle < 0 ? (angle + 355) % 355 : angle, Constants.Turret.TURRET_LIMIT_MIN_ANGLE, Constants.Turret.TURRET_LIMIT_MAX_ANGLE)) / 355);
     }
@@ -43,13 +44,17 @@ public class Turret extends RobotContainer.HardwareDevices {
 
 
     public void pointAtGoal() {
-        double xDiff = Constants.Game.GOAL_POSE.getX(DistanceUnit.INCH) - Status.currentPose.getX(DistanceUnit.INCH);
-        double yDiff = Constants.Game.GOAL_POSE.getY(DistanceUnit.INCH) - Status.currentPose.getY(DistanceUnit.INCH);
+        double xDiff = Constants.Game.GOAL_POSE.getX(DistanceUnit.CM) - Status.currentPose.getX(DistanceUnit.CM);
+        double yDiff = Constants.Game.GOAL_POSE.getY(DistanceUnit.CM) - Status.currentPose.getY(DistanceUnit.CM);
         double angleToFaceGoal = Math.toDegrees(Math.atan2(yDiff, xDiff)) - Status.currentHeading;
         if (!Double.isNaN(angleToFaceGoal)) {
             setTargetAngle(angleToFaceGoal);
             robotContainer.telemetry.addData("Angle To Face Goal", angleToFaceGoal);
         }
+    }
+
+    public boolean atTarget() {
+        return Math.abs(getPosition() - targetPosition) < 10;
     }
 
     public class Flywheel {

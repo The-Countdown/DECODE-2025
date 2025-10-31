@@ -26,8 +26,10 @@ public class Auto extends OpMode {
         robotContainer.init();
 //        RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU();
         blackboard.put("pose", Status.currentPose);
+        robotContainer.telemetry.addData("Alliance Color", Status.alliance == Constants.Game.ALLIANCE.BLUE ? "BLUE" : "RED");
+        robotContainer.telemetry.update();
 
-        robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Constants.Robot.startingX + 60, Constants.Robot.startingY - 30, AngleUnit.DEGREES, 0));
+        robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Constants.Robot.startingX + 70, Constants.Robot.startingY - 30, AngleUnit.DEGREES, 0));
     }
 
     @Override
@@ -40,20 +42,20 @@ public class Auto extends OpMode {
         robotContainer.localizationUpdater.start();
         RobotContainer.HardwareDevices.pinpoint.setPosition(Constants.Robot.startingPose);
 
-//        robotContainer.turret.pointAtGoal();
-//        robotContainer.turret.flywheel.setTargetVelocity(0.6);
-//        robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[1]);
-//        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.goToNextTransferSlot(), 1000);
-//        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapUp(), 2000);
-//        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapDown(), 2200);
-//        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.goToNextTransferSlot(), 3000);
-//        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapUp(), 4000);
-//        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapDown(), 4200);
-//        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.goToNextTransferSlot(), 5000);
-//        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapUp(), 6000);
-//        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapDown(), 6200);
-//        robotContainer.delayedActionManager.schedule(() -> robotContainer.turret.flywheel.setTargetVelocity(0), 6300);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.driveToPose(0), 1000);
+        robotContainer.turret.pointAtGoal();
+        robotContainer.turret.flywheel.setTargetVelocity(0.6);
+        robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[1]);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.goToNextTransferSlot(), 1000);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapUp(), 2000);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapDown(), 2200);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.goToNextTransferSlot(), 3000);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapUp(), 4000);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapDown(), 4200);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.goToNextTransferSlot(), 5000);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapUp(), 6000);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapDown(), 6200);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.turret.flywheel.setTargetVelocity(0), 6300);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.driveToPose(0), 10000);
         robotContainer.telemetry.addData("Pose 1", Status.currentPose);
     }
 

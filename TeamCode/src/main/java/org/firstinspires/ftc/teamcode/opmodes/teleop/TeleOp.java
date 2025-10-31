@@ -21,6 +21,7 @@ public class TeleOp extends OpMode {
     private final GamepadWrapper.ButtonReader transferConditionButton = new GamepadWrapper.ButtonReader();
     private final ElapsedTime spindexAccel = new ElapsedTime();
     private double lastError = 0;
+    private double lastTransfer = -1;
 
     @Override
     public void init() {
@@ -28,6 +29,8 @@ public class TeleOp extends OpMode {
         robotContainer.init();
         RobotContainer.HardwareDevices.pinpoint.setPosition((Pose2D) blackboard.getOrDefault("pose", new Pose2D(DistanceUnit.CM, 0, 0, AngleUnit.DEGREES, 0)));
         robotContainer.telemetry.addData("hello: ", blackboard.getOrDefault("pose", new Pose2D(DistanceUnit.CM, 0, 0, AngleUnit.DEGREES, 0)));
+        robotContainer.telemetry.addData("Alliance Color", Status.alliance == Constants.Game.ALLIANCE.BLUE ? "BLUE" : "RED");
+        robotContainer.telemetry.update();
     }
 
     @Override
@@ -83,7 +86,13 @@ public class TeleOp extends OpMode {
             Status.turretToggle = false;
         }
 
-        robotContainer.turret.flywheel.setTargetVelocity(Math.min(turretToggleButton.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, robotContainer.limelightLogic.useInterpolate()));
+        if (Status.manualControl) {
+            robotContainer.turret.flywheel.setTargetVelocity(turretToggleButton.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE);
+        } else if (!Status.intakeToggle) {
+            robotContainer.turret.flywheel.setTargetVelocity(Math.min(turretToggleButton.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, robotContainer.limelightLogic.useInterpolate()));
+        } else {
+            robotContainer.turret.flywheel.setTargetVelocity(0);
+        }
 
 //        turret turn -right stick X
         if (Status.manualControl) {
@@ -111,7 +120,7 @@ public class TeleOp extends OpMode {
             spindexAccel.reset();
         }
 
-        if (spindexerError > 2) {
+        if (spindexerError > 1) {
             if (spindexAccel.seconds() <= 1) {
                 robotContainer.spindexer.setPower(Math.min(robotContainer.spindexer.pidf.calculate() * spindexAccel.seconds(), 0.5));
             } else {
@@ -123,23 +132,26 @@ public class TeleOp extends OpMode {
         }
         lastError = spindexerError;
 
-//        if (robotContainer.gamepadEx1.ps.wasJustPressed()) {
-//            Status.manualControl = !Status.manualControl;
-//            if (Status.manualControl) {
-//                robotContainer.spindexer.setTargetAngle(Constants.Spindexer.INTAKE_SLOT_ANGLES[0]);
-//            }
-//        }
+        if (robotContainer.gamepadEx1.options.wasJustPressed()) {
+            Status.manualControl = !Status.manualControl;
+        }
 
         if (robotContainer.gamepadEx2.square.wasJustPressed()) {
             Status.slotColor[0] = Constants.Game.ARTIFACT_COLOR.PURPLE;
             Status.slotColor[1] = Constants.Game.ARTIFACT_COLOR.PURPLE;
             Status.slotColor[2] = Constants.Game.ARTIFACT_COLOR.PURPLE;
+            Status.intakeToggle = false;
+            Status.turretToggle = true;
+            robotContainer.spindexer.goToNextTransferSlot();
         }
 
         if (robotContainer.gamepadEx2.triangle.wasJustPressed()) {
             Status.slotColor[0] = Constants.Game.ARTIFACT_COLOR.NONE;
             Status.slotColor[1] = Constants.Game.ARTIFACT_COLOR.NONE;
             Status.slotColor[2] = Constants.Game.ARTIFACT_COLOR.NONE;
+            Status.intakeToggle = true;
+            Status.turretToggle = false;
+            robotContainer.spindexer.goToNextIntakeSlot();
         }
 
         //if all are none or unknown, turret toggle
@@ -153,22 +165,6 @@ public class TeleOp extends OpMode {
             RobotContainer.HardwareDevices.pinpoint.setPosY(botPose.getY(DistanceUnit.CM), DistanceUnit.CM);
         }
 
-//        robotContainer.spindexer.setPower(robotContainer.gamepadEx2.rightTriggerRaw() - robotContainer.gamepadEx2.leftTriggerRaw());
-
-        //transfer -right bumper
-//        if (robotContainer.gamepadEx2.leftBumper.wasJustPressed()) {
-//            robotContainer.transfer.setHighPower(1);
-//            robotContainer.transfer.flapUp();
-//            robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapDown(), Constants.Transfer.FLIP_TIME);
-//        } else if (robotContainer.gamepadEx2.leftBumper.wasJustReleased()) {
-//            robotContainer.transfer.setHighPower(0);
-//        }
-
-//        robotContainer.spindexer.setPower(robotContainer.gamepadEx1.leftTriggerRaw() - robotContainer.gamepadEx1.rightTriggerRaw());
-
-        //manual transfer top wheel -right trigger
-//        robotContainer.transfer.setHighPower(robotContainer.gamepadEx2.square.isPressed() ? -1 : 0);
-
         if (robotContainer.gamepadEx2.cross.wasJustPressed()) {
             Status.slotColor[robotContainer.spindexer.getCurrentTransferSlot()] = Constants.Game.ARTIFACT_COLOR.NONE;
             robotContainer.spindexer.goToNextTransferSlot();
@@ -180,10 +176,11 @@ public class TeleOp extends OpMode {
             robotContainer.transfer.flapDown();
         }
 
-        transferConditionButton.update((robotContainer.spindexer.getTargetAngle() == Constants.Spindexer.TRANSFER_SLOT_ANGLES[0] || robotContainer.spindexer.getTargetAngle() == Constants.Spindexer.TRANSFER_SLOT_ANGLES[1] || robotContainer.spindexer.getTargetAngle() == Constants.Spindexer.TRANSFER_SLOT_ANGLES[2]) && spindexerError < 6 && robotContainer.turret.flywheel.atTargetVelocity());
-        if (transferConditionButton.wasJustPressed()) {
+        transferConditionButton.update((robotContainer.spindexer.getTargetAngle() == Constants.Spindexer.TRANSFER_SLOT_ANGLES[0] || robotContainer.spindexer.getTargetAngle() == Constants.Spindexer.TRANSFER_SLOT_ANGLES[1] || robotContainer.spindexer.getTargetAngle() == Constants.Spindexer.TRANSFER_SLOT_ANGLES[2]) && spindexerError < 6 && robotContainer.turret.flywheel.atTargetVelocity() && !Status.intakeToggle);
+        if (transferConditionButton.wasJustPressed() && lastTransfer != robotContainer.spindexer.getTargetAngle() && robotContainer.turret.atTarget()) {
             robotContainer.transfer.flapUp();
             robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapDown(), Constants.Transfer.FLIP_TIME);
+            robotContainer.delayedActionManager.schedule(() -> lastTransfer = robotContainer.spindexer.getTargetAngle(), Constants.Transfer.FLIP_TIME * 5);
         }
 
         //TODO DA HOOD
