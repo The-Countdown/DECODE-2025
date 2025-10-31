@@ -2,10 +2,13 @@ package org.firstinspires.ftc.teamcode.opmodes.auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.LocalizationUpdater;
+import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 
@@ -14,38 +17,73 @@ public class Auto extends OpMode {
     private RobotContainer robotContainer;
     public static double CURRENT_LOOP_TIME_MS;
     public static double CURRENT_LOOP_TIME_AVG_MS;
+    private final ElapsedTime spindexAccel = new ElapsedTime();
+    private double lastError = 0;
 
     @Override
     public void init() {
         robotContainer = new RobotContainer(this);
         robotContainer.init();
+//        RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU();
         blackboard.put("pose", Status.currentPose);
-        blackboard.put("heading", Status.currentPose);
 
-        robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, 0, 100, AngleUnit.DEGREES, 300));
+        robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Constants.Robot.startingX + 60, Constants.Robot.startingY - 30, AngleUnit.DEGREES, 0));
     }
 
     @Override
     public void start() {
         Status.opModeIsActive = true;
         Status.lightsOn = true;
-        Status.isDrivingActive = true;
-
+        Status.isDrivingActive = false;
         robotContainer.start(this);
+        robotContainer.localizationUpdater = new LocalizationUpdater(robotContainer);
+        robotContainer.localizationUpdater.start();
+        RobotContainer.HardwareDevices.pinpoint.setPosition(Constants.Robot.startingPose);
 
-        robotContainer.turret.pointAtGoal();
-        robotContainer.turret.flywheel.setTargetVelocity(robotContainer.limelightLogic.useInterpolate());
-        robotContainer.pathPlanner.driveToPose(0);
+//        robotContainer.turret.pointAtGoal();
+//        robotContainer.turret.flywheel.setTargetVelocity(0.6);
+//        robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[1]);
+//        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.goToNextTransferSlot(), 1000);
+//        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapUp(), 2000);
+//        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapDown(), 2200);
+//        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.goToNextTransferSlot(), 3000);
+//        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapUp(), 4000);
+//        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapDown(), 4200);
+//        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.goToNextTransferSlot(), 5000);
+//        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapUp(), 6000);
+//        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapDown(), 6200);
+//        robotContainer.delayedActionManager.schedule(() -> robotContainer.turret.flywheel.setTargetVelocity(0), 6300);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.driveToPose(0), 1000);
+        robotContainer.telemetry.addData("Pose 1", Status.currentPose);
     }
 
     @Override
     public void loop() {
+        robotContainer.delayedActionManager.update();
+
+        double spindexerError = Math.abs(robotContainer.spindexer.pidf.getError());
+        // If the error changes by a lot in a short period of time reset the timer
+
+        if (Math.abs(lastError - spindexerError) > 50) {
+            spindexAccel.reset();
+        }
+
+        if (spindexerError > 2) {
+            if (spindexAccel.seconds() <= 1) {
+                robotContainer.spindexer.setPower(Math.min(robotContainer.spindexer.pidf.calculate() * spindexAccel.seconds(), 0.5));
+            } else {
+                robotContainer.spindexer.setPower(robotContainer.spindexer.pidf.calculate());
+            }
+        } else {
+            robotContainer.spindexer.setPower(0);
+        }
+        lastError = spindexerError;
+//        blackboard.put("pose", Status.currentPose);
     }
 
     @Override
     public void stop() {
         robotContainer.completedAuto = true;
         blackboard.put("pose", Status.currentPose);
-        blackboard.put("heading", Status.currentHeading);
     }
 }

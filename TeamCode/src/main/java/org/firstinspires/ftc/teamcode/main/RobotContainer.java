@@ -250,8 +250,7 @@ public class RobotContainer {
     public void init() {
         this.isRunning = true;
         RobotContainer.HardwareDevices.imu.resetYaw();
-        RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU();
-        this.drivetrain.setTargets(Constants.Swerve.STOP_FORMATION, Constants.Swerve.NO_POWER);
+//        RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU();
         this.pathPlanner = new PathPlanner(this.telemetry, this);
         HardwareDevices.allHubs = hardwareMap.getAll(LynxModule.class);
         HardwareDevices.controlHub = hardwareMap.get(LynxModule.class, "Control Hub");
@@ -260,6 +259,7 @@ public class RobotContainer {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }
         telemetry.setMsTransmissionInterval(Constants.System.TELEMETRY_UPDATE_INTERVAL_MS);
+        this.drivetrain.setTargets(Constants.Swerve.STOP_FORMATION, Constants.Swerve.NO_POWER);
     }
 
     public void start(OpMode opmode) {

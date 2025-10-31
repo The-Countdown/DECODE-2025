@@ -26,13 +26,14 @@ public class DelayedActionManager {
     }
 
     public synchronized void update() {
+        List<DelayedAction> actions = delayedActions;
         if (enabled) {
-            for (DelayedAction delayedAction : delayedActions) {
+            for (int i = 0; i < actions.toArray().length; i++) {
+                DelayedAction delayedAction = delayedActions.get(i);
                 if (delayedAction.shouldExecute()) {
                     delayedAction.execute();
                 }
             }
-            delayedActions.removeIf(DelayedAction::isExecuted);
         }
     }
 

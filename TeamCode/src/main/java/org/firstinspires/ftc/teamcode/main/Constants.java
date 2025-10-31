@@ -28,9 +28,9 @@ public class Constants {
 
         public static Pose2D GOAL_POSE =
                 Status.alliance == ALLIANCE.BLUE ?
-                        new Pose2D(DistanceUnit.INCH, 72, -72, AngleUnit.DEGREES, -45) :
+                        new Pose2D(DistanceUnit.INCH, 66, -60, AngleUnit.DEGREES, -45) :
                         Status.alliance == ALLIANCE.RED ?
-                                new Pose2D(DistanceUnit.INCH, 72, 72, AngleUnit.DEGREES, 45) :
+                                new Pose2D(DistanceUnit.INCH, 66, 60, AngleUnit.DEGREES, 45) :
                                 new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
 
         public static Pose2D ORIGIN = new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
@@ -58,7 +58,7 @@ public class Constants {
                 )
         );
 
-        public static double startingX = 0, startingY = 0, startingHeading = 90;
+        public static double startingX = -152.5, startingY = -37, startingHeading = -90;
         public static Pose2D startingPose = new Pose2D(DistanceUnit.CM,startingX,startingY, AngleUnit.DEGREES,startingHeading);
 
         public static final int

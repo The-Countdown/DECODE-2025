@@ -46,10 +46,10 @@ public class PathPlanner {
             Status.targetPose = poses.get(index);
             robotContainer.telemetry.addData("Current Position X: ", Status.currentPose.getX(DistanceUnit.CM));
             robotContainer.telemetry.addData("Current Position Y: ", Status.currentPose.getY(DistanceUnit.CM));
-            robotContainer.telemetry.update();
 
             robotContainer.telemetry.addData("diff X", Status.targetPose.getX(DistanceUnit.CM) - Status.currentPose.getX(DistanceUnit.CM));
             robotContainer.telemetry.addData("diff Y", Status.targetPose.getY(DistanceUnit.CM) - Status.currentPose.getY(DistanceUnit.CM));
+            robotContainer.telemetry.update();
 
             // Know when the robotContainer is there
             if (Status.currentPose.getX(DistanceUnit.CM) + tolerance >= Status.targetPose.getX(DistanceUnit.CM) && Status.currentPose.getX(DistanceUnit.CM) - tolerance <= Status.targetPose.getX(DistanceUnit.CM)) { // Check X
@@ -61,15 +61,16 @@ public class PathPlanner {
             double deltaX = Status.targetPose.getX(DistanceUnit.CM) - Status.currentPose.getX(DistanceUnit.CM);
             double deltaY = Status.targetPose.getY(DistanceUnit.CM) - Status.currentPose.getY(DistanceUnit.CM);
 
-            double angleToTarget = -Math.toDegrees(Math.atan2(deltaY, deltaX)) + 90;
+//            double angleToTarget = -Math.toDegrees(Math.atan2(deltaY, deltaX)) + 90;
+            double angleToTarget = -Math.toDegrees(Math.atan2(deltaY, deltaX));
             double[] angles = {angleToTarget, angleToTarget, angleToTarget, angleToTarget};
 
             double[] powers;
             // Slow down if close to the target.
             if (deltaX > 5 || deltaY > 5) {
-                powers = new double[]{0.5, 0.5, 0.5, 0.5};
+                powers = new double[]{0.1, 0.1, 0.1, 0.1};
             } else {
-                powers = new double[]{0.2, 0.2, 0.2, 0.2};
+                powers = new double[]{0.1, 0.1, 0.1, 0.1};
             }
 
             robotContainer.drivetrain.setTargets(angles, powers);

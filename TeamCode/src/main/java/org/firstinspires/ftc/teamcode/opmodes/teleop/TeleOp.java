@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
+import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "TeleOp")
 public class TeleOp extends OpMode {
@@ -25,8 +26,8 @@ public class TeleOp extends OpMode {
     public void init() {
         robotContainer = new RobotContainer(this);
         robotContainer.init();
-        Status.currentPose = (Pose2D) blackboard.getOrDefault("pose", new Pose2D(DistanceUnit.CM, 0, 0, AngleUnit.DEGREES, 0));
-        Status.currentHeading = (Double) blackboard.getOrDefault("heading", new Double(0));
+        RobotContainer.HardwareDevices.pinpoint.setPosition((Pose2D) blackboard.getOrDefault("pose", new Pose2D(DistanceUnit.CM, 0, 0, AngleUnit.DEGREES, 0)));
+        robotContainer.telemetry.addData("hello: ", blackboard.getOrDefault("pose", new Pose2D(DistanceUnit.CM, 0, 0, AngleUnit.DEGREES, 0)));
     }
 
     @Override
@@ -85,17 +86,19 @@ public class TeleOp extends OpMode {
         robotContainer.turret.flywheel.setTargetVelocity(Math.min(turretToggleButton.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, robotContainer.limelightLogic.useInterpolate()));
 
 //        turret turn -right stick X
-//        turretPos -= robotContainer.gamepadEx2.rightStickX() != 0 ? (Constants.Turret.TURRET_SPEED_FACTOR * CURRENT_LOOP_TIME_MS) * Math.pow(robotContainer.gamepadEx2.rightStickX(), 3) : 0;
-//        turretPos = HelperFunctions.clamp(turretPos, Constants.Turret.TURRET_LIMIT_MIN, Constants.Turret.TURRET_LIMIT_MAX);
-//        robotContainer.turret.setTargetPosition(turretPos);
+        if (Status.manualControl) {
+            turretPos -= robotContainer.gamepadEx2.rightStickX() != 0 ? (Constants.Turret.TURRET_SPEED_FACTOR * CURRENT_LOOP_TIME_MS) * Math.pow(robotContainer.gamepadEx2.rightStickX(), 3) : 0;
+            turretPos = HelperFunctions.clamp(turretPos, Constants.Turret.TURRET_LIMIT_MIN, Constants.Turret.TURRET_LIMIT_MAX);
+            robotContainer.turret.setTargetPosition(turretPos);
+        } else {
+            robotContainer.turret.pointAtGoal();
+        }
 //
 //        if (robotContainer.limelightLogic.limelight.getLatestResult().isValid()) {
 //            robotContainer.limelightLogic.trackGoal();
 //        } else {
 //            robotContainer.turret.pointAtGoal();
 //        }
-
-        robotContainer.turret.pointAtGoal();
 
         if (robotContainer.beamBreakToggleButton.wasJustReleased()) {
             robotContainer.spindexer.goToNextIntakeSlot();
