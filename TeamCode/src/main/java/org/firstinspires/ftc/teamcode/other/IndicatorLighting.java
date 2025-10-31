@@ -113,7 +113,7 @@ public class IndicatorLighting {
 
         public void rainbow() {
             if (rainbowTimer.milliseconds() >= 2) {
-                rainbowValue += (0.0025 * rainbowSign);
+                rainbowValue += (0.0005 * rainbowSign);
                 rainbowTimer.reset();
                 if (rainbowValue >= 1) {
                     rainbowSign = -1;

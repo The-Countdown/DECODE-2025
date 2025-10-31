@@ -23,7 +23,8 @@ public class TeleOp extends OpMode {
     @Override
     public void init() {
         robotContainer = (RobotContainer) blackboard.getOrDefault("robot", new RobotContainer(this));
-        if (robotContainer.completedAuto == false) {
+        // Setup to null
+        if (!robotContainer.completedAuto) {
             robotContainer.init();
             robotContainer.telemetry.addData("New Robot", "Created New robot");
             // crasher.init();
