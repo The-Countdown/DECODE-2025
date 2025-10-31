@@ -34,7 +34,7 @@ public class Turret extends RobotContainer.HardwareDevices {
     }
 
     public void setTargetAngle(double angle) {
-        turretServos.setPosition((HelperFunctions.clamp(angle > 355 ? angle % 355 : angle, Constants.Turret.TURRET_LIMIT_MIN_ANGLE, Constants.Turret.TURRET_LIMIT_MAX_ANGLE)) / 355);
+        turretServos.setPosition((HelperFunctions.clamp(angle > 355 || angle < 0 ? (angle + 355) % 355 : angle, Constants.Turret.TURRET_LIMIT_MIN_ANGLE, Constants.Turret.TURRET_LIMIT_MAX_ANGLE)) / 355);
     }
 
     public double getPosition() {
@@ -43,9 +43,9 @@ public class Turret extends RobotContainer.HardwareDevices {
 
 
     public void pointAtGoal() {
-        double xDiff = Constants.Game.GOAL_POSE.getX(DistanceUnit.INCH) + Status.currentPose.getX(DistanceUnit.INCH);
-        double yDiff = Constants.Game.GOAL_POSE.getY(DistanceUnit.INCH) + Status.currentPose.getY(DistanceUnit.INCH);
-        double angleToFaceGoal = -Math.toDegrees(Math.atan(yDiff/xDiff)) - Status.currentHeading + 177.5;
+        double xDiff = Constants.Game.GOAL_POSE.getX(DistanceUnit.INCH) - Status.currentPose.getX(DistanceUnit.INCH);
+        double yDiff = Constants.Game.GOAL_POSE.getY(DistanceUnit.INCH) - Status.currentPose.getY(DistanceUnit.INCH);
+        double angleToFaceGoal = Math.toDegrees(Math.atan2(yDiff, xDiff)) - Status.currentHeading;
         if (!Double.isNaN(angleToFaceGoal)) {
             setTargetAngle(angleToFaceGoal);
             robotContainer.telemetry.addData("Angle To Face Goal", angleToFaceGoal);

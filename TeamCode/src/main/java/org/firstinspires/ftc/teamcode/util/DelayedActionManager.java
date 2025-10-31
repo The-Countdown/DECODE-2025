@@ -10,7 +10,7 @@ import java.lang.Thread;
 public class DelayedActionManager {
     private final List<DelayedAction> delayedActions = new ArrayList<>();
     List<Double> timeAtPause = new ArrayList<>();
-    boolean enabled = true;
+    volatile boolean enabled = true;
 
     public void schedule(DelayedAction delayedAction) {
         delayedActions.add(delayedAction);
@@ -25,7 +25,7 @@ public class DelayedActionManager {
         delayedActions.add(new DelayedAction(action, condition, timeoutMs));
     }
 
-    public void update() {
+    public synchronized void update() {
         if (enabled) {
             for (DelayedAction delayedAction : delayedActions) {
                 if (delayedAction.shouldExecute()) {
@@ -106,7 +106,7 @@ public class DelayedActionManager {
             }
         }
 
-        public void execute() {
+        public synchronized void execute() {
             if (!executed && !cancelled) {
                 action.run();
                 executed = true;

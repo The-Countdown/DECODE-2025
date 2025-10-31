@@ -61,7 +61,7 @@ import java.util.Map;
  * approach to managing complex robotic systems.
  */
 public class RobotContainer {
-    public static boolean completedAuto = false;
+    public boolean completedAuto = false;
     public OpMode opMode;
     public HardwareMap hardwareMap;
     public Telemetry telemetry;
