@@ -58,7 +58,7 @@ public class Constants {
                 )
         );
 
-        public static double startingX = 0, startingY = 0, startingHeading = 0;
+        public static double startingX = 0, startingY = 0, startingHeading = 90;
         public static Pose2D startingPose = new Pose2D(DistanceUnit.CM,startingX,startingY, AngleUnit.DEGREES,startingHeading);
 
         public static final int
@@ -206,7 +206,7 @@ public class Constants {
     @Config
     public static class Pathing {
         public static final double
-                PINPOINT_X_OFFSET_MM = 145;
+                PINPOINT_X_OFFSET_MM = 170;
         public static final double PINPOINT_Y_OFFSET_MM = 0;
         public static final GoBildaPinpointDriver.GoBildaOdometryPods
                 PINPOINT_ODOM_POD = GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD;

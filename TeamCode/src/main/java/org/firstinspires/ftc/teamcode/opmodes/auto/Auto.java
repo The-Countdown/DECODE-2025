@@ -3,16 +3,14 @@ package org.firstinspires.ftc.teamcode.opmodes.auto;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.PathPlanner;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 
-@Autonomous(name="Pathplanner example", group="Robot")
-public class PathPlannerExample extends OpMode {
+@Autonomous(name="Auto", group="Robot")
+public class Auto extends OpMode {
     private RobotContainer robotContainer;
     public static double CURRENT_LOOP_TIME_MS;
     public static double CURRENT_LOOP_TIME_AVG_MS;
@@ -35,6 +33,8 @@ public class PathPlannerExample extends OpMode {
 
         robotContainer.start(this);
 
+        robotContainer.turret.pointAtGoal();
+        robotContainer.turret.flywheel.setTargetVelocity(robotContainer.limelightLogic.useInterpolate());
         robotContainer.pathPlanner.driveToPose(0);
     }
 

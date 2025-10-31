@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.main.Constants;
@@ -19,17 +20,13 @@ public class TeleOp extends OpMode {
     private final GamepadWrapper.ButtonReader transferConditionButton = new GamepadWrapper.ButtonReader();
     private final ElapsedTime spindexAccel = new ElapsedTime();
     private double lastError = 0;
-    RobotContainer crasher;
 
     @Override
     public void init() {
-        robotContainer = (RobotContainer) blackboard.getOrDefault("robot", new RobotContainer(this));
-        // Setup to null
-        if (!robotContainer.completedAuto) {
-            robotContainer.init();
-            robotContainer.telemetry.addData("New Robot", "Created New robot");
-            // crasher.init();
-        }
+        robotContainer = new RobotContainer(this);
+        robotContainer.init();
+        Status.currentPose = (Pose2D) blackboard.getOrDefault("pose", new Pose2D(DistanceUnit.CM, 0, 0, AngleUnit.DEGREES, 0));
+        Status.currentHeading = (Double) blackboard.getOrDefault("heading", new Double(0));
     }
 
     @Override
@@ -91,6 +88,13 @@ public class TeleOp extends OpMode {
 //        turretPos -= robotContainer.gamepadEx2.rightStickX() != 0 ? (Constants.Turret.TURRET_SPEED_FACTOR * CURRENT_LOOP_TIME_MS) * Math.pow(robotContainer.gamepadEx2.rightStickX(), 3) : 0;
 //        turretPos = HelperFunctions.clamp(turretPos, Constants.Turret.TURRET_LIMIT_MIN, Constants.Turret.TURRET_LIMIT_MAX);
 //        robotContainer.turret.setTargetPosition(turretPos);
+//
+//        if (robotContainer.limelightLogic.limelight.getLatestResult().isValid()) {
+//            robotContainer.limelightLogic.trackGoal();
+//        } else {
+//            robotContainer.turret.pointAtGoal();
+//        }
+
         robotContainer.turret.pointAtGoal();
 
         if (robotContainer.beamBreakToggleButton.wasJustReleased()) {
@@ -109,6 +113,7 @@ public class TeleOp extends OpMode {
                 robotContainer.spindexer.setPower(Math.min(robotContainer.spindexer.pidf.calculate() * spindexAccel.seconds(), 0.5));
             } else {
                  robotContainer.spindexer.setPower(robotContainer.spindexer.pidf.calculate());
+//                robotContainer.spindexer.setPower(0.5);
             }
         } else {
             robotContainer.spindexer.setPower(0);

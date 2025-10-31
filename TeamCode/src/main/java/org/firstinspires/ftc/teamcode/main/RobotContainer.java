@@ -449,6 +449,13 @@ public class RobotContainer {
 //        telemetry.addData("Control Hub Current", getCurrent(Constants.Robot.CONTROL_HUB_INDEX) + " A");
 //        telemetry.addData("Expansion Hub Current", getCurrent(Constants.Robot.EXPANSION_HUB_INDEX) + " A");
 //        telemetry.addLine();
+
+
+        if (limelightLogic.limelight.getLatestResult().isValid()) {
+            telemetry.addData("LL SEEE", "");
+        } else {
+            telemetry.addData("LL IS BLINDDD", "");
+        }
         telemetry.addData("Dist pinpoint", limelightLogic.disToGoalPinpoint());
         telemetry.addData("Pinpoint X", Status.currentPose.getX(DistanceUnit.CM) + " cm");
         telemetry.addData("Pinpoint Y", Status.currentPose.getY(DistanceUnit.CM) + " cm");

@@ -52,7 +52,7 @@ public class LimelightLogic {
     }
 
     public void trackGoal() {
-        if (limelight.getLatestResult().isValid() && Math.abs(limelight.getLatestResult().getTx()) > 1) {
+        if (limelight.getLatestResult() != null && Math.abs(limelight.getLatestResult().getTx()) > 1) {
             p += limelight.getLatestResult().getTx() * Constants.Turret.TRACK_GOAL_P;
             robot.turret.setTargetAngle(p);
             telemetry.addData("TX", limelight.getLatestResult().getTx());
