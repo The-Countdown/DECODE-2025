@@ -185,7 +185,7 @@ public class TeleOp extends OpMode {
 
         if (robotContainer.gamepadEx1.leftBumper.wasJustPressed()) {
             Constants.Spindexer.ANGLE_OFFSET -= 15;
-        } else {
+        } else if (robotContainer.gamepadEx1.rightBumper.wasJustPressed()) {
             Constants.Spindexer.ANGLE_OFFSET += 15;
         }
 
