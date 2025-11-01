@@ -29,7 +29,11 @@ public class Auto extends OpMode {
         robotContainer.telemetry.addData("Alliance Color", Status.alliance == Constants.Game.ALLIANCE.BLUE ? "BLUE" : "RED");
         robotContainer.telemetry.update();
 
-        robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Constants.Robot.startingX + 70, Constants.Robot.startingY - 30, AngleUnit.DEGREES, 0));
+        if (Status.alliance == Constants.Game.ALLIANCE.RED) {
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Constants.Robot.startingX + 70, Constants.Robot.startingY - 30, AngleUnit.DEGREES, 0));
+        } else {
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Constants.Robot.startingX + 70, Constants.Robot.startingY + 30, AngleUnit.DEGREES, 0));
+        }
     }
 
     @Override
