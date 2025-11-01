@@ -102,7 +102,7 @@ public class TeleOp extends OpMode {
         } else {
             robotContainer.turret.pointAtGoal();
         }
-//
+
 //        if (robotContainer.limelightLogic.limelight.getLatestResult().isValid()) {
 //            robotContainer.limelightLogic.trackGoal();
 //        } else {
@@ -176,7 +176,7 @@ public class TeleOp extends OpMode {
             robotContainer.transfer.flapDown();
         }
 
-        transferConditionButton.update((robotContainer.spindexer.getTargetAngle() == Constants.Spindexer.TRANSFER_SLOT_ANGLES[0] || robotContainer.spindexer.getTargetAngle() == Constants.Spindexer.TRANSFER_SLOT_ANGLES[1] || robotContainer.spindexer.getTargetAngle() == Constants.Spindexer.TRANSFER_SLOT_ANGLES[2]) && spindexerError < 6 && robotContainer.turret.flywheel.atTargetVelocity() && !Status.intakeToggle && lastTransfer != robotContainer.spindexer.getTargetAngle() && robotContainer.turret.atTarget());
+        transferConditionButton.update((robotContainer.spindexer.getTargetAngle() == Constants.Spindexer.TRANSFER_SLOT_ANGLES[0] || robotContainer.spindexer.getTargetAngle() == Constants.Spindexer.TRANSFER_SLOT_ANGLES[1] || robotContainer.spindexer.getTargetAngle() == Constants.Spindexer.TRANSFER_SLOT_ANGLES[2]) && spindexerError < 4 && robotContainer.turret.flywheel.atTargetVelocity() && !Status.intakeToggle && lastTransfer != robotContainer.spindexer.getTargetAngle() && robotContainer.turret.atTarget());
         if (transferConditionButton.wasJustPressed()) {
             robotContainer.transfer.flapUp();
             robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapDown(), Constants.Transfer.FLIP_TIME);
@@ -184,11 +184,10 @@ public class TeleOp extends OpMode {
         }
 
         if (robotContainer.gamepadEx1.leftBumper.wasJustPressed()) {
-            Constants.Spinder
+            Constants.Spindexer.ANGLE_OFFSET -= 15;
         } else {
-
+            Constants.Spindexer.ANGLE_OFFSET += 15;
         }
-        //TODO DA HOOD
 
         robotContainer.telemetry.addData("hood angle", robotContainer.turret.hoodServo.getPosition());
         if (robotContainer.limelightLogic.limelight.getLatestResult().isValid()) {
