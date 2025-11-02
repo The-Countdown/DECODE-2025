@@ -21,7 +21,8 @@ public class TeleOp extends OpMode {
     private final GamepadWrapper.ButtonReader transferConditionButton = new GamepadWrapper.ButtonReader();
     private final ElapsedTime spindexAccel = new ElapsedTime();
     private double lastError = 0;
-    private double lastTransfer = -1;
+    private double lastTransferAngle = -1;
+    private final ElapsedTime tranferTimer = new ElapsedTime();
 
     @Override
     public void init() {
@@ -102,7 +103,7 @@ public class TeleOp extends OpMode {
         } else {
             robotContainer.turret.pointAtGoal();
         }
-//
+
 //        if (robotContainer.limelightLogic.limelight.getLatestResult().isValid()) {
 //            robotContainer.limelightLogic.trackGoal();
 //        } else {
@@ -143,6 +144,7 @@ public class TeleOp extends OpMode {
             Status.intakeToggle = false;
             Status.turretToggle = true;
             robotContainer.spindexer.goToNextTransferSlot();
+            tranferTimer.reset();
         }
 
         if (robotContainer.gamepadEx2.triangle.wasJustPressed()) {
@@ -152,11 +154,13 @@ public class TeleOp extends OpMode {
             Status.intakeToggle = true;
             Status.turretToggle = false;
             robotContainer.spindexer.goToNextIntakeSlot();
+            tranferTimer.reset();
         }
 
         //if all are none or unknown, turret toggle
         if ((Status.slotColor[0] != Constants.Game.ARTIFACT_COLOR.NONE && Status.slotColor[1] != Constants.Game.ARTIFACT_COLOR.NONE && Status.slotColor[2] != Constants.Game.ARTIFACT_COLOR.NONE) || (Status.slotColor[0] != Constants.Game.ARTIFACT_COLOR.UNKNOWN && Status.slotColor[1] != Constants.Game.ARTIFACT_COLOR.UNKNOWN && Status.slotColor[2] != Constants.Game.ARTIFACT_COLOR.UNKNOWN)) {
             Status.turretToggle = true;
+            // tranferTimer.reset();
         }
 
         if (robotContainer.gamepadEx1.triangle.wasJustPressed()) {
@@ -168,6 +172,7 @@ public class TeleOp extends OpMode {
         if (robotContainer.gamepadEx2.cross.wasJustPressed()) {
             Status.slotColor[robotContainer.spindexer.getCurrentTransferSlot()] = Constants.Game.ARTIFACT_COLOR.NONE;
             robotContainer.spindexer.goToNextTransferSlot();
+            tranferTimer.reset();
         }
 
         if (robotContainer.gamepadEx2.leftBumper.isPressed()) {
@@ -176,13 +181,22 @@ public class TeleOp extends OpMode {
             robotContainer.transfer.flapDown();
         }
 
-        transferConditionButton.update((robotContainer.spindexer.getTargetAngle() == Constants.Spindexer.TRANSFER_SLOT_ANGLES[0] || robotContainer.spindexer.getTargetAngle() == Constants.Spindexer.TRANSFER_SLOT_ANGLES[1] || robotContainer.spindexer.getTargetAngle() == Constants.Spindexer.TRANSFER_SLOT_ANGLES[2]) && spindexerError < 6 && robotContainer.turret.flywheel.atTargetVelocity() && !Status.intakeToggle && lastTransfer != robotContainer.spindexer.getTargetAngle() && robotContainer.turret.atTarget());
+        robotContainer.telemetry.addData("Spindexer Timer", tranferTimer.seconds());
+        robotContainer.telemetry.addData("Transfer lastAngle", lastTransferAngle);
+        transferConditionButton.update((robotContainer.spindexer.getTargetAngle() == Constants.Spindexer.TRANSFER_SLOT_ANGLES[0] || robotContainer.spindexer.getTargetAngle() == Constants.Spindexer.TRANSFER_SLOT_ANGLES[1] || robotContainer.spindexer.getTargetAngle() == Constants.Spindexer.TRANSFER_SLOT_ANGLES[2]) && robotContainer.turret.flywheel.atTargetVelocity() && !Status.intakeToggle && lastTransferAngle != robotContainer.spindexer.getTargetAngle() && robotContainer.turret.atTarget() && tranferTimer.milliseconds() > 1000);
+        robotContainer.telemetry.addData("TransferControl", transferConditionButton);
         if (transferConditionButton.wasJustPressed()) {
             robotContainer.transfer.flapUp();
             robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapDown(), Constants.Transfer.FLIP_TIME);
-            robotContainer.delayedActionManager.schedule(() -> lastTransfer = robotContainer.spindexer.getTargetAngle(), Constants.Transfer.FLIP_TIME * 5);
+            robotContainer.delayedActionManager.schedule(() -> lastTransferAngle = robotContainer.spindexer.getTargetAngle(), Constants.Transfer.FLIP_TIME * 2);
+            tranferTimer.reset();
         }
-        //TODO DA HOOD
+
+        if (robotContainer.gamepadEx1.leftBumper.wasJustPressed()) {
+            Constants.Spindexer.ANGLE_OFFSET -= 15;
+        } else if (robotContainer.gamepadEx1.rightBumper.wasJustPressed()) {
+            Constants.Spindexer.ANGLE_OFFSET += 15;
+        }
 
         robotContainer.telemetry.addData("hood angle", robotContainer.turret.hoodServo.getPosition());
         if (robotContainer.limelightLogic.limelight.getLatestResult().isValid()) {
