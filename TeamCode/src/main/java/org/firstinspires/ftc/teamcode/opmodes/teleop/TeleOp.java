@@ -182,12 +182,6 @@ public class TeleOp extends OpMode {
             robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapDown(), Constants.Transfer.FLIP_TIME);
             robotContainer.delayedActionManager.schedule(() -> lastTransfer = robotContainer.spindexer.getTargetAngle(), Constants.Transfer.FLIP_TIME * 5);
         }
-
-        if (robotContainer.gamepadEx1.leftBumper.wasJustPressed()) {
-            Constants.Spinder
-        } else {
-
-        }
         //TODO DA HOOD
 
         robotContainer.telemetry.addData("hood angle", robotContainer.turret.hoodServo.getPosition());
