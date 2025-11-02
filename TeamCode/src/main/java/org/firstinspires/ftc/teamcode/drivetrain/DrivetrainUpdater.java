@@ -86,4 +86,8 @@ public class DrivetrainUpdater extends Thread {
             Thread.yield();
         }
     }
+
+    public void stopEnabled() {
+        enabled = false;
+    }
 }

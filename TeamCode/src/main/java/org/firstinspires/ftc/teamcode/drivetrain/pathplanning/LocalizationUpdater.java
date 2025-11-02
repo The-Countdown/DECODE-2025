@@ -11,6 +11,10 @@ public class LocalizationUpdater extends Thread {
     public double CURRENT_LOOP_TIME_AVG_MS = 0;
     public boolean running = true;
 
+    public boolean running = true;
+
+    public boolean running = true;
+
     /**
      * The pinpoint takes more time than a normal device, however, I don't know how much that is,
      * so I put it into a thread to be safe.
@@ -46,7 +50,11 @@ public class LocalizationUpdater extends Thread {
         }
     }
 
+<<<<<<< Updated upstream
     public void stopLocalizer() {
+=======
+    public void stopLoc() {
+>>>>>>> Stashed changes
         running = false;
     }
 }

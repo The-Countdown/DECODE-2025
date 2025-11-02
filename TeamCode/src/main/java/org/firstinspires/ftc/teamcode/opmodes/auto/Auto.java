@@ -91,5 +91,19 @@ public class Auto extends OpMode {
     public void stop() {
         robotContainer.completedAuto = true;
         blackboard.put("pose", Status.currentPose);
+                
+        robotContainer.localizationUpdater.stopLoc();
+        try {
+            robotContainer.localizationUpdater.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        robotContainer.d();
+        try {
+            robotContainer.localizationUpdater.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
