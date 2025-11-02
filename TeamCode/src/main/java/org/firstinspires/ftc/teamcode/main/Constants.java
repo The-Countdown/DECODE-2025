@@ -59,7 +59,9 @@ public class Constants {
         );
 
         public static double startingX = -152.5, startingY = -37, startingHeading = -90;
-        public static Pose2D startingPose = new Pose2D(DistanceUnit.CM,startingX,startingY, AngleUnit.DEGREES,startingHeading);
+        public static Pose2D startingPose = Status.alliance == Game.ALLIANCE.RED ? new Pose2D(DistanceUnit.CM,startingX,startingY, AngleUnit.DEGREES,startingHeading) :
+                Status.alliance == Game.ALLIANCE.BLUE ?  new Pose2D(DistanceUnit.CM,startingX,-startingY, AngleUnit.DEGREES,startingHeading) :
+                        new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
 
         public static final int
                 CONTROL_HUB_INDEX = 0,
@@ -294,7 +296,7 @@ public class Constants {
         public static double ANGLE_OFFSET = 35;
         public static double[] TRANSFER_SLOT_ANGLES = {179, 60, -60};
         public static double [] INTAKE_SLOT_ANGLES = {0, -120, 120};
-        public static double KP = 0.012;
+        public static double KP = 0.01;
         public static double KI = 0;
         public static double KD = 0.01;
         public static double KF = 0.02;

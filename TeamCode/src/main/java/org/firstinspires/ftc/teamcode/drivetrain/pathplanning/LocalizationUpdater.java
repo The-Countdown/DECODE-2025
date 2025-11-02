@@ -9,11 +9,6 @@ public class LocalizationUpdater extends Thread {
     private final RobotContainer robotContainer;
     public double CURRENT_LOOP_TIME_MS = 0;
     public double CURRENT_LOOP_TIME_AVG_MS = 0;
-    public boolean running = true;
-
-    public boolean running = true;
-
-    public boolean running = true;
 
     public boolean running = true;
 
@@ -30,7 +25,7 @@ public class LocalizationUpdater extends Thread {
 
     @Override
     public void run() {
-        while (running) {
+        while (Status.opModeIsActive) {
             RobotContainer.HardwareDevices.pinpoint.update();
             Status.currentPose = RobotContainer.HardwareDevices.pinpoint.getPosition();
             Status.currentHeading = Status.currentPose.getHeading(AngleUnit.DEGREES);
@@ -50,9 +45,5 @@ public class LocalizationUpdater extends Thread {
                 }
             }
         }
-    }
-
-    public void stopLocalizer() {
-        running = false;
     }
 }
