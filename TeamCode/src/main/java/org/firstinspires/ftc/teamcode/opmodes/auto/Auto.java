@@ -47,20 +47,20 @@ public class Auto extends OpMode {
         robotContainer.localizationUpdater.start();
         RobotContainer.HardwareDevices.pinpoint.setPosition(Constants.Robot.startingPose);
 
-        robotContainer.turret.pointAtGoal();
-        robotContainer.turret.flywheel.setTargetVelocity(0.5);
-        robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[1]);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.setTargetAngle(Constants.Spindexer.TRANSFER_SLOT_ANGLES[0]), 1000);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapUp(), 2500);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapDown(), 2800);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.setTargetAngle(Constants.Spindexer.TRANSFER_SLOT_ANGLES[1]), 3000);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapUp(), 4500);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapDown(), 4800);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.setTargetAngle(Constants.Spindexer.TRANSFER_SLOT_ANGLES[2]), 5000);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapUp(), 6500);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapDown(), 6800);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.turret.flywheel.setTargetVelocity(0), 7000);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.driveToPose(0), 10000);
+//        robotContainer.turret.pointAtGoal();
+//        robotContainer.turret.flywheel.setTargetVelocity(0.5);
+//        robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[1]);
+//        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.setTargetAngle(Constants.Spindexer.TRANSFER_SLOT_ANGLES[0]), 1000);
+//        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapUp(), 2500);
+//        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapDown(), 2800);
+//        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.setTargetAngle(Constants.Spindexer.TRANSFER_SLOT_ANGLES[1]), 3000);
+//        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapUp(), 4500);
+//        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapDown(), 4800);
+//        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.setTargetAngle(Constants.Spindexer.TRANSFER_SLOT_ANGLES[2]), 5000);
+//        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapUp(), 6500);
+//        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapDown(), 6800);
+//        robotContainer.delayedActionManager.schedule(() -> robotContainer.turret.flywheel.setTargetVelocity(0), 7000);
+//        robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.driveToPose(0), 10000);
     }
 
     @Override
@@ -90,5 +90,19 @@ public class Auto extends OpMode {
     @Override
     public void stop() {
         blackboard.put("pose", Status.currentPose);
+        Status.opModeIsActive = false;
+        robotContainer.drivetrainUpdater.stopEnabled();
+        try {
+            robotContainer.drivetrainUpdater.join(100);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        robotContainer.localizationUpdater.stopLocalization();
+        try {
+            robotContainer.localizationUpdater.join(100);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        Status.opModeIsActive = true;
     }
 }

@@ -10,7 +10,7 @@ public class LocalizationUpdater extends Thread {
     public double CURRENT_LOOP_TIME_MS = 0;
     public double CURRENT_LOOP_TIME_AVG_MS = 0;
 
-    public boolean running = true;
+    public boolean enabled = true;
 
     /**
      * The pinpoint takes more time than a normal device, however, I don't know how much that is,
@@ -25,7 +25,10 @@ public class LocalizationUpdater extends Thread {
 
     @Override
     public void run() {
-        while (running) {
+        if (!enabled) {
+            return;
+        }
+        while(Status.opModeIsActive) {
             RobotContainer.HardwareDevices.pinpoint.update();
             Status.currentPose = RobotContainer.HardwareDevices.pinpoint.getPosition();
             Status.currentHeading = Status.currentPose.getHeading(AngleUnit.DEGREES);
@@ -45,9 +48,10 @@ public class LocalizationUpdater extends Thread {
                 }
             }
         }
+        Thread.yield();
     }
 
     public void stopLocalization() {
-        running = false;
+        enabled = false;
     }
 }

@@ -103,10 +103,6 @@ public class RobotContainer {
         public static HuskyLens huskyLens1;
         public static HuskyLens huskyLens2;
 
-        // This is the I2C multiplexer
-        public static ADG728 mux1;
-        public static AnalogInput muxAnalog1;
-
         // Gobilda RGB indicator light
         public static ServoImplEx indicatorLightFront;
         public static ServoImplEx indicatorLightBack;
@@ -132,6 +128,7 @@ public class RobotContainer {
         // Spindexer
         public static ServoImplEx transferServoLeft;
         public static ServoImplEx transferServoRight;
+        public static DcMotorImplEx spindexerEncoder;
 
         public static CRServoImplEx spindexServo;
         public static AnalogInput spindexAnalog;
@@ -162,20 +159,16 @@ public class RobotContainer {
         HardwareDevices.huskyLens1 = getHardwareDevice(HuskyLens.class, "huskyLens1");
         HardwareDevices.huskyLens2 = getHardwareDevice(HuskyLens.class, "huskyLens2");
 
-        HardwareDevices.mux1 = getHardwareDevice(ADG728.class, "mux");
-        HardwareDevices.muxAnalog1 = getHardwareDevice(AnalogInput.class, "muxA1");
-//        HardwareDevices.mux1.attachAnalog(HardwareDevices.muxAnalog1);
-
         HardwareDevices.indicatorLightFront = getHardwareDevice(ServoImplEx.class, "indicatorLightFront");
         HardwareDevices.indicatorLightBack = getHardwareDevice(ServoImplEx.class, "indicatorLightBack");
 
         for (int i = 0; i < swerveModules.length; i++) {
             HardwareDevices.motorNames[i] = "swerveMotor" + (i);
-            HardwareDevices.swerveMotors[i] = getHardwareDevice(DcMotorImplEx.class, HardwareDevices.motorNames[i]);
+            HardwareDevices.swerveMotors[i] = hardwareMap.get(DcMotorImplEx.class, HardwareDevices.motorNames[i]);
             HardwareDevices.servoNames[i] = "swerveServo" + (i);
-            HardwareDevices.swerveServos[i] = getHardwareDevice(CRServoImplEx.class, HardwareDevices.servoNames[i]);
+            HardwareDevices.swerveServos[i] = hardwareMap.get(CRServoImplEx.class, HardwareDevices.servoNames[i]);
             HardwareDevices.analogNames[i] = "swerveAnalog" + (i);
-            HardwareDevices.swerveAnalogs[i] = getHardwareDevice(AnalogInput.class, HardwareDevices.analogNames[i]);
+            HardwareDevices.swerveAnalogs[i] = hardwareMap.get(AnalogInput.class, HardwareDevices.analogNames[i]);
 
             if (i == 0 || i == 2) {
                 HardwareDevices.swerveMotors[i].setDirection(DcMotorImplEx.Direction.REVERSE);
@@ -205,6 +198,7 @@ public class RobotContainer {
         HardwareDevices.hoodServo = getHardwareDevice(ServoImplEx.class, "hoodServo");
         HardwareDevices.transferServoLeft = getHardwareDevice(ServoImplEx.class, "transferServoLeft");
         HardwareDevices.transferServoRight = getHardwareDevice(ServoImplEx.class, "transferServoRight");
+        HardwareDevices.spindexerEncoder = getHardwareDevice(DcMotorImplEx.class, "spindexEncoder");
         HardwareDevices.spindexServo = getHardwareDevice(CRServoImplEx.class, "spindexServo");
         HardwareDevices.spindexAnalog = getHardwareDevice(AnalogInput.class, "spindexAnalog");
         HardwareDevices.intakeMotor = getHardwareDevice(DcMotorImplEx.class, "intakeMotor");
@@ -470,6 +464,7 @@ public class RobotContainer {
         } else {
             telemetry.addData("LL IS BLINDDD", "");
         }
+        telemetry.addData("Spindex encoder: ", HardwareDevices.spindexerEncoder.getCurrentPosition());
         telemetry.addData("Pinpoint X", Status.currentPose.getX(DistanceUnit.CM) + " cm");
         telemetry.addData("Pinpoint Y", Status.currentPose.getY(DistanceUnit.CM) + " cm");
         telemetry.addData("Pinpoint Heading", Status.currentHeading + "°");
