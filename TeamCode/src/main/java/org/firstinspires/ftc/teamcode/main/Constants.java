@@ -51,6 +51,9 @@ public class Constants {
 
     @Config
     public static class Robot {
+        public static int MOTOR_UPDATE_TIME = 50;
+        public static int SERVO_UPDATE_TIME = 20;
+
         public static final IMU.Parameters imuParameters = new IMU.Parameters(
                 new RevHubOrientationOnRobot(
                         RevHubOrientationOnRobot.LogoFacingDirection.UP,
@@ -172,11 +175,8 @@ public class Constants {
          */
         public static double[]
                 SERVO_KP = {0.009, 0.009, 0.009, 0.009},
-                SERVO_KI = {0, 0, 0, 0},
-                SERVO_I_MAX = {0.1, 0.1, 0.1, 0.1},
                 SERVO_KD = {0, 0, 0, 0},
-                SERVO_KF = {0, 0, 0, 0},
-                SERVO_MOTOR_FACTOR = {10, 10, 10, 10};
+                SERVO_KF = {0, 0, 0, 0};
 
         public static double SERVO_PIDF_TOLERANCE_DEGREES = 1;
 
@@ -297,7 +297,6 @@ public class Constants {
         public static double[] TRANSFER_SLOT_ANGLES = {179, 60, -60};
         public static double [] INTAKE_SLOT_ANGLES = {0, -120, 120};
         public static double KP = 0.01;
-        public static double KI = 0;
         public static double KD = 0.01;
         public static double KF = 0.02;
     }

@@ -5,38 +5,41 @@ import com.qualcomm.robotcore.hardware.DcMotorImplEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 
+import org.firstinspsires.ftc.teamcode.hardware.BetterServo;
+import org.firstinspsires.ftc.teamcode.hardware.BetterCRServo;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class LinkedServos {
-    private ServoImplEx masterServo;
-    private List<ServoImplEx> slaveServo;
-    private CRServoImplEx masterCRServo;
-    private List<CRServoImplEx> slaveCRServo;
+    private BetterServo masterServo;
+    private List<BetterServo> slaveServo;
+    private BetterCRServo masterCRServo;
+    private List<BetterCRServo> slaveCRServo;
 
     //Servo, take in array
-    public LinkedServos(ServoImplEx masterServo, ServoImplEx[] slaveServo) {
+    public LinkedServos(BetterServo masterServo, BetterServo[] slaveServo) {
         this.masterServo = masterServo;
         this.slaveServo = new ArrayList<>(Arrays.asList(slaveServo));
     }
 
     // Servo, take in single
-    public LinkedServos(ServoImplEx masterServo, ServoImplEx slaveServo) {
+    public LinkedServos(BetterServo masterServo, BetterServo slaveServo) {
         this.masterServo = masterServo;
         this.slaveServo = new ArrayList<>();
         this.slaveServo.add(slaveServo);
     }
 
     //CRServo, take in array
-    public LinkedServos(CRServoImplEx masterServo, CRServoImplEx[] slaveServo) {
+    public LinkedServos(BetterCRServo masterServo, BetterCRServo[] slaveServo) {
         this.masterCRServo = masterServo;
         this.slaveCRServo = new ArrayList<>(Arrays.asList(slaveServo));
     }
 
     //CRServo, take in single
-    public LinkedServos(CRServoImplEx masterServo, CRServoImplEx slaveServo) {
+    public LinkedServos(BetterSCServo masterServo, BetterCRServo slaveServo) {
         this.masterCRServo = masterServo;
         this.slaveCRServo = new ArrayList<>();
         this.slaveCRServo.add(slaveServo);
@@ -44,7 +47,7 @@ public class LinkedServos {
 
     //set pos 1 to -1
     public void setPosition(double position) {
-        masterServo.setPosition(position);
+        masterServo.updateSetPosition(position);
         for (ServoImplEx slaveServo : slaveServo) {
             slaveServo.setPosition(position);
         }

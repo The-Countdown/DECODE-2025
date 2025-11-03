@@ -10,10 +10,13 @@ import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
+import org.firstinspires.ftc.teamcode.hardware.BetterCRServo;
+import org.firstinspires.ftc.teamcode.hardware.BetterAnalogInput;
+
 public class Spindexer {
     private final RobotContainer robotContainer;
-    private final CRServoImplEx spindexerServo;
-    private final AnalogInput spindexAnalog;
+    private final BetterCRServo spindexerServo;
+    private final BetterAnalogInput spindexAnalog;
     private final RevColorSensorV3 colorSensor;
     private static double targetAngle = 0;
     private double error;
@@ -25,7 +28,7 @@ public class Spindexer {
     private double ff;
     private ElapsedTime iTimer;
 
-    public Spindexer (RobotContainer robotContainer, CRServoImplEx spindexerServo, AnalogInput spindexAnalog, RevColorSensorV3 colorSensor) {
+    public Spindexer (RobotContainer robotContainer, BetterCRServo spindexerServo, BetterAnalogInput spindexAnalog, RevColorSensorV3 colorSensor) {
         this.robotContainer = robotContainer;
         this.spindexerServo = spindexerServo;
         this.spindexAnalog = spindexAnalog;
@@ -34,7 +37,7 @@ public class Spindexer {
     }
 
     public void setPower(double power) {
-        spindexerServo.setPower(power);
+        spindexerServo.updateSetPower(power, Constants.Robot.SERVO_UPDATE_TIME);
     }
 
     public void setTargetAngle(double angle) {
@@ -203,30 +206,17 @@ public class Spindexer {
         }
     }
 
-    public class PIDF {
+    public class PDF {
 
         public double getError() {
             return error = HelperFunctions.normalizeAngle(targetAngle - robotContainer.spindexer.getAngle());
         }
 
         public double calculate() {
-            // If current sign and last sign are different reset I.
-            if (Math.signum(error) > 0) { // Current sign pos
-                if (!lastSign) { // Last sign neg
-                    iTimer.reset();
-                }
-            } else if (Math.signum(error) < 0) { // Current sign neg
-                if (lastSign) { // Last sign pos
-                    iTimer.reset();
-                }
-            }
-
             error = getError();
 
             p = Constants.Spindexer.KP * error;
-            i = Constants.Spindexer.KI * iTimer.milliseconds() * Math.signum(error);
             d = Math.signum(error) * (Constants.Spindexer.KD * (lastError - error));
-            ff = Constants.Spindexer.KF * Math.signum(error);
 
 
             if (Math.signum(error) > 0) { // Current sign pos
@@ -236,8 +226,8 @@ public class Spindexer {
             }
 
             lastError = error;
-            return p + i + ff + d;
+            return p + d;
         }
     }
-    public PIDF pidf = new PIDF();
+    public PDF pdf = new PDF();
 }

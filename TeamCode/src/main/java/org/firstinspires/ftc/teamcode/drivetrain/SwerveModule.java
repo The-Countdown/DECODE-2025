@@ -8,6 +8,10 @@ import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
+import org.firstinspires.ftc.teamcode.hardware.BetterDcMotor;
+import org.firstinspires.ftc.teamcode.hardware.BetterCRServo;
+import org.firstinspires.ftc.teamcode.hardware.BetterAnalogInput;
+
 /**
  * Represents a single Swerve Drive Module, encapsulating its motor and servo controls, as well as sensor data.
  *
@@ -27,12 +31,12 @@ import org.firstinspires.ftc.teamcode.util.HelperFunctions;
  */
 public class SwerveModule {
     private final RobotContainer robotContainer;
-    private final DcMotorEx drivingMotor;
-    private final CRServoImplEx turningServo;
-    private final AnalogInput analogEncoder;
+    private final BetterDcMotor drivingMotor;
+    private final BetterCRServo turningServo;
+    private final BetterAnalogInput analogEncoder;
     private final double powerMultiplier;
-    private final int moduleIndex;
-    private final SwervePIDF servoPIDF;
+    public final int moduleIndex;
+    private final SwervePDF servoPDF;
 
     /**
      * Constructor for the SwerveModulePosition class.
@@ -44,17 +48,17 @@ public class SwerveModule {
      * @param powerMultiplier A multiplier to maintain constant velocity for all modules despite differences in friction between modules.
      * @param moduleIndex   The index of the module.
      */
-    public SwerveModule(RobotContainer robotContainer, DcMotorEx motor, CRServoImplEx turningServo, SwervePIDF servoPIDF, AnalogInput analogEncoder, double powerMultiplier, int moduleIndex) {
+    public SwerveModule(RobotContainer robotContainer, BetterDcMotor motor, BetterCRServo turningServo, SwervePDF servoPDF, BetterAnalogInput analogEncoder, double powerMultiplier, int moduleIndex) {
         this.robotContainer = robotContainer;
         this.drivingMotor = motor;
         this.turningServo = turningServo;
-        this.servoPIDF = servoPIDF;
+        this.servoPDF = servoPDF;
         this.analogEncoder = analogEncoder;
         this.powerMultiplier = powerMultiplier;
         this.moduleIndex = moduleIndex;
     }
 
-    // I hate getters and setter but I want to keep powerMultiplier private and not mutable by any part of the program.
+    // I hate getters and setters but I want to keep powerMultiplier private and not mutable by any part of the program.
     public double getPowerMultiplier() {
         return this.powerMultiplier;
     }
@@ -81,25 +85,25 @@ public class SwerveModule {
         }
 
         public void setTargetAngle(double angle) {
-            servoPIDF.setTargetAngle(angle);
+            servoPDF.setTargetAngle(angle);
         }
 
         public void setPower(double power) {
-            turningServo.setPower(power);
+            turningServo.updateSetPower(power, Constants.Robot.MOTOR_UPDATE_TIME);
         }
     }
 
     public class Motor {
         public double targetPower;
         public void setPower(double power) {
-            drivingMotor.setPower(power);
+            drivingMotor.updateSetPower(power, Constants.Robot.MOTOR_UPDATE_TIME);
         }
 
         /**
         * Sets the velocity of the motor from 0-1, because it is specific to this swerve motor so the value will be consistent with the multiplier.
          */
         public void setVelocity(double velocity) {
-            drivingMotor.setVelocity(velocity * Constants.Swerve.MOTOR_MAX_VELOCITY_TICKS_PER_SECOND);
+            drivingMotor.updateSetVelocity(velocity * Constants.Swerve.MOTOR_MAX_VELOCITY_TICKS_PER_SECOND, 50);
         }
 
         public double getVelocity() {
@@ -108,7 +112,7 @@ public class SwerveModule {
 
         // This function takes in a double between 0-1 for 0 rpm to max rpm of motor as relative to the max forward speed of the drive base.
         public void setPowerWithMultiplier(double speed) {
-            drivingMotor.setPower(speed * powerMultiplier);
+            drivingMotor.updateSetPower(speed * powerMultiplier, Constants.Robot.MOTOR_UPDATE_TIME);
         }
 
         public void setTargetPower(double power) {

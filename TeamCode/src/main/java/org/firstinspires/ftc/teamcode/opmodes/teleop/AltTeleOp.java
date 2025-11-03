@@ -58,11 +58,9 @@ public class AltTeleOp extends OpMode {
 
         if (robotContainer.gamepadEx1.cross.isHeld()) {
             // constants for motor speed, different speed based off of position
-            RobotContainer.HardwareDevices.flyWheelMotorMaster.setPower(Math.min(robotContainer.gamepadEx1.cross.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, Constants.Turret.FLYWHEEL_TOP_SPEED));
-            RobotContainer.HardwareDevices.flyWheelMotorSlave.setPower(Math.min(robotContainer.gamepadEx1.cross.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, Constants.Turret.FLYWHEEL_TOP_SPEED));
+            robotContainer.turret.flywheel.setTargetVelocity(Math.min(robotContainer.gamepadEx1.cross.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, Constants.Turret.FLYWHEEL_TOP_SPEED));
         } else {
-            RobotContainer.HardwareDevices.flyWheelMotorMaster.setPower(0);
-            RobotContainer.HardwareDevices.flyWheelMotorSlave.setPower(0);
+            robotContainer.turret.flywheel.setTargetVelocity(0);
         }
 
         //transfer test (make automated once it works)

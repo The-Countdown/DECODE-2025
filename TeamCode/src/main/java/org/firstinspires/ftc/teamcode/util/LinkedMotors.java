@@ -2,36 +2,40 @@ package org.firstinspires.ftc.teamcode.util;
 
 import com.qualcomm.robotcore.hardware.DcMotorImplEx;
 
+import org.firstinspires.ftc.teamcode.hardware.BetterDcMotor;
+
+import org.firstinspires.ftc.teamcode.main.Constants;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class LinkedMotors {
-    private final DcMotorImplEx masterMotor;
-    private final List<DcMotorImplEx> slaveMotors;
+    private final BetterDcMotor masterMotor;
+    private final List<BetterDcMotor> slaveMotors;
 
-    public LinkedMotors(DcMotorImplEx masterMotor, DcMotorImplEx[] slaveMotors) {
+    public LinkedMotors(BetterDcMotor masterMotor, BetterDcMotor[] slaveMotors) {
         this.masterMotor = masterMotor;
         this.slaveMotors = new ArrayList<>(Arrays.asList(slaveMotors));
     }
 
-    public LinkedMotors(DcMotorImplEx masterMotor, DcMotorImplEx slaveMotor) {
+    public LinkedMotors(BetterDcMotor masterMotor, BetterDcMotor slaveMotor) {
         this.masterMotor = masterMotor;
         this.slaveMotors = new ArrayList<>();
         this.slaveMotors.add(slaveMotor);
     }
 
     public void setPower(double power) {
-        masterMotor.setPower(power);
-        for (DcMotorImplEx slaveMotor : slaveMotors) {
-            slaveMotor.setPower(power);
+        masterMotor.updateSetPower(power, Constants.Robot.MOTOR_UPDATE_TIME);
+        for (BetterDcMotor slaveMotor : slaveMotors) {
+            slaveMotor.updateSetPower(power, Constants.Robot.MOTOR_UPDATE_TIME);
         }
     }
 
     public void setVelocity(double velocity) {
-        masterMotor.setVelocity(velocity);
-        for (DcMotorImplEx slaveMotor : slaveMotors) {
-            slaveMotor.setVelocity(velocity);
+        masterMotor.updateSetVelocity(velocity, Constants.Robot.MOTOR_UPDATE_TIME);
+        for (BetterDcMotor slaveMotor : slaveMotors) {
+            slaveMotor.updateSetVelocity(velocity, Constants.Robot.MOTOR_UPDATE_TIME);
         }
     }
 
@@ -42,7 +46,7 @@ public class LinkedMotors {
     public double getAverageVelocity() {
         double totalVelocity;
         totalVelocity = masterMotor.getVelocity();
-        for (DcMotorImplEx slaveMotor : slaveMotors) {
+        for (BetterDcMotor slaveMotor : slaveMotors) {
             totalVelocity += slaveMotor.getVelocity();
         }
         int motorCount = 1 + slaveMotors.size();
@@ -58,7 +62,7 @@ public class LinkedMotors {
     public double getAveragePower() {
         double totalPower;
         totalPower = masterMotor.getPower();
-        for (DcMotorImplEx slaveMotor : slaveMotors) {
+        for (BetterDcMotor slaveMotor : slaveMotors) {
             totalPower += slaveMotor.getPower();
         }
         int motorCount = 1 + slaveMotors.size();
@@ -67,21 +71,21 @@ public class LinkedMotors {
 
     public void setDirection(DcMotorImplEx.Direction direction) {
         masterMotor.setDirection(direction);
-        for (DcMotorImplEx slaveMotor : slaveMotors) {
+        for (BetterDcMotor slaveMotor : slaveMotors) {
             slaveMotor.setDirection(direction);
         }
     }
 
     public void setMode(DcMotorImplEx.RunMode runMode) {
         masterMotor.setMode(runMode);
-        for (DcMotorImplEx slaveMotor : slaveMotors) {
+        for (BetterDcMotor slaveMotor : slaveMotors) {
             slaveMotor.setMode(runMode);
         }
     }
 
     public void setZeroPowerBehavior(DcMotorImplEx.ZeroPowerBehavior behavior) {
         masterMotor.setZeroPowerBehavior(behavior);
-        for (DcMotorImplEx slaveMotor : slaveMotors) {
+        for (BetterDcMotor slaveMotor : slaveMotors) {
             slaveMotor.setZeroPowerBehavior(behavior);
         }
     }

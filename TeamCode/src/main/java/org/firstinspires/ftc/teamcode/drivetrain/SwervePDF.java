@@ -8,9 +8,9 @@ import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
 /**
- * A PIDF controller for a swerve module's servo.
+ * A PDF controller for a swerve module's servo.
  */
-public class SwervePIDF {
+public class SwervePDF {
     private final RobotContainer robotContainer;
     private final int module;
     private double targetAngle;
@@ -25,7 +25,7 @@ public class SwervePIDF {
     private double ff;
     private double d;
 
-    public SwervePIDF(RobotContainer robotContainer, int module) {
+    public SwervePDF(RobotContainer robotContainer, int module) {
         this.robotContainer = robotContainer;
         this.module = module;
         this.targetAngle = Constants.Swerve.STOP_FORMATION[module];
@@ -48,36 +48,19 @@ public class SwervePIDF {
     }
 
     /**
-     * Calculates the PIDF output for the servo.
-     * @return The calculated PIDF output.
+     * Calculates the PDF output for the servo.
+     * @return The calculated PDF output.
      */
     public double calculate() {
         if (Status.swerveServoStatus[module] == Status.ServoStatus.TARGET_REACHED) {
             iTimer.reset();
         }
 
-        // If current sign and last sign are different reset I.
-        if (Math.signum(error) > 0) { // Current sign pos
-            if (!lastSign) { // Last sign neg
-                iTimer.reset();
-            }
-        } else if (Math.signum(error) < 0) { // Current sign neg
-            if (lastSign) { // Last sign pos
-                iTimer.reset();
-            }
-        }
-
         error = getError();
 
         p = Constants.Swerve.SERVO_KP[module] * error;
-        i = Constants.Swerve.SERVO_KI[module] * iTimer.milliseconds() * Math.signum(error);
-        // ff = Constants.SWERVE_SERVO_KF[module] * Math.signum(error);
+        ff = Constants.Swerve.SERVO_KF[module] * Math.signum(error);
 
-        swerveConstantPower = (Constants.Swerve.SERVO_KF[module] * (1 - (robotContainer.swerveModules[module].motor.targetPower * Constants.Swerve.SERVO_MOTOR_FACTOR[module])));
-        if (swerveConstantPower < 0) {
-            swerveConstantPower = 0;
-        }
-        ff = swerveConstantPower * Math.signum(error);
         d = Math.signum(error) * (Constants.Swerve.SERVO_KD[module] * (lastError - error));
 
 //        robotContainer.telemetry.addData("p " + module + " : " , p);
@@ -92,6 +75,6 @@ public class SwervePIDF {
         }
 
         lastError = error;
-        return p + i + ff + d;
+        return p + d + ff;
     }
 }

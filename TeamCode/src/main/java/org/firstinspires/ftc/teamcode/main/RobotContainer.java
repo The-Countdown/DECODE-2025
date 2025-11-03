@@ -26,13 +26,11 @@ import org.firstinspires.ftc.teamcode.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.drivetrain.DrivetrainUpdater;
 import org.firstinspires.ftc.teamcode.drivetrain.HeadingPID;
 import org.firstinspires.ftc.teamcode.drivetrain.SwerveModule;
-import org.firstinspires.ftc.teamcode.drivetrain.SwervePIDF;
+import org.firstinspires.ftc.teamcode.drivetrain.SwervePDF;
 import org.firstinspires.ftc.teamcode.subsystems.HuskyLensLogic;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.LimelightLogic;
 import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.PathPlanner;
-import org.firstinspires.ftc.teamcode.other.ADG728;
-import org.firstinspires.ftc.teamcode.other.ADGUpdater;
 import org.firstinspires.ftc.teamcode.other.IndicatorLighting;
 import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.LocalizationUpdater;
 import org.firstinspires.ftc.teamcode.subsystems.Spindexer;
@@ -42,6 +40,12 @@ import org.firstinspires.ftc.teamcode.util.DelayedActionManager;
 import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
 import org.firstinspires.ftc.teamcode.util.LinkedMotors;
 import org.firstinspires.ftc.teamcode.util.LinkedServos;
+
+import org.firstinspires.ftc.teamcode.hardware.BetterTouchSensor;
+import org.firstinspires.ftc.teamcode.hardware.BetterDcMotor;
+import org.firstinspires.ftc.teamcode.hardware.BetterCRServo;
+import org.firstinspires.ftc.teamcode.hardware.BetterAnalogInput;
+import org.firstinspires.ftc.teamcode.hardware.BetterServo;
 
 import java.lang.Thread;
 import java.util.ArrayList;
@@ -74,7 +78,7 @@ public class RobotContainer {
     private final ArrayList<String> retainedTelemetryCaptions = new ArrayList<>();
     private final ArrayList<Object> retainedTelemetryValues = new ArrayList<>();
     public final SwerveModule[] swerveModules = new SwerveModule[Constants.Swerve.NUM_MOTORS];
-    public SwervePIDF[] swerveServosPIDF = new SwervePIDF[Constants.Swerve.NUM_SERVOS];
+    public SwervePDF[] swerveServosPDF = new SwervePDF[Constants.Swerve.NUM_SERVOS];
     public LocalizationUpdater localizationUpdater;
     public DrivetrainUpdater drivetrainUpdater;
     public PathPlanner pathPlanner;
@@ -104,41 +108,41 @@ public class RobotContainer {
         public static HuskyLens huskyLens2;
 
         // Gobilda RGB indicator light
-        public static ServoImplEx indicatorLightFront;
-        public static ServoImplEx indicatorLightBack;
+        public static BetterServo indicatorLightFront;
+        public static BetterServo indicatorLightBack;
 
         // Gobilda 5000 Series
-        public static DcMotorImplEx[] swerveMotors = new DcMotorImplEx[Constants.Swerve.NUM_MOTORS];
+        public static BetterDcMotor[] swerveMotors = new BetterDcMotor[Constants.Swerve.NUM_MOTORS];
             public static String[] motorNames = new String[Constants.Swerve.NUM_MOTORS];
 
         // Axon Mini+
-        public static CRServoImplEx[] swerveServos = new CRServoImplEx[Constants.Swerve.NUM_SERVOS];
+        public static BetterCRServo[] swerveServos = new BetterCRServo[Constants.Swerve.NUM_SERVOS];
             public static String[] servoNames = new String[Constants.Swerve.NUM_SERVOS];
 
-        public static AnalogInput[] swerveAnalogs = new AnalogInput[Constants.Swerve.NUM_ANALOGS];
+        public static BetterAnalogInput[] swerveAnalogs = new BetterAnalogInput[Constants.Swerve.NUM_ANALOGS];
             public static String[] analogNames = new String[Constants.Swerve.NUM_ANALOGS];
 
         // Turret
-        public static DcMotorImplEx flyWheelMotorMaster;
-        public static DcMotorImplEx flyWheelMotorSlave;
-        public static ServoImplEx turretServoMaster;
-        public static ServoImplEx turretServoSlave;
-        public static ServoImplEx hoodServo;
+        public static BetterDcMotor flyWheelMotorMaster;
+        public static BetterDcMotor flyWheelMotorSlave;
+        public static BetterServo turretServoMaster;
+        public static BetterServo turretServoSlave;
+        public static BetterServo hoodServo;
 
         // Spindexer
-        public static ServoImplEx transferServoLeft;
-        public static ServoImplEx transferServoRight;
-        public static DcMotorImplEx spindexerEncoder;
+        public static BetterServo transferServoLeft;
+        public static BetterServo transferServoRight;
+        public static BetterDcMotor spindexerEncoder;
 
-        public static CRServoImplEx spindexServo;
-        public static AnalogInput spindexAnalog;
+        public static BetterCRServo spindexServo;
+        public static BetterAnalogInput spindexAnalog;
 
         // Intake
-        public static DcMotorImplEx intakeMotor;
+        public static BetterDcMotor intakeMotor;
 
         //sensors
         public static RevColorSensorV3 colorSensor;
-        public static RevTouchSensor beamBreak;
+        public static BetterTouchSensor beamBreak;
     }
 
     public RobotContainer(OpMode opMode) {
@@ -164,11 +168,11 @@ public class RobotContainer {
 
         for (int i = 0; i < swerveModules.length; i++) {
             HardwareDevices.motorNames[i] = "swerveMotor" + (i);
-            HardwareDevices.swerveMotors[i] = hardwareMap.get(DcMotorImplEx.class, HardwareDevices.motorNames[i]);
+            HardwareDevices.swerveMotors[i] = new BetterDcMotor(hardwareMap.get(DcMotorImplEx.class, HardwareDevices.motorNames[i]));
             HardwareDevices.servoNames[i] = "swerveServo" + (i);
-            HardwareDevices.swerveServos[i] = hardwareMap.get(CRServoImplEx.class, HardwareDevices.servoNames[i]);
+            HardwareDevices.swerveServos[i] = new BetterCRServo(hardwareMap.get(CRServoImplEx.class, HardwareDevices.servoNames[i]));
             HardwareDevices.analogNames[i] = "swerveAnalog" + (i);
-            HardwareDevices.swerveAnalogs[i] = hardwareMap.get(AnalogInput.class, HardwareDevices.analogNames[i]);
+            HardwareDevices.swerveAnalogs[i] = new BetterAnalogInput(hardwareMap.get(AnalogInput.class, HardwareDevices.analogNames[i]));
 
             if (i == 0 || i == 2) {
                 HardwareDevices.swerveMotors[i].setDirection(DcMotorImplEx.Direction.REVERSE);
@@ -176,8 +180,8 @@ public class RobotContainer {
             HardwareDevices.swerveMotors[i].setZeroPowerBehavior(DcMotorImplEx.ZeroPowerBehavior.BRAKE);
             HardwareDevices.swerveMotors[i].setMode(DcMotorImplEx.RunMode.RUN_USING_ENCODER);
 
-            swerveServosPIDF[i] = new SwervePIDF(this, i);
-            swerveModules[i] = new SwerveModule(this, HardwareDevices.swerveMotors[i], HardwareDevices.swerveServos[i], swerveServosPIDF[i], HardwareDevices.swerveAnalogs[i], Constants.Swerve.POWER_MULTIPLIER[i], i);  //is it best to pass in a constant?
+            swerveServosPDF[i] = new SwervePDF(this, i);
+            swerveModules[i] = new SwerveModule(this, HardwareDevices.swerveMotors[i], HardwareDevices.swerveServos[i], swerveServosPDF[i], HardwareDevices.swerveAnalogs[i], Constants.Swerve.POWER_MULTIPLIER[i], i);  //is it best to pass in a constant?
 
             if (Constants.Swerve.SERVO_ANALOG_ACTIVE) {
                 int analogPortNumber = Character.getNumericValue(HardwareDevices.swerveAnalogs[i].getConnectionInfo().charAt(HardwareDevices.swerveAnalogs[i].getConnectionInfo().length() - 1));
@@ -185,29 +189,23 @@ public class RobotContainer {
                     addRetainedTelemetry("WARNING: Swerve Analog Encoder " + i + " is connected to port " + analogPortNumber + ", should be port " + i, null);
                 }
             }
-            if (HardwareDevices.swerveMotors[i].getPortNumber() != i) {
-                addRetainedTelemetry("WARNING: Swerve Motor " + i + " is connected to port " + HardwareDevices.swerveMotors[i].getPortNumber() + ", should be port " + i, null);
-            }
-            if (HardwareDevices.swerveServos[i].getPortNumber() != i) {
-                addRetainedTelemetry("WARNING: Swerve Servo " + i + " is connected to port " + HardwareDevices.swerveServos[i].getPortNumber() + ", should be port " + i, null);
-            }
         }
 
-        HardwareDevices.turretServoMaster = getHardwareDevice(ServoImplEx.class, "turretServoMaster");
-        HardwareDevices.turretServoSlave = getHardwareDevice(ServoImplEx.class, "turretServoSlave");
-        HardwareDevices.hoodServo = getHardwareDevice(ServoImplEx.class, "hoodServo");
-        HardwareDevices.transferServoLeft = getHardwareDevice(ServoImplEx.class, "transferServoLeft");
-        HardwareDevices.transferServoRight = getHardwareDevice(ServoImplEx.class, "transferServoRight");
-        HardwareDevices.spindexerEncoder = getHardwareDevice(DcMotorImplEx.class, "spindexEncoder");
-        HardwareDevices.spindexServo = getHardwareDevice(CRServoImplEx.class, "spindexServo");
-        HardwareDevices.spindexAnalog = getHardwareDevice(AnalogInput.class, "spindexAnalog");
-        HardwareDevices.intakeMotor = getHardwareDevice(DcMotorImplEx.class, "intakeMotor");
-        HardwareDevices.flyWheelMotorMaster = getHardwareDevice(DcMotorImplEx.class, "flyWheelMotorMaster");
-        HardwareDevices.flyWheelMotorSlave = getHardwareDevice(DcMotorImplEx.class, "flyWheelMotorSlave");
+        HardwareDevices.turretServoMaster = new BetterServo(getHardwareDevice(ServoImplEx.class, "turretServoMaster"));
+        HardwareDevices.turretServoSlave = new BetterServo(getHardwareDevice(ServoImplEx.class, "turretServoSlave"));
+        HardwareDevices.hoodServo = new BetterServo(getHardwareDevice(ServoImplEx.class, "hoodServo"));
+        HardwareDevices.transferServoLeft = new BetterServo(getHardwareDevice(ServoImplEx.class, "transferServoLeft"));
+        HardwareDevices.transferServoRight = new BetterServo(getHardwareDevice(ServoImplEx.class, "transferServoRight"));
+        HardwareDevices.spindexerEncoder = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "spindexEncoder"));
+        HardwareDevices.spindexServo = new BetterCRServo(getHardwareDevice(CRServoImplEx.class, "spindexServo"));
+        HardwareDevices.spindexAnalog = new BetterAnalogInput(getHardwareDevice(AnalogInput.class, "spindexAnalog"));
+        HardwareDevices.intakeMotor = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "intakeMotor"));
+        HardwareDevices.flyWheelMotorMaster = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "flyWheelMotorMaster"));
+        HardwareDevices.flyWheelMotorSlave = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "flyWheelMotorSlave"));
 
         //sensor
         HardwareDevices.colorSensor = getHardwareDevice(RevColorSensorV3.class, "colorSensor");
-        HardwareDevices.beamBreak = getHardwareDevice(RevTouchSensor.class, "beamBreak");
+        HardwareDevices.beamBreak = new BetterTouchSensor(getHardwareDevice(RevTouchSensor.class, "beamBreak"));
 
 
         LinkedMotors flyWheelMotors = new LinkedMotors(HardwareDevices.flyWheelMotorMaster, HardwareDevices.flyWheelMotorSlave);
@@ -464,7 +462,6 @@ public class RobotContainer {
         } else {
             telemetry.addData("LL IS BLINDDD", "");
         }
-        telemetry.addData("Spindex encoder: ", HardwareDevices.spindexerEncoder.getCurrentPosition());
         telemetry.addData("Pinpoint X", Status.currentPose.getX(DistanceUnit.CM) + " cm");
         telemetry.addData("Pinpoint Y", Status.currentPose.getY(DistanceUnit.CM) + " cm");
         telemetry.addData("Pinpoint Heading", Status.currentHeading + "°");
@@ -498,15 +495,15 @@ public class RobotContainer {
         telemetry.addData("Spindexer Angle", spindexer.getAngle());
         telemetry.addData("Spindexer Slot Colors", Arrays.toString(Status.slotColor));
         telemetry.addData("Spindexer Target angle", spindexer.getTargetAngle());
-        telemetry.addData("Spindexer error angle", spindexer.pidf.getError());
+        telemetry.addData("Spindexer error angle", spindexer.pdf.getError());
         telemetry.addData("Spindexer Servo Power", HardwareDevices.spindexServo.getPower());
-        telemetry.addData("Spindexer calc power", spindexer.pidf.calculate());
+        telemetry.addData("Spindexer calc power", spindexer.pdf.calculate());
         telemetry.addLine();
         telemetry.addData("lower servo pos", HardwareDevices.transferServoLeft.getPosition());
         telemetry.addData("flywheel speed", HardwareDevices.flyWheelMotorMaster.getVelocity());
-        telemetry.addData("flywheel current mA", HardwareDevices.flyWheelMotorMaster.getCurrent(CurrentUnit.MILLIAMPS));
+        // telemetry.addData("flywheel current mA", HardwareDevices.flyWheelMotorMaster.getCurrent(CurrentUnit.MILLIAMPS));
         telemetry.addData("upper flywheel speed", HardwareDevices.flyWheelMotorSlave.getVelocity());
-        telemetry.addData("upper flywheel current mA", HardwareDevices.flyWheelMotorSlave.getCurrent(CurrentUnit.MILLIAMPS));
+        // telemetry.addData("upper flywheel current mA", HardwareDevices.flyWheelMotorSlave.getCurrent(CurrentUnit.MILLIAMPS));
         telemetry.addData("turret pos", turret.getPosition());
         telemetry.addData("slave servo", HardwareDevices.turretServoSlave.getPosition());
         telemetry.addLine();
@@ -529,9 +526,9 @@ public class RobotContainer {
 //            telemetry.addLine();
 //            telemetry.addData("Selected Servo", selectedServo);
 //            telemetry.addData("Servo Angle", swerveModules[selectedServo].servo.getAngle());
-//            telemetry.addData("Servo Target", swerveServosPIDF[selectedServo].getTargetAngle());
-//            telemetry.addData("Servo Set Power", swerveServosPIDF[selectedServo].calculate());
-//            telemetry.addData("Servo Error", swerveServosPIDF[selectedServo].getError());
+//            telemetry.addData("Servo Target", swerveServosPDF[selectedServo].getTargetAngle());
+//            telemetry.addData("Servo Set Power", swerveServosPDF[selectedServo].calculate());
+//            telemetry.addData("Servo Error", swerveServosPDF[selectedServo].getError());
 //            telemetry.addData("Motor Target Power", swerveModules[selectedServo].motor.targetPower);
 //            telemetry.addData("Motor Current Velocity", swerveModules[selectedServo].motor.getVelocity());
 //            telemetry.addData("Motor Current Power", RobotContainer.HardwareDevices.swerveMotors[selectedServo].getPower());

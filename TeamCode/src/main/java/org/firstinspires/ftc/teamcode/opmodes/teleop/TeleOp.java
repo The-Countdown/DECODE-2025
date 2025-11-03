@@ -106,7 +106,7 @@ public class TeleOp extends OpMode {
             robotContainer.spindexer.goToNextIntakeSlot();
         }
 
-        double spindexerError = Math.abs(robotContainer.spindexer.pidf.getError());
+        double spindexerError = Math.abs(robotContainer.spindexer.pdf.getError());
         // If the error changes by a lot in a short period of time reset the timer
 
         if (Math.abs(lastError - spindexerError) > 50) {
@@ -115,9 +115,9 @@ public class TeleOp extends OpMode {
 
         if (spindexerError > 1) {
             if (spindexAccel.seconds() <= 1) {
-                robotContainer.spindexer.setPower(Math.min(robotContainer.spindexer.pidf.calculate() * spindexAccel.seconds(), 0.5));
+                robotContainer.spindexer.setPower(Math.min(robotContainer.spindexer.pdf.calculate() * spindexAccel.seconds(), 0.5));
             } else {
-                 robotContainer.spindexer.setPower(robotContainer.spindexer.pidf.calculate());
+                 robotContainer.spindexer.setPower(robotContainer.spindexer.pdf.calculate());
 //                robotContainer.spindexer.setPower(0.5);
             }
         } else {
