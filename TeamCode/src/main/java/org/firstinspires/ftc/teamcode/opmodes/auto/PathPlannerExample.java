@@ -22,7 +22,6 @@ public class PathPlannerExample extends OpMode {
         robotContainer = new RobotContainer(this);
         robotContainer.init();
         blackboard.put("pose", Status.currentPose);
-        blackboard.put("heading", Status.currentPose);
 
         robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, 0, 100, AngleUnit.DEGREES, 300));
     }
@@ -44,8 +43,6 @@ public class PathPlannerExample extends OpMode {
 
     @Override
     public void stop() {
-        robotContainer.completedAuto = true;
         blackboard.put("pose", Status.currentPose);
-        blackboard.put("heading", Status.currentHeading);
     }
 }

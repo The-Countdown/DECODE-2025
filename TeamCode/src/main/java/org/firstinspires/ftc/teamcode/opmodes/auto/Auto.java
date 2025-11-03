@@ -22,6 +22,7 @@ public class Auto extends OpMode {
 
     @Override
     public void init() {
+        Status.lightsOn = true;
         robotContainer = new RobotContainer(this);
         robotContainer.init();
 //        RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU();
@@ -47,20 +48,19 @@ public class Auto extends OpMode {
         RobotContainer.HardwareDevices.pinpoint.setPosition(Constants.Robot.startingPose);
 
         robotContainer.turret.pointAtGoal();
-        robotContainer.turret.flywheel.setTargetVelocity(0.6);
+        robotContainer.turret.flywheel.setTargetVelocity(0.5);
         robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[1]);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.goToNextTransferSlot(), 1000);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapUp(), 2000);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapDown(), 2200);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.goToNextTransferSlot(), 3000);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapUp(), 4000);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapDown(), 4200);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.goToNextTransferSlot(), 5000);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapUp(), 6000);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapDown(), 6200);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.turret.flywheel.setTargetVelocity(0), 6300);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.setTargetAngle(Constants.Spindexer.TRANSFER_SLOT_ANGLES[0]), 1000);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapUp(), 2500);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapDown(), 2800);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.setTargetAngle(Constants.Spindexer.TRANSFER_SLOT_ANGLES[1]), 3000);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapUp(), 4500);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapDown(), 4800);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.setTargetAngle(Constants.Spindexer.TRANSFER_SLOT_ANGLES[2]), 5000);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapUp(), 6500);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapDown(), 6800);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.turret.flywheel.setTargetVelocity(0), 7000);
         robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.driveToPose(0), 10000);
-        robotContainer.telemetry.addData("Pose 1", Status.currentPose);
     }
 
     @Override
@@ -68,8 +68,8 @@ public class Auto extends OpMode {
         robotContainer.delayedActionManager.update();
 
         double spindexerError = Math.abs(robotContainer.spindexer.pidf.getError());
-        // If the error changes by a lot in a short period of time reset the timer
 
+        // If the error changes by a lot in a short period of time reset the timer
         if (Math.abs(lastError - spindexerError) > 50) {
             spindexAccel.reset();
         }
@@ -89,21 +89,6 @@ public class Auto extends OpMode {
 
     @Override
     public void stop() {
-        robotContainer.completedAuto = true;
         blackboard.put("pose", Status.currentPose);
-                
-        robotContainer.localizationUpdater.stopLocalizer();
-        try {
-            robotContainer.localizationUpdater.join();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-        robotContainer.drivetrainUpdater.stopEnabled();
-        try {
-            robotContainer.drivetrainUpdater.join();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
     }
 }

@@ -31,12 +31,6 @@ public class LimelightLogic {
         this.limelight = limelight;
 
         LLFieldMap field = new LLFieldMap();
-//        List<Double> transform = List.of(1.1, 2.1, 3.1);
-//
-//        new LLFieldMap.Fiducial(20, 6, "fam", transform, true);
-//
-//
-//        limelight.uploadFieldmap(field, null);
     }
 
     public void update() {
@@ -80,12 +74,6 @@ public class LimelightLogic {
         }
     }
 
-    public double disToGoalPinpoint() {
-            double xDiff = Constants.Game.GOAL_POSE.getX(DistanceUnit.INCH) - Status.currentPose.getX(DistanceUnit.INCH);
-            double yDiff = Constants.Game.GOAL_POSE.getY(DistanceUnit.INCH) - Status.currentPose.getY(DistanceUnit.INCH);
-            return Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
-    }
-
     public Constants.Game.MOTIF checkMotif(LLResultTypes.FiducialResult aprilTag) {
         if (aprilTag.getFiducialId() == 21) {
             return Constants.Game.MOTIF.GPP;
@@ -123,12 +111,8 @@ public class LimelightLogic {
             }
         }
     }
-    // Assuming point 1 is less than point 2
-    public double interpolate(double point1, double point2, double percentageSplit) {
-        return point1 + ((point2 - point1) * percentageSplit);
-    }
 
-    public double useInterpolate() {
+    public double getRequiredFlywheelSpeed() {
         // variable
         double dist = disToGoal();
         double turretSpeed = 0;
@@ -136,9 +120,9 @@ public class LimelightLogic {
             return 0;
         } else {
             if (dist < 100) {
-                turretSpeed = interpolate(table[0], table[1], (dist - 50) / (100 - 50));
+                turretSpeed = HelperFunctions.interpolate(table[0], table[1], (dist - 50) / (100 - 50));
             } else {
-                turretSpeed = interpolate(table[1], table[2], (dist - 100) / (160 - 100));
+                turretSpeed = HelperFunctions.interpolate(table[1], table[2], (dist - 100) / (160 - 100));
             }
         }
         return turretSpeed;

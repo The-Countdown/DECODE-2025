@@ -61,7 +61,6 @@ import java.util.Map;
  * approach to managing complex robotic systems.
  */
 public class RobotContainer {
-    public boolean completedAuto = false;
     public OpMode opMode;
     public HardwareMap hardwareMap;
     public Telemetry telemetry;
@@ -78,7 +77,6 @@ public class RobotContainer {
     public SwervePIDF[] swerveServosPIDF = new SwervePIDF[Constants.Swerve.NUM_SERVOS];
     public LocalizationUpdater localizationUpdater;
     public DrivetrainUpdater drivetrainUpdater;
-    public ADGUpdater adgUpdater;
     public PathPlanner pathPlanner;
     public LimelightLogic limelightLogic;
     public HuskyLensLogic huskyLensLogic1;
@@ -250,7 +248,6 @@ public class RobotContainer {
     public void init() {
         this.isRunning = true;
         RobotContainer.HardwareDevices.imu.resetYaw();
-//        RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU();
         this.pathPlanner = new PathPlanner(this.telemetry, this);
         HardwareDevices.allHubs = hardwareMap.getAll(LynxModule.class);
         HardwareDevices.controlHub = hardwareMap.get(LynxModule.class, "Control Hub");
@@ -271,6 +268,22 @@ public class RobotContainer {
         drivetrainUpdater = new DrivetrainUpdater(this);
         drivetrainUpdater.start();
         telemetryLoopTimer.reset();
+    }
+
+    public void stop() {
+        this.localizationUpdater.stopLocalization();
+        try {
+            this.localizationUpdater.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        this.drivetrainUpdater.stopEnabled();
+        try {
+            this.drivetrainUpdater.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -457,7 +470,6 @@ public class RobotContainer {
         } else {
             telemetry.addData("LL IS BLINDDD", "");
         }
-        telemetry.addData("Dist pinpoint", limelightLogic.disToGoalPinpoint());
         telemetry.addData("Pinpoint X", Status.currentPose.getX(DistanceUnit.CM) + " cm");
         telemetry.addData("Pinpoint Y", Status.currentPose.getY(DistanceUnit.CM) + " cm");
         telemetry.addData("Pinpoint Heading", Status.currentHeading + "°");

@@ -25,7 +25,7 @@ public class LocalizationUpdater extends Thread {
 
     @Override
     public void run() {
-        while (Status.opModeIsActive) {
+        while (running) {
             RobotContainer.HardwareDevices.pinpoint.update();
             Status.currentPose = RobotContainer.HardwareDevices.pinpoint.getPosition();
             Status.currentHeading = Status.currentPose.getHeading(AngleUnit.DEGREES);
@@ -45,5 +45,9 @@ public class LocalizationUpdater extends Thread {
                 }
             }
         }
+    }
+
+    public void stopLocalization() {
+        running = false;
     }
 }

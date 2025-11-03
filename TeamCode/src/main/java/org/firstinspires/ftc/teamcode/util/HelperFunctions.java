@@ -5,6 +5,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.drivetrain.Drivetrain;
+import org.firstinspires.ftc.teamcode.main.Constants;
+import org.firstinspires.ftc.teamcode.main.Status;
 
 public class HelperFunctions {
 
@@ -50,4 +52,16 @@ public class HelperFunctions {
     public static double clamp(double value, double min, double max) {
         return Math.max(min, Math.min(max, value));
     }
+
+    public static double disToGoal() {
+            double xDiff = Constants.Game.GOAL_POSE.getX(DistanceUnit.INCH) - Status.currentPose.getX(DistanceUnit.INCH);
+            double yDiff = Constants.Game.GOAL_POSE.getY(DistanceUnit.INCH) - Status.currentPose.getY(DistanceUnit.INCH);
+            return Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
+    }
+
+    // Assuming point 1 is less than point 2
+    public static double interpolate(double point1, double point2, double percentageSplit) {
+        return point1 + ((point2 - point1) * percentageSplit);
+    }
+
 }

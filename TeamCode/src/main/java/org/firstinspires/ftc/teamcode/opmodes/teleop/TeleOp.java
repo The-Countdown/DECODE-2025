@@ -29,14 +29,12 @@ public class TeleOp extends OpMode {
         robotContainer = new RobotContainer(this);
         robotContainer.init();
         RobotContainer.HardwareDevices.pinpoint.setPosition((Pose2D) blackboard.getOrDefault("pose", new Pose2D(DistanceUnit.CM, 0, 0, AngleUnit.DEGREES, 0)));
-        robotContainer.telemetry.addData("hello: ", blackboard.getOrDefault("pose", new Pose2D(DistanceUnit.CM, 0, 0, AngleUnit.DEGREES, 0)));
         robotContainer.telemetry.addData("Alliance Color", Status.alliance == Constants.Game.ALLIANCE.BLUE ? "BLUE" : "RED");
         robotContainer.telemetry.update();
     }
 
     @Override
     public void init_loop() {
-        // robotContainer.refreshData();
         robotContainer.allIndicatorLights.rainbow();
     }
 
@@ -87,10 +85,10 @@ public class TeleOp extends OpMode {
             Status.turretToggle = false;
         }
 
-        if (Status.manualControl) {
+        if (Status.manualControl && robotContainer.gamepadEx2.dpadRight.isHeld()) {
             robotContainer.turret.flywheel.setTargetVelocity(turretToggleButton.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE);
         } else if (!Status.intakeToggle) {
-            robotContainer.turret.flywheel.setTargetVelocity(Math.min(turretToggleButton.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, robotContainer.limelightLogic.useInterpolate()));
+            robotContainer.turret.flywheel.setTargetVelocity(Math.min(turretToggleButton.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, robotContainer.limelightLogic.getRequiredFlywheelSpeed()));
         } else {
             robotContainer.turret.flywheel.setTargetVelocity(0);
         }
@@ -103,12 +101,6 @@ public class TeleOp extends OpMode {
         } else {
             robotContainer.turret.pointAtGoal();
         }
-
-//        if (robotContainer.limelightLogic.limelight.getLatestResult().isValid()) {
-//            robotContainer.limelightLogic.trackGoal();
-//        } else {
-//            robotContainer.turret.pointAtGoal();
-//        }
 
         if (robotContainer.beamBreakToggleButton.wasJustReleased()) {
             robotContainer.spindexer.goToNextIntakeSlot();
@@ -175,9 +167,9 @@ public class TeleOp extends OpMode {
             tranferTimer.reset();
         }
 
-        if (robotContainer.gamepadEx2.leftBumper.isPressed()) {
+        if (robotContainer.gamepadEx2.leftBumper.wasJustPressed()) {
             robotContainer.transfer.flapUp();
-        } else if (robotContainer.gamepadEx2.rightBumper.isPressed()) {
+        } else if (robotContainer.gamepadEx2.leftBumper.wasJustReleased()) {
             robotContainer.transfer.flapDown();
         }
 
@@ -206,7 +198,7 @@ public class TeleOp extends OpMode {
             robotContainer.telemetry.addLine("robot pos on field no see");
         }
 
-        robotContainer.telemetry.addData("turret interpolation", robotContainer.limelightLogic.useInterpolate());
+        robotContainer.telemetry.addData("turret interpolation", robotContainer.limelightLogic.getRequiredFlywheelSpeed());
 
         if (robotContainer.gamepadEx2.dpadUp.wasJustPressed()) {
             robotContainer.spindexer.goToNextGreenSlot();
@@ -218,7 +210,6 @@ public class TeleOp extends OpMode {
 //        robotContainer.limelightLogic.trackGoal();
 
         robotContainer.telemetry("teleOp");
-
         Thread.yield();
     }
 
