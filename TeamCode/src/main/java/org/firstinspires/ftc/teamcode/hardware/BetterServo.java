@@ -28,7 +28,7 @@ public class BetterServo {
         servo.setDirection(direction);
     }
     
-    public double getPower() {
+    public double getPosition() {
         return this.position;
     }
 }

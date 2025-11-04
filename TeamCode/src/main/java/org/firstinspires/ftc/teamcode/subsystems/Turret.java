@@ -10,14 +10,16 @@ import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 import org.firstinspires.ftc.teamcode.util.LinkedMotors;
 import org.firstinspires.ftc.teamcode.util.LinkedServos;
 
+import org.firstinspires.ftc.teamcode.hardware.BetterServo;
+
 public class Turret extends RobotContainer.HardwareDevices {
     private final RobotContainer robotContainer;
     private final LinkedMotors flyWheelMotors;
     private final LinkedServos turretServos;
-    public final ServoImplEx hoodServo;
+    public final BetterServo hoodServo;
     private double targetPosition = 0;
 
-    public Turret(RobotContainer robotContainer, LinkedMotors flyWheelMotors, ServoImplEx hoodServo, LinkedServos turretServos) {
+    public Turret(RobotContainer robotContainer, LinkedMotors flyWheelMotors, BetterServo hoodServo, LinkedServos turretServos) {
         this.robotContainer = robotContainer;
         this.flyWheelMotors = flyWheelMotors;
         this.hoodServo = hoodServo;
@@ -80,7 +82,7 @@ public class Turret extends RobotContainer.HardwareDevices {
 //        }
 
         public void setPos(double pos) {
-            hoodServo.setPosition(pos);
+            hoodServo.updateSetPosition(pos, Constants.Robot.SERVO_UPDATE_TIME);
         }
     }
 

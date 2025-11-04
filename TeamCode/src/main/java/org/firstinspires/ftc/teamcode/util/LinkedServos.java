@@ -5,8 +5,10 @@ import com.qualcomm.robotcore.hardware.DcMotorImplEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 
-import org.firstinspsires.ftc.teamcode.hardware.BetterServo;
-import org.firstinspsires.ftc.teamcode.hardware.BetterCRServo;
+import org.firstinspires.ftc.teamcode.main.Constants;
+
+import org.firstinspires.ftc.teamcode.hardware.BetterCRServo;
+import org.firstinspires.ftc.teamcode.hardware.BetterServo;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -39,7 +41,7 @@ public class LinkedServos {
     }
 
     //CRServo, take in single
-    public LinkedServos(BetterSCServo masterServo, BetterCRServo slaveServo) {
+    public LinkedServos(BetterCRServo masterServo, BetterCRServo slaveServo) {
         this.masterCRServo = masterServo;
         this.slaveCRServo = new ArrayList<>();
         this.slaveCRServo.add(slaveServo);
@@ -47,9 +49,9 @@ public class LinkedServos {
 
     //set pos 1 to -1
     public void setPosition(double position) {
-        masterServo.updateSetPosition(position);
-        for (ServoImplEx slaveServo : slaveServo) {
-            slaveServo.setPosition(position);
+        masterServo.updateSetPosition(position, Constants.Robot.SERVO_UPDATE_TIME);
+        for (BetterServo slaveServo : slaveServo) {
+            slaveServo.updateSetPosition(position, Constants.Robot.SERVO_UPDATE_TIME);
         }
     }
 
@@ -57,17 +59,17 @@ public class LinkedServos {
     public void setPositionDegree(double degree) {
         degree = HelperFunctions.normalizeAngle(degree) + 180;
         degree = degree > 355 ? 355 : degree; // if degree > 355 ? condition is true, return 355, otherwise(:) return degree
-        masterServo.setPosition(degree/355);
-        for (ServoImplEx slaveServo : slaveServo) {
-            slaveServo.setPosition(degree/355);
+        masterServo.updateSetPosition(degree/355, Constants.Robot.SERVO_UPDATE_TIME);
+        for (BetterServo slaveServo : slaveServo) {
+            slaveServo.updateSetPosition(degree/355, Constants.Robot.SERVO_UPDATE_TIME);
         }
     }
 
     //set power 1 -1
     public void setPower(double power) {
-        masterCRServo.setPower(power);
-        for (CRServoImplEx slaveCRServo : slaveCRServo) {
-            slaveCRServo.setPower(power);
+        masterCRServo.updateSetPower(power, Constants.Robot.SERVO_UPDATE_TIME);
+        for (BetterCRServo slaveCRServo : slaveCRServo) {
+            slaveCRServo.updateSetPower(power, Constants.Robot.SERVO_UPDATE_TIME);
         }
     }
     public double getPosition() {

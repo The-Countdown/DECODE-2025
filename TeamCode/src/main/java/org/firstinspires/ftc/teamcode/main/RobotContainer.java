@@ -108,8 +108,8 @@ public class RobotContainer {
         public static HuskyLens huskyLens2;
 
         // Gobilda RGB indicator light
-        public static BetterServo indicatorLightFront;
-        public static BetterServo indicatorLightBack;
+        public static ServoImplEx indicatorLightFront;
+        public static ServoImplEx indicatorLightBack;
 
         // Gobilda 5000 Series
         public static BetterDcMotor[] swerveMotors = new BetterDcMotor[Constants.Swerve.NUM_MOTORS];
