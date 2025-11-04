@@ -2,8 +2,10 @@ package org.firstinspires.ftc.teamcode.hardware;
 
 import com.qualcomm.robotcore.hardware.DcMotorImplEx;
 
+import org.firstinspires.ftc.teamcode.util.HelperFunctions;
+
 public class BetterDcMotor {
-    private static DcMotorImplEx motor;
+    private DcMotorImplEx motor;
 
     private long lastTimePower;
     private long lastTimeVelocity;
@@ -13,11 +15,14 @@ public class BetterDcMotor {
     private double lastVelocity = 0;
     private double velocity = 0;
 
-    public BetterDcMotor(DcMotorImplEx motor) {
+    private double minTimeBetweenUpdates = 0;
+
+    public BetterDcMotor(DcMotorImplEx motor, int minTimeBetweenUpdates) {
         this.motor = motor;
+        this.minTimeBetweenUpdates = HelperFunctions.getRandomWithin(minTimeBetweenUpdates, 0.5);
     }
 
-    public void updateSetPower(double power, int minTimeBetweenUpdates) {
+    public void updateSetPower(double power) {
         this.power = power;
         long currentTime = System.currentTimeMillis();
         if (currentTime - lastTimePower >= minTimeBetweenUpdates && power != lastPower) {
@@ -27,7 +32,7 @@ public class BetterDcMotor {
         }
     }
 
-    public void updateSetVelocity(double velocity, int minTimeBetweenUpdates) {
+    public void updateSetVelocity(double velocity) {
         this.velocity = velocity;
         long currentTime = System.currentTimeMillis();
         if (currentTime - lastTimeVelocity >= minTimeBetweenUpdates && velocity != lastVelocity) {

@@ -63,7 +63,11 @@ public class Turret extends RobotContainer.HardwareDevices {
         double targetVelocity = 0;
         public void setTargetVelocity(double power) {
             targetVelocity = Constants.Turret.FLYWHEEL_MAX_VELOCITY * power;
-            flyWheelMotors.setVelocity(targetVelocity);
+            if (robotContainer.controlHubVoltage > 10.4) {
+                flyWheelMotors.setVelocity(targetVelocity);
+            } else {
+                flyWheelMotors.setVelocity(0);
+            }
         }
 
         public boolean atTargetVelocity() {
@@ -82,7 +86,7 @@ public class Turret extends RobotContainer.HardwareDevices {
 //        }
 
         public void setPos(double pos) {
-            hoodServo.updateSetPosition(pos, Constants.Robot.SERVO_UPDATE_TIME);
+            hoodServo.updateSetPosition(pos);
         }
     }
 

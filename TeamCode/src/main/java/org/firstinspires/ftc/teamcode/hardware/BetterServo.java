@@ -2,19 +2,24 @@ package org.firstinspires.ftc.teamcode.hardware;
 
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 
+import org.firstinspires.ftc.teamcode.util.HelperFunctions;
+
 public class BetterServo {
-    private static ServoImplEx servo;
+    private ServoImplEx servo;
 
     private long lastTime;
 
     private double lastPosition = 0;
     private double position = 0;
 
-    public BetterServo(ServoImplEx servo) {
+    private double minTimeBetweenUpdates = 0;
+
+    public BetterServo(ServoImplEx servo, int minTimeBetweenUpdates) {
         this.servo = servo;
+        this.minTimeBetweenUpdates = HelperFunctions.getRandomWithin(minTimeBetweenUpdates, 0.5);
     }
 
-    public void updateSetPosition(double position, int minTimeBetweenUpdates) {
+    public void updateSetPosition(double position) {
         this.position = position;
         long currentTime = System.currentTimeMillis();
         if (currentTime - lastTime >= minTimeBetweenUpdates && position != lastPosition) {

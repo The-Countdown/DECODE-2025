@@ -65,6 +65,11 @@ public class TeleOp extends OpMode {
 
         robotContainer.allIndicatorLights.lightsUpdate();
 
+        // Get current and voltage
+        robotContainer.controlHubVoltage = robotContainer.getVoltage(Constants.Robot.CONTROL_HUB_INDEX);
+        robotContainer.expansionHubVoltage = robotContainer.getVoltage(Constants.Robot.EXPANSION_HUB_INDEX);
+        robotContainer.controlHubCurrent = robotContainer.getCurrent(Constants.Robot.CONTROL_HUB_INDEX);
+        robotContainer.expansionHubCurrent = robotContainer.getCurrent(Constants.Robot.EXPANSION_HUB_INDEX);
         //gamepad 1
 
         robotContainer.drivetrain.controlUpdate();
@@ -85,10 +90,11 @@ public class TeleOp extends OpMode {
             Status.turretToggle = false;
         }
 
+        telemetry.addData("Pow", Math.pow(robotContainer.gamepadEx2.dpadRight.getHoldDuration(), Constants.Turret.FLYWHEEL_CURVE));
         if (Status.manualControl && robotContainer.gamepadEx2.dpadRight.isHeld()) {
-            robotContainer.turret.flywheel.setTargetVelocity(turretToggleButton.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE);
+            robotContainer.turret.flywheel.setTargetVelocity(Math.min(Math.pow(robotContainer.gamepadEx2.dpadRight.getHoldDuration(), Constants.Turret.FLYWHEEL_CURVE), 1));
         } else if (!Status.intakeToggle) {
-            robotContainer.turret.flywheel.setTargetVelocity(Math.min(turretToggleButton.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, robotContainer.limelightLogic.getRequiredFlywheelSpeed()));
+            robotContainer.turret.flywheel.setTargetVelocity(Math.min(Math.pow(turretToggleButton.getHoldDuration(), Constants.Turret.FLYWHEEL_CURVE), robotContainer.limelightLogic.getRequiredFlywheelSpeed()));
         } else {
             robotContainer.turret.flywheel.setTargetVelocity(0);
         }

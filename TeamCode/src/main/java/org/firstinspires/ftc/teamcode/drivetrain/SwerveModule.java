@@ -75,7 +75,7 @@ public class SwerveModule {
                 return 0;
             }
 
-            double angle = (analogEncoder.getVoltage() / Constants.System.ANALOG_MAX_VOLTAGE) * 360;
+            double angle = (analogEncoder.updateGetVoltage() / Constants.System.ANALOG_MAX_VOLTAGE) * 360;
 
             angle += Constants.Swerve.SERVO_ANGLE_OFFSET[moduleIndex];
 
@@ -89,21 +89,21 @@ public class SwerveModule {
         }
 
         public void setPower(double power) {
-            turningServo.updateSetPower(power, Constants.Robot.MOTOR_UPDATE_TIME);
+            turningServo.updateSetPower(power);
         }
     }
 
     public class Motor {
         public double targetPower;
         public void setPower(double power) {
-            drivingMotor.updateSetPower(power, Constants.Robot.MOTOR_UPDATE_TIME);
+            drivingMotor.updateSetPower(power);
         }
 
         /**
         * Sets the velocity of the motor from 0-1, because it is specific to this swerve motor so the value will be consistent with the multiplier.
          */
         public void setVelocity(double velocity) {
-            drivingMotor.updateSetVelocity(velocity * Constants.Swerve.MOTOR_MAX_VELOCITY_TICKS_PER_SECOND, 50);
+            drivingMotor.updateSetVelocity(velocity * Constants.Swerve.MOTOR_MAX_VELOCITY_TICKS_PER_SECOND);
         }
 
         public double getVelocity() {
@@ -112,7 +112,7 @@ public class SwerveModule {
 
         // This function takes in a double between 0-1 for 0 rpm to max rpm of motor as relative to the max forward speed of the drive base.
         public void setPowerWithMultiplier(double speed) {
-            drivingMotor.updateSetPower(speed * powerMultiplier, Constants.Robot.MOTOR_UPDATE_TIME);
+            drivingMotor.updateSetPower(speed * powerMultiplier);
         }
 
         public void setTargetPower(double power) {

@@ -64,4 +64,8 @@ public class HelperFunctions {
         return point1 + ((point2 - point1) * percentageSplit);
     }
 
+    public static int getRandomWithin(int num, double percent) {
+        double adjustment = num * percent;
+        return (int) (num + Math.random() > percent ? adjustment : -adjustment);
+    }
 }

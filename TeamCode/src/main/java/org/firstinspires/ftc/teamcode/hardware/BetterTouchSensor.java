@@ -2,20 +2,23 @@ package org.firstinspires.ftc.teamcode.hardware;
 
 import com.qualcomm.hardware.rev.RevTouchSensor;
 
-import java.util.Timer;
+import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
 public class BetterTouchSensor {
-    private static RevTouchSensor sensor;
+    private RevTouchSensor sensor;
 
     private long lastTime;
 
     public boolean pressed = false;
 
-    public BetterTouchSensor(RevTouchSensor sensor) {
+    private double minTimeBetweenUpdates = 0;
+
+    public BetterTouchSensor(RevTouchSensor sensor, int minTimeBetweenUpdates) {
         this.sensor = sensor;
+        this.minTimeBetweenUpdates = HelperFunctions.getRandomWithin(minTimeBetweenUpdates, 0.5);
     }
 
-    public void update(int minTimeBetweenUpdates) {
+    public void update() {
         long currentTime = System.currentTimeMillis();
         if (currentTime - lastTime >= minTimeBetweenUpdates) {
             pressed = sensor.isPressed();

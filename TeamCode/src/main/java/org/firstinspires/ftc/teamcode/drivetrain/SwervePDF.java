@@ -19,7 +19,6 @@ public class SwervePDF {
     private double error;
     private double lastError;
     private double p;
-    private double i;
     private ElapsedTime iTimer;
     private double swerveConstantPower;
     private double ff;

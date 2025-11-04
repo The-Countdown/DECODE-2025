@@ -52,8 +52,13 @@ public class Constants {
     @Config
     public static class Robot {
         public static int MOTOR_UPDATE_TIME = 50;
-        public static int SERVO_UPDATE_TIME = 20;
+        public static int SERVO_UPDATE_TIME = 100;
         public static int COLOR_UPDATE_TIME = 150;
+        public static int ANALOG_UPDATE_TIME = 30;
+
+        public static int SWERVE_MOTOR_UPDATE_TIME = 20;
+        public static int SWERVE_SERVO_UPDATE_TIME = 10;
+        public static int SWERVE_ANALOG_UPDATE_TIME = 5;
 
         public static final IMU.Parameters imuParameters = new IMU.Parameters(
                 new RevHubOrientationOnRobot(
@@ -175,9 +180,9 @@ public class Constants {
          * These values will need to be tuned.
          */
         public static double[]
-                SERVO_KP = {0.009, 0.009, 0.009, 0.009},
+                SERVO_KP = {0.006, 0.006, 0.006, 0.006},
                 SERVO_KD = {0, 0, 0, 0},
-                SERVO_KF = {0, 0, 0, 0};
+                SERVO_KF = {0.015, 0.015, 0.015, 0.015};
 
         public static double SERVO_PIDF_TOLERANCE_DEGREES = 1;
 
@@ -272,7 +277,7 @@ public class Constants {
         public static double TURRET_SPEED_FACTOR = 0.001;
         public static double FLYWHEEL_TOP_SPEED = 0.95;
         public static int FLYWHEEL_MAX_VELOCITY = 3000;
-        public static double FLYWHEEL_CURVE = 4;
+        public static double FLYWHEEL_CURVE = 6;
         public static double TRACK_GOAL_P = -0.2;
         public static double[] HOOD_PRESETS = {0.53, 0.05};
         public static double TURRET_LIMIT_MIN_ANGLE = 30;

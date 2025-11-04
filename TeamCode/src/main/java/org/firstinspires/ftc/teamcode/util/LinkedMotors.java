@@ -26,16 +26,16 @@ public class LinkedMotors {
     }
 
     public void setPower(double power) {
-        masterMotor.updateSetPower(power, Constants.Robot.MOTOR_UPDATE_TIME);
+        masterMotor.updateSetPower(power);
         for (BetterDcMotor slaveMotor : slaveMotors) {
-            slaveMotor.updateSetPower(power, Constants.Robot.MOTOR_UPDATE_TIME);
+            slaveMotor.updateSetPower(power);
         }
     }
 
     public void setVelocity(double velocity) {
-        masterMotor.updateSetVelocity(velocity, Constants.Robot.MOTOR_UPDATE_TIME);
+        masterMotor.updateSetVelocity(velocity);
         for (BetterDcMotor slaveMotor : slaveMotors) {
-            slaveMotor.updateSetVelocity(velocity, Constants.Robot.MOTOR_UPDATE_TIME);
+            slaveMotor.updateSetVelocity(velocity);
         }
     }
 

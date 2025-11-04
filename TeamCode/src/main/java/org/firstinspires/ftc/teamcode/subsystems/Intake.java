@@ -18,7 +18,7 @@ public class Intake {
     }
 
     public void setVelocity(double power) {
-        intakeMotor.updateSetVelocity(Constants.Swerve.MOTOR_MAX_VELOCITY_TICKS_PER_SECOND * power, Constants.Robot.MOTOR_UPDATE_TIME);
+        intakeMotor.updateSetVelocity(Constants.Swerve.MOTOR_MAX_VELOCITY_TICKS_PER_SECOND * power);
     }
 
     public double getVelocity() {

@@ -17,16 +17,16 @@ public class Transfer extends RobotContainer.HardwareDevices {
     }
 
     public void zeroServo() {
-        transferServoLeft.updateSetPosition(0, Constants.Robot.SERVO_UPDATE_TIME);
-        transferServoRight.updateSetPosition(0, Constants.Robot.SERVO_UPDATE_TIME);
+        transferServoLeft.updateSetPosition(0);
+        transferServoRight.updateSetPosition(0);
     }
     public void flapUp() {
-        transferServoRight.updateSetPosition(Constants.Transfer.UP, Constants.Robot.SERVO_UPDATE_TIME);
-        transferServoLeft.updateSetPosition(Constants.Transfer.UP, Constants.Robot.SERVO_UPDATE_TIME);
+        transferServoRight.updateSetPosition(Constants.Transfer.UP);
+        transferServoLeft.updateSetPosition(Constants.Transfer.UP);
     }
 
     public void flapDown() {
-        transferServoRight.updateSetPosition(Constants.Transfer.DOWN, Constants.Robot.SERVO_UPDATE_TIME);
-        transferServoLeft.updateSetPosition(Constants.Transfer.DOWN, Constants.Robot.SERVO_UPDATE_TIME);
+        transferServoRight.updateSetPosition(Constants.Transfer.DOWN);
+        transferServoLeft.updateSetPosition(Constants.Transfer.DOWN);
     }
 }

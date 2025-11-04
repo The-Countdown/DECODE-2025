@@ -49,9 +49,9 @@ public class LinkedServos {
 
     //set pos 1 to -1
     public void setPosition(double position) {
-        masterServo.updateSetPosition(position, Constants.Robot.SERVO_UPDATE_TIME);
+        masterServo.updateSetPosition(position);
         for (BetterServo slaveServo : slaveServo) {
-            slaveServo.updateSetPosition(position, Constants.Robot.SERVO_UPDATE_TIME);
+            slaveServo.updateSetPosition(position);
         }
     }
 
@@ -59,17 +59,17 @@ public class LinkedServos {
     public void setPositionDegree(double degree) {
         degree = HelperFunctions.normalizeAngle(degree) + 180;
         degree = degree > 355 ? 355 : degree; // if degree > 355 ? condition is true, return 355, otherwise(:) return degree
-        masterServo.updateSetPosition(degree/355, Constants.Robot.SERVO_UPDATE_TIME);
+        masterServo.updateSetPosition(degree/355);
         for (BetterServo slaveServo : slaveServo) {
-            slaveServo.updateSetPosition(degree/355, Constants.Robot.SERVO_UPDATE_TIME);
+            slaveServo.updateSetPosition(degree/355);
         }
     }
 
     //set power 1 -1
     public void setPower(double power) {
-        masterCRServo.updateSetPower(power, Constants.Robot.SERVO_UPDATE_TIME);
+        masterCRServo.updateSetPower(power);
         for (BetterCRServo slaveCRServo : slaveCRServo) {
-            slaveCRServo.updateSetPower(power, Constants.Robot.SERVO_UPDATE_TIME);
+            slaveCRServo.updateSetPower(power);
         }
     }
     public double getPosition() {

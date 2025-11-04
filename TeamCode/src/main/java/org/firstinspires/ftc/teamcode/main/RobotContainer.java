@@ -97,6 +97,11 @@ public class RobotContainer {
     public Spindexer spindexer;
     public Transfer transfer;
 
+    public double controlHubVoltage = 0;
+    public double expansionHubVoltage = 0;
+    public double controlHubCurrent = 0;
+    public double expansionHubCurrent = 0;
+
     public static class HardwareDevices {
         public static List<LynxModule> allHubs;
         public static LynxModule controlHub;
@@ -169,11 +174,11 @@ public class RobotContainer {
 
         for (int i = 0; i < swerveModules.length; i++) {
             HardwareDevices.motorNames[i] = "swerveMotor" + (i);
-            HardwareDevices.swerveMotors[i] = new BetterDcMotor(hardwareMap.get(DcMotorImplEx.class, HardwareDevices.motorNames[i]));
+            HardwareDevices.swerveMotors[i] = new BetterDcMotor(hardwareMap.get(DcMotorImplEx.class, HardwareDevices.motorNames[i]), Constants.Robot.SWERVE_MOTOR_UPDATE_TIME);
             HardwareDevices.servoNames[i] = "swerveServo" + (i);
-            HardwareDevices.swerveServos[i] = new BetterCRServo(hardwareMap.get(CRServoImplEx.class, HardwareDevices.servoNames[i]));
+            HardwareDevices.swerveServos[i] = new BetterCRServo(hardwareMap.get(CRServoImplEx.class, HardwareDevices.servoNames[i]), Constants.Robot.SWERVE_SERVO_UPDATE_TIME);
             HardwareDevices.analogNames[i] = "swerveAnalog" + (i);
-            HardwareDevices.swerveAnalogs[i] = new BetterAnalogInput(hardwareMap.get(AnalogInput.class, HardwareDevices.analogNames[i]));
+            HardwareDevices.swerveAnalogs[i] = new BetterAnalogInput(hardwareMap.get(AnalogInput.class, HardwareDevices.analogNames[i]), Constants.Robot.SWERVE_ANALOG_UPDATE_TIME);
 
             if (i == 0 || i == 2) {
                 HardwareDevices.swerveMotors[i].setDirection(DcMotorImplEx.Direction.REVERSE);
@@ -192,21 +197,21 @@ public class RobotContainer {
             }
         }
 
-        HardwareDevices.turretServoMaster = new BetterServo(getHardwareDevice(ServoImplEx.class, "turretServoMaster"));
-        HardwareDevices.turretServoSlave = new BetterServo(getHardwareDevice(ServoImplEx.class, "turretServoSlave"));
-        HardwareDevices.hoodServo = new BetterServo(getHardwareDevice(ServoImplEx.class, "hoodServo"));
-        HardwareDevices.transferServoLeft = new BetterServo(getHardwareDevice(ServoImplEx.class, "transferServoLeft"));
-        HardwareDevices.transferServoRight = new BetterServo(getHardwareDevice(ServoImplEx.class, "transferServoRight"));
-        HardwareDevices.spindexerEncoder = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "spindexEncoder"));
-        HardwareDevices.spindexServo = new BetterCRServo(getHardwareDevice(CRServoImplEx.class, "spindexServo"));
-        HardwareDevices.spindexAnalog = new BetterAnalogInput(getHardwareDevice(AnalogInput.class, "spindexAnalog"));
-        HardwareDevices.intakeMotor = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "intakeMotor"));
-        HardwareDevices.flyWheelMotorMaster = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "flyWheelMotorMaster"));
-        HardwareDevices.flyWheelMotorSlave = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "flyWheelMotorSlave"));
+        HardwareDevices.turretServoMaster = new BetterServo(getHardwareDevice(ServoImplEx.class, "turretServoMaster"), Constants.Robot.SERVO_UPDATE_TIME);
+        HardwareDevices.turretServoSlave = new BetterServo(getHardwareDevice(ServoImplEx.class, "turretServoSlave"), Constants.Robot.SERVO_UPDATE_TIME);
+        HardwareDevices.hoodServo = new BetterServo(getHardwareDevice(ServoImplEx.class, "hoodServo"), Constants.Robot.SERVO_UPDATE_TIME);
+        HardwareDevices.transferServoLeft = new BetterServo(getHardwareDevice(ServoImplEx.class, "transferServoLeft"), Constants.Robot.SERVO_UPDATE_TIME);
+        HardwareDevices.transferServoRight = new BetterServo(getHardwareDevice(ServoImplEx.class, "transferServoRight"), Constants.Robot.SERVO_UPDATE_TIME);
+        HardwareDevices.spindexerEncoder = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "spindexEncoder"), Constants.Robot.MOTOR_UPDATE_TIME);
+        HardwareDevices.spindexServo = new BetterCRServo(getHardwareDevice(CRServoImplEx.class, "spindexServo"), Constants.Robot.SERVO_UPDATE_TIME);
+        HardwareDevices.spindexAnalog = new BetterAnalogInput(getHardwareDevice(AnalogInput.class, "spindexAnalog"), Constants.Robot.ANALOG_UPDATE_TIME);
+        HardwareDevices.intakeMotor = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "intakeMotor"), Constants.Robot.MOTOR_UPDATE_TIME);
+        HardwareDevices.flyWheelMotorMaster = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "flyWheelMotorMaster"), Constants.Robot.MOTOR_UPDATE_TIME);
+        HardwareDevices.flyWheelMotorSlave = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "flyWheelMotorSlave"), Constants.Robot.MOTOR_UPDATE_TIME);
 
         //sensor
-        HardwareDevices.colorSensor = new BetterColorSensor(getHardwareDevice(RevColorSensorV3.class, "colorSensor"));
-        HardwareDevices.beamBreak = new BetterTouchSensor(getHardwareDevice(RevTouchSensor.class, "beamBreak"));
+        HardwareDevices.colorSensor = new BetterColorSensor(getHardwareDevice(RevColorSensorV3.class, "colorSensor"), Constants.Robot.COLOR_UPDATE_TIME);
+        HardwareDevices.beamBreak = new BetterTouchSensor(getHardwareDevice(RevTouchSensor.class, "beamBreak"), Constants.Robot.COLOR_UPDATE_TIME);
 
 
         LinkedMotors flyWheelMotors = new LinkedMotors(HardwareDevices.flyWheelMotorMaster, HardwareDevices.flyWheelMotorSlave);
@@ -451,11 +456,12 @@ public class RobotContainer {
         if (Status.competitionMode) {
             return;
         }
-//        telemetry.addData("Control Hub Voltage", getVoltage(Constants.Robot.CONTROL_HUB_INDEX) + " V");
-//        telemetry.addData("Expansion Hub Voltage", getVoltage(Constants.Robot.EXPANSION_HUB_INDEX) + " V");
-//        telemetry.addData("Control Hub Current", getCurrent(Constants.Robot.CONTROL_HUB_INDEX) + " A");
-//        telemetry.addData("Expansion Hub Current", getCurrent(Constants.Robot.EXPANSION_HUB_INDEX) + " A");
-//        telemetry.addLine();
+
+        telemetry.addData("Control Hub Voltage", controlHubVoltage + " V");
+        telemetry.addData("Expansion Hub Voltage", expansionHubVoltage + " V");
+        telemetry.addData("Control Hub Current", controlHubCurrent + " A");
+        telemetry.addData("Expansion Hub Current", expansionHubCurrent + " A");
+        telemetry.addLine();
 
 
         if (limelightLogic.limelight.getLatestResult().isValid()) {

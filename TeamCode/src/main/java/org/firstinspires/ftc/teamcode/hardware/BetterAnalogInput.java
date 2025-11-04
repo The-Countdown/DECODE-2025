@@ -2,33 +2,31 @@ package org.firstinspires.ftc.teamcode.hardware;
 
 import com.qualcomm.robotcore.hardware.AnalogInput;
 
+import org.firstinspires.ftc.teamcode.util.HelperFunctions;
+
 public class BetterAnalogInput {
-    
-    private static AnalogInput analog;
+    private AnalogInput analog;
 
     private long lastTime;
 
-    private double lastVoltage = 0;
     private double voltage = 0;
 
-    public BetterAnalogInput(AnalogInput analog) {
+    private double minTimeBetweenUpdates = 0;
+
+    public BetterAnalogInput(AnalogInput analog, int minTimeBetweenUpdates) {
         this.analog = analog;
+        this.minTimeBetweenUpdates = HelperFunctions.getRandomWithin(minTimeBetweenUpdates, 0.5);
     }
 
-    public void updateGetVoltage(double voltage, int minTimeBetweenUpdates) {
-        this.voltage = voltage;
+    public double updateGetVoltage() {
         long currentTime = System.currentTimeMillis();
-        if (currentTime - lastTime >= minTimeBetweenUpdates && voltage != lastVoltage) {
-            voltage = analog.getVoltage();
+        if (currentTime - lastTime >= minTimeBetweenUpdates) {
+            this.voltage = analog.getVoltage();
             lastTime = System.currentTimeMillis();
-            this.lastVoltage = voltage;
         }
+        return this.voltage;
     }
 
-    public double getVoltage() {
-        return voltage;
-    }
-    
     public String getConnectionInfo() {
         return analog.getConnectionInfo();
     }

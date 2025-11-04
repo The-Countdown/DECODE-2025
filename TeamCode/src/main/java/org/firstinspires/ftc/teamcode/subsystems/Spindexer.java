@@ -38,7 +38,7 @@ public class Spindexer {
     }
 
     public void setPower(double power) {
-        spindexerServo.updateSetPower(power, Constants.Robot.SERVO_UPDATE_TIME);
+        spindexerServo.updateSetPower(power);
     }
 
     public void setTargetAngle(double angle) {
@@ -50,7 +50,7 @@ public class Spindexer {
     }
 
     public double getAngle() {
-        double angle = (spindexAnalog.getVoltage() / Constants.System.ANALOG_MAX_VOLTAGE) * 360;
+        double angle = (spindexAnalog.updateGetVoltage() / Constants.System.ANALOG_MAX_VOLTAGE) * 360;
 
         angle += Constants.Spindexer.ANGLE_OFFSET;
 
@@ -76,21 +76,21 @@ public class Spindexer {
         double blue = -1;
         double green = -1;
         if (robotContainer.spindexer.getAngle() > Constants.Spindexer.INTAKE_SLOT_ANGLES[0] - 10 && robotContainer.spindexer.getAngle() < Constants.Spindexer.INTAKE_SLOT_ANGLES[0] + 10 && (Status.slotColor[0] == Constants.Game.ARTIFACT_COLOR.UNKNOWN || Status.slotColor[0] == Constants.Game.ARTIFACT_COLOR.NONE)) {
-            blue = RobotContainer.HardwareDevices.colorSensor.updateBlue(Constants.Robot.COLOR_UPDATE_TIME);
-            green = RobotContainer.HardwareDevices.colorSensor.updateGreen(Constants.Robot.COLOR_UPDATE_TIME);
+            blue = RobotContainer.HardwareDevices.colorSensor.updateBlue();
+            green = RobotContainer.HardwareDevices.colorSensor.updateGreen();
             Status.slotColor[0] = getArtifactColor(blue, green);
         }
         if (robotContainer.spindexer.getAngle() > Constants.Spindexer.INTAKE_SLOT_ANGLES[1] - 10 && robotContainer.spindexer.getAngle() < Constants.Spindexer.INTAKE_SLOT_ANGLES[1] + 10 && (Status.slotColor[1] == Constants.Game.ARTIFACT_COLOR.UNKNOWN || Status.slotColor[1] == Constants.Game.ARTIFACT_COLOR.NONE)) {
             if (blue == -1) {
-                blue = RobotContainer.HardwareDevices.colorSensor.updateBlue(Constants.Robot.COLOR_UPDATE_TIME);
-                green = RobotContainer.HardwareDevices.colorSensor.updateGreen(Constants.Robot.COLOR_UPDATE_TIME);
+                blue = RobotContainer.HardwareDevices.colorSensor.updateBlue();
+                green = RobotContainer.HardwareDevices.colorSensor.updateGreen();
             }
             Status.slotColor[1] = getArtifactColor(blue, green);
         }
         if (robotContainer.spindexer.getAngle() > Constants.Spindexer.INTAKE_SLOT_ANGLES[2] - 10 && robotContainer.spindexer.getAngle() < Constants.Spindexer.INTAKE_SLOT_ANGLES[2] + 10 && (Status.slotColor[2] == Constants.Game.ARTIFACT_COLOR.UNKNOWN || Status.slotColor[2] == Constants.Game.ARTIFACT_COLOR.NONE)) {
             if (green == -1) {
-                blue = RobotContainer.HardwareDevices.colorSensor.updateBlue(Constants.Robot.COLOR_UPDATE_TIME);
-                green = RobotContainer.HardwareDevices.colorSensor.updateGreen(Constants.Robot.COLOR_UPDATE_TIME);
+                blue = RobotContainer.HardwareDevices.colorSensor.updateBlue();
+                green = RobotContainer.HardwareDevices.colorSensor.updateGreen();
             }
             Status.slotColor[2] = getArtifactColor(blue, green);
         }
