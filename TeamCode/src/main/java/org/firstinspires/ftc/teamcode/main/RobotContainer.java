@@ -46,6 +46,7 @@ import org.firstinspires.ftc.teamcode.hardware.BetterDcMotor;
 import org.firstinspires.ftc.teamcode.hardware.BetterCRServo;
 import org.firstinspires.ftc.teamcode.hardware.BetterAnalogInput;
 import org.firstinspires.ftc.teamcode.hardware.BetterServo;
+import org.firstinspires.ftc.teamcode.hardware.BetterColorSensor;
 
 import java.lang.Thread;
 import java.util.ArrayList;
@@ -141,7 +142,7 @@ public class RobotContainer {
         public static BetterDcMotor intakeMotor;
 
         //sensors
-        public static RevColorSensorV3 colorSensor;
+        public static BetterColorSensor colorSensor;
         public static BetterTouchSensor beamBreak;
     }
 
@@ -204,7 +205,7 @@ public class RobotContainer {
         HardwareDevices.flyWheelMotorSlave = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "flyWheelMotorSlave"));
 
         //sensor
-        HardwareDevices.colorSensor = getHardwareDevice(RevColorSensorV3.class, "colorSensor");
+        HardwareDevices.colorSensor = new BetterColorSensor(getHardwareDevice(RevColorSensorV3.class, "colorSensor"));
         HardwareDevices.beamBreak = new BetterTouchSensor(getHardwareDevice(RevTouchSensor.class, "beamBreak"));
 
 

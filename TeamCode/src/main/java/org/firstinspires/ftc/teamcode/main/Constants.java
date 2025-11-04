@@ -53,6 +53,7 @@ public class Constants {
     public static class Robot {
         public static int MOTOR_UPDATE_TIME = 50;
         public static int SERVO_UPDATE_TIME = 20;
+        public static int COLOR_UPDATE_TIME = 150;
 
         public static final IMU.Parameters imuParameters = new IMU.Parameters(
                 new RevHubOrientationOnRobot(

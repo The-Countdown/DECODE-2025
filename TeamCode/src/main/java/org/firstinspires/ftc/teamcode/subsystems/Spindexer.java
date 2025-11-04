@@ -12,12 +12,13 @@ import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
 import org.firstinspires.ftc.teamcode.hardware.BetterCRServo;
 import org.firstinspires.ftc.teamcode.hardware.BetterAnalogInput;
+import org.firstinspires.ftc.teamcode.hardware.BetterColorSensor;
 
 public class Spindexer {
     private final RobotContainer robotContainer;
     private final BetterCRServo spindexerServo;
     private final BetterAnalogInput spindexAnalog;
-    private final RevColorSensorV3 colorSensor;
+    private final BetterColorSensor colorSensor;
     private static double targetAngle = 0;
     private double error;
     private double lastError;
@@ -28,7 +29,7 @@ public class Spindexer {
     private double ff;
     private ElapsedTime iTimer;
 
-    public Spindexer (RobotContainer robotContainer, BetterCRServo spindexerServo, BetterAnalogInput spindexAnalog, RevColorSensorV3 colorSensor) {
+    public Spindexer (RobotContainer robotContainer, BetterCRServo spindexerServo, BetterAnalogInput spindexAnalog, BetterColorSensor colorSensor) {
         this.robotContainer = robotContainer;
         this.spindexerServo = spindexerServo;
         this.spindexAnalog = spindexAnalog;
@@ -75,21 +76,21 @@ public class Spindexer {
         double blue = -1;
         double green = -1;
         if (robotContainer.spindexer.getAngle() > Constants.Spindexer.INTAKE_SLOT_ANGLES[0] - 10 && robotContainer.spindexer.getAngle() < Constants.Spindexer.INTAKE_SLOT_ANGLES[0] + 10 && (Status.slotColor[0] == Constants.Game.ARTIFACT_COLOR.UNKNOWN || Status.slotColor[0] == Constants.Game.ARTIFACT_COLOR.NONE)) {
-            blue = RobotContainer.HardwareDevices.colorSensor.blue();
-            green = RobotContainer.HardwareDevices.colorSensor.green();
+            blue = RobotContainer.HardwareDevices.colorSensor.updateBlue(Constants.Robot.COLOR_UPDATE_TIME);
+            green = RobotContainer.HardwareDevices.colorSensor.updateGreen(Constants.Robot.COLOR_UPDATE_TIME);
             Status.slotColor[0] = getArtifactColor(blue, green);
         }
         if (robotContainer.spindexer.getAngle() > Constants.Spindexer.INTAKE_SLOT_ANGLES[1] - 10 && robotContainer.spindexer.getAngle() < Constants.Spindexer.INTAKE_SLOT_ANGLES[1] + 10 && (Status.slotColor[1] == Constants.Game.ARTIFACT_COLOR.UNKNOWN || Status.slotColor[1] == Constants.Game.ARTIFACT_COLOR.NONE)) {
             if (blue == -1) {
-                blue = RobotContainer.HardwareDevices.colorSensor.blue();
-                green = RobotContainer.HardwareDevices.colorSensor.green();
+                blue = RobotContainer.HardwareDevices.colorSensor.updateBlue(Constants.Robot.COLOR_UPDATE_TIME);
+                green = RobotContainer.HardwareDevices.colorSensor.updateGreen(Constants.Robot.COLOR_UPDATE_TIME);
             }
             Status.slotColor[1] = getArtifactColor(blue, green);
         }
         if (robotContainer.spindexer.getAngle() > Constants.Spindexer.INTAKE_SLOT_ANGLES[2] - 10 && robotContainer.spindexer.getAngle() < Constants.Spindexer.INTAKE_SLOT_ANGLES[2] + 10 && (Status.slotColor[2] == Constants.Game.ARTIFACT_COLOR.UNKNOWN || Status.slotColor[2] == Constants.Game.ARTIFACT_COLOR.NONE)) {
             if (green == -1) {
-                blue = RobotContainer.HardwareDevices.colorSensor.blue();
-                green = RobotContainer.HardwareDevices.colorSensor.green();
+                blue = RobotContainer.HardwareDevices.colorSensor.updateBlue(Constants.Robot.COLOR_UPDATE_TIME);
+                green = RobotContainer.HardwareDevices.colorSensor.updateGreen(Constants.Robot.COLOR_UPDATE_TIME);
             }
             Status.slotColor[2] = getArtifactColor(blue, green);
         }
