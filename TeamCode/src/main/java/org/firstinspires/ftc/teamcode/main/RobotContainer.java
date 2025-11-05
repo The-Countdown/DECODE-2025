@@ -41,12 +41,7 @@ import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
 import org.firstinspires.ftc.teamcode.util.LinkedMotors;
 import org.firstinspires.ftc.teamcode.util.LinkedServos;
 
-import org.firstinspires.ftc.teamcode.hardware.BetterTouchSensor;
-import org.firstinspires.ftc.teamcode.hardware.BetterDcMotor;
-import org.firstinspires.ftc.teamcode.hardware.BetterCRServo;
-import org.firstinspires.ftc.teamcode.hardware.BetterAnalogInput;
-import org.firstinspires.ftc.teamcode.hardware.BetterServo;
-import org.firstinspires.ftc.teamcode.hardware.BetterColorSensor;
+import org.firstinspires.ftc.teamcode.hardware.*;
 
 import java.lang.Thread;
 import java.util.ArrayList;
@@ -97,6 +92,8 @@ public class RobotContainer {
     public Spindexer spindexer;
     public Transfer transfer;
 
+    public BetterThreadedHardwareManager hardwareManager;
+
     public double controlHubVoltage = 0;
     public double expansionHubVoltage = 0;
     public double controlHubCurrent = 0;
@@ -118,33 +115,32 @@ public class RobotContainer {
         public static ServoImplEx indicatorLightBack;
 
         // Gobilda 5000 Series
-        public static BetterDcMotor[] swerveMotors = new BetterDcMotor[Constants.Swerve.NUM_MOTORS];
+        public static BetterThreadedDcMotor[] swerveMotors = new BetterThreadedDcMotor[Constants.Swerve.NUM_MOTORS];
             public static String[] motorNames = new String[Constants.Swerve.NUM_MOTORS];
 
         // Axon Mini+
-        public static BetterCRServo[] swerveServos = new BetterCRServo[Constants.Swerve.NUM_SERVOS];
+        public static BetterThreadedCRServo[] swerveServos = new BetterThreadedCRServo[Constants.Swerve.NUM_SERVOS];
             public static String[] servoNames = new String[Constants.Swerve.NUM_SERVOS];
 
         public static BetterAnalogInput[] swerveAnalogs = new BetterAnalogInput[Constants.Swerve.NUM_ANALOGS];
             public static String[] analogNames = new String[Constants.Swerve.NUM_ANALOGS];
 
         // Turret
-        public static BetterDcMotor flyWheelMotorMaster;
-        public static BetterDcMotor flyWheelMotorSlave;
-        public static BetterServo turretServoMaster;
-        public static BetterServo turretServoSlave;
-        public static BetterServo hoodServo;
+        public static BetterThreadedDcMotor flyWheelMotorMaster;
+        public static BetterThreadedDcMotor flyWheelMotorSlave;
+        public static BetterThreadedServo turretServoMaster;
+        public static BetterThreadedServo turretServoSlave;
+        public static BetterThreadedServo hoodServo;
 
         // Spindexer
-        public static BetterServo transferServoLeft;
-        public static BetterServo transferServoRight;
-        public static BetterDcMotor spindexerEncoder;
+        public static BetterThreadedServo transferServoLeft;
+        public static BetterThreadedServo transferServoRight;
 
-        public static BetterCRServo spindexServo;
+        public static BetterThreadedCRServo spindexServo;
         public static BetterAnalogInput spindexAnalog;
 
         // Intake
-        public static BetterDcMotor intakeMotor;
+        public static BetterThreadedDcMotor intakeMotor;
 
         //sensors
         public static BetterColorSensor colorSensor;
@@ -155,6 +151,8 @@ public class RobotContainer {
         this.opMode = opMode;
         this.hardwareMap = opMode.hardwareMap;
         this.telemetry = new MultipleTelemetry(opMode.telemetry, FtcDashboard.getInstance().getTelemetry());
+
+        this.hardwareManager = new BetterThreadedHardwareManager();
 
         HardwareDevices.imu = getHardwareDevice(IMU.class, "imu");
         HardwareDevices.imu.initialize(Constants.Robot.imuParameters);
@@ -174,9 +172,11 @@ public class RobotContainer {
 
         for (int i = 0; i < swerveModules.length; i++) {
             HardwareDevices.motorNames[i] = "swerveMotor" + (i);
-            HardwareDevices.swerveMotors[i] = new BetterDcMotor(hardwareMap.get(DcMotorImplEx.class, HardwareDevices.motorNames[i]), Constants.Robot.SWERVE_MOTOR_UPDATE_TIME);
+            HardwareDevices.swerveMotors[i] = new BetterThreadedDcMotor(hardwareMap.get(DcMotorImplEx.class, HardwareDevices.motorNames[i]), Constants.Robot.SWERVE_MOTOR_UPDATE_TIME);
+            this.hardwareManager.register(HardwareDevices.swerveMotors[i]);
             HardwareDevices.servoNames[i] = "swerveServo" + (i);
-            HardwareDevices.swerveServos[i] = new BetterCRServo(hardwareMap.get(CRServoImplEx.class, HardwareDevices.servoNames[i]), Constants.Robot.SWERVE_SERVO_UPDATE_TIME);
+            HardwareDevices.swerveServos[i] = new BetterThreadedCRServo(hardwareMap.get(CRServoImplEx.class, HardwareDevices.servoNames[i]), Constants.Robot.SWERVE_SERVO_UPDATE_TIME);
+            this.hardwareManager.register(HardwareDevices.swerveServos[i]);
             HardwareDevices.analogNames[i] = "swerveAnalog" + (i);
             HardwareDevices.swerveAnalogs[i] = new BetterAnalogInput(hardwareMap.get(AnalogInput.class, HardwareDevices.analogNames[i]), Constants.Robot.SWERVE_ANALOG_UPDATE_TIME);
 
@@ -197,17 +197,25 @@ public class RobotContainer {
             }
         }
 
-        HardwareDevices.turretServoMaster = new BetterServo(getHardwareDevice(ServoImplEx.class, "turretServoMaster"), Constants.Robot.SERVO_UPDATE_TIME);
-        HardwareDevices.turretServoSlave = new BetterServo(getHardwareDevice(ServoImplEx.class, "turretServoSlave"), Constants.Robot.SERVO_UPDATE_TIME);
-        HardwareDevices.hoodServo = new BetterServo(getHardwareDevice(ServoImplEx.class, "hoodServo"), Constants.Robot.SERVO_UPDATE_TIME);
-        HardwareDevices.transferServoLeft = new BetterServo(getHardwareDevice(ServoImplEx.class, "transferServoLeft"), Constants.Robot.SERVO_UPDATE_TIME);
-        HardwareDevices.transferServoRight = new BetterServo(getHardwareDevice(ServoImplEx.class, "transferServoRight"), Constants.Robot.SERVO_UPDATE_TIME);
-        HardwareDevices.spindexerEncoder = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "spindexEncoder"), Constants.Robot.MOTOR_UPDATE_TIME);
-        HardwareDevices.spindexServo = new BetterCRServo(getHardwareDevice(CRServoImplEx.class, "spindexServo"), Constants.Robot.SERVO_UPDATE_TIME);
+        HardwareDevices.turretServoMaster = new BetterThreadedServo(getHardwareDevice(ServoImplEx.class, "turretServoMaster"), Constants.Robot.SERVO_UPDATE_TIME);
+        this.hardwareManager.register(HardwareDevices.turretServoMaster);
+        HardwareDevices.turretServoSlave = new BetterThreadedServo(getHardwareDevice(ServoImplEx.class, "turretServoSlave"), Constants.Robot.SERVO_UPDATE_TIME);
+        this.hardwareManager.register(HardwareDevices.turretServoSlave);
+        HardwareDevices.hoodServo = new BetterThreadedServo(getHardwareDevice(ServoImplEx.class, "hoodServo"), Constants.Robot.SERVO_UPDATE_TIME);
+        this.hardwareManager.register(HardwareDevices.hoodServo);
+        HardwareDevices.transferServoLeft = new BetterThreadedServo(getHardwareDevice(ServoImplEx.class, "transferServoLeft"), Constants.Robot.SERVO_UPDATE_TIME);
+        this.hardwareManager.register(HardwareDevices.transferServoLeft);
+        HardwareDevices.transferServoRight = new BetterThreadedServo(getHardwareDevice(ServoImplEx.class, "transferServoRight"), Constants.Robot.SERVO_UPDATE_TIME);
+        this.hardwareManager.register(HardwareDevices.transferServoRight);
+        HardwareDevices.spindexServo = new BetterThreadedCRServo(getHardwareDevice(CRServoImplEx.class, "spindexServo"), Constants.Robot.SERVO_UPDATE_TIME);
+        this.hardwareManager.register(HardwareDevices.spindexServo);
         HardwareDevices.spindexAnalog = new BetterAnalogInput(getHardwareDevice(AnalogInput.class, "spindexAnalog"), Constants.Robot.ANALOG_UPDATE_TIME);
-        HardwareDevices.intakeMotor = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "intakeMotor"), Constants.Robot.MOTOR_UPDATE_TIME);
-        HardwareDevices.flyWheelMotorMaster = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "flyWheelMotorMaster"), Constants.Robot.MOTOR_UPDATE_TIME);
-        HardwareDevices.flyWheelMotorSlave = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "flyWheelMotorSlave"), Constants.Robot.MOTOR_UPDATE_TIME);
+        HardwareDevices.intakeMotor = new BetterThreadedDcMotor(getHardwareDevice(DcMotorImplEx.class, "intakeMotor"), Constants.Robot.MOTOR_UPDATE_TIME);
+        this.hardwareManager.register(HardwareDevices.intakeMotor);
+        HardwareDevices.flyWheelMotorMaster = new BetterThreadedDcMotor(getHardwareDevice(DcMotorImplEx.class, "flyWheelMotorMaster"), Constants.Robot.MOTOR_UPDATE_TIME);
+        this.hardwareManager.register(HardwareDevices.flyWheelMotorMaster);
+        HardwareDevices.flyWheelMotorSlave = new BetterThreadedDcMotor(getHardwareDevice(DcMotorImplEx.class, "flyWheelMotorSlave"), Constants.Robot.MOTOR_UPDATE_TIME);
+        this.hardwareManager.register(HardwareDevices.flyWheelMotorSlave);
 
         //sensor
         HardwareDevices.colorSensor = new BetterColorSensor(getHardwareDevice(RevColorSensorV3.class, "colorSensor"), Constants.Robot.COLOR_UPDATE_TIME);
@@ -261,6 +269,7 @@ public class RobotContainer {
     public void start(OpMode opmode) {
         gamepadEx1 = new GamepadWrapper(opmode.gamepad1);
         gamepadEx2 = new GamepadWrapper(opmode.gamepad2);
+        hardwareManager.start();
         localizationUpdater = new LocalizationUpdater(this);
         localizationUpdater.start();
         drivetrainUpdater = new DrivetrainUpdater(this);
@@ -282,6 +291,7 @@ public class RobotContainer {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+        this.hardwareManager.stop();
     }
 
     /**

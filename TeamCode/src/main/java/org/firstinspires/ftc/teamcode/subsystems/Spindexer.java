@@ -10,13 +10,13 @@ import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
-import org.firstinspires.ftc.teamcode.hardware.BetterCRServo;
+import org.firstinspires.ftc.teamcode.hardware.BetterThreadedCRServo;
 import org.firstinspires.ftc.teamcode.hardware.BetterAnalogInput;
 import org.firstinspires.ftc.teamcode.hardware.BetterColorSensor;
 
 public class Spindexer {
     private final RobotContainer robotContainer;
-    private final BetterCRServo spindexerServo;
+    private final BetterThreadedCRServo spindexerServo;
     private final BetterAnalogInput spindexAnalog;
     private final BetterColorSensor colorSensor;
     private static double targetAngle = 0;
@@ -29,7 +29,7 @@ public class Spindexer {
     private double ff;
     private ElapsedTime iTimer;
 
-    public Spindexer (RobotContainer robotContainer, BetterCRServo spindexerServo, BetterAnalogInput spindexAnalog, BetterColorSensor colorSensor) {
+    public Spindexer (RobotContainer robotContainer, BetterThreadedCRServo spindexerServo, BetterAnalogInput spindexAnalog, BetterColorSensor colorSensor) {
         this.robotContainer = robotContainer;
         this.spindexerServo = spindexerServo;
         this.spindexAnalog = spindexAnalog;
@@ -38,7 +38,7 @@ public class Spindexer {
     }
 
     public void setPower(double power) {
-        spindexerServo.updateSetPower(power);
+        spindexerServo.setPower(power);
     }
 
     public void setTargetAngle(double angle) {

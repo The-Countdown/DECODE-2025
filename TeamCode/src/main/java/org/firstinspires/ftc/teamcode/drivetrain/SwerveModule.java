@@ -8,8 +8,8 @@ import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
-import org.firstinspires.ftc.teamcode.hardware.BetterDcMotor;
-import org.firstinspires.ftc.teamcode.hardware.BetterCRServo;
+import org.firstinspires.ftc.teamcode.hardware.BetterThreadedDcMotor;
+import org.firstinspires.ftc.teamcode.hardware.BetterThreadedCRServo;
 import org.firstinspires.ftc.teamcode.hardware.BetterAnalogInput;
 
 /**
@@ -31,8 +31,8 @@ import org.firstinspires.ftc.teamcode.hardware.BetterAnalogInput;
  */
 public class SwerveModule {
     private final RobotContainer robotContainer;
-    private final BetterDcMotor drivingMotor;
-    private final BetterCRServo turningServo;
+    private final BetterThreadedDcMotor drivingMotor;
+    private final BetterThreadedCRServo turningServo;
     private final BetterAnalogInput analogEncoder;
     private final double powerMultiplier;
     public final int moduleIndex;
@@ -48,7 +48,7 @@ public class SwerveModule {
      * @param powerMultiplier A multiplier to maintain constant velocity for all modules despite differences in friction between modules.
      * @param moduleIndex   The index of the module.
      */
-    public SwerveModule(RobotContainer robotContainer, BetterDcMotor motor, BetterCRServo turningServo, SwervePDF servoPDF, BetterAnalogInput analogEncoder, double powerMultiplier, int moduleIndex) {
+    public SwerveModule(RobotContainer robotContainer, BetterThreadedDcMotor motor, BetterThreadedCRServo turningServo, SwervePDF servoPDF, BetterAnalogInput analogEncoder, double powerMultiplier, int moduleIndex) {
         this.robotContainer = robotContainer;
         this.drivingMotor = motor;
         this.turningServo = turningServo;
@@ -89,21 +89,21 @@ public class SwerveModule {
         }
 
         public void setPower(double power) {
-            turningServo.updateSetPower(power);
+            turningServo.setPower(power);
         }
     }
 
     public class Motor {
         public double targetPower;
         public void setPower(double power) {
-            drivingMotor.updateSetPower(power);
+            drivingMotor.setPower(power);
         }
 
         /**
         * Sets the velocity of the motor from 0-1, because it is specific to this swerve motor so the value will be consistent with the multiplier.
          */
         public void setVelocity(double velocity) {
-            drivingMotor.updateSetVelocity(velocity * Constants.Swerve.MOTOR_MAX_VELOCITY_TICKS_PER_SECOND);
+            drivingMotor.setVelocity(velocity * Constants.Swerve.MOTOR_MAX_VELOCITY_TICKS_PER_SECOND);
         }
 
         public double getVelocity() {
@@ -112,7 +112,7 @@ public class SwerveModule {
 
         // This function takes in a double between 0-1 for 0 rpm to max rpm of motor as relative to the max forward speed of the drive base.
         public void setPowerWithMultiplier(double speed) {
-            drivingMotor.updateSetPower(speed * powerMultiplier);
+            drivingMotor.setPower(speed * powerMultiplier);
         }
 
         public void setTargetPower(double power) {

@@ -95,18 +95,7 @@ public class Auto extends OpMode {
     public void stop() {
         blackboard.put("pose", Status.currentPose);
         Status.opModeIsActive = false;
-        robotContainer.drivetrainUpdater.stopEnabled();
-        try {
-            robotContainer.drivetrainUpdater.join(100);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        robotContainer.localizationUpdater.stopLocalization();
-        try {
-            robotContainer.localizationUpdater.join(100);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        robotContainer.stop();
         Status.opModeIsActive = true;
     }
 }
