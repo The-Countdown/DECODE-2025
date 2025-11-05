@@ -6,7 +6,6 @@ import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 
 import org.firstinspires.ftc.teamcode.hardware.BetterDcMotor;
-import org.firstinspires.ftc.teamcode.hardware.BetterThreadedDcMotor;
 
 public class Intake {
     private RobotContainer robotContainer;
