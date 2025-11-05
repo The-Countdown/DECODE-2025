@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotorImplEx;
 
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
-public class BetterDcMotor extends Thread {
+public class BetterThreadedDcMotor extends Thread {
     private DcMotorImplEx motor;
 
     private long lastTimePower;
@@ -17,7 +17,7 @@ public class BetterDcMotor extends Thread {
 
     private double minTimeBetweenUpdates = 0;
 
-    public BetterDcMotor(DcMotorImplEx motor, int minTimeBetweenUpdates) {
+    public BetterThreadedDcMotor(DcMotorImplEx motor, int minTimeBetweenUpdates) {
         this.motor = motor;
         this.minTimeBetweenUpdates = HelperFunctions.getRandomWithin(minTimeBetweenUpdates, 0.5);
     }
@@ -46,7 +46,7 @@ public class BetterDcMotor extends Thread {
         }
     }
 
-    public synchronized void setPower(double power) {
+    public void setPower(double power) {
         this.power = power;
     }
 
@@ -60,7 +60,7 @@ public class BetterDcMotor extends Thread {
         }
     }
 
-    public synchronized void setVelocity(double velocity) {
+    public void setVelocity(double velocity) {
         this.velocity = velocity;
     }
 

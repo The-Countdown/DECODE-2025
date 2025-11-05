@@ -43,6 +43,7 @@ import org.firstinspires.ftc.teamcode.util.LinkedServos;
 
 import org.firstinspires.ftc.teamcode.hardware.BetterTouchSensor;
 import org.firstinspires.ftc.teamcode.hardware.BetterDcMotor;
+import org.firstinspires.ftc.teamcode.hardware.BetterThreadedDcMotor;
 import org.firstinspires.ftc.teamcode.hardware.BetterCRServo;
 import org.firstinspires.ftc.teamcode.hardware.BetterAnalogInput;
 import org.firstinspires.ftc.teamcode.hardware.BetterServo;

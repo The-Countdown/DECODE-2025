@@ -6,6 +6,7 @@ import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 
 import org.firstinspires.ftc.teamcode.hardware.BetterDcMotor;
+import org.firstinspires.ftc.teamcode.hardware.BetterThreadedDcMotor;
 
 public class Intake {
     private RobotContainer robotContainer;
@@ -15,6 +16,8 @@ public class Intake {
     public Intake(RobotContainer robotContainer, BetterDcMotor intakeMotor) {
         this.robotContainer = robotContainer;
         this.intakeMotor = intakeMotor;
+
+        intakeMotor.start(); // Remember to stop this at some point
     }
 
     public void setVelocity(double power) {
