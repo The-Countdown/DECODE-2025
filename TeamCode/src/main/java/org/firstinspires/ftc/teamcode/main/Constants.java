@@ -292,8 +292,8 @@ public class Constants {
     @Config
     public static class Transfer {
         public static int FLIP_TIME = 200;
-        public static double DOWN = 0.7;
-        public static double UP = 0.45;
+        public static double DOWN = 0.722;
+        public static double UP = 0.525;
     }
 
     @Config
