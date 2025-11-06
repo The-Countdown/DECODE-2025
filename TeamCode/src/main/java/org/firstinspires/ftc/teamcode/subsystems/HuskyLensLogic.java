@@ -91,6 +91,29 @@ public class HuskyLensLogic {
         return "Nearest ball: " + blocks[0].x + " , " + blocks[0].y + " , " + checkColor();
     }
 
+    public void trackBall(){
+        HuskyLens.Block[] blocks = huskyLens.blocks();
+        double turnPower = 0.1;
+
+        //I need these two
+        double currentAngle = 0;
+        double degreesPerX = 0.1; // The amount of degrees needed to move the x value by 1
+
+        double targetAngle = currentAngle;
+
+        if(blocks.length > 0){
+            double x = blocks[0].x;
+            if(x > 10){
+                targetAngle = ((Math.PI/180)-1)*(currentAngle + ((x-10) * degreesPerX));
+            } else if (x < -10){
+                targetAngle = ((Math.PI/180)-1)*(currentAngle - ((x+10) * degreesPerX));
+            }
+            double[] targets = {targetAngle,targetAngle,targetAngle,targetAngle};
+            double[] powers = {turnPower,turnPower,turnPower,turnPower};
+            robotContainer.drivetrain.setTargets(targets, powers);
+        }
+    }
+
     // GOAL: return the nearest green and the nearest purple ball
     // * Get telemetry to return position and color of nearest ball
     // * create for loop to get distance of each ball
