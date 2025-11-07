@@ -24,9 +24,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
 import org.firstinspires.ftc.teamcode.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.drivetrain.DrivetrainUpdater;
-import org.firstinspires.ftc.teamcode.drivetrain.HeadingPID;
+import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.HeadingPID;
 import org.firstinspires.ftc.teamcode.drivetrain.SwerveModule;
 import org.firstinspires.ftc.teamcode.drivetrain.SwervePDF;
+import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.LatitudePID;
+import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.LongitudePID;
 import org.firstinspires.ftc.teamcode.subsystems.HuskyLensLogic;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.LimelightLogic;
@@ -89,6 +91,8 @@ public class RobotContainer {
     public DelayedActionManager delayedActionManager = new DelayedActionManager();
     public Drivetrain drivetrain;
     public HeadingPID headingPID;
+    public LatitudePID latitudePID;
+    public LongitudePID longitudePID;
     public IndicatorLighting.Light indicatorLightFront;
     public IndicatorLighting.Light indicatorLightBack;
     public IndicatorLighting.Group allIndicatorLights;
@@ -238,6 +242,9 @@ public class RobotContainer {
 
         drivetrain = new Drivetrain(this);
         headingPID = new HeadingPID(this);
+        latitudePID = new LatitudePID(this);
+        longitudePID = new LongitudePID(this);
+
         registerLoopTimer("teleOp");
         registerLoopTimer("drivetrainUpdater");
         registerLoopTimer("pinpointUpdater");

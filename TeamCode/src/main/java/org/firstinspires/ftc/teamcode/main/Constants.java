@@ -221,16 +221,29 @@ public class Constants {
         public static final GoBildaPinpointDriver.EncoderDirection
                 PINPOINT_X_ENCODER_DIRECTION = GoBildaPinpointDriver.EncoderDirection.FORWARD;
         public static final GoBildaPinpointDriver.EncoderDirection PINPOINT_Y_ENCODER_DIRECTION = GoBildaPinpointDriver.EncoderDirection.REVERSED;
-        public static boolean useHeadingPIDForTurning = false;
         public static double turningRate = 0.20;
         public static double
-                HEADING_KP = 0.02,
+                HEADING_KP = 0,
                 HEADING_KI = 0,
-                HEADING_I_MAX = 0.8,
-                HEADING_KD = 0.0006,
-                HEADING_KF = 0.05;
+                HEADING_I_MAX = 0,
+                HEADING_KD = 0,
+                HEADING_KF = 0;
+        public static double
+                LATITUDE_KP = 0,
+                LATITUDE_KI = 0,
+                LATITUDE_I_MAX = 0,
+                LATITUDE_KD = 0,
+                LATITUDE_KF = 0;
+        public static double
+                LONGITUDE_KP = 0,
+                LONGITUDE_KI = 0,
+                LONGITUDE_I_MAX = 0,
+                LONGITUDE_KD = 0,
+                LONGITUDE_KF = 0;
         public static double PATHING_ERROR_MARGIN_CM = 1;
-        public static double HEADING_PID_TOLERANCE_DEGREES = 360;
+        public static double HEADING_PID_TOLERANCE_DEGREES = 3;
+        public static double LATITUDE_PID_TOLERANCE_CM = 3;
+        public static double LONGITUDE_PID_TOLERANCE_CM = 3;
         public static int PINPOINT_UPDATE_DELAY_MS = 50;
     }
 

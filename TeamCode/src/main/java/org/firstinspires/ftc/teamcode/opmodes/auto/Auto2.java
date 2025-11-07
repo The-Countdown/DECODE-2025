@@ -24,7 +24,7 @@ public class Auto2 extends OpMode {
     public void init() {
         robotContainer = new RobotContainer(this);
         robotContainer.init();
-//        RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU();
+        RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU();
         blackboard.put("pose", Status.currentPose);
         robotContainer.telemetry.addData("Alliance Color", Status.alliance == Constants.Game.ALLIANCE.BLUE ? "BLUE" : "RED");
         robotContainer.telemetry.update();
@@ -32,10 +32,12 @@ public class Auto2 extends OpMode {
         if (Status.alliance == Constants.Game.ALLIANCE.RED) {
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Constants.Robot.startingX + 70, Constants.Robot.startingY - 30, AngleUnit.DEGREES, 0));
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, 0,0, AngleUnit.DEGREES, 0));
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, 0,0, AngleUnit.DEGREES, 0));
+
         } else {
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Constants.Robot.startingX + 70, Constants.Robot.startingY + 30, AngleUnit.DEGREES, 0));
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, -90.5,11, AngleUnit.DEGREES, 89));
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, -73, 61,AngleUnit.DEGREES, 171));
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, -91.44, 109.22, AngleUnit.DEGREES, 89));
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, -30.48, 109.22, AngleUnit.DEGREES, 171));
         }
     }
 
@@ -49,14 +51,15 @@ public class Auto2 extends OpMode {
         robotContainer.localizationUpdater.start();
         RobotContainer.HardwareDevices.pinpoint.setPosition(Constants.Robot.startingPose);
 
-        robotContainer.turret.pointAtGoal();
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.driveToPose(1),1000 );
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.driveToPose(2),2000 );
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.driveUsingPID(0),1000 );
+//        robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.driveUsingPID(1),2000 );
+//        robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.driveUsingPID(2),3000 );
     }
 
     @Override
     public void loop() {
         robotContainer.delayedActionManager.update();
+        robotContainer.turret.pointAtGoal();
 
         double spindexerError = Math.abs(robotContainer.spindexer.pdf.getError());
         // If the error changes by a lot in a short period of time reset the timer
