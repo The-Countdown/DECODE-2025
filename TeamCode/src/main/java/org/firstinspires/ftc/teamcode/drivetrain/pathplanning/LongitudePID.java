@@ -57,6 +57,8 @@ public class LongitudePID {
 
         lastError = error;
 
+        robotContainer.telemetry.addData("error: ", error);
+
         return p + i + d + Constants.Pathing.LONGITUDE_KF;
     }
 }

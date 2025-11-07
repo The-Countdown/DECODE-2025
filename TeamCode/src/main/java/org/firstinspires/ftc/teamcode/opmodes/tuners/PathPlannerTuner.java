@@ -57,6 +57,7 @@ public class PathPlannerTuner extends OpMode {
         telemetry.addData("y", Status.currentPose.getY(DistanceUnit.CM));
         telemetry.addData("x", Status.currentPose.getX(DistanceUnit.CM));
         telemetry.addData("angle", Status.currentPose.getHeading(AngleUnit.DEGREES));
+        telemetry.addData("Target: ", Status.targetPose.toString());
         Thread.yield();
     }
 
