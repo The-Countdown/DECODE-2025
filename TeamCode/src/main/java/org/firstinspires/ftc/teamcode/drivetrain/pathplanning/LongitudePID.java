@@ -24,6 +24,9 @@ public class LongitudePID {
         this.robotContainer = robotContainer;
     }
 
+    public double getError(){
+       return lastError;
+    }
     /**
      * Calculates the PID output for the servo.
      *
@@ -56,8 +59,6 @@ public class LongitudePID {
         d = -Constants.Pathing.LONGITUDE_KD * (error - lastError) / currentTime;
 
         lastError = error;
-
-        robotContainer.telemetry.addData("error: ", error);
 
         return p + i + d + Constants.Pathing.LONGITUDE_KF;
     }
