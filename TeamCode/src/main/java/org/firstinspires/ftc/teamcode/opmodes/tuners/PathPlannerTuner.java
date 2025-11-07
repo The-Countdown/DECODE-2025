@@ -54,8 +54,8 @@ public class PathPlannerTuner extends OpMode {
             robotContainer.pathPlanner.driveUsingPID(0);
         }
 
-        telemetry.addData("x", Status.currentPose.getY(DistanceUnit.CM));
-        telemetry.addData("y", Status.currentPose.getX(DistanceUnit.CM));
+        telemetry.addData("y", Status.currentPose.getY(DistanceUnit.CM));
+        telemetry.addData("x", Status.currentPose.getX(DistanceUnit.CM));
         telemetry.addData("angle", Status.currentPose.getHeading(AngleUnit.DEGREES));
         Thread.yield();
     }

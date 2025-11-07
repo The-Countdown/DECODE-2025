@@ -71,16 +71,14 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
         double translationalMagnitude = Math.sqrt(x * x + y * y);
         // Calculate the angle of translational movement.
         double translationalAngle = Math.atan2(y, x);
-        // Set the initial translational direction to forward.
-        int translationalDirection = 1;
 
         double currentHeading = HelperFunctions.normalizeAngle(Status.currentHeading + (Status.alliance == Constants.Game.ALLIANCE.RED ? 90 : -90));
         // Adjust the translational angle for field-oriented driving if enabled.
         translationalAngle = Status.fieldOriented ? translationalAngle + Math.toRadians(currentHeading) : translationalAngle;
 
         // Calculate the x and y components of translational movement.
-        double translationalX = translationalMagnitude * Math.cos(translationalAngle) * translationalDirection;
-        double translationalY = translationalMagnitude * Math.sin(translationalAngle) * translationalDirection;
+        double translationalX = translationalMagnitude * Math.cos(translationalAngle);
+        double translationalY = translationalMagnitude * Math.sin(translationalAngle);
 
         // Iterate through each swerve module to calculate its target angle and power.
         for (int i = 0; i < robotContainer.swerveModules.length; i++) {
@@ -134,14 +132,10 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
         double translationalMagnitude = Math.sqrt(x * x + y * y);
         // Calculate the angle of translational movement.
         double translationalAngle = Math.atan2(y, x);
-        // Set the initial translational direction to forward.
-        int translationalDirection = 1;
-
-        double currentHeading = HelperFunctions.normalizeAngle(Status.currentHeading + (Status.alliance == Constants.Game.ALLIANCE.RED ? 90 : -90));
 
         // Calculate the x and y components of translational movement.
-        double translationalX = translationalMagnitude * Math.cos(translationalAngle) * translationalDirection;
-        double translationalY = translationalMagnitude * Math.sin(translationalAngle) * translationalDirection;
+        double translationalX = translationalMagnitude * Math.cos(translationalAngle);
+        double translationalY = translationalMagnitude * Math.sin(translationalAngle);
 
         // Iterate through each swerve module to calculate its target angle and power.
         for (int i = 0; i < robotContainer.swerveModules.length; i++) {
