@@ -27,16 +27,16 @@ public class Auto2 extends OpMode {
         robotContainer.telemetry.addData("Alliance Color", Status.alliance == Constants.Game.ALLIANCE.BLUE ? "BLUE" : "RED");
         robotContainer.telemetry.update();
 
-        if (Status.alliance == Constants.Game.ALLIANCE.RED) {
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Constants.Robot.startingX + 70, Constants.Robot.startingY - 30, AngleUnit.DEGREES, 0));
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, 0,0, AngleUnit.DEGREES, 0));
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, 0,0, AngleUnit.DEGREES, 0));
-
+        if (Status.alliance == Constants.Game.ALLIANCE.BLUE) {
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Constants.Robot.startingX + 70, Constants.Robot.startingY, AngleUnit.DEGREES, 0));
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Constants.Robot.startingX - 91.44, Constants.Robot.startingY - 109.22, AngleUnit.DEGREES, 90));
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Constants.Robot.startingX - 30.48, Constants.Robot.startingY - 109.22, AngleUnit.DEGREES, 180));
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Constants.Robot.startingX + 30.48, Constants.Robot.startingY - 109.22, AngleUnit.DEGREES, 180));
         } else {
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Constants.Robot.startingX + 70, Constants.Robot.startingY + 30, AngleUnit.DEGREES, 0));
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, -91.44, 109.22, AngleUnit.DEGREES, 89));
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, -30.48, 109.22, AngleUnit.DEGREES, 171));
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, 0, 0, AngleUnit.DEGREES, 0));
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Constants.Robot.startingX + 70, Constants.Robot.startingY, AngleUnit.DEGREES, 0));
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Constants.Robot.startingX - 91.44, Constants.Robot.startingY + 109.22, AngleUnit.DEGREES, 90));
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Constants.Robot.startingX - 30.48, Constants.Robot.startingY + 109.22, AngleUnit.DEGREES, 180));
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Constants.Robot.startingX + 30.48, Constants.Robot.startingY + 109.22, AngleUnit.DEGREES, 180));
         }
     }
 

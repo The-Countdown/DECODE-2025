@@ -71,7 +71,7 @@ public class Constants {
                 )
         );
 
-        public static double startingX = -152.5, startingY = -37, startingHeading = -90;
+        public static double startingX = -163.83, startingY = -38.1, startingHeading = -90;
         public static Pose2D startingPose = Status.alliance == Game.ALLIANCE.RED ? new Pose2D(DistanceUnit.CM,startingX,startingY, AngleUnit.DEGREES,startingHeading) :
                 Status.alliance == Game.ALLIANCE.BLUE ?  new Pose2D(DistanceUnit.CM,startingX,-startingY, AngleUnit.DEGREES,startingHeading) :
                         new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
