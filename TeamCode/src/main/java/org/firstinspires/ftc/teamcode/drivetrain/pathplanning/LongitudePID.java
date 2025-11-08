@@ -60,6 +60,6 @@ public class LongitudePID {
 
         lastError = error;
 
-        return p + i + d + Constants.Pathing.LONGITUDE_KF;
+        return p + i + d + (Constants.Pathing.LONGITUDE_KF  * Math.signum(error));
     }
 }

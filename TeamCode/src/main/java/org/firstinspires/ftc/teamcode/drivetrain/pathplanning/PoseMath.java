@@ -45,10 +45,8 @@ public class PoseMath {
      */
     public static boolean isAtPos() {
         return (
-                Status.currentPose.getX(DistanceUnit.CM) + Constants.Pathing.PATHING_ERROR_MARGIN_CM >= Status.targetPose.getX(DistanceUnit.CM) &&
-                Status.currentPose.getX(DistanceUnit.CM) - Constants.Pathing.PATHING_ERROR_MARGIN_CM <= Status.targetPose.getX(DistanceUnit.CM)) &&
-                Status.currentPose.getY(DistanceUnit.CM) + Constants.Pathing.PATHING_ERROR_MARGIN_CM >= Status.targetPose.getY(DistanceUnit.CM) &&
-                Status.currentPose.getY(DistanceUnit.CM) - Constants.Pathing.PATHING_ERROR_MARGIN_CM <= Status.targetPose.getY(DistanceUnit.CM)
-        ;
+                Math.abs(Status.targetPose.getX(DistanceUnit.CM) - Status.currentPose.getX(DistanceUnit.CM)) <= Constants.Pathing.LONGITUDE_PID_TOLERANCE_CM &&
+                Math.abs(Status.targetPose.getY(DistanceUnit.CM) - Status.currentPose.getY(DistanceUnit.CM)) <= Constants.Pathing.LATITUDE_PID_TOLERANCE_CM
+        );
     }
 }

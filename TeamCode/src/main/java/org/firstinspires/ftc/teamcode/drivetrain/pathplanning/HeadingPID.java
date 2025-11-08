@@ -58,6 +58,6 @@ public class HeadingPID {
 
         lastError = error;
 
-        return p + i + d + Constants.Pathing.HEADING_KF;
+        return p + i + d + (Constants.Pathing.HEADING_KF  * Math.signum(error));
     }
 }

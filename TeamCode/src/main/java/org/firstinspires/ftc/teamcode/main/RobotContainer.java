@@ -29,6 +29,7 @@ import org.firstinspires.ftc.teamcode.drivetrain.SwerveModule;
 import org.firstinspires.ftc.teamcode.drivetrain.SwervePDF;
 import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.LatitudePID;
 import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.LongitudePID;
+import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.PathingUpdater;
 import org.firstinspires.ftc.teamcode.subsystems.HuskyLensLogic;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.LimelightLogic;
@@ -84,6 +85,7 @@ public class RobotContainer {
     public SwervePDF[] swerveServosPDF = new SwervePDF[Constants.Swerve.NUM_SERVOS];
     public LocalizationUpdater localizationUpdater;
     public DrivetrainUpdater drivetrainUpdater;
+    public PathingUpdater pathingUpdater;
     public PathPlanner pathPlanner;
     public LimelightLogic limelightLogic;
     public HuskyLensLogic huskyLensLogic1;
@@ -272,20 +274,29 @@ public class RobotContainer {
         localizationUpdater.start();
         drivetrainUpdater = new DrivetrainUpdater(this);
         drivetrainUpdater.start();
+        pathingUpdater = new PathingUpdater(this);
+        pathingUpdater.start();
         telemetryLoopTimer.reset();
     }
 
     public void stop() {
-        this.localizationUpdater.stopLocalization();
+        this.localizationUpdater.stopThread();
         try {
             this.localizationUpdater.join();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
 
-        this.drivetrainUpdater.stopEnabled();
+        this.drivetrainUpdater.stopThread();
         try {
             this.drivetrainUpdater.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+        this.pathingUpdater.stopThread();
+        try {
+            this.pathingUpdater.join();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

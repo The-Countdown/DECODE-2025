@@ -58,6 +58,6 @@ public class LatitudePID {
 
         lastError = error;
 
-        return p + i + d + Constants.Pathing.LATITUDE_KF;
+        return p + i + d + (Constants.Pathing.LATITUDE_KF  * Math.signum(error));
     }
 }

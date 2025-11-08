@@ -218,8 +218,8 @@ public class Constants {
     @Config
     public static class Pathing {
         public static final double
-                PINPOINT_X_OFFSET_MM = 170;
-        public static final double PINPOINT_Y_OFFSET_MM = 0;
+                PINPOINT_X_OFFSET_MM = 176;
+        public static final double PINPOINT_Y_OFFSET_MM = 8;
         public static final GoBildaPinpointDriver.GoBildaOdometryPods
                 PINPOINT_ODOM_POD = GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD;
         public static final GoBildaPinpointDriver.EncoderDirection
@@ -227,23 +227,23 @@ public class Constants {
         public static final GoBildaPinpointDriver.EncoderDirection PINPOINT_Y_ENCODER_DIRECTION = GoBildaPinpointDriver.EncoderDirection.REVERSED;
         public static double turningRate = 0.20;
         public static double
-                HEADING_KP = 0,
+                HEADING_KP = 0.0055,
                 HEADING_KI = 0,
                 HEADING_I_MAX = 0,
                 HEADING_KD = 0,
-                HEADING_KF = 0;
+                HEADING_KF = 0.01;
         public static double
-                LATITUDE_KP = 0,
+                LATITUDE_KP = 0.007,
                 LATITUDE_KI = 0,
                 LATITUDE_I_MAX = 0,
                 LATITUDE_KD = 0,
-                LATITUDE_KF = 0;
+                LATITUDE_KF = 0.01;
         public static double
-                LONGITUDE_KP = 0,
+                LONGITUDE_KP = 0.007,
                 LONGITUDE_KI = 0,
                 LONGITUDE_I_MAX = 0,
                 LONGITUDE_KD = 0,
-                LONGITUDE_KF = 0;
+                LONGITUDE_KF = 0.01;
         public static double PATHING_ERROR_MARGIN_CM = 1;
         public static double HEADING_PID_TOLERANCE_DEGREES = 3;
         public static double LATITUDE_PID_TOLERANCE_CM = 3;

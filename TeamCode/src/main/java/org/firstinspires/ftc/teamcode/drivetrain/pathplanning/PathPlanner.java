@@ -90,6 +90,15 @@ public class PathPlanner {
         );
     }
 
+    public void setTarget(int index) {
+        Status.targetPose = poses.get(index);
+        Status.currentAutoStep = index;
+    }
+
+    public boolean shouldSetTarget(int index) {
+        return Status.currentAutoStep == index - 1 && PoseMath.isAtPos();
+    }
+
     public void driveThroughPath () {
 //        delayedActionManager.run();
         for (int i = 0; i < poses.size(); i++) {

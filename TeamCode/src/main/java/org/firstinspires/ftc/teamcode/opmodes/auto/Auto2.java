@@ -38,6 +38,7 @@ public class Auto2 extends OpMode {
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Constants.Robot.startingX + 70, Constants.Robot.startingY + 30, AngleUnit.DEGREES, 0));
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, -91.44, 109.22, AngleUnit.DEGREES, 89));
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, -30.48, 109.22, AngleUnit.DEGREES, 171));
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, 0, 0, AngleUnit.DEGREES, 0));
         }
     }
 
@@ -50,10 +51,14 @@ public class Auto2 extends OpMode {
         robotContainer.localizationUpdater = new LocalizationUpdater(robotContainer);
         robotContainer.localizationUpdater.start();
         RobotContainer.HardwareDevices.pinpoint.setPosition(Constants.Robot.startingPose);
-
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.driveUsingPID(0),1000 );
-//        robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.driveUsingPID(1),2000 );
-//        robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.driveUsingPID(2),3000 );
+        
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.setTarget(1), () -> robotContainer.pathPlanner.shouldSetTarget(1));
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setVelocity(0.8), () -> robotContainer.pathPlanner.shouldSetTarget(2));
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.setTarget(2), () -> robotContainer.pathPlanner.shouldSetTarget(2));
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setVelocity(0), () -> robotContainer.pathPlanner.shouldSetTarget(3));
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.turret.flywheel.setTargetVelocity(0.5), () -> robotContainer.pathPlanner.shouldSetTarget(3));
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.setTarget(3), () -> robotContainer.pathPlanner.shouldSetTarget(3));
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[1]), () -> robotContainer.pathPlanner.shouldSetTarget(4));
     }
 
     @Override

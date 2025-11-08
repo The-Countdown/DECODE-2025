@@ -18,7 +18,7 @@ public class DelayedActionManager {
     public void schedule(Runnable action, int delayMs) {
         delayedActions.add(new DelayedAction(action, delayMs));
     }
-    public void schedule(Runnable action, BooleanSupplier condition) {
+    public void  schedule(Runnable action, BooleanSupplier condition) {
         delayedActions.add(new DelayedAction(action, condition));
     }
     public void schedule(Runnable action, BooleanSupplier condition, int timeoutMs) {

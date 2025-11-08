@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmodes.teleop;
+package org.firstinspires.ftc.teamcode.opmodes.tuners;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -7,13 +7,14 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.LongitudePID;
+import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.PoseMath;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "PathPlannerTuner", group = "TeleOp")
+@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "PathPlannerTuner", group = "Tuner")
 public class PathPlannerTuner extends OpMode {
     private RobotContainer robotContainer;
     ElapsedTime timer = new ElapsedTime();
@@ -23,13 +24,14 @@ public class PathPlannerTuner extends OpMode {
         robotContainer = new RobotContainer(this);
         robotContainer.init();
         RobotContainer.HardwareDevices.pinpoint.setPosition((Pose2D) blackboard.getOrDefault("pose", new Pose2D(DistanceUnit.CM, 0, 0, AngleUnit.DEGREES, 0)));
+        RobotContainer.HardwareDevices.pinpoint.recalibrateIMU();
         robotContainer.telemetry.addData("Alliance Color", Status.alliance == Constants.Game.ALLIANCE.BLUE ? "BLUE" : "RED");
         robotContainer.telemetry.update();
 
-        robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.INCH, 12,12,AngleUnit.DEGREES, 30));
-        robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.INCH, -12,12,AngleUnit.DEGREES, 15));
-        robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.INCH, -12,-12,AngleUnit.DEGREES, 0));
-        robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.INCH, 12,-12,AngleUnit.DEGREES, 15));
+        robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.INCH, 12,12,AngleUnit.DEGREES, 90));
+        robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.INCH, -12,12,AngleUnit.DEGREES, 90));
+        robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.INCH, -12,-12,AngleUnit.DEGREES, 180));
+        robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.INCH, 12,-12,AngleUnit.DEGREES, 180));
     }
 
     @Override
@@ -45,21 +47,25 @@ public class PathPlannerTuner extends OpMode {
         Status.intakeToggle = false;
         Status.turretToggle = false;
         robotContainer.start(this);
+
+        robotContainer.pathPlanner.setTarget(0);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.setTarget(1), () -> robotContainer.pathPlanner.shouldSetTarget(1));
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.setTarget(2), () -> robotContainer.pathPlanner.shouldSetTarget(2));
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.setTarget(3), () -> robotContainer.pathPlanner.shouldSetTarget(3));
+
+
     }
 
     @Override
     public void loop() {
         robotContainer.refreshData();
-        if (timer.seconds() > 15){
-            timer.reset();
-        } else if (timer.seconds() > 9 && timer.seconds() < 15) {
-            robotContainer.pathPlanner.driveUsingPID(3);
-        } else if (timer.seconds() > 6 && timer.seconds() < 9) {
-            robotContainer.pathPlanner.driveUsingPID(2);
-        }else if (timer.seconds() > 3 && timer.seconds() < 6) {
-            robotContainer.pathPlanner.driveUsingPID(1);
-        }else if (timer.seconds() > 0 && timer.seconds() < 3) {
-            robotContainer.pathPlanner.driveUsingPID(0);
+        robotContainer.delayedActionManager.update();
+
+        if (robotContainer.pathPlanner.shouldSetTarget(4)) {
+            robotContainer.pathPlanner.setTarget(0);
+            robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.setTarget(1), () -> robotContainer.pathPlanner.shouldSetTarget(1));
+            robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.setTarget(2), () -> robotContainer.pathPlanner.shouldSetTarget(2));
+            robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.setTarget(3), () -> robotContainer.pathPlanner.shouldSetTarget(3));
         }
 
         telemetry.addData("y", Status.currentPose.getY(DistanceUnit.CM));
