@@ -28,15 +28,13 @@ public class Auto2 extends OpMode {
         robotContainer.telemetry.update();
 
         if (Status.alliance == Constants.Game.ALLIANCE.BLUE) {
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Constants.Robot.startingX + 70, Constants.Robot.startingY, AngleUnit.DEGREES, 0));
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Constants.Robot.startingX - 91.44, Constants.Robot.startingY - 109.22, AngleUnit.DEGREES, 90));
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Constants.Robot.startingX - 30.48, Constants.Robot.startingY - 109.22, AngleUnit.DEGREES, 180));
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Constants.Robot.startingX + 30.48, Constants.Robot.startingY - 109.22, AngleUnit.DEGREES, 180));
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Constants.Robot.startingX - 91.44, Constants.Robot.startingY - 109.22, AngleUnit.DEGREES, 0));
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Constants.Robot.startingX + 30.48, Constants.Robot.startingY - 109.22, AngleUnit.DEGREES, 0));
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Constants.Robot.startingX - 30.48, Constants.Robot.startingY - 109.22, AngleUnit.DEGREES, 0));
         } else {
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Constants.Robot.startingX + 70, Constants.Robot.startingY, AngleUnit.DEGREES, 0));
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Constants.Robot.startingX - 91.44, Constants.Robot.startingY + 109.22, AngleUnit.DEGREES, 90));
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Constants.Robot.startingX - 30.48, Constants.Robot.startingY + 109.22, AngleUnit.DEGREES, 180));
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Constants.Robot.startingX + 30.48, Constants.Robot.startingY + 109.22, AngleUnit.DEGREES, 180));
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Constants.Robot.startingX + 91.44, Constants.Robot.startingY + 109.22, AngleUnit.DEGREES, 0));
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Constants.Robot.startingX + 30.48, Constants.Robot.startingY + 109.22, AngleUnit.DEGREES, 0));
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Constants.Robot.startingX - 30.48, Constants.Robot.startingY + 109.22, AngleUnit.DEGREES, 0));
         }
     }
 
@@ -48,7 +46,12 @@ public class Auto2 extends OpMode {
         robotContainer.start(this, true);
         robotContainer.localizationUpdater = new LocalizationUpdater(robotContainer);
         robotContainer.localizationUpdater.start();
-        RobotContainer.HardwareDevices.pinpoint.setPosition(Constants.Robot.startingPose);
+
+        if (Status.alliance == Constants.Game.ALLIANCE.RED) {
+            RobotContainer.HardwareDevices.pinpoint.setPosition(new Pose2D(DistanceUnit.CM, Constants.Robot.startingPose.getX(DistanceUnit.CM), -Constants.Robot.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, 0));
+        } else {
+            RobotContainer.HardwareDevices.pinpoint.setPosition(Constants.Robot.startingPose);
+        }
         
 //        robotContainer.pathPlanner.setTarget(1);
 //        robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setVelocity(0.8), () -> robotContainer.pathPlanner.hasPreviousPathCompleted(2));
@@ -57,8 +60,6 @@ public class Auto2 extends OpMode {
 //        robotContainer.delayedActionManager.schedule(() -> robotContainer.turret.flywheel.setTargetVelocity(0.5), () -> robotContainer.pathPlanner.hasPreviousPathCompleted(3));
 //        robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.setTarget(3), () -> robotContainer.pathPlanner.hasPreviousPathCompleted(3));
 //        robotContainer.delayedActionManager.schedule(() -> robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[1]), () -> robotContainer.pathPlanner.hasPreviousPathCompleted(4));
-        robotContainer.pathPlanner.setTarget(1);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.setTarget(2), () -> Status.pathCompleted[1]);
     }
 
     @Override
@@ -66,6 +67,7 @@ public class Auto2 extends OpMode {
         robotContainer.delayedActionManager.update();
         robotContainer.pathPlanner.updatePathStatus();
         robotContainer.turret.pointAtGoal();
+        robotContainer.pathPlanner.driveThroughPath();
 
         double spindexerError = Math.abs(robotContainer.spindexer.pdf.getError());
         // If the error changes by a lot in a short period of time reset the timer

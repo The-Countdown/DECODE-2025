@@ -83,11 +83,16 @@ public class PathPlanner {
 
     public boolean driveUsingPID(int index) {
         Status.targetPose = poses.get(index);
-//        robotContainer.drivetrain.powerInput(
-//                robotContainer.latitudePID.calculate(),
-//                robotContainer.longitudePID.calculate(),
-//                robotContainer.headingPID.calculate()
-//        );
+        return PoseMath.isAtPos();
+    }
+
+    public boolean driveUsingPIDWithoutThread(int index) {
+        Status.targetPose = poses.get(index);
+        robotContainer.drivetrain.powerInput(
+                robotContainer.latitudePID.calculate(),
+                robotContainer.longitudePID.calculate(),
+                robotContainer.headingPID.calculate()
+        );
         return PoseMath.isAtPos();
     }
 
@@ -106,10 +111,12 @@ public class PathPlanner {
     }
 
     public void driveThroughPath () {
-        if (driveUsingPID(this.currentPose)) {
-            this.currentPose += 1;
-            if (this.currentPose == this.poses.size()) {
-                this.pathCompleted = true;
+        if (!this.pathCompleted) {
+            if (driveUsingPID(this.currentPose)) {
+                this.currentPose += 1;
+                if (this.currentPose == this.poses.size()) {
+                    this.pathCompleted = true;
+                }
             }
         }
     }
