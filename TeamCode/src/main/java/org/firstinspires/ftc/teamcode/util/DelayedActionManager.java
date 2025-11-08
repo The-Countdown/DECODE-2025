@@ -2,34 +2,44 @@ package org.firstinspires.ftc.teamcode.util;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.main.RobotContainer;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.lang.Thread;
 
 public class DelayedActionManager {
-    private final List<DelayedAction> delayedActions = new ArrayList<>();
+    RobotContainer robotContainer;
+    private final List<Action> delayedActions = new ArrayList<>();
     List<Double> timeAtPause = new ArrayList<>();
     volatile boolean enabled = true;
+
+    public DelayedActionManager(RobotContainer robotContainer) {
+        this.robotContainer = robotContainer;
+    }
 
     public void schedule(DelayedAction delayedAction) {
         delayedActions.add(delayedAction);
     }
     public void schedule(Runnable action, int delayMs) {
-        delayedActions.add(new DelayedAction(action, delayMs));
+        delayedActions.add(new DelayedAction(robotContainer, action, delayMs));
     }
     public void  schedule(Runnable action, BooleanSupplier condition) {
-        delayedActions.add(new DelayedAction(action, condition));
+        delayedActions.add(new DelayedAction(robotContainer, action, condition));
     }
     public void schedule(Runnable action, BooleanSupplier condition, int timeoutMs) {
-        delayedActions.add(new DelayedAction(action, condition, timeoutMs));
+        delayedActions.add(new DelayedAction(robotContainer, action, condition, timeoutMs));
+    }
+    public void schedulePose(Runnable action, BooleanSupplier condition, int poseDelay) {
+        delayedActions.add(new PoseAction(robotContainer, action, condition, poseDelay));
     }
 
     public synchronized void update() {
-        List<DelayedAction> actions = delayedActions;
+        List<Action> actions = delayedActions;
         if (enabled) {
             for (int i = 0; i < actions.toArray().length; i++) {
-                DelayedAction delayedAction = delayedActions.get(i);
+                Action delayedAction = delayedActions.get(i);
                 if (delayedAction.shouldExecute()) {
                     delayedAction.execute();
                 }
@@ -41,12 +51,12 @@ public class DelayedActionManager {
         int cumulativeDelay = 0;
         for (DelayedAction delayedAction : actions) {
             cumulativeDelay += delayedAction.delayMs;
-            delayedActions.add(new DelayedAction(delayedAction.action, cumulativeDelay));
+            delayedActions.add(new DelayedAction(robotContainer, delayedAction.action, cumulativeDelay));
         }
     }
 
     public void cancelAll() {
-        for (DelayedAction delayedAction : delayedActions) {
+        for (Action delayedAction : delayedActions) {
             delayedAction.cancel();
         }
         delayedActions.clear();
@@ -54,47 +64,87 @@ public class DelayedActionManager {
 
     public void pause() {
         enabled = false;
-        for (DelayedAction delayedAction : delayedActions) {
+        for (Action delayedAction : delayedActions) {
             delayedAction.pause();
         }
     }
 
     public void resumeAll() {
         enabled = true;
-        for (DelayedAction delayedAction : delayedActions) {
+        for (Action delayedAction : delayedActions) {
             delayedAction.resume();
         }
     }
 
-    public static class DelayedAction {
+    public static class Action {
+        public RobotContainer robotContainer;
         public Runnable action;
-        public int delayMs;
         public BooleanSupplier condition;
         public ElapsedTime timer = new ElapsedTime();
-        private boolean executed = false;
-        private boolean cancelled = false;
-        private boolean enabled = true;
+        public boolean executed = false;
+        public boolean cancelled = false;
+        public boolean enabled = true;
 
-        private double pauseTime = 0;
-        private double accumulatedPausedTime = 0;
+        public double pauseTime = 0;
+        public double accumulatedPausedTime = 0;
+        public boolean shouldExecute() {
+            return false;
+        }
 
-        public DelayedAction(Runnable action, int delayMs) {
+        public synchronized void execute() {
+            if (!executed && !cancelled) {
+                action.run();
+                executed = true;
+            }
+        }
+
+        public boolean isExecuted() {
+            return executed || cancelled;
+        }
+
+        public void cancel() {
+            cancelled = true;
+        }
+
+        public void pause() {
+            if (enabled) {
+                pauseTime = timer.milliseconds();
+                enabled = false;
+            }
+        }
+
+        public void resume() {
+            if (!enabled) {
+                accumulatedPausedTime += (timer.milliseconds() - pauseTime);
+                enabled = true;
+            }
+        }
+    }
+
+    public static class DelayedAction extends Action {
+        public int delayMs;
+
+        public DelayedAction(RobotContainer robotContainer, Runnable action, int delayMs) {
+            this.robotContainer = robotContainer;
             this.action = action;
             this.delayMs = delayMs;
         }
 
-        public DelayedAction(Runnable action, BooleanSupplier condition) {
+        public DelayedAction(RobotContainer robotContainer, Runnable action, BooleanSupplier condition) {
+            this.robotContainer = robotContainer;
             this.action = action;
             this.condition = condition;
             this.delayMs = -1;
         }
 
-        public DelayedAction(Runnable action, BooleanSupplier condition, int timeoutMs) {
+        public DelayedAction(RobotContainer robotContainer, Runnable action, BooleanSupplier condition, int timeoutMs) {
+            this.robotContainer = robotContainer;
             this.action = action;
             this.condition = condition;
             this.delayMs = timeoutMs;
         }
 
+        @Override
         public boolean shouldExecute() {
             if (executed || cancelled || !enabled) return false;
 
@@ -104,6 +154,28 @@ public class DelayedActionManager {
                 return condition.getAsBoolean() || (timer != null && currentTime >= delayMs);
             } else {
                 return timer != null && currentTime >= delayMs;
+            }
+        }
+    }
+    public static class PoseAction extends Action {
+        public int poseDelay;
+
+        public PoseAction(RobotContainer robotContainer, Runnable action, BooleanSupplier condition, int poseDelay) {
+            this.robotContainer = robotContainer;
+            this.action = action;
+            this.condition = condition;
+            this.poseDelay = poseDelay;
+        }
+
+        public boolean shouldExecute() {
+            if (executed || cancelled || !enabled) return false;
+
+            double currentTime = timer.milliseconds() - accumulatedPausedTime;
+
+            if (condition != null) {
+                return condition.getAsBoolean() || (timer != null && robotContainer.pathPlanner.currentPose == poseDelay);
+            } else {
+                return timer != null && robotContainer.pathPlanner.currentPose >= poseDelay;
             }
         }
 

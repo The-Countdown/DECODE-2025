@@ -90,7 +90,7 @@ public class RobotContainer {
     public LimelightLogic limelightLogic;
     public HuskyLensLogic huskyLensLogic1;
     public HuskyLensLogic huskyLensLogic2;
-    public DelayedActionManager delayedActionManager = new DelayedActionManager();
+    public DelayedActionManager delayedActionManager = new DelayedActionManager(this);
     public Drivetrain drivetrain;
     public HeadingPID headingPID;
     public LatitudePID latitudePID;
