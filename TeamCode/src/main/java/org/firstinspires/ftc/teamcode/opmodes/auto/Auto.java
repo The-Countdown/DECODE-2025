@@ -42,7 +42,7 @@ public class Auto extends OpMode {
         Status.opModeIsActive = true;
         Status.lightsOn = true;
         Status.isDrivingActive = false;
-        robotContainer.start(this);
+        robotContainer.start(this, false);
         robotContainer.localizationUpdater = new LocalizationUpdater(robotContainer);
         robotContainer.localizationUpdater.start();
         RobotContainer.HardwareDevices.pinpoint.setPosition(Constants.Robot.startingPose);

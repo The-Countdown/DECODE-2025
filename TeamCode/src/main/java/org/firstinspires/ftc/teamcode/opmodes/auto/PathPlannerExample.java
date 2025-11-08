@@ -32,7 +32,7 @@ public class PathPlannerExample extends OpMode {
         Status.lightsOn = true;
         Status.isDrivingActive = true;
 
-        robotContainer.start(this);
+        robotContainer.start(this, true);
 
         robotContainer.pathPlanner.driveToPose(0);
     }

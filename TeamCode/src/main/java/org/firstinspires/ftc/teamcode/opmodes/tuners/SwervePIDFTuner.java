@@ -36,7 +36,7 @@ public class SwervePIDFTuner extends OpMode {
 
     @Override
     public void start() {
-        robotContainer.start(this);
+        robotContainer.start(this, false);
         Status.opModeIsActive = true;
         Objects.requireNonNull(robotContainer.loopTimers.get("teleOp")).reset();
         if (RobotContainer.HardwareDevices.pinpoint.getDeviceStatus() != GoBildaPinpointDriver.DeviceStatus.READY) {

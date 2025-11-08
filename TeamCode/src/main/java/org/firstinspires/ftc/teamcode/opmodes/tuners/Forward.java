@@ -26,6 +26,11 @@ public class Forward extends OpMode {
         robotContainer.refreshData();
         RobotContainer.HardwareDevices.imu.resetYaw();
         RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU();
+        try {
+            Thread.sleep(300);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         robotContainer.opMode.telemetry.addLine("OpMode Initialized");
         robotContainer.opMode.telemetry.update();
         robotContainer.indicatorLightFront.setColor(Constants.LED.COLOR.GREEN);
@@ -38,13 +43,14 @@ public class Forward extends OpMode {
 
     @Override
     public void start() {
-        robotContainer.start(this);
+        robotContainer.start(this, false);
         Status.opModeIsActive = true;
         Objects.requireNonNull(robotContainer.loopTimers.get("teleOp")).reset();
         if (RobotContainer.HardwareDevices.pinpoint.getDeviceStatus() != GoBildaPinpointDriver.DeviceStatus.READY) {
             robotContainer.addRetainedTelemetry("WARNING, PINPOINT STATUS:", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
         }
         targetTimer.reset();
+        robotContainer.pathingUpdater.stopThread();
     }
 
     @Override

@@ -35,7 +35,7 @@ public class Rotate extends OpMode {
 
     @Override
     public void start() {
-        robotContainer.start(this);
+        robotContainer.start(this, false);
         Status.opModeIsActive = true;
         Status.lightsOn = false;
         Status.isDrivingActive = false;

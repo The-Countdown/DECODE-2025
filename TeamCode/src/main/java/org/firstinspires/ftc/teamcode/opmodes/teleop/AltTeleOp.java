@@ -39,7 +39,7 @@ public class AltTeleOp extends OpMode {
         Status.lightsOn = true;
         Status.isDrivingActive = true;
         RobotContainer.HardwareDevices.limelight.start();
-        robotContainer.start(this);
+        robotContainer.start(this, false);
     }
 
     @Override

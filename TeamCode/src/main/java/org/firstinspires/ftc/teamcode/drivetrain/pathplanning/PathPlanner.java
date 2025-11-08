@@ -25,6 +25,8 @@ public class PathPlanner {
     double[] calculatedAngles = new double[Constants.Swerve.NUM_SERVOS];
     double[] calculatedPowers = new double[Constants.Swerve.NUM_MOTORS];
     double[] lastAngles = Constants.Swerve.STOP_FORMATION;
+    public boolean pathCompleted = false;
+    public int currentPose = 0;
 
     public PathPlanner(Telemetry telemetry, RobotContainer robotContainer) {
         this.telemetry = telemetry;
@@ -79,37 +81,36 @@ public class PathPlanner {
         robotContainer.drivetrain.setTargets(emptyAngles, Constants.Swerve.NO_POWER);
     }
 
-    public void driveUsingPID(int index) {
+    public boolean driveUsingPID(int index) {
         Status.targetPose = poses.get(index);
-        robotContainer.drivetrain.powerInput(
-                robotContainer.latitudePID.calculate(),
-                robotContainer.longitudePID.calculate(),
-                robotContainer.headingPID.calculate()
-
-        );
+//        robotContainer.drivetrain.powerInput(
+//                robotContainer.latitudePID.calculate(),
+//                robotContainer.longitudePID.calculate(),
+//                robotContainer.headingPID.calculate()
+//        );
+        return PoseMath.isAtPos();
     }
 
     public void setTarget(int index) {
         Status.targetPose = poses.get(index);
-        Status.currentAutoStep = index;
+        Status.currentPath = index;
+        Status.pathCompleted[index] = false;
     }
 
-    /**
-     * Checks if the current target path has been completed.
-     * <p>
-     * It is named using "previous" because there is an input for an index, and "previous" is referring to one before the inputted index
-     * @param index next target path
-     * @return true if the current target path has been completed AND
-     *      if the current path index is one less than the next target path; if it is the previous path
-     */
-    public boolean hasPreviousPathCompleted(int index) {
-        return Status.currentAutoStep == index - 1 && PoseMath.isAtPos();
+    public void updatePathStatus() {
+        if (Status.currentPath == -1) {
+            return;
+        } else {
+            Status.pathCompleted[Status.currentPath] = PoseMath.isAtPos();
+        }
     }
 
     public void driveThroughPath () {
-//        delayedActionManager.run();
-        for (int i = 0; i < poses.size(); i++) {
-            driveToPose(i);
+        if (driveUsingPID(this.currentPose)) {
+            this.currentPose += 1;
+            if (this.currentPose == this.poses.size()) {
+                this.pathCompleted = true;
+            }
         }
     }
 

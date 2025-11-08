@@ -226,6 +226,7 @@ public class RobotContainer {
         LinkedServos turretServos = new LinkedServos(HardwareDevices.turretServoMaster, HardwareDevices.turretServoSlave);
 
         pathPlanner = new PathPlanner(telemetry, this);
+        Arrays.fill(Status.pathCompleted, false);
 
         limelightLogic = new LimelightLogic(this, telemetry, HardwareDevices.limelight);
         huskyLensLogic1 = new HuskyLensLogic(this, RobotContainer.HardwareDevices.huskyLens1);
@@ -267,7 +268,7 @@ public class RobotContainer {
         transfer.flapDown();
     }
 
-    public void start(OpMode opmode) {
+    public void start(OpMode opmode, boolean runPathplanner) {
         gamepadEx1 = new GamepadWrapper(opmode.gamepad1);
         gamepadEx2 = new GamepadWrapper(opmode.gamepad2);
         localizationUpdater = new LocalizationUpdater(this);
@@ -275,7 +276,9 @@ public class RobotContainer {
         drivetrainUpdater = new DrivetrainUpdater(this);
         drivetrainUpdater.start();
         pathingUpdater = new PathingUpdater(this);
-        pathingUpdater.start();
+        if (runPathplanner) {
+            pathingUpdater.start();
+        }
         telemetryLoopTimer.reset();
     }
 

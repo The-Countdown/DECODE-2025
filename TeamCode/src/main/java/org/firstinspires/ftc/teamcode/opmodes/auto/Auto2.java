@@ -15,8 +15,6 @@ import org.firstinspires.ftc.teamcode.main.Status;
 @Autonomous(name="Auto2", group="Robot")
 public class Auto2 extends OpMode {
     private RobotContainer robotContainer;
-    public static double CURRENT_LOOP_TIME_MS;
-    public static double CURRENT_LOOP_TIME_AVG_MS;
     private final ElapsedTime spindexAccel = new ElapsedTime();
     private double lastError = 0;
 
@@ -47,23 +45,26 @@ public class Auto2 extends OpMode {
         Status.opModeIsActive = true;
         Status.lightsOn = true;
         Status.isDrivingActive = false;
-        robotContainer.start(this);
+        robotContainer.start(this, true);
         robotContainer.localizationUpdater = new LocalizationUpdater(robotContainer);
         robotContainer.localizationUpdater.start();
         RobotContainer.HardwareDevices.pinpoint.setPosition(Constants.Robot.startingPose);
         
+//        robotContainer.pathPlanner.setTarget(1);
+//        robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setVelocity(0.8), () -> robotContainer.pathPlanner.hasPreviousPathCompleted(2));
+//        robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.setTarget(2), () -> robotContainer.pathPlanner.hasPreviousPathCompleted(2));
+//        robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setVelocity(0), () -> robotContainer.pathPlanner.hasPreviousPathCompleted(3));
+//        robotContainer.delayedActionManager.schedule(() -> robotContainer.turret.flywheel.setTargetVelocity(0.5), () -> robotContainer.pathPlanner.hasPreviousPathCompleted(3));
+//        robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.setTarget(3), () -> robotContainer.pathPlanner.hasPreviousPathCompleted(3));
+//        robotContainer.delayedActionManager.schedule(() -> robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[1]), () -> robotContainer.pathPlanner.hasPreviousPathCompleted(4));
         robotContainer.pathPlanner.setTarget(1);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setVelocity(0.8), () -> robotContainer.pathPlanner.hasPreviousPathCompleted(2));
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.setTarget(2), () -> robotContainer.pathPlanner.hasPreviousPathCompleted(2));
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setVelocity(0), () -> robotContainer.pathPlanner.hasPreviousPathCompleted(3));
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.turret.flywheel.setTargetVelocity(0.5), () -> robotContainer.pathPlanner.hasPreviousPathCompleted(3));
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.setTarget(3), () -> robotContainer.pathPlanner.hasPreviousPathCompleted(3));
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[1]), () -> robotContainer.pathPlanner.hasPreviousPathCompleted(4));
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.setTarget(2), () -> Status.pathCompleted[1]);
     }
 
     @Override
     public void loop() {
         robotContainer.delayedActionManager.update();
+        robotContainer.pathPlanner.updatePathStatus();
         robotContainer.turret.pointAtGoal();
 
         double spindexerError = Math.abs(robotContainer.spindexer.pdf.getError());

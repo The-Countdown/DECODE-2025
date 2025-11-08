@@ -49,7 +49,8 @@ public class TeleOp extends OpMode {
         Status.slotColor[1] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;
         Status.slotColor[2] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;
         RobotContainer.HardwareDevices.limelight.start();
-        robotContainer.start(this);
+        robotContainer.start(this, false);
+        robotContainer.pathingUpdater.stopThread();
     }
 
     @Override

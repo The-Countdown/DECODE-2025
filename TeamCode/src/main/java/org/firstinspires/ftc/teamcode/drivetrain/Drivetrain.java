@@ -48,18 +48,18 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
         if ((robotContainer.gamepadEx1.leftStickX.wasJustReleased() ||
                 robotContainer.gamepadEx1.leftStickY.wasJustReleased() ||
                 robotContainer.gamepadEx1.rightStickX.wasJustReleased()) &&
-                Status.robotHeadingTargetReached && x == 0 && y == 0 && rX == 0) {
+                x == 0 && y == 0 && rX == 0) {
             setTargets(lastAngles, Constants.Swerve.NO_POWER);
             stopTimer.reset();
             return;
         }
 
-        if (Status.robotHeadingTargetReached && x == 0 && y == 0 && rX == 0 && stopTimer.seconds() >= 1) {
+        if (x == 0 && y == 0 && rX == 0 && stopTimer.seconds() >= 1) {
             setTargets(Constants.Swerve.STOP_FORMATION, Constants.Swerve.NO_POWER);
             return;
         }
 
-        if (Status.robotHeadingTargetReached && x == 0 && y == 0 && rX == 0) {
+        if ( x == 0 && y == 0 && rX == 0) {
             setTargets(lastAngles, Constants.Swerve.NO_POWER);
             return;
         }
@@ -132,6 +132,9 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
         double translationalMagnitude = Math.sqrt(x * x + y * y);
         // Calculate the angle of translational movement.
         double translationalAngle = Math.atan2(y, x);
+
+        double currentHeading = HelperFunctions.normalizeAngle(Status.currentHeading);
+        translationalAngle += Math.toRadians(currentHeading);
 
         // Calculate the x and y components of translational movement.
         double translationalX = translationalMagnitude * Math.cos(translationalAngle);
