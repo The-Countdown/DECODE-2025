@@ -6,13 +6,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.LongitudePID;
-import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.PoseMath;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
-import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
-import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "PathPlannerTuner", group = "Tuner")
 public class PathPlannerTuner extends OpMode {
@@ -49,9 +45,9 @@ public class PathPlannerTuner extends OpMode {
         robotContainer.start(this);
 
         robotContainer.pathPlanner.setTarget(0);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.setTarget(1), () -> robotContainer.pathPlanner.shouldSetTarget(1));
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.setTarget(2), () -> robotContainer.pathPlanner.shouldSetTarget(2));
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.setTarget(3), () -> robotContainer.pathPlanner.shouldSetTarget(3));
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.setTarget(1), () -> robotContainer.pathPlanner.hasPreviousPathCompleted(1));
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.setTarget(2), () -> robotContainer.pathPlanner.hasPreviousPathCompleted(2));
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.setTarget(3), () -> robotContainer.pathPlanner.hasPreviousPathCompleted(3));
 
 
     }
@@ -61,11 +57,11 @@ public class PathPlannerTuner extends OpMode {
         robotContainer.refreshData();
         robotContainer.delayedActionManager.update();
 
-        if (robotContainer.pathPlanner.shouldSetTarget(4)) {
+        if (robotContainer.pathPlanner.hasPreviousPathCompleted(4)) {
             robotContainer.pathPlanner.setTarget(0);
-            robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.setTarget(1), () -> robotContainer.pathPlanner.shouldSetTarget(1));
-            robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.setTarget(2), () -> robotContainer.pathPlanner.shouldSetTarget(2));
-            robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.setTarget(3), () -> robotContainer.pathPlanner.shouldSetTarget(3));
+            robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.setTarget(1), () -> robotContainer.pathPlanner.hasPreviousPathCompleted(1));
+            robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.setTarget(2), () -> robotContainer.pathPlanner.hasPreviousPathCompleted(2));
+            robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.setTarget(3), () -> robotContainer.pathPlanner.hasPreviousPathCompleted(3));
         }
 
         telemetry.addData("y", Status.currentPose.getY(DistanceUnit.CM));

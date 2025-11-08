@@ -303,7 +303,6 @@ public class Constants {
         public static double TURRET_LIMIT_MAX_SERVO = TURRET_LIMIT_MAX_ANGLE / 355;
         public static double TURRET_LIMIT_MIN = (TURRET_LIMIT_MIN_SERVO * 2) - 1;
         public static double TURRET_LIMIT_MAX = (TURRET_LIMIT_MAX_SERVO * 2) - 1;
-        public static double TURRET_ANGLE_TESTING = 1;
     }
 
     @Config
