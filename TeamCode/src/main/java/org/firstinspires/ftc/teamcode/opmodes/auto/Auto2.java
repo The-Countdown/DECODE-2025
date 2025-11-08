@@ -36,6 +36,9 @@ public class Auto2 extends OpMode {
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Constants.Robot.startingX + 30.48, Constants.Robot.startingY + 109.22, AngleUnit.DEGREES, 0));
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Constants.Robot.startingX - 30.48, Constants.Robot.startingY + 109.22, AngleUnit.DEGREES, 0));
         }
+
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setVelocity(1), 0);
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setVelocity(0), 1);
     }
 
     @Override
@@ -92,5 +95,6 @@ public class Auto2 extends OpMode {
     @Override
     public void stop() {
         blackboard.put("pose", Status.currentPose);
+        robotContainer.stop();
     }
 }
