@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 public class BetterTouchSensor {
     private RevTouchSensor sensor;
 
-    private long lastTime;
+    private long lastTime = 0;
 
     public boolean pressed = false;
 

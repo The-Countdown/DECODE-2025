@@ -31,7 +31,7 @@ public class Auto2 extends OpMode {
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM,  - 91.44,  - 109.22, AngleUnit.DEGREES, 0));
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM,  - 30.48,  - 109.22, AngleUnit.DEGREES, 0));
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM,  + 30.48,  - 109.22, AngleUnit.DEGREES, 0));
-        } else {
+        } else {//109.22
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM,  - 91.44,  + 109.22, AngleUnit.DEGREES, 0));
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM,  - 30.48,  + 109.22, AngleUnit.DEGREES, 0));
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM,  + 30.48,  + 109.22, AngleUnit.DEGREES, 0));

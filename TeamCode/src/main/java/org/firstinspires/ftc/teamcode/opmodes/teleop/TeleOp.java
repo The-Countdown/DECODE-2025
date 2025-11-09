@@ -81,7 +81,7 @@ public class TeleOp extends OpMode {
 
         //intake -circle
         Status.intakeToggle = robotContainer.gamepadEx2.circle.wasJustPressed() != Status.intakeToggle;
-        robotContainer.intake.setVelocity(Status.intakeToggle ? (robotContainer.gamepadEx1.rightTriggerRaw() - robotContainer.gamepadEx1.leftTriggerRaw()) * 0.8 : 0);
+        robotContainer.intake.setVelocity(Status.intakeToggle ? (robotContainer.gamepadEx1.rightTriggerRaw() - robotContainer.gamepadEx1.leftTriggerRaw()) * Constants.Intake.TOP_SPEED : 0);
 
         //flywheel -automated
         if (robotContainer.gamepadEx2.circle.wasJustReleased() && !Status.intakeToggle) {
@@ -180,16 +180,16 @@ public class TeleOp extends OpMode {
             robotContainer.transfer.flapDown();
         }
 
-        robotContainer.telemetry.addData("Spindexer Timer", tranferTimer.seconds());
-        robotContainer.telemetry.addData("Transfer lastAngle", lastTransferAngle);
-        transferConditionButton.update((robotContainer.spindexer.getTargetAngle() == Constants.Spindexer.TRANSFER_SLOT_ANGLES[0] || robotContainer.spindexer.getTargetAngle() == Constants.Spindexer.TRANSFER_SLOT_ANGLES[1] || robotContainer.spindexer.getTargetAngle() == Constants.Spindexer.TRANSFER_SLOT_ANGLES[2]) && robotContainer.turret.flywheel.atTargetVelocity() && !Status.intakeToggle && lastTransferAngle != robotContainer.spindexer.getTargetAngle() && robotContainer.turret.atTarget() && tranferTimer.milliseconds() > 1000);
-        robotContainer.telemetry.addData("TransferControl", transferConditionButton);
-        if (transferConditionButton.wasJustPressed()) {
-            robotContainer.transfer.flapUp();
-            robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapDown(), Constants.Transfer.FLIP_TIME);
-            robotContainer.delayedActionManager.schedule(() -> lastTransferAngle = robotContainer.spindexer.getTargetAngle(), Constants.Transfer.FLIP_TIME * 2);
-            tranferTimer.reset();
-        }
+//        robotContainer.telemetry.addData("Spindexer Timer", tranferTimer.seconds());
+//        robotContainer.telemetry.addData("Transfer lastAngle", lastTransferAngle);
+//        transferConditionButton.update((robotContainer.spindexer.getTargetAngle() == Constants.Spindexer.TRANSFER_SLOT_ANGLES[0] || robotContainer.spindexer.getTargetAngle() == Constants.Spindexer.TRANSFER_SLOT_ANGLES[1] || robotContainer.spindexer.getTargetAngle() == Constants.Spindexer.TRANSFER_SLOT_ANGLES[2]) && robotContainer.turret.flywheel.atTargetVelocity() && !Status.intakeToggle && lastTransferAngle != robotContainer.spindexer.getTargetAngle() && robotContainer.turret.atTarget() && tranferTimer.milliseconds() > 1000);
+//        robotContainer.telemetry.addData("TransferControl", transferConditionButton);
+//        if (transferConditionButton.wasJustPressed()) {
+//            robotContainer.transfer.flapUp();
+//            robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapDown(), Constants.Transfer.FLIP_TIME);
+//            robotContainer.delayedActionManager.schedule(() -> lastTransferAngle = robotContainer.spindexer.getTargetAngle(), Constants.Transfer.FLIP_TIME * 2);
+//            tranferTimer.reset();
+//        }
 
         if (robotContainer.gamepadEx1.leftBumper.wasJustPressed()) {
             Constants.Spindexer.ANGLE_OFFSET -= 15;

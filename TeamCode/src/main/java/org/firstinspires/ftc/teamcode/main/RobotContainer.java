@@ -154,7 +154,7 @@ public class RobotContainer {
 
         //sensors
         public static BetterColorSensor colorSensor;
-        public static BetterTouchSensor beamBreak;
+        public static RevTouchSensor beamBreak;
     }
 
     public RobotContainer(OpMode opMode) {
@@ -217,7 +217,7 @@ public class RobotContainer {
 
         //sensor
         HardwareDevices.colorSensor = new BetterColorSensor(getHardwareDevice(RevColorSensorV3.class, "colorSensor"), Constants.Robot.COLOR_UPDATE_TIME);
-        HardwareDevices.beamBreak = new BetterTouchSensor(getHardwareDevice(RevTouchSensor.class, "beamBreak"), Constants.Robot.COLOR_UPDATE_TIME);
+        HardwareDevices.beamBreak = getHardwareDevice(RevTouchSensor.class, "beamBreak");
 
 
         LinkedMotors flyWheelMotors = new LinkedMotors(HardwareDevices.flyWheelMotorMaster, HardwareDevices.flyWheelMotorSlave);

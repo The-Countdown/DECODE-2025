@@ -208,10 +208,10 @@ public class Constants {
 
     @Config
     public static class Control {
-        public static double JOYSTICK_SCALER_EXPONENT = 2.5;
+        public static double JOYSTICK_SCALER_EXPONENT = 2;
 
         //power per second
-        public static double MAX_DRIVE_ACCELERATION = 10;
+        public static double MAX_DRIVE_ACCELERATION = 5;
         public static double ZERO_POWER_TOLERANCE = 0.03;
     }
 
@@ -296,7 +296,7 @@ public class Constants {
         public static int FLYWHEEL_MAX_VELOCITY = 3000;
         public static double FLYWHEEL_CURVE = 6;
         public static double TRACK_GOAL_P = -0.2;
-        public static double[] HOOD_PRESETS = {0.53, 0.05};
+        public static double[] HOOD_PRESETS = {0.54, 0.08};
         public static double TURRET_LIMIT_MIN_ANGLE = 30;
         public static double TURRET_LIMIT_MAX_ANGLE = 265;
         public static double TURRET_LIMIT_MIN_SERVO = TURRET_LIMIT_MIN_ANGLE / 355;
@@ -315,7 +315,7 @@ public class Constants {
     @Config
     public static class Spindexer {
         public static int NUM_SLOTS = 3;
-        public static double ANGLE_OFFSET = 35;
+        public static double ANGLE_OFFSET = 115;
         public static double[] TRANSFER_SLOT_ANGLES = {179, 60, -60};
         public static double [] INTAKE_SLOT_ANGLES = {0, -120, 120};
         public static double KP = 0.01;
@@ -325,6 +325,7 @@ public class Constants {
 
     @Config
     public static class Intake {
+        public static double TOP_SPEED = 0.5;
         public static int RUNTIME_MS = 800;
         public static double DELAY_SECONDS = 0.2;
     }
