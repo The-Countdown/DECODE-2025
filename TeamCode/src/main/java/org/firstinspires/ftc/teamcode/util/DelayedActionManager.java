@@ -31,6 +31,10 @@ public class DelayedActionManager {
     public void schedule(Runnable action, BooleanSupplier condition, int timeoutMs) {
         delayedActions.add(new DelayedAction(robotContainer, action, condition, timeoutMs));
     }
+
+    public void schedulePose(Runnable action, int poseDelay) {
+        delayedActions.add(new PoseAction(robotContainer, action, poseDelay));
+    }
     public void schedulePose(Runnable action, BooleanSupplier condition, int poseDelay) {
         delayedActions.add(new PoseAction(robotContainer, action, condition, poseDelay));
     }
@@ -160,6 +164,11 @@ public class DelayedActionManager {
     public static class PoseAction extends Action {
         public int poseDelay;
 
+        public PoseAction(RobotContainer robotContainer, Runnable action, int poseDelay) {
+            this.robotContainer = robotContainer;
+            this.action = action;
+            this.poseDelay = poseDelay;
+        }
         public PoseAction(RobotContainer robotContainer, Runnable action, BooleanSupplier condition, int poseDelay) {
             this.robotContainer = robotContainer;
             this.action = action;
