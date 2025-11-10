@@ -46,8 +46,8 @@ public class Turret extends RobotContainer.HardwareDevices {
 
 
     public void pointAtGoal() {
-        double xDiff = Constants.Game.GOAL_POSE.getX(DistanceUnit.CM) - Status.currentPose.getX(DistanceUnit.CM);
-        double yDiff = Constants.Game.GOAL_POSE.getY(DistanceUnit.CM) - Status.currentPose.getY(DistanceUnit.CM);
+        double xDiff = Status.GOAL_POSE.getX(DistanceUnit.CM) - Status.currentPose.getX(DistanceUnit.CM);
+        double yDiff = Status.GOAL_POSE.getY(DistanceUnit.CM) - Status.currentPose.getY(DistanceUnit.CM);
         double angleToFaceGoal = Math.toDegrees(Math.atan2(yDiff, xDiff)) - Status.currentHeading;
         if (!Double.isNaN(angleToFaceGoal)) {
             setTargetAngle(angleToFaceGoal);

@@ -26,13 +26,6 @@ public class Constants {
             RED
         }
 
-        public static Pose2D GOAL_POSE =
-                Status.alliance == ALLIANCE.RED ?
-                        new Pose2D(DistanceUnit.INCH, 70, -70, AngleUnit.DEGREES, -45) :
-                        Status.alliance == ALLIANCE.BLUE ?
-                                new Pose2D(DistanceUnit.INCH, 70, 70, AngleUnit.DEGREES, 45) :
-                                new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
-
         public static Pose2D ORIGIN = new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
         // Starting positions of the sets of 3 balls (I don't know what to call them)
         public static Pose2D POSPPG = new Pose2D(DistanceUnit.CM, -91.44, -109.22, AngleUnit.DEGREES, 0);
@@ -71,10 +64,7 @@ public class Constants {
                 )
         );
 
-        public static double startingX = -160.9725, startingY = -43.02125, startingHeading = -90;
-        public static Pose2D startingPose = Status.alliance == Game.ALLIANCE.RED ? new Pose2D(DistanceUnit.CM, startingX, startingY, AngleUnit.DEGREES, startingHeading) :
-                Status.alliance == Game.ALLIANCE.BLUE ?  new Pose2D(DistanceUnit.CM, startingX, -startingY, AngleUnit.DEGREES, -startingHeading) :
-                        new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
+        public static double startingX = -160.9725, startingY = -43.02125, startingHeading = -90; // Do NOT NOT ever change this heading unless you really know what you are doing.
 
         public static final int
                 CONTROL_HUB_INDEX = 0,
@@ -117,7 +107,7 @@ public class Constants {
          * The angle offset for each swerve servo, used to correct any mechanical misalignment.
          * Index 4 is global, and the rest are in order (module 0, 1, 2, 3) see {@link SwerveModule}.
          */
-        public static double[] SERVO_ANGLE_OFFSET = {230, 20, 13, 56};
+        public static double[] SERVO_ANGLE_OFFSET = {225, 17, 13, 58};
 
         /**
          * The desired servo angles for the swerve modules when in the rotation formation
@@ -177,16 +167,16 @@ public class Constants {
          * Scales the PIDF values for the swerve drive servos based off the speed of the motor being driven,
          * to compensate for the lesser friction when the robot is moving.
          */
-        public static double SERVO_PIDF_SCALER = 0;
+        public static double SERVO_PIDF_SCALER = 0.5;
 
         /**
          * PIDF values for the swerve drive servos.
          * These values will need to be tuned.
          */
         public static double[]
-                SERVO_KP = {0.006, 0.006, 0.006, 0.006},
+                SERVO_KP = {0.005, 0.0045, 0.005, 0.0038},
                 SERVO_KD = {0, 0, 0, 0},
-                SERVO_KF = {0.063, 0.063, 0.063, 0.063};
+                SERVO_KF = {0.07, 0.06, 0.04, 0.06};
 
         public static double SERVO_PIDF_TOLERANCE_DEGREES = 1;
 

@@ -45,7 +45,7 @@ public class Auto extends OpMode {
         robotContainer.start(this, false);
         robotContainer.localizationUpdater = new LocalizationUpdater(robotContainer);
         robotContainer.localizationUpdater.start();
-        RobotContainer.HardwareDevices.pinpoint.setPosition(Constants.Robot.startingPose);
+        RobotContainer.HardwareDevices.pinpoint.setPosition(Status.startingPose);
 
         if (Status.alliance == Constants.Game.ALLIANCE.RED) {
             robotContainer.turret.setTargetAngle(55);

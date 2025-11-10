@@ -19,8 +19,10 @@ import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
 import org.firstinspires.ftc.teamcode.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.drivetrain.DrivetrainUpdater;
@@ -169,7 +171,6 @@ public class RobotContainer {
         HardwareDevices.pinpoint.setOffsets(Constants.Pathing.PINPOINT_X_OFFSET_MM, Constants.Pathing.PINPOINT_Y_OFFSET_MM, DistanceUnit.MM);
         HardwareDevices.pinpoint.setEncoderResolution(Constants.Pathing.PINPOINT_ODOM_POD);
         HardwareDevices.pinpoint.setEncoderDirections(Constants.Pathing.PINPOINT_X_ENCODER_DIRECTION, Constants.Pathing.PINPOINT_Y_ENCODER_DIRECTION);
-        HardwareDevices.pinpoint.setPosition(Constants.Robot.startingPose);
 
         HardwareDevices.limelight = getHardwareDevice(Limelight3A.class, "limelight");
         HardwareDevices.huskyLens1 = getHardwareDevice(HuskyLens.class, "huskyLens1");
@@ -271,6 +272,15 @@ public class RobotContainer {
     public void start(OpMode opmode, boolean runPathplanner) {
         gamepadEx1 = new GamepadWrapper(opmode.gamepad1);
         gamepadEx2 = new GamepadWrapper(opmode.gamepad2);
+        Status.GOAL_POSE = Status.alliance == Constants.Game.ALLIANCE.RED ?
+                        new Pose2D(DistanceUnit.INCH, 70, -70, AngleUnit.DEGREES, -45) :
+                        Status.alliance == Constants.Game.ALLIANCE.BLUE ?
+                                new Pose2D(DistanceUnit.INCH, 70, 70, AngleUnit.DEGREES, 45) :
+                                new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
+        Status.startingPose = Status.alliance == Constants.Game.ALLIANCE.RED ? new Pose2D(DistanceUnit.CM, Constants.Robot.startingX, Constants.Robot.startingY, AngleUnit.DEGREES, Constants.Robot.startingHeading) :
+                Status.alliance == Constants.Game.ALLIANCE.BLUE ? new Pose2D(DistanceUnit.CM, Constants.Robot.startingX, -Constants.Robot.startingY, AngleUnit.DEGREES, -Constants.Robot.startingHeading) :
+                        new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
+
         localizationUpdater = new LocalizationUpdater(this);
         localizationUpdater.start();
         drivetrainUpdater = new DrivetrainUpdater(this);
@@ -501,6 +511,8 @@ public class RobotContainer {
         telemetry.addLine();
         telemetry.addData("DriveTrain Avg Loop Time", (int) drivetrainUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms");
         telemetry.addData("DriveTrain Loop Time", (int) drivetrainUpdater.CURRENT_LOOP_TIME_MS + " ms");
+        telemetry.addData("Goal: ", Status.GOAL_POSE);
+        telemetry.addData("Start: ", Status.startingPose);
 //        telemetry.addLine();
 //        telemetry.addData("Pinpoint Avg Loop Time", (int) localizationUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms");
 //        telemetry.addData("Pinpoint Loop Time", (int) localizationUpdater.CURRENT_LOOP_TIME_MS + " ms");
