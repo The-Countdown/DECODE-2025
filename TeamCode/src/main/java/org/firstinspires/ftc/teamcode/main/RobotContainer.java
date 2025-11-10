@@ -283,6 +283,7 @@ public class RobotContainer {
     }
 
     public void stop() {
+        Status.opModeIsActive = false;
         this.localizationUpdater.stopThread();
         try {
             this.localizationUpdater.join();

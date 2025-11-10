@@ -72,8 +72,8 @@ public class Constants {
         );
 
         public static double startingX = -160.9725, startingY = -43.02125, startingHeading = -90;
-        public static Pose2D startingPose = Status.alliance == Game.ALLIANCE.RED ? new Pose2D(DistanceUnit.CM,startingX,startingY, AngleUnit.DEGREES,startingHeading) :
-                Status.alliance == Game.ALLIANCE.BLUE ?  new Pose2D(DistanceUnit.CM,startingX,-startingY, AngleUnit.DEGREES,startingHeading) :
+        public static Pose2D startingPose = Status.alliance == Game.ALLIANCE.RED ? new Pose2D(DistanceUnit.CM, startingX, startingY, AngleUnit.DEGREES, startingHeading) :
+                Status.alliance == Game.ALLIANCE.BLUE ?  new Pose2D(DistanceUnit.CM, startingX, -startingY, AngleUnit.DEGREES, -startingHeading) :
                         new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
 
         public static final int
@@ -177,7 +177,7 @@ public class Constants {
          * Scales the PIDF values for the swerve drive servos based off the speed of the motor being driven,
          * to compensate for the lesser friction when the robot is moving.
          */
-        public static double SERVO_PIDF_SCALER = 0.5;
+        public static double SERVO_PIDF_SCALER = 0;
 
         /**
          * PIDF values for the swerve drive servos.

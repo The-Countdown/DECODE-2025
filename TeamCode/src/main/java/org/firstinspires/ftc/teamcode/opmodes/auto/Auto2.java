@@ -28,13 +28,13 @@ public class Auto2 extends OpMode {
         robotContainer.telemetry.update();
 
         if (Status.alliance == Constants.Game.ALLIANCE.BLUE) {
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM,  - 91.44,  - 109.22, AngleUnit.DEGREES, 0));
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM,  - 30.48,  - 109.22, AngleUnit.DEGREES, 0));
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM,  + 30.48,  - 109.22, AngleUnit.DEGREES, 0));
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM,   - 91.44, 109.22, AngleUnit.DEGREES, 90));
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM,   - 30.48, 109.22, AngleUnit.DEGREES, 90));
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM,   30.48, 109.22, AngleUnit.DEGREES, 90));
         } else {//109.22
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM,  - 91.44,  + 109.22, AngleUnit.DEGREES, 0));
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM,  - 30.48,  + 109.22, AngleUnit.DEGREES, 0));
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM,  + 30.48,  + 109.22, AngleUnit.DEGREES, 0));
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM,   - 91.44, -109.22, AngleUnit.DEGREES, 90));
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM,   - 30.48, -109.22, AngleUnit.DEGREES, 90));
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM,   30.48, -109.22, AngleUnit.DEGREES, 90));
         }
 
         robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setVelocity(1), 0);
@@ -50,8 +50,8 @@ public class Auto2 extends OpMode {
         robotContainer.localizationUpdater = new LocalizationUpdater(robotContainer);
         robotContainer.localizationUpdater.start();
 
-        if (Status.alliance == Constants.Game.ALLIANCE.RED) {
-            RobotContainer.HardwareDevices.pinpoint.setPosition(new Pose2D(DistanceUnit.CM, Constants.Robot.startingPose.getX(DistanceUnit.CM), -Constants.Robot.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, 0));
+        if (Status.alliance == Constants.Game.ALLIANCE.BLUE) {
+            RobotContainer.HardwareDevices.pinpoint.setPosition(new Pose2D(DistanceUnit.CM, Constants.Robot.startingPose.getX(DistanceUnit.CM), -Constants.Robot.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, Constants.Robot.startingPose.getHeading(AngleUnit.DEGREES)));
         } else {
             RobotContainer.HardwareDevices.pinpoint.setPosition(Constants.Robot.startingPose);
         }
