@@ -19,11 +19,11 @@ public class Auto2 extends OpMode {
     private double lastError = 0;
 
     Pose2D
-            RED_MIDDLE = new Pose2D(DistanceUnit.INCH, 12, -12, AngleUnit.DEGREES, -45),
-            BLUE_MIDDLE = new Pose2D(DistanceUnit.INCH, 12, 12, AngleUnit.DEGREES, 45);
-    double BEFORE_TAPE = 89.22;
+            RED_MIDDLE = new Pose2D(DistanceUnit.INCH, 12, -12, AngleUnit.DEGREES, 45),
+            BLUE_MIDDLE = new Pose2D(DistanceUnit.INCH, 12, 12, AngleUnit.DEGREES, -45);
+    double BEFORE_TAPE = 87.22;
     double AFTER_TAPE = 129.22;
-    double TAPE_LOW = 91.44;
+    double TAPE_LOW = -91.44;
     double TAPE_MID = -30.48;
     double TAPE_HIGH = 30.48;
 
@@ -74,13 +74,6 @@ public class Auto2 extends OpMode {
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_HIGH, -AFTER_TAPE, AngleUnit.DEGREES, -90));
             robotContainer.pathPlanner.addPose(RED_MIDDLE);
         }
-
-       robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setVelocity(0.6), 0);
-       robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setVelocity(0), 1);
-       robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setVelocity(0.6), 3);
-       robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setVelocity(0), 4);
-       robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setVelocity(0.6), 6);
-       robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setVelocity(0), 7);
 
 //        robotContainer.pathPlanner.setTarget(1);
 //        robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setVelocity(0.8), () -> robotContainer.pathPlanner.hasPreviousPathCompleted(2));
