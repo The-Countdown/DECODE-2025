@@ -36,6 +36,22 @@ public class Auto2 extends OpMode {
         blackboard.put("pose", Status.currentPose);
         robotContainer.telemetry.addData("Alliance Color", Status.alliance == Constants.Game.ALLIANCE.BLUE ? "BLUE" : "RED");
         robotContainer.telemetry.update();
+    }
+
+    @Override
+    public void start() {
+        Status.opModeIsActive = true;
+        Status.lightsOn = true;
+        Status.isDrivingActive = false;
+        robotContainer.start(this, true);
+        // Why does localizationUpdater start twice? -Elliot
+        robotContainer.localizationUpdater = new LocalizationUpdater(robotContainer);
+        robotContainer.localizationUpdater.start();
+
+        if (Status.wentBackToStart) {
+            Status.startingPose = (Pose2D) blackboard.getOrDefault("pose", Status.startingPose);
+        }
+        RobotContainer.HardwareDevices.pinpoint.setPosition(Status.startingPose);
 
         if (Status.alliance == Constants.Game.ALLIANCE.BLUE) {
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_LOW, BEFORE_TAPE, AngleUnit.DEGREES, 90));
@@ -58,29 +74,6 @@ public class Auto2 extends OpMode {
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_HIGH, -AFTER_TAPE, AngleUnit.DEGREES, -90));
             robotContainer.pathPlanner.addPose(RED_MIDDLE);
         }
-
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setVelocity(0.6), 1);
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setVelocity(0), 2);
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setVelocity(0.6), 4);
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setVelocity(0), 5);
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setVelocity(0.6), 7);
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setVelocity(0), 8);
-    }
-
-    @Override
-    public void start() {
-        Status.opModeIsActive = true;
-        Status.lightsOn = true;
-        Status.isDrivingActive = false;
-        robotContainer.start(this, true);
-        // Why does localizationUpdater start twice? -Elliot
-        robotContainer.localizationUpdater = new LocalizationUpdater(robotContainer);
-        robotContainer.localizationUpdater.start();
-
-        if (Status.wentBackToStart) {
-            Status.startingPose = (Pose2D) blackboard.getOrDefault("pose", Status.startingPose);
-        }
-        RobotContainer.HardwareDevices.pinpoint.setPosition(Status.startingPose);
 
 //        robotContainer.pathPlanner.setTarget(1);
 //        robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setVelocity(0.8), () -> robotContainer.pathPlanner.hasPreviousPathCompleted(2));
