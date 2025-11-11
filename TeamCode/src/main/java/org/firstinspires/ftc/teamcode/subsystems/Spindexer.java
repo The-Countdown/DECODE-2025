@@ -28,6 +28,7 @@ public class Spindexer {
     private double d;
     private double ff;
     private ElapsedTime iTimer;
+    private final ElapsedTime tranferTimer = new ElapsedTime();
 
     public Spindexer (RobotContainer robotContainer, BetterCRServo spindexerServo, BetterAnalogInput spindexAnalog, BetterColorSensor colorSensor) {
         this.robotContainer = robotContainer;
@@ -138,7 +139,7 @@ public class Spindexer {
             int nextSlot = (robotContainer.spindexer.getCurrentIntakeSlot() + i) % Constants.Spindexer.INTAKE_SLOT_ANGLES.length;
 
             if (Status.slotColor[nextSlot] == Constants.Game.ARTIFACT_COLOR.UNKNOWN || Status.slotColor[nextSlot] == Constants.Game.ARTIFACT_COLOR.NONE) {
-                robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.setTargetAngle(Constants.Spindexer.INTAKE_SLOT_ANGLES[nextSlot]), 250);
+                robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.setTargetAngle(Constants.Spindexer.INTAKE_SLOT_ANGLES[nextSlot]), 200);
                 intakeSlotFound = true;
                 break;
             }
@@ -169,6 +170,16 @@ public class Spindexer {
             Status.intakeToggle = true;
             goToNextIntakeSlot();
         }
+    }
+
+    public void shootNextBall(){
+        Status.turretToggle = true;
+        Status.intakeToggle = false;
+        Status.flywheelToggle = true;
+        robotContainer.spindexer.goToNextTransferSlot();
+        tranferTimer.reset();
+        robotContainer.delayedActionManager.schedule(()-> robotContainer.transfer.flapUp(), () -> robotContainer.spindexer.pdf.getError() < 5);
+        robotContainer.delayedActionManager.schedule(()-> robotContainer.delayedActionManager.schedule(()-> robotContainer.transfer.flapDown(), Constants.Transfer.FLIP_TIME), () -> robotContainer.spindexer.pdf.getError() < 5);
     }
 
     public void goToNextGreenSlot() {

@@ -17,7 +17,6 @@ public class TeleOp extends OpMode {
     private RobotContainer robotContainer;
     public static double CURRENT_LOOP_TIME_MS;
     public double turretPos = 0;
-    private final GamepadWrapper.ButtonReader turretToggleButton = new GamepadWrapper.ButtonReader();
     private final GamepadWrapper.ButtonReader transferConditionButton = new GamepadWrapper.ButtonReader();
     private final ElapsedTime spindexAccel = new ElapsedTime();
     private double lastError = 0;
@@ -61,7 +60,7 @@ public class TeleOp extends OpMode {
         robotContainer.gamepadEx1.update();
         robotContainer.gamepadEx2.update();
         robotContainer.limelightLogic.update();
-        turretToggleButton.update(Status.turretToggle);
+        Status.turretToggleButton.update(Status.turretToggle);
         robotContainer.beamBreakToggleButton.update(RobotContainer.HardwareDevices.beamBreak.isPressed());
 
         robotContainer.allIndicatorLights.lightsUpdate();
@@ -95,7 +94,7 @@ public class TeleOp extends OpMode {
         if (Status.manualControl && robotContainer.gamepadEx2.dpadRight.isHeld()) {
             robotContainer.turret.flywheel.setTargetVelocity(Math.min(Math.pow(robotContainer.gamepadEx2.dpadRight.getHoldDuration(), Constants.Turret.FLYWHEEL_CURVE), 1));
         } else if (!Status.intakeToggle) {
-            robotContainer.turret.flywheel.setTargetVelocity(Math.min(Math.pow(turretToggleButton.getHoldDuration(), Constants.Turret.FLYWHEEL_CURVE), robotContainer.limelightLogic.getRequiredFlywheelSpeed()));
+            robotContainer.turret.flywheel.setTargetVelocity(Math.min(Math.pow(Status.turretToggleButton.getHoldDuration(), Constants.Turret.FLYWHEEL_CURVE), robotContainer.limelightLogic.getRequiredFlywheelSpeed()));
         } else {
             robotContainer.turret.flywheel.setTargetVelocity(0);
         }

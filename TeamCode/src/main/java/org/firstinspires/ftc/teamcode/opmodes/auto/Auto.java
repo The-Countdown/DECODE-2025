@@ -64,7 +64,7 @@ public class Auto extends OpMode {
         robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapUp(), 6500);
         robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapDown(), 6800);
         robotContainer.delayedActionManager.schedule(() -> robotContainer.turret.flywheel.setTargetVelocity(0), 7000);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.driveToPose(0), 10000);
+//        robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.driveToPose(0), 10000);
     }
 
     @Override

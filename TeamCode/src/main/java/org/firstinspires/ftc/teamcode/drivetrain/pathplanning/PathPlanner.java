@@ -34,10 +34,11 @@ public class PathPlanner {
     private Telemetry telemetry;
     private RobotContainer robotContainer;
     private DelayedActionManager delayedActionManager;
-    ArrayList<Pose2D> poses = new ArrayList<>();
+    ArrayList<GeneralPose> poses = new ArrayList<>();
     boolean atTarget;
     double tolerance = 1;
     private static final ElapsedTime stopTimer = new ElapsedTime();
+    private static final ElapsedTime sleepTimer = new ElapsedTime();
     double[] calculatedAngles = new double[Constants.Swerve.NUM_SERVOS];
     double[] calculatedPowers = new double[Constants.Swerve.NUM_MOTORS];
     double[] lastAngles = Constants.Swerve.STOP_FORMATION;
@@ -50,73 +51,82 @@ public class PathPlanner {
     }
 
     public void addPose(Pose2D pose) {
-        poses.add(pose);
+        poses.add(new PositionPose(pose));
     }
+
+    public void addPose(double time) {
+        poses.add(new SleepPose(time));
+    }
+
 
     /**
     * Calculates angle of the target relative to the current position of the robotContainer and drives to target
     * @param index which pose to drive to from first to last
     */
-    public void driveToPose(int index) {
-        atTarget = false;
-        while (!atTarget) {
-            Status.targetPose = poses.get(index);
-            robotContainer.telemetry.addData("Current Position X: ", Status.currentPose.getX(DistanceUnit.CM));
-            robotContainer.telemetry.addData("Current Position Y: ", Status.currentPose.getY(DistanceUnit.CM));
-
-            robotContainer.telemetry.addData("diff X", Status.targetPose.getX(DistanceUnit.CM) - Status.currentPose.getX(DistanceUnit.CM));
-            robotContainer.telemetry.addData("diff Y", Status.targetPose.getY(DistanceUnit.CM) - Status.currentPose.getY(DistanceUnit.CM));
-            robotContainer.telemetry.update();
-
-            // Know when the robotContainer is there
-            if (Status.currentPose.getX(DistanceUnit.CM) + tolerance >= Status.targetPose.getX(DistanceUnit.CM) && Status.currentPose.getX(DistanceUnit.CM) - tolerance <= Status.targetPose.getX(DistanceUnit.CM)) { // Check X
-                if (Status.currentPose.getY(DistanceUnit.CM) + tolerance >= Status.targetPose.getY(DistanceUnit.CM) && Status.currentPose.getY(DistanceUnit.CM) - tolerance <= Status.targetPose.getY(DistanceUnit.CM)) { // Check Y
-                    atTarget = true;
-                }
-            }
-
-            double deltaX = Status.targetPose.getX(DistanceUnit.CM) - Status.currentPose.getX(DistanceUnit.CM);
-            double deltaY = Status.targetPose.getY(DistanceUnit.CM) - Status.currentPose.getY(DistanceUnit.CM);
-
-//            double angleToTarget = -Math.toDegrees(Math.atan2(deltaY, deltaX)) + 90;
-            double angleToTarget = -Math.toDegrees(Math.atan2(deltaY, deltaX));
-            double[] angles = {angleToTarget, angleToTarget, angleToTarget, angleToTarget};
-
-            double[] powers;
-            // Slow down if close to the target.
-            if (deltaX > 5 || deltaY > 5) {
-                powers = new double[] {0.1, 0.1, 0.1, 0.1};
-            } else {
-                powers = new double[] {0.1, 0.1, 0.1, 0.1};
-            }
-
-            robotContainer.drivetrain.setTargets(angles, powers);
-//            robotContainer.pathPlanner.waitForTarget();
-        }
-        double[] emptyAngles = {0, 0, 0, 0};
-        robotContainer.drivetrain.setTargets(emptyAngles, Constants.Swerve.NO_POWER);
-    }
+//    public void driveToPose(int index) {
+//        atTarget = false;
+//        while (!atTarget) {
+//            Status.targetPose = poses.get(index);
+//            robotContainer.telemetry.addData("Current Position X: ", Status.currentPose.getX(DistanceUnit.CM));
+//            robotContainer.telemetry.addData("Current Position Y: ", Status.currentPose.getY(DistanceUnit.CM));
+//
+//            robotContainer.telemetry.addData("diff X", Status.targetPose.getX(DistanceUnit.CM) - Status.currentPose.getX(DistanceUnit.CM));
+//            robotContainer.telemetry.addData("diff Y", Status.targetPose.getY(DistanceUnit.CM) - Status.currentPose.getY(DistanceUnit.CM));
+//            robotContainer.telemetry.update();
+//
+//            // Know when the robotContainer is there
+//            if (Status.currentPose.getX(DistanceUnit.CM) + tolerance >= Status.targetPose.getX(DistanceUnit.CM) && Status.currentPose.getX(DistanceUnit.CM) - tolerance <= Status.targetPose.getX(DistanceUnit.CM)) { // Check X
+//                if (Status.currentPose.getY(DistanceUnit.CM) + tolerance >= Status.targetPose.getY(DistanceUnit.CM) && Status.currentPose.getY(DistanceUnit.CM) - tolerance <= Status.targetPose.getY(DistanceUnit.CM)) { // Check Y
+//                    atTarget = true;
+//                }
+//            }
+//
+//            double deltaX = Status.targetPose.getX(DistanceUnit.CM) - Status.currentPose.getX(DistanceUnit.CM);
+//            double deltaY = Status.targetPose.getY(DistanceUnit.CM) - Status.currentPose.getY(DistanceUnit.CM);
+//
+////            double angleToTarget = -Math.toDegrees(Math.atan2(deltaY, deltaX)) + 90;
+//            double angleToTarget = -Math.toDegrees(Math.atan2(deltaY, deltaX));
+//            double[] angles = {angleToTarget, angleToTarget, angleToTarget, angleToTarget};
+//
+//            double[] powers;
+//            // Slow down if close to the target.
+//            if (deltaX > 5 || deltaY > 5) {
+//                powers = new double[] {0.1, 0.1, 0.1, 0.1};
+//            } else {
+//                powers = new double[] {0.1, 0.1, 0.1, 0.1};
+//            }
+//
+//            robotContainer.drivetrain.setTargets(angles, powers);
+////            robotContainer.pathPlanner.waitForTarget();
+//        }
+//        double[] emptyAngles = {0, 0, 0, 0};
+//        robotContainer.drivetrain.setTargets(emptyAngles, Constants.Swerve.NO_POWER);
+//    }
 
     public boolean driveUsingPID(int index) {
-        Status.targetPose = poses.get(index);
+        if (poses.get(index) instanceof PositionPose) {
+            Status.targetPose = poses.get(index).getPose();
+        } else if (poses.get(index) instanceof SleepPose) {
+            return poses.get(index).getDone();
+        }
         return PoseMath.isAtPos();
     }
 
-    public boolean driveUsingPIDWithoutThread(int index) {
-        Status.targetPose = poses.get(index);
-        robotContainer.drivetrain.powerInput(
-                robotContainer.latitudePID.calculate(),
-                robotContainer.longitudePID.calculate(),
-                robotContainer.headingPID.calculate()
-        );
-        return PoseMath.isAtPos();
-    }
+//    public boolean driveUsingPIDWithoutThread(int index) {
+//        Status.targetPose = poses.get(index);
+//        robotContainer.drivetrain.powerInput(
+//                robotContainer.latitudePID.calculate(),
+//                robotContainer.longitudePID.calculate(),
+//                robotContainer.headingPID.calculate()
+//        );
+//        return PoseMath.isAtPos();
+//    }
 
-    public void setTarget(int index) {
-        Status.targetPose = poses.get(index);
-        Status.currentPath = index;
-        Status.pathCompleted[index] = false;
-    }
+//    public void setTarget(int index) {
+//        Status.targetPose = poses.get(index);
+//        Status.currentPath = index;
+//        Status.pathCompleted[index] = false;
+//    }
 
     public void updatePathStatus() {
         if (Status.currentPath == -1) {
@@ -147,6 +157,53 @@ public class PathPlanner {
         for (int i = 0; i < poses.size(); i++) {
             telemetry.addData("Pose", poses.get(i).toString());
             telemetry.update();
+        }
+    }
+
+    public class GeneralPose {
+        public GeneralPose() {
+        }
+
+        public Pose2D getPose() {
+            return null;
+        }
+
+        public boolean getDone() {
+            return false;
+        }
+    }
+
+    public class PositionPose extends GeneralPose {
+        private Pose2D pose;
+
+        public PositionPose(Pose2D pose) {
+            this.pose = pose;
+        }
+
+        @Override
+        public Pose2D getPose() {
+            return this.pose;
+        }
+    }
+
+    public class SleepPose extends GeneralPose {
+        public double sleepTime; // In miliseconds
+        public ElapsedTime sleepTimer = null;
+        public SleepPose(double time) {
+            this.sleepTime = time;
+        }
+
+        @Override
+        public boolean getDone() {
+            if (this.sleepTimer == null) {
+                this.sleepTimer = new ElapsedTime();
+                this.sleepTimer.reset();
+            }
+            if (this.sleepTimer.milliseconds() > this.sleepTime) {
+                this.sleepTimer = null;
+                return true;
+            }
+            return false;
         }
     }
 }

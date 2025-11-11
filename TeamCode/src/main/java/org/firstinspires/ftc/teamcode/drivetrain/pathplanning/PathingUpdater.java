@@ -21,9 +21,9 @@ public class PathingUpdater extends Thread {
         }
         while (Status.opModeIsActive) {
             robotContainer.drivetrain.powerInput(
-                    HelperFunctions.clamp(robotContainer.latitudePID.calculate(), -0.4, 0.4),
-                    HelperFunctions.clamp(robotContainer.longitudePID.calculate(), -0.4, 0.4),
-                    HelperFunctions.clamp(robotContainer.headingPID.calculate(), -0.4, 0.4)
+                    HelperFunctions.clamp(robotContainer.latitudePID.calculate(), -0.6, 0.6),
+                    HelperFunctions.clamp(robotContainer.longitudePID.calculate(), -0.6, 0.6),
+                    HelperFunctions.clamp(robotContainer.headingPID.calculate(), -0.6, 0.6)
             );
             try {
                 Thread.sleep(10);

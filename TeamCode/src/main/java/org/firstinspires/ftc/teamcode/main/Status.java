@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.main;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
 
 /**
  * The `Status` class serves as a centralized repository for tracking the
@@ -52,6 +53,7 @@ public class Status {
     public static boolean fieldOriented = false;
 
     public static boolean intakeToggle = false;
+    public static final GamepadWrapper.ButtonReader turretToggleButton = new GamepadWrapper.ButtonReader();
     public static boolean turretToggle = false;
     public static boolean flywheelToggle = false;
     public static boolean manualControl = false;

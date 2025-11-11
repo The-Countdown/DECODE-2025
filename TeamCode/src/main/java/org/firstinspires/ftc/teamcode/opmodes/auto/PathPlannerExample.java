@@ -34,7 +34,7 @@ public class PathPlannerExample extends OpMode {
 
         robotContainer.start(this, true);
 
-        robotContainer.pathPlanner.driveToPose(0);
+//        robotContainer.pathPlanner.driveToPose(0);
     }
 
     @Override

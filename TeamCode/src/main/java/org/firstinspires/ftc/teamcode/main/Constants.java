@@ -221,23 +221,22 @@ public class Constants {
                 HEADING_KI = 0,
                 HEADING_I_MAX = 0,
                 HEADING_KD = 0,
-                HEADING_KF = 0.01;
+                HEADING_KF = 0.03;
         public static double
                 LATITUDE_KP = 0.007,
                 LATITUDE_KI = 0,
                 LATITUDE_I_MAX = 0,
                 LATITUDE_KD = 0,
-                LATITUDE_KF = 0.01;
+                LATITUDE_KF = 0.03;
         public static double
                 LONGITUDE_KP = 0.007,
                 LONGITUDE_KI = 0,
                 LONGITUDE_I_MAX = 0,
                 LONGITUDE_KD = 0,
-                LONGITUDE_KF = 0.01;
-        public static double PATHING_ERROR_MARGIN_CM = 1;
-        public static double HEADING_PID_TOLERANCE_DEGREES = 3;
-        public static double LATITUDE_PID_TOLERANCE_CM = 3;
-        public static double LONGITUDE_PID_TOLERANCE_CM = 3;
+                LONGITUDE_KF = 0.03;
+        public static double HEADING_PID_TOLERANCE_DEGREES = 1;
+        public static double LATITUDE_PID_TOLERANCE_CM = 1;
+        public static double LONGITUDE_PID_TOLERANCE_CM = 1;
         public static int PINPOINT_UPDATE_DELAY_MS = 50;
     }
 
@@ -305,7 +304,7 @@ public class Constants {
     @Config
     public static class Spindexer {
         public static int NUM_SLOTS = 3;
-        public static double ANGLE_OFFSET = 115;
+        public static double ANGLE_OFFSET = 60;
         public static double[] TRANSFER_SLOT_ANGLES = {179, 60, -60};
         public static double [] INTAKE_SLOT_ANGLES = {0, -120, 120};
         public static double KP = 0.01;
