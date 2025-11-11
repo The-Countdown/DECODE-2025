@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.LocalizationUpdate
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
+import org.firstinspires.ftc.teamcode.util.DelayedActionManager;
 
 @Autonomous(name="Auto2", group="Robot")
 public class Auto2 extends OpMode {
@@ -19,13 +20,16 @@ public class Auto2 extends OpMode {
     private double lastError = 0;
 
     Pose2D
-            RED_MIDDLE = new Pose2D(DistanceUnit.INCH, 12, -12, AngleUnit.DEGREES, 45),
-            BLUE_MIDDLE = new Pose2D(DistanceUnit.INCH, 12, 12, AngleUnit.DEGREES, -45);
-    double BEFORE_TAPE = 86.22;
+            RED_MIDDLE = new Pose2D(DistanceUnit.INCH, 12, -12, AngleUnit.DEGREES, -135),
+            BLUE_MIDDLE = new Pose2D(DistanceUnit.INCH, 12, 12, AngleUnit.DEGREES, 135);
+    //102.22
+    //91.44
+    //30.48
+    double BEFORE_TAPE = 84.22;
     double AFTER_TAPE = 129.22;
     double TAPE_LOW = -91.44;
-    double TAPE_MID = -30.48;
-    double TAPE_HIGH = 30.48;
+    double TAPE_MID = -34.48;
+    double TAPE_HIGH = 26.48;
 
 
     @Override
@@ -74,7 +78,7 @@ public class Auto2 extends OpMode {
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_HIGH, -AFTER_TAPE, AngleUnit.DEGREES, -90));
             robotContainer.pathPlanner.addPose(RED_MIDDLE);
         }
-
+        
 //        robotContainer.pathPlanner.setTarget(1);
 //        robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setVelocity(0.8), () -> robotContainer.pathPlanner.hasPreviousPathCompleted(2));
 //        robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.setTarget(2), () -> robotContainer.pathPlanner.hasPreviousPathCompleted(2));
