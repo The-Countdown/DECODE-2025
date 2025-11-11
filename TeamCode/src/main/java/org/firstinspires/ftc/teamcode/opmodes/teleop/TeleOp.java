@@ -41,7 +41,6 @@ public class TeleOp extends OpMode {
     public void start() {
         Status.opModeIsActive = true;
         Status.lightsOn = true;
-        Status.isDrivingActive = true;
         Status.intakeToggle = true;
         Status.turretToggle = false;
         Status.slotColor[0] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;
@@ -49,6 +48,7 @@ public class TeleOp extends OpMode {
         Status.slotColor[2] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;
         RobotContainer.HardwareDevices.limelight.start();
         robotContainer.start(this, false);
+        Status.isDrivingActive = true;
     }
 
     @Override
@@ -60,7 +60,7 @@ public class TeleOp extends OpMode {
         robotContainer.gamepadEx2.update();
         robotContainer.limelightLogic.update();
         robotContainer.pathPlanner.updatePathStatus();
-        turretToggleButton.update(Status.turretToggle);
+        Status.turretToggleButton.update(Status.turretToggle);
         robotContainer.beamBreakToggleButton.update(RobotContainer.HardwareDevices.beamBreak.isPressed());
 
         robotContainer.allIndicatorLights.lightsUpdate();
@@ -80,7 +80,7 @@ public class TeleOp extends OpMode {
 
         //intake -circle
         Status.intakeToggle = robotContainer.gamepadEx2.circle.wasJustPressed() != Status.intakeToggle;
-        robotContainer.intake.setVelocity(Status.intakeToggle ? (robotContainer.gamepadEx1.rightTriggerRaw() - robotContainer.gamepadEx1.leftTriggerRaw()) * Constants.Intake.TOP_SPEED : 0);
+        robotContainer.intake.setPower(Status.intakeToggle ? (robotContainer.gamepadEx1.rightTriggerRaw() - robotContainer.gamepadEx1.leftTriggerRaw()) * Constants.Intake.TOP_SPEED : 0);
 
         //flywheel -automated
         if (robotContainer.gamepadEx2.circle.wasJustReleased() && !Status.intakeToggle) {
@@ -88,13 +88,14 @@ public class TeleOp extends OpMode {
             robotContainer.spindexer.goToNextTransferSlot();
         } else if (robotContainer.gamepadEx2.circle.wasJustReleased() && Status.intakeToggle) {
             Status.turretToggle = false;
+            robotContainer.spindexer.goToNextIntakeSlot();
         }
 
         telemetry.addData("Pow", Math.pow(robotContainer.gamepadEx2.dpadRight.getHoldDuration(), Constants.Turret.FLYWHEEL_CURVE));
         if (Status.manualControl && robotContainer.gamepadEx2.dpadRight.isHeld()) {
             robotContainer.turret.flywheel.setTargetVelocity(Math.min(Math.pow(robotContainer.gamepadEx2.dpadRight.getHoldDuration(), Constants.Turret.FLYWHEEL_CURVE), 1));
         } else if (!Status.intakeToggle) {
-            robotContainer.turret.flywheel.setTargetVelocity(Math.min(Math.pow(Status.turretToggleButton.getHoldDuration(), Constants.Turret.FLYWHEEL_CURVE), robotContainer.limelightLogic.getRequiredFlywheelSpeed()));
+            robotContainer.turret.flywheel.setTargetVelocity(Math.min(Status.turretToggleButton.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, robotContainer.limelightLogic.getRequiredFlywheelSpeed()));
         } else {
             robotContainer.turret.flywheel.setTargetVelocity(0);
         }

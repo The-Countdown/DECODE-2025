@@ -36,7 +36,7 @@ public class DrivetrainUpdater extends Thread {
          return;
         }
         while (!Status.opModeIsActive) {
-            Thread.interrupted();
+            return;
         }
         deltaTimer.reset();
         robotContainer.refreshData();

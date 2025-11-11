@@ -22,7 +22,7 @@ public class PathingUpdater extends Thread {
             return;
         }
         while (Status.opModeIsActive) {
-            while (Status.isDrivingActive) {
+            if (Status.isDrivingActive) {
                 Thread.yield();
             }
             if (robotContainer.latitudePID.calculate() < Constants.Control.ZERO_POWER_TOLERANCE && robotContainer.longitudePID.calculate() < Constants.Control.ZERO_POWER_TOLERANCE && robotContainer.headingPID.calculate() < Constants.Control.ZERO_POWER_TOLERANCE)

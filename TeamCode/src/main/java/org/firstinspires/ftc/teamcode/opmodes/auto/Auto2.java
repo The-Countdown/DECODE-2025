@@ -91,10 +91,10 @@ public class Auto2 extends OpMode {
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_HIGH, -AFTER_TAPE, AngleUnit.DEGREES, -90));
         }
 
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setVelocity(0.1), 1);
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0.3), 1);
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP /= 2, 1);
 
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setVelocity(0), 2);
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0), 2);
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP *= 2, 2);
 
         robotContainer.delayedActionManager.schedulePose(() -> robotContainer.spindexer.shootNextBall(), 3);
@@ -104,10 +104,10 @@ public class Auto2 extends OpMode {
         robotContainer.delayedActionManager.schedulePose(() -> Status.turretToggle = false, 5);
         robotContainer.delayedActionManager.schedulePose(() -> Status.intakeToggle = true, 5);
         robotContainer.delayedActionManager.schedulePose(() -> Status.flywheelToggle = false, 5);
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setVelocity(0.3), 5);
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0.3), 5);
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP /= 2, 5);
 
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setVelocity(0), 6);
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0), 6);
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP *= 2, 6);
 
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_PID_TOLERANCE_CM += 4, 8);
@@ -117,10 +117,10 @@ public class Auto2 extends OpMode {
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_PID_TOLERANCE_CM -= 4, 9);
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LONGITUDE_PID_TOLERANCE_CM -= 4, 9);
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.HEADING_PID_TOLERANCE_DEGREES -= 8, 9);
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setVelocity(0.3), 9);
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0.3), 9);
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP /= 2, 9);
 
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setVelocity(0), 10);
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0), 10);
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP *= 2, 10);
 
         Status.turretToggle = true;

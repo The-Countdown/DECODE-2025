@@ -77,10 +77,10 @@ public class AltTeleOp extends OpMode {
 //        robotContainer.transfer.setHighPower(robotContainer.gamepadEx1.rightTriggerRaw());
 
         if (robotContainer.gamepadEx1.circle.isHeld()) {
-            robotContainer.intake.setVelocity(Math.min(robotContainer.gamepadEx1.circle.getHoldDuration(), 1));
+            robotContainer.intake.setPower(Math.min(robotContainer.gamepadEx1.circle.getHoldDuration(), 1));
         }
         else {
-            robotContainer.intake.setVelocity(0);
+            robotContainer.intake.setPower(0);
         }
 
         //turret speed factor * current loop time is how far u want it to move per how many millisecond(loop time)
