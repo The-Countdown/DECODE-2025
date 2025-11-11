@@ -43,6 +43,7 @@ public class Status {
     public static boolean robotLongitudeTargetReached = false;
 
     public static boolean opModeIsActive = false;
+    public static boolean wentBackToStart = false;
 
     public static boolean lightsOn = false;
     public static boolean policeOn = false;
