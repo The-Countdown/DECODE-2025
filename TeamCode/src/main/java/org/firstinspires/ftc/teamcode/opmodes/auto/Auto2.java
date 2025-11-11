@@ -19,8 +19,14 @@ public class Auto2 extends OpMode {
     private double lastError = 0;
 
     Pose2D
-            RED_MIDDLE = new Pose2D(DistanceUnit.INCH, 12, -12, AngleUnit.DEGREES, 45),
-            BLUE_MIDDLE = new Pose2D(DistanceUnit.INCH, 12, 12, AngleUnit.DEGREES, -45);
+            RED_MIDDLE = new Pose2D(DistanceUnit.INCH, 12, -12, AngleUnit.DEGREES, -45),
+            BLUE_MIDDLE = new Pose2D(DistanceUnit.INCH, 12, 12, AngleUnit.DEGREES, 45);
+    double BEFORE_TAPE = 89.22;
+    double AFTER_TAPE = 129.22;
+    double TAPE_LOW = 91.44;
+    double TAPE_MID = -30.48;
+    double TAPE_HIGH = 30.48;
+
 
     @Override
     public void init() {
@@ -30,31 +36,6 @@ public class Auto2 extends OpMode {
         blackboard.put("pose", Status.currentPose);
         robotContainer.telemetry.addData("Alliance Color", Status.alliance == Constants.Game.ALLIANCE.BLUE ? "BLUE" : "RED");
         robotContainer.telemetry.update();
-
-        if (Status.alliance == Constants.Game.ALLIANCE.BLUE) {
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM,   - 91.44, 99.22, AngleUnit.DEGREES, 90));
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM,   - 91.44, 109.22, AngleUnit.DEGREES, 90));
-            robotContainer.pathPlanner.addPose(Status.startingPose);
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM,   - 30.48, 99.22, AngleUnit.DEGREES, 90));
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM,   - 30.48, 109.22, AngleUnit.DEGREES, 90));
-            robotContainer.pathPlanner.addPose(BLUE_MIDDLE);
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM,   30.48, 99.22, AngleUnit.DEGREES, 90));
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM,   30.48, 109.22, AngleUnit.DEGREES, 90));
-            robotContainer.pathPlanner.addPose(BLUE_MIDDLE);
-        } else {//109.22
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM,   - 91.44, -99.22, AngleUnit.DEGREES, -90));
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM,   - 91.44, -109.22, AngleUnit.DEGREES, -90));
-            robotContainer.pathPlanner.addPose(Status.startingPose);
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM,   - 30.48, -99.22, AngleUnit.DEGREES, -90));
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM,   - 30.48, -109.22, AngleUnit.DEGREES, -90));
-            robotContainer.pathPlanner.addPose(RED_MIDDLE);
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM,   30.48, -99.22, AngleUnit.DEGREES, -90));
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM,   30.48, -109.22, AngleUnit.DEGREES, -90));
-            robotContainer.pathPlanner.addPose(RED_MIDDLE);
-        }
-
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setVelocity(1), 0);
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setVelocity(0), 1);
     }
 
     @Override
@@ -66,12 +47,33 @@ public class Auto2 extends OpMode {
         robotContainer.localizationUpdater = new LocalizationUpdater(robotContainer);
         robotContainer.localizationUpdater.start();
 
+        RobotContainer.HardwareDevices.pinpoint.setPosition(Status.startingPose);
+
         if (Status.alliance == Constants.Game.ALLIANCE.BLUE) {
-            RobotContainer.HardwareDevices.pinpoint.setPosition(Status.startingPose);
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_LOW, BEFORE_TAPE, AngleUnit.DEGREES, 90));
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_LOW, AFTER_TAPE, AngleUnit.DEGREES, 90));
+            robotContainer.pathPlanner.addPose(Status.startingPose);
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_MID, BEFORE_TAPE, AngleUnit.DEGREES, 90));
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_MID, AFTER_TAPE, AngleUnit.DEGREES, 90));
+            robotContainer.pathPlanner.addPose(BLUE_MIDDLE);
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_HIGH, BEFORE_TAPE, AngleUnit.DEGREES, 90));
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_HIGH, AFTER_TAPE, AngleUnit.DEGREES, 90));
+            robotContainer.pathPlanner.addPose(BLUE_MIDDLE);
         } else {
-            RobotContainer.HardwareDevices.pinpoint.setPosition(Status.startingPose);
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_LOW, -BEFORE_TAPE, AngleUnit.DEGREES, -90));
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_LOW, -AFTER_TAPE, AngleUnit.DEGREES, -90));
+            robotContainer.pathPlanner.addPose(Status.startingPose);
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_MID, -BEFORE_TAPE, AngleUnit.DEGREES, -90));
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_MID, -AFTER_TAPE, AngleUnit.DEGREES, -90));
+            robotContainer.pathPlanner.addPose(RED_MIDDLE);
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_HIGH, -BEFORE_TAPE, AngleUnit.DEGREES, -90));
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_HIGH, -AFTER_TAPE, AngleUnit.DEGREES, -90));
+            robotContainer.pathPlanner.addPose(RED_MIDDLE);
         }
-        
+
+//        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setVelocity(1), 0);
+//        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setVelocity(0), 1);
+
 //        robotContainer.pathPlanner.setTarget(1);
 //        robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setVelocity(0.8), () -> robotContainer.pathPlanner.hasPreviousPathCompleted(2));
 //        robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.setTarget(2), () -> robotContainer.pathPlanner.hasPreviousPathCompleted(2));
