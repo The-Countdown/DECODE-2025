@@ -272,6 +272,7 @@ public class RobotContainer {
     public void start(OpMode opmode, boolean runPathplanner) {
         gamepadEx1 = new GamepadWrapper(opmode.gamepad1);
         gamepadEx2 = new GamepadWrapper(opmode.gamepad2);
+        Status.isDrivingActive = false;
         Status.GOAL_POSE = Status.alliance == Constants.Game.ALLIANCE.RED ?
                         new Pose2D(DistanceUnit.INCH, 70, -70, AngleUnit.DEGREES, -45) :
                         Status.alliance == Constants.Game.ALLIANCE.BLUE ?

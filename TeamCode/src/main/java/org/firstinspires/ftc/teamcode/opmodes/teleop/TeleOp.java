@@ -50,7 +50,6 @@ public class TeleOp extends OpMode {
         Status.slotColor[2] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;
         RobotContainer.HardwareDevices.limelight.start();
         robotContainer.start(this, false);
-        robotContainer.pathingUpdater.stopThread();
     }
 
     @Override
@@ -61,6 +60,7 @@ public class TeleOp extends OpMode {
         robotContainer.gamepadEx1.update();
         robotContainer.gamepadEx2.update();
         robotContainer.limelightLogic.update();
+        robotContainer.pathPlanner.updatePathStatus();
         turretToggleButton.update(Status.turretToggle);
         robotContainer.beamBreakToggleButton.update(RobotContainer.HardwareDevices.beamBreak.isPressed());
 
@@ -195,6 +195,38 @@ public class TeleOp extends OpMode {
             Constants.Spindexer.ANGLE_OFFSET -= 15;
         } else if (robotContainer.gamepadEx1.rightBumper.wasJustPressed()) {
             Constants.Spindexer.ANGLE_OFFSET += 15;
+        }
+
+        if (robotContainer.gamepadEx1.square.wasJustPressed()) {
+            Status.isDrivingActive = false;
+            if (Status.alliance == Constants.Game.ALLIANCE.RED) {
+                robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, 12, 12, AngleUnit.DEGREES, -135));
+            } else {
+                robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, 12, -12, AngleUnit.DEGREES, 135));            }
+        }
+        if (robotContainer.gamepadEx1.square.isHeld()) {
+            Status.isDrivingActive = false;
+            robotContainer.pathPlanner.driveThroughPath();
+        }
+        if (robotContainer.gamepadEx1.square.wasJustReleased()) {
+            Status.isDrivingActive = true;
+            robotContainer.pathPlanner.pathCompleted = true;
+        }
+
+        if (robotContainer.gamepadEx1.dpadDown.wasJustPressed()) {
+            Status.isDrivingActive = false;
+            if (Status.alliance == Constants.Game.ALLIANCE.RED) {
+                robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, -39, 33, AngleUnit.DEGREES, -135));
+            } else {
+                robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, -39, -33, AngleUnit.DEGREES, 135));            }
+        }
+        if (robotContainer.gamepadEx1.dpadDown.isHeld()) {
+            Status.isDrivingActive = false;
+            robotContainer.pathPlanner.driveThroughPath();
+        }
+        if (robotContainer.gamepadEx1.dpadDown.wasJustReleased()) {
+            Status.isDrivingActive = true;
+            robotContainer.pathPlanner.pathCompleted = true;
         }
 
         robotContainer.telemetry.addData("hood angle", robotContainer.turret.hoodServo.getPosition());
