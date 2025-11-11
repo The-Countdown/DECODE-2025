@@ -21,7 +21,7 @@ public class Auto2 extends OpMode {
     Pose2D
             RED_MIDDLE = new Pose2D(DistanceUnit.INCH, 12, -12, AngleUnit.DEGREES, 45),
             BLUE_MIDDLE = new Pose2D(DistanceUnit.INCH, 12, 12, AngleUnit.DEGREES, -45);
-    double BEFORE_TAPE = 87.22;
+    double BEFORE_TAPE = 86.22;
     double AFTER_TAPE = 129.22;
     double TAPE_LOW = -91.44;
     double TAPE_MID = -30.48;
