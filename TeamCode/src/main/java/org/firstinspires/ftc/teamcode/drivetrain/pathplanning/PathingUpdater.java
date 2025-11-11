@@ -22,15 +22,16 @@ public class PathingUpdater extends Thread {
             return;
         }
         while (Status.opModeIsActive) {
-            if (Status.isDrivingActive) {
-                Thread.yield();
-            }
-            if (robotContainer.latitudePID.calculate() < Constants.Control.ZERO_POWER_TOLERANCE && robotContainer.longitudePID.calculate() < Constants.Control.ZERO_POWER_TOLERANCE && robotContainer.headingPID.calculate() < Constants.Control.ZERO_POWER_TOLERANCE)
+            // if (Status.isDrivingActive) {
+            //     Thread.yield();
+            // }
+            if (robotContainer.latitudePID.calculate() > Constants.Control.ZERO_POWER_TOLERANCE || robotContainer.longitudePID.calculate() > Constants.Control.ZERO_POWER_TOLERANCE || robotContainer.headingPID.calculate() < Constants.Control.ZERO_POWER_TOLERANCE) {
                 robotContainer.drivetrain.powerInput(
-                    HelperFunctions.clamp(robotContainer.latitudePID.calculate(), -0.4, 0.4),
-                    HelperFunctions.clamp(robotContainer.longitudePID.calculate(), -0.4, 0.4),
-                    HelperFunctions.clamp(robotContainer.headingPID.calculate(), -0.4, 0.4)
-            );
+                        HelperFunctions.clamp(robotContainer.latitudePID.calculate(), -0.4, 0.4),
+                        HelperFunctions.clamp(robotContainer.longitudePID.calculate(), -0.4, 0.4),
+                        HelperFunctions.clamp(robotContainer.headingPID.calculate(), -0.4, 0.4)
+                );
+            }
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
