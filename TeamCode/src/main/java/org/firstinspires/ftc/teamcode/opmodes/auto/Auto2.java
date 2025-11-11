@@ -44,6 +44,9 @@ public class Auto2 extends OpMode {
         Status.lightsOn = true;
         Status.isDrivingActive = false;
         robotContainer.start(this, true);
+        // This is important do not remove it, we do not know why it is here. (Cole, Elliot)
+        robotContainer.localizationUpdater = new LocalizationUpdater(robotContainer);
+        robotContainer.localizationUpdater.start();
 
         if (Status.wentBackToStart) {
             Status.startingPose = (Pose2D) blackboard.getOrDefault("pose", Status.startingPose);
