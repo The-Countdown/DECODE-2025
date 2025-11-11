@@ -66,8 +66,8 @@ public class LimelightLogic {
     public double disToGoal() {
         if (result != null) {
             Pose2D botPose = logicBotPose();
-            double xDiff = Constants.Game.GOAL_POSE.getX(DistanceUnit.INCH) - botPose.getX(DistanceUnit.INCH);
-            double yDiff = Constants.Game.GOAL_POSE.getY(DistanceUnit.INCH) - botPose.getY(DistanceUnit.INCH);
+            double xDiff = Status.GOAL_POSE.getX(DistanceUnit.INCH) - botPose.getX(DistanceUnit.INCH);
+            double yDiff = Status.GOAL_POSE.getY(DistanceUnit.INCH) - botPose.getY(DistanceUnit.INCH);
             return Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
         } else {
             return 0;

@@ -14,6 +14,22 @@ import org.firstinspires.ftc.teamcode.main.Status;
 import java.util.ArrayList;
 import java.lang.Thread;
 
+// Coordinate graphs for reference. These all assume that you are looking at the zero heading orientation (Looking towards the goal assuming Teleop and Auto were started in the correct orientation).
+//
+// LimeLight
+//      x
+//      ^
+// -y <- -> y
+//      |
+//     -x
+//
+// Teleop Pinpoint
+//      y
+//      ^
+// x <- -> -x
+//      |
+//     -y
+
 public class PathPlanner {
     private Telemetry telemetry;
     private RobotContainer robotContainer;
