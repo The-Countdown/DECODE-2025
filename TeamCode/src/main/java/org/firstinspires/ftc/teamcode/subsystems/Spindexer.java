@@ -177,9 +177,11 @@ public class Spindexer {
         Status.intakeToggle = false;
         Status.flywheelToggle = true;
         robotContainer.spindexer.goToNextTransferSlot();
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapUp(), 2000);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapDown(), 3000);
+        // robotContainer.delayedActionManager.schedule(()-> robotContainer.transfer.flapUp(), () -> robotContainer.spindexer.pdf.getError() < 5);
+        // robotContainer.delayedActionManager.schedule(()-> robotContainer.delayedActionManager.schedule(()-> robotContainer.transfer.flapDown(), Constants.Transfer.FLIP_TIME), () -> robotContainer.spindexer.pdf.getError() < 5);
         tranferTimer.reset();
-        robotContainer.delayedActionManager.schedule(()-> robotContainer.transfer.flapUp(), () -> robotContainer.spindexer.pdf.getError() < 5);
-        robotContainer.delayedActionManager.schedule(()-> robotContainer.delayedActionManager.schedule(()-> robotContainer.transfer.flapDown(), Constants.Transfer.FLIP_TIME), () -> robotContainer.spindexer.pdf.getError() < 5);
     }
 
     public void goToNextGreenSlot() {
