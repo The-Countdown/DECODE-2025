@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.drivetrain.pathplanning;
 
+import org.firstinspires.ftc.robotcontroller.external.samples.ConceptAprilTag;
+import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
@@ -20,10 +22,14 @@ public class PathingUpdater extends Thread {
             return;
         }
         while (Status.opModeIsActive) {
-            robotContainer.drivetrain.powerInput(
-                    HelperFunctions.clamp(robotContainer.latitudePID.calculate(), -0.6, 0.6),
-                    HelperFunctions.clamp(robotContainer.longitudePID.calculate(), -0.6, 0.6),
-                    HelperFunctions.clamp(robotContainer.headingPID.calculate(), -0.6, 0.6)
+            while (Status.isDrivingActive) {
+                Thread.yield();
+            }
+            if (robotContainer.latitudePID.calculate() < Constants.Control.ZERO_POWER_TOLERANCE && robotContainer.longitudePID.calculate() < Constants.Control.ZERO_POWER_TOLERANCE && robotContainer.headingPID.calculate() < Constants.Control.ZERO_POWER_TOLERANCE)
+                robotContainer.drivetrain.powerInput(
+                    HelperFunctions.clamp(robotContainer.latitudePID.calculate(), -0.4, 0.4),
+                    HelperFunctions.clamp(robotContainer.longitudePID.calculate(), -0.4, 0.4),
+                    HelperFunctions.clamp(robotContainer.headingPID.calculate(), -0.4, 0.4)
             );
             try {
                 Thread.sleep(10);
