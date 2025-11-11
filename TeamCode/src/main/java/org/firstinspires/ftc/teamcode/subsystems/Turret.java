@@ -63,7 +63,7 @@ public class Turret extends RobotContainer.HardwareDevices {
         double targetVelocity = 0;
         public void setTargetVelocity(double power) {
             targetVelocity = Constants.Turret.FLYWHEEL_MAX_VELOCITY * power;
-            if (robotContainer.controlHubVoltage > 10.4) {
+            if (Status.flywheelToggle) {
                 flyWheelMotors.setVelocity(targetVelocity);
             } else {
                 flyWheelMotors.setVelocity(0);
@@ -76,15 +76,6 @@ public class Turret extends RobotContainer.HardwareDevices {
     }
 
     public class Hood {
-//        public void setTargetAngle(double angle) {
-//            if (angle > 45) {
-//                angle = 45;
-//            } else if (angle < 10) {
-//                angle = 10;
-//            }
-//            hoodServo.setPosition(angle/355);
-//        }
-
         public void setPos(double pos) {
             hoodServo.updateSetPosition(pos);
         }

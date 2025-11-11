@@ -24,7 +24,7 @@ public class LimelightLogic {
     private Pose2D botPose = new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
     private double p = 177.5;
     // 50, 100, 160
-    private double[] table = {0.36, 0.40, 0.57};
+    private double[] flywheelSpeedTable = {0.365, 0.415, 0.58};
     public LimelightLogic(RobotContainer robot, Telemetry telemetry, Limelight3A limelight) {
         this.robot = robot;
         this.telemetry = telemetry;
@@ -120,9 +120,9 @@ public class LimelightLogic {
             return 0;
         } else {
             if (dist < 100) {
-                turretSpeed = HelperFunctions.interpolate(table[0], table[1], (dist - 50) / (100 - 50));
+                turretSpeed = HelperFunctions.interpolate(flywheelSpeedTable[0], flywheelSpeedTable[1], (dist - 50) / (100 - 50));
             } else {
-                turretSpeed = HelperFunctions.interpolate(table[1], table[2], (dist - 100) / (160 - 100));
+                turretSpeed = HelperFunctions.interpolate(flywheelSpeedTable[1], flywheelSpeedTable[2], (dist - 100) / (160 - 100));
             }
         }
         return turretSpeed;

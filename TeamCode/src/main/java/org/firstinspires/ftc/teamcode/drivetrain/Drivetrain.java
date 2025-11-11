@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
+import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
 import java.util.Arrays;
@@ -18,6 +19,9 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
     double[] calculatedAngles = new double[Constants.Swerve.NUM_SERVOS];
     double[] calculatedPowers = new double[Constants.Swerve.NUM_MOTORS];
     double[] lastAngles = Constants.Swerve.STOP_FORMATION;
+    GamepadWrapper.ButtonReader xButton = new GamepadWrapper.ButtonReader();
+    GamepadWrapper.ButtonReader yButton = new GamepadWrapper.ButtonReader();
+    GamepadWrapper.ButtonReader rXButton = new GamepadWrapper.ButtonReader();
 
     /**
      * Constructor for the Drivetrain class.
@@ -49,20 +53,25 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
                 robotContainer.gamepadEx1.leftStickY.wasJustReleased() ||
                 robotContainer.gamepadEx1.rightStickX.wasJustReleased()) &&
                 x == 0 && y == 0 && rX == 0) {
+            Status.flywheelToggle = true;
             setTargets(lastAngles, Constants.Swerve.NO_POWER);
             stopTimer.reset();
             return;
         }
 
         if (x == 0 && y == 0 && rX == 0 && stopTimer.seconds() >= 1) {
+            Status.flywheelToggle = true;
             setTargets(Constants.Swerve.STOP_FORMATION, Constants.Swerve.NO_POWER);
             return;
         }
 
         if ( x == 0 && y == 0 && rX == 0) {
+            Status.flywheelToggle = true;
             setTargets(lastAngles, Constants.Swerve.NO_POWER);
             return;
         }
+
+        Status.flywheelToggle = false;
 
         // Determine the rotational direction based on the sign of rX.
         int rotationalDirection = rX >= 0 ? 1 : -1;
@@ -113,18 +122,35 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
     }
 
     public void powerInput(double x, double y, double rX) {
-        double rotationalMagnitude = Math.abs(rX);
+        xButton.update(x != 0);
+        yButton.update(y != 0);
+        rXButton.update(rX != 0);
+
+        if ((xButton.wasJustReleased() ||
+                yButton.wasJustReleased() ||
+                rXButton.wasJustReleased()) &&
+                x == 0 && y == 0 && rX == 0) {
+            Status.flywheelToggle = true;
+            setTargets(lastAngles, Constants.Swerve.NO_POWER);
+            stopTimer.reset();
+            return;
+        }
 
         if (x == 0 && y == 0 && rX == 0 && stopTimer.seconds() >= 1) {
+            Status.flywheelToggle = true;
             setTargets(Constants.Swerve.STOP_FORMATION, Constants.Swerve.NO_POWER);
             return;
         }
 
         if (x == 0 && y == 0 && rX == 0) {
+            Status.flywheelToggle = true;
             setTargets(lastAngles, Constants.Swerve.NO_POWER);
             return;
         }
 
+        Status.flywheelToggle = false;
+
+        double rotationalMagnitude = Math.abs(rX);
         // Determine the rotational direction based on the sign of rX.
         int rotationalDirection = rX >= 0 ? 1 : -1;
 
