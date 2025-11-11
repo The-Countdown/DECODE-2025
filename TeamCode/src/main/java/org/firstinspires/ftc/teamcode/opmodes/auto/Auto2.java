@@ -75,6 +75,13 @@ public class Auto2 extends OpMode {
             robotContainer.pathPlanner.addPose(RED_MIDDLE);
         }
 
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setVelocity(0.6), 1);
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setVelocity(0), 2);
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setVelocity(0.6), 4);
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setVelocity(0), 5);
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setVelocity(0.6), 7);
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setVelocity(0), 8);
+
 //        robotContainer.pathPlanner.setTarget(1);
 //        robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setVelocity(0.8), () -> robotContainer.pathPlanner.hasPreviousPathCompleted(2));
 //        robotContainer.delayedActionManager.schedule(() -> robotContainer.pathPlanner.setTarget(2), () -> robotContainer.pathPlanner.hasPreviousPathCompleted(2));
