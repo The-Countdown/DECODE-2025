@@ -19,7 +19,7 @@ public class Turret extends RobotContainer.HardwareDevices {
     public final BetterServo hoodServo;
     private double targetPosition = 0;
 
-    private double[] turretPositionTable = {0.785, 0.50, 0.23}; // -90, 0, 90
+    private double[] turretPositionTable = {0.785, 0.50, 0.2225}; // -90, 0, 90
 
     public Turret(RobotContainer robotContainer, LinkedMotors flyWheelMotors, BetterServo hoodServo, LinkedServos turretServos) {
         this.robotContainer = robotContainer;
@@ -46,9 +46,9 @@ public class Turret extends RobotContainer.HardwareDevices {
             return;
         }
         if (angleInDegrees < 0) { // If angle between -90 and 0
-            turretServos.setPosition(HelperFunctions.interpolate(turretPositionTable[0], turretPositionTable[1], ((angleInDegrees + 90) / 90));
+            turretServos.setPosition(HelperFunctions.interpolate(turretPositionTable[0], turretPositionTable[1], ((angleInDegrees + 90) / 90)));
         } else { // If angle between 0 and 90
-            turretServos.setPosition(HelperFunctions.interpolate(turretPositionTable[1], turretPositionTable[2], ((angleInDegrees - 90) / -90));
+            turretServos.setPosition(HelperFunctions.interpolate(turretPositionTable[1], turretPositionTable[2], ((angleInDegrees - 90) / 90) + 1));
         }
     }
 
@@ -59,7 +59,7 @@ public class Turret extends RobotContainer.HardwareDevices {
 
     public void pointAtGoal() {
         double xDiff = Status.GOAL_POSE.getX(DistanceUnit.CM) - Status.currentPose.getX(DistanceUnit.CM);
-        double yDiff = Status.GOAL_POSE.getY(DistanceUnit.CM) - Status.currentPose.getY(DistanceUnit.CM);
+        double yDiff = Status.GOAL_POSE.getY(DistanceUnit.CM) + Status.currentPose.getY(DistanceUnit.CM);
         // double angleToFaceGoal = Math.toDegrees(Math.atan2(yDiff, xDiff)) - Status.currentHeading;
         // if (!Double.isNaN(angleToFaceGoal)) {
         //     setTargetAngle(angleToFaceGoal);
@@ -73,8 +73,8 @@ public class Turret extends RobotContainer.HardwareDevices {
         robotContainer.telemetry.addData("x Diff", xDiff);
         robotContainer.telemetry.addData("y Diff", yDiff);
 
-        double angleToFaceGoal = ((Math.atan(yDiff / xDiff) * (180 / Math.PI)) - Status.currentHeading) + 90;
-        setTargetAngle(angleToFaceGoal);
+        double angleToFaceGoal = ((Math.atan(yDiff / xDiff) * (180 / Math.PI)) + Status.currentHeading - 180);
+        setTargetAngle(HelperFunctions.normalizeAngle(angleToFaceGoal));
         robotContainer.telemetry.addData("Angle To Face Goal", angleToFaceGoal);
     }
 
