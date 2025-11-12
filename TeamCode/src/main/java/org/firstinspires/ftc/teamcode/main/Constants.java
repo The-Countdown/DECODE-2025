@@ -175,9 +175,9 @@ public class Constants {
          * These values will need to be tuned.
          */
         public static double[]
-                SERVO_KP = {0.006, 0.0055, 0.006, 0.00348},
+                SERVO_KP = {0.005, 0.005, 0.006, 0.00348},
                 SERVO_KD = {0, 0, 0, 0},
-                SERVO_KF = {0.075, 0.065, 0.045, 0.065};
+                SERVO_KF = {0.065, 0.065, 0.04, 0.06};
 
         public static double SERVO_PIDF_TOLERANCE_DEGREES = 1;
 
@@ -195,11 +195,12 @@ public class Constants {
         public static final int LOOP_AVERAGE_WINDOW_SIZE = 30;
         public static int TELEMETRY_UPDATE_INTERVAL_MS = 750;
         public static final double ANALOG_MAX_VOLTAGE = 3.3;
+        public static final double GREEN_THRESHOLD = 70;
     }
 
     @Config
     public static class Control {
-        public static double JOYSTICK_SCALER_EXPONENT = 2;
+        public static double JOYSTICK_SCALER_EXPONENT = 1.3;
 
         //power per second
         public static double MAX_DRIVE_ACCELERATION = 5;
@@ -285,6 +286,7 @@ public class Constants {
         public static double FLYWHEEL_TOP_SPEED = 0.95;
         public static int FLYWHEEL_MAX_VELOCITY = 3000;
         public static double FLYWHEEL_CURVE = 4;
+        public static double[] FLYWHEEL_SPEED_TABLE = {0.38, 0.45, 0.65};
         public static double TRACK_GOAL_P = -0.2;
         public static double[] HOOD_PRESETS = {0.54, 0.08};
         public static double TURRET_LIMIT_MIN_ANGLE = 30;
@@ -305,17 +307,17 @@ public class Constants {
     @Config
     public static class Spindexer {
         public static int NUM_SLOTS = 3;
-        public static double ANGLE_OFFSET = 90;
+        public static double ANGLE_OFFSET = 165;
         public static double[] TRANSFER_SLOT_ANGLES = {179, 60, -60};
         public static double [] INTAKE_SLOT_ANGLES = {0, -120, 120};
-        public static double KP = 0.015;
+        public static double KP = 0.012;
         public static double KD = 0.008;
         public static double KF = 0.06;
     }
 
     @Config
     public static class Intake {
-        public static double TOP_SPEED = 0.5;
+        public static double TOP_SPEED = 0.8;
         public static int RUNTIME_MS = 800;
         public static double DELAY_SECONDS = 0.2;
     }

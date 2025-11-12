@@ -20,7 +20,7 @@ public class Intake {
     }
 
     public void setPower(double power) {
-        intakeMotor.updateSetPower(Constants.Swerve.MOTOR_MAX_VELOCITY_TICKS_PER_SECOND * power);
+        intakeMotor.updateSetPower(power);
     }
 
     public double getVelocity() {

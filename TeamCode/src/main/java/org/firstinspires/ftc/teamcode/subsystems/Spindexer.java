@@ -64,7 +64,7 @@ public class Spindexer {
         if (blue > green) {
             return Constants.Game.ARTIFACT_COLOR.PURPLE;
         } else if (green > blue) {
-            if (green < 100) {
+            if (green < Constants.System.GREEN_THRESHOLD) {
                 return Constants.Game.ARTIFACT_COLOR.NONE;
             } else {
                 return Constants.Game.ARTIFACT_COLOR.GREEN;
