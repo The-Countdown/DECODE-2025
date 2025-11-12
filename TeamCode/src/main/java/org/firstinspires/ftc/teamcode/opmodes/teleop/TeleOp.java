@@ -100,19 +100,8 @@ public class TeleOp extends OpMode {
             robotContainer.turret.flywheel.setTargetVelocity(0);
         }
 
-//        if (robotContainer.gamepadEx1.dpadDown.wasJustPressed()) {
-//           robotContainer.turret.setTargetAngle(0);
-//        }
-//        if (robotContainer.gamepadEx1.dpadUp.wasJustPressed()) {
-//           robotContainer.turret.setTargetAngle(90);
-//        }
-//        if (robotContainer.gamepadEx1.dpadLeft.wasJustPressed()) {
-//           robotContainer.turret.setTargetAngle(-90);
-//
-//        }
 //        turret turn -right stick X
         if (Status.manualControl) {
-            // Uncomment this once the 3 if statments above have been tested.
             turretPos -= robotContainer.gamepadEx2.rightStickX() != 0 ? (Constants.Turret.TURRET_SPEED_FACTOR * CURRENT_LOOP_TIME_MS) * Math.pow(robotContainer.gamepadEx2.rightStickX(), 3) : 0;
             turretPos = HelperFunctions.clamp(turretPos, Constants.Turret.TURRET_LIMIT_MIN, Constants.Turret.TURRET_LIMIT_MAX);
             robotContainer.turret.setTargetPosition(turretPos);
