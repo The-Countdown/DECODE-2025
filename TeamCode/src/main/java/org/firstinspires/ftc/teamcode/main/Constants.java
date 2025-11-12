@@ -21,6 +21,7 @@ public class Constants {
 
     @Config
     public static class Game {
+        public static double target = 0.5;
         public enum ALLIANCE {
             BLUE,
             RED

@@ -36,8 +36,11 @@ public class Turret extends RobotContainer.HardwareDevices {
     public void setTargetRaw(double position) {
         turretServos.setPosition(position);
     }
-    public void setTargetAngle(double angle) {
-        turretServos.setPosition((HelperFunctions.clamp(angle > 355 || angle < 0 ? (angle + 355) % 355 : angle, Constants.Turret.TURRET_LIMIT_MIN_ANGLE, Constants.Turret.TURRET_LIMIT_MAX_ANGLE)) / 355);
+//    public void setTargetAngle(double angle) {
+//        turretServos.setPosition((HelperFunctions.clamp(angle > 355 || angle < 0 ? (angle + 355) % 355 : angle, Constants.Turret.TURRET_LIMIT_MIN_ANGLE, Constants.Turret.TURRET_LIMIT_MAX_ANGLE)) / 355);
+//    }
+    public void setTargetAngle(double angleInDegrees) {
+        return;
     }
 
     public double getPosition() {
@@ -48,11 +51,22 @@ public class Turret extends RobotContainer.HardwareDevices {
     public void pointAtGoal() {
         double xDiff = Status.GOAL_POSE.getX(DistanceUnit.CM) - Status.currentPose.getX(DistanceUnit.CM);
         double yDiff = Status.GOAL_POSE.getY(DistanceUnit.CM) - Status.currentPose.getY(DistanceUnit.CM);
-        double angleToFaceGoal = Math.toDegrees(Math.atan2(yDiff, xDiff)) - Status.currentHeading;
-        if (!Double.isNaN(angleToFaceGoal)) {
-            setTargetAngle(angleToFaceGoal);
-            robotContainer.telemetry.addData("Angle To Face Goal", angleToFaceGoal);
-        }
+        // double angleToFaceGoal = Math.toDegrees(Math.atan2(yDiff, xDiff)) - Status.currentHeading;
+        // if (!Double.isNaN(angleToFaceGoal)) {
+        //     setTargetAngle(angleToFaceGoal);
+        //     robotContainer.telemetry.addData("Angle To Face Goal", angleToFaceGoal);
+        // }
+        //
+        robotContainer.telemetry.addData("Goal x cm", Status.GOAL_POSE.getX(DistanceUnit.CM));
+        robotContainer.telemetry.addData("Goal y cm", Status.GOAL_POSE.getY(DistanceUnit.CM));
+        robotContainer.telemetry.addData("Robot x cm", Status.currentPose.getX(DistanceUnit.CM));
+        robotContainer.telemetry.addData("Robot y cm", Status.currentPose.getY(DistanceUnit.CM));
+        robotContainer.telemetry.addData("x Diff", xDiff);
+        robotContainer.telemetry.addData("y Diff", yDiff);
+
+        double angleToFaceGoal = ((Math.atan(yDiff / xDiff) * (180 / Math.PI)) - Status.currentHeading) + 90;
+        setTargetAngle(angleToFaceGoal);
+        robotContainer.telemetry.addData("Angle To Face Goal", angleToFaceGoal);
     }
 
     public boolean atTarget() {
