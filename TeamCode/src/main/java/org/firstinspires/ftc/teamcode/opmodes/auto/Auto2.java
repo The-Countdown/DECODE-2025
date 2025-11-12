@@ -71,7 +71,7 @@ public class Auto2 extends OpMode {
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_LOW, BEFORE_TAPE, AngleUnit.DEGREES, 90));
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_LOW, AFTER_TAPE, AngleUnit.DEGREES, 90));
             robotContainer.pathPlanner.addPose(Status.startingPose);
-            robotContainer.pathPlanner.addPose(3000);
+            robotContainer.pathPlanner.addPose(15000);
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_MID, BEFORE_TAPE, AngleUnit.DEGREES, 90));
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_MID, AFTER_TAPE, AngleUnit.DEGREES, 90));
             robotContainer.pathPlanner.addPose(BLUE_MIDPOINT);
@@ -82,7 +82,7 @@ public class Auto2 extends OpMode {
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_LOW, -BEFORE_TAPE, AngleUnit.DEGREES, -90));
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_LOW, -AFTER_TAPE, AngleUnit.DEGREES, -90));
             robotContainer.pathPlanner.addPose(Status.startingPose);
-            robotContainer.pathPlanner.addPose(3000);
+            robotContainer.pathPlanner.addPose(15000);
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_MID, -BEFORE_TAPE, AngleUnit.DEGREES, -90));
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_MID, -AFTER_TAPE, AngleUnit.DEGREES, -90));
             robotContainer.pathPlanner.addPose(RED_MIDPOINT);
@@ -98,6 +98,9 @@ public class Auto2 extends OpMode {
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP *= 2, 2);
 
         robotContainer.delayedActionManager.schedulePose(() -> robotContainer.spindexer.shootNextBall(), 3);
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.shootNextBall(), 4000), 3);
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.shootNextBall(), 8000), 3);
+
         robotContainer.delayedActionManager.schedulePose(() -> robotContainer.turret.flywheel.setTargetVelocity(0.63), 3);
 
         robotContainer.delayedActionManager.schedulePose(() -> robotContainer.turret.flywheel.setTargetVelocity(0), 4);
