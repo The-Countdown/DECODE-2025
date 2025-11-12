@@ -19,6 +19,8 @@ public class Turret extends RobotContainer.HardwareDevices {
     public final BetterServo hoodServo;
     private double targetPosition = 0;
 
+    private double[] turretPositionTable = {0.785, 0.50, 0.23}; // -90, 0, 90
+
     public Turret(RobotContainer robotContainer, LinkedMotors flyWheelMotors, BetterServo hoodServo, LinkedServos turretServos) {
         this.robotContainer = robotContainer;
         this.flyWheelMotors = flyWheelMotors;
@@ -39,8 +41,15 @@ public class Turret extends RobotContainer.HardwareDevices {
 //    public void setTargetAngle(double angle) {
 //        turretServos.setPosition((HelperFunctions.clamp(angle > 355 || angle < 0 ? (angle + 355) % 355 : angle, Constants.Turret.TURRET_LIMIT_MIN_ANGLE, Constants.Turret.TURRET_LIMIT_MAX_ANGLE)) / 355);
 //    }
-    public void setTargetAngle(double angleInDegrees) {
-        return;
+    public void setTargetAngle(double angleInDegrees) { // angleInDegrees should be between -180 and 180
+        if (angleInDegrees > 90 || angleInDegrees < -90) {
+            return;
+        }
+        if (angleInDegrees < 0) { // If angle between -90 and 0
+            turretServos.setPosition(HelperFunctions.interpolate(turretPositionTable[0], turretPositionTable[1], ((angleInDegrees + 90) / 90));
+        } else { // If angle between 0 and 90
+            turretServos.setPosition(HelperFunctions.interpolate(turretPositionTable[1], turretPositionTable[2], ((angleInDegrees - 90) / -90));
+        }
     }
 
     public double getPosition() {
