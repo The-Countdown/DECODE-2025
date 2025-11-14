@@ -28,7 +28,6 @@ public class Spindexer {
     private double d;
     private double ff;
     private ElapsedTime iTimer;
-    private final ElapsedTime tranferTimer = new ElapsedTime();
 
     public Spindexer (RobotContainer robotContainer, BetterCRServo spindexerServo, BetterAnalogInput spindexAnalog, BetterColorSensor colorSensor) {
         this.robotContainer = robotContainer;
@@ -139,7 +138,7 @@ public class Spindexer {
             int nextSlot = (robotContainer.spindexer.getCurrentIntakeSlot() + i) % Constants.Spindexer.INTAKE_SLOT_ANGLES.length;
 
             if (Status.slotColor[nextSlot] == Constants.Game.ARTIFACT_COLOR.UNKNOWN || Status.slotColor[nextSlot] == Constants.Game.ARTIFACT_COLOR.NONE) {
-                robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.setTargetAngle(Constants.Spindexer.INTAKE_SLOT_ANGLES[nextSlot]), 200);
+                robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.setTargetAngle(Constants.Spindexer.INTAKE_SLOT_ANGLES[nextSlot]), Constants.Spindexer.COLOR_SENSE_TIME);
                 intakeSlotFound = true;
                 break;
             }
@@ -172,16 +171,25 @@ public class Spindexer {
         }
     }
 
-    public void shootNextBall(){
+    public void shootNextBall() {
+        Status.ballsToShoot -= 1;
         Status.turretToggle = true;
         Status.intakeToggle = false;
         Status.flywheelToggle = true;
         robotContainer.spindexer.goToNextTransferSlot();
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapUp(), 2000);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapDown(), 3000);
-        // robotContainer.delayedActionManager.schedule(()-> robotContainer.transfer.flapUp(), () -> robotContainer.spindexer.pdf.getError() < 5);
-        // robotContainer.delayedActionManager.schedule(()-> robotContainer.delayedActionManager.schedule(()-> robotContainer.transfer.flapDown(), Constants.Transfer.FLIP_TIME), () -> robotContainer.spindexer.pdf.getError() < 5);
-        tranferTimer.reset();
+        if (Status.intakeToggle) {
+            return;
+        }
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.delayedActionManager.schedule(()-> robotContainer.transfer.flapUp(), () -> Math.abs(robotContainer.spindexer.pdf.getError()) < 7), 1000);
+        robotContainer.delayedActionManager.schedule(()-> robotContainer.delayedActionManager.schedule(()-> robotContainer.transfer.flapDown(), Constants.Transfer.FLIP_TIME + 1000), () -> Math.abs(robotContainer.spindexer.pdf.getError()) < 7);
+        if (Status.ballsToShoot > 0) {
+            robotContainer.delayedActionManager.schedule(() -> shootNextBall(), Constants.Transfer.FLIP_TIME + 2000);
+        }
+    }
+
+    public void shootAll() {
+        Status.ballsToShoot = 3;
+        shootNextBall();
     }
 
     public void goToNextGreenSlot() {
@@ -240,7 +248,7 @@ public class Spindexer {
             }
 
             lastError = error;
-            return p + d;
+            return p + d + (Constants.Spindexer.KF * Math.signum(error));
         }
     }
     public PDF pdf = new PDF();

@@ -300,19 +300,20 @@ public class Constants {
     @Config
     public static class Transfer {
         public static int FLIP_TIME = 200;
-        public static double DOWN = 0.722;
-        public static double UP = 0.525;
+        public static double DOWN = 0.295;
+        public static double UP = 0.47;
     }
 
     @Config
     public static class Spindexer {
         public static int NUM_SLOTS = 3;
-        public static double ANGLE_OFFSET = 165;
+        public static double ANGLE_OFFSET = 110;
         public static double[] TRANSFER_SLOT_ANGLES = {179, 60, -60};
         public static double [] INTAKE_SLOT_ANGLES = {0, -120, 120};
-        public static double KP = 0.012;
+        public static double KP = 0.014;
         public static double KD = 0.008;
-        public static double KF = 0.06;
+        public static double KF = 0.03;
+        public static int COLOR_SENSE_TIME = 0;
     }
 
     @Config

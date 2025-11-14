@@ -109,7 +109,7 @@ public class TeleOp extends OpMode {
             robotContainer.turret.pointAtGoal();
         }
 
-        if (robotContainer.beamBreakToggleButton.wasJustReleased()) {
+        if (robotContainer.beamBreakToggleButton.wasJustReleased() && Status.intakeToggle) {
             robotContainer.spindexer.goToNextIntakeSlot();
         }
 

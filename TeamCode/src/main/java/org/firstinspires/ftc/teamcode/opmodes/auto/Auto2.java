@@ -63,6 +63,9 @@ public class Auto2 extends OpMode {
         if (Status.wentBackToStart) {
             Status.startingPose = (Pose2D) blackboard.getOrDefault("pose", Status.startingPose);
         }
+        Status.slotColor[0] = Constants.Game.ARTIFACT_COLOR.PURPLE;
+        Status.slotColor[1] = Constants.Game.ARTIFACT_COLOR.PURPLE;
+        Status.slotColor[2] = Constants.Game.ARTIFACT_COLOR.PURPLE;
         RobotContainer.HardwareDevices.pinpoint.setPosition(Status.startingPose);
         if (Status.alliance == Constants.Game.ALLIANCE.BLUE) {
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_LOW, BEFORE_TAPE, AngleUnit.DEGREES, 90));
@@ -88,15 +91,15 @@ public class Auto2 extends OpMode {
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_HIGH, -AFTER_TAPE, AngleUnit.DEGREES, -90));
         }
 
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0.3), 1);
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0.8), 1);
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP /= 2, 1);
 
         robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0), 2);
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP *= 2, 2);
 
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.spindexer.shootNextBall(), 3);
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.shootNextBall(), 4000), 3);
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.shootNextBall(), 8000), 3);
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.spindexer.shootAll(), 3);
+//        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.shootNextBall(), 4000), 3);
+//        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.shootNextBall(), 8000), 3);
 
         robotContainer.delayedActionManager.schedulePose(() -> robotContainer.turret.flywheel.setTargetVelocity(0.63), 3);
 
@@ -173,9 +176,9 @@ public class Auto2 extends OpMode {
             robotContainer.spindexer.goToNextIntakeSlot();
         }
 
-        if (Status.turretToggleButton.wasJustPressed()) {
-            robotContainer.spindexer.goToNextTransferSlot();
-        }
+//        if (Status.turretToggleButton.wasJustPressed()) {
+//            robotContainer.spindexer.goToNextTransferSlot();
+//        }
 
 //        if (!Status.intakeToggle) {
 ////            robotContainer.turret.flywheel.setTargetVelocity(Math.min(Math.pow(Status.turretToggleButton.getHoldDuration(), Constants.Turret.FLYWHEEL_CURVE), robotContainer.limelightLogic.getRequiredFlywheelSpeed()));
