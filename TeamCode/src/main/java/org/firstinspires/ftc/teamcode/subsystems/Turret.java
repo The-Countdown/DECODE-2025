@@ -99,6 +99,33 @@ public class Turret extends RobotContainer.HardwareDevices {
             }
         }
 
+        public double interpolateByDistance(double disToGoal){
+            double lowerPoint = Constants.Turret.FLYWHEEL_SPEED_TABLE_DISTANCES[0];
+            int lowerPointIndex = 0;
+            double higherPoint = Constants.Turret.FLYWHEEL_SPEED_TABLE_DISTANCES[Constants.Turret.FLYWHEEL_SPEED_TABLE_DISTANCES.length-1];
+            int higherPointIndex = Constants.Turret.FLYWHEEL_SPEED_TABLE_DISTANCES.length-1;
+            double currentDistance;
+            for (int i = Constants.Turret.FLYWHEEL_SPEED_TABLE_DISTANCES.length; i>0;i--){
+                currentDistance = Constants.Turret.FLYWHEEL_SPEED_TABLE_DISTANCES[i-1];
+                if(currentDistance > disToGoal){
+                    if (currentDistance < higherPoint) {
+                        higherPoint = currentDistance;
+                        higherPointIndex = i;
+                    }
+                }else if (currentDistance < disToGoal){
+                    if (currentDistance > lowerPoint) {
+                        lowerPoint = currentDistance;
+                        lowerPointIndex = i;
+                    }
+                }else if (currentDistance == disToGoal){
+                    return Constants.Turret.FLYWHEEL_SPEED_TABLE[i];
+                }
+            }
+            lowerPoint = Constants.Turret.FLYWHEEL_SPEED_TABLE[lowerPointIndex];
+            higherPoint = Constants.Turret.FLYWHEEL_SPEED_TABLE[higherPointIndex];
+            return HelperFunctions.interpolate(lowerPoint, higherPoint, (disToGoal-lowerPoint)/(higherPoint-lowerPoint));
+        }
+
         public boolean atTargetVelocity() {
             return flyWheelMotors.getAverageVelocity() - targetVelocity < 100;
         }
