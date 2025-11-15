@@ -15,7 +15,7 @@ public class HelperFunctions {
      * @return Pose2d
      */
     public static Pose2D to2D(Pose3D pose) {
-        return new Pose2D(DistanceUnit.CM, pose.getPosition().x, pose.getPosition().y, AngleUnit.DEGREES,pose.getOrientation().getYaw(AngleUnit.DEGREES));
+        return new Pose2D(DistanceUnit.CM, pose.getPosition().x * 100, pose.getPosition().y * 100, AngleUnit.DEGREES,pose.getOrientation().getYaw(AngleUnit.DEGREES));
     }
 
     /**

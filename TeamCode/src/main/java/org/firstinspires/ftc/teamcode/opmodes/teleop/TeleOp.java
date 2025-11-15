@@ -162,11 +162,16 @@ public class TeleOp extends OpMode {
             // tranferTimer.reset();
         }
 
-        if (robotContainer.gamepadEx1.triangle.wasJustPressed()) {
-            Pose2D botPose = robotContainer.limelightLogic.logicBotPose();
-            RobotContainer.HardwareDevices.pinpoint.setPosX(botPose.getX(DistanceUnit.CM), DistanceUnit.CM);
-            RobotContainer.HardwareDevices.pinpoint.setPosY(botPose.getY(DistanceUnit.CM), DistanceUnit.CM);
-        }
+
+
+       //localization
+        robotContainer.limelightLogic.limelightLocalization();
+
+//        if (robotContainer.gamepadEx1.triangle.wasJustPressed()) {
+//            Pose2D botPose = robotContainer.limelightLogic.logicBotPose();
+//            RobotContainer.HardwareDevices.pinpoint.setPosX(botPose.getX(DistanceUnit.CM), DistanceUnit.CM);
+//            RobotContainer.HardwareDevices.pinpoint.setPosY(botPose.getY(DistanceUnit.CM), DistanceUnit.CM);
+//        }
 
         if (robotContainer.gamepadEx2.cross.wasJustPressed()) {
             Status.slotColor[robotContainer.spindexer.getCurrentTransferSlot()] = Constants.Game.ARTIFACT_COLOR.NONE;
@@ -232,7 +237,7 @@ public class TeleOp extends OpMode {
         robotContainer.telemetry.addData("hood angle", robotContainer.turret.hoodServo.getPosition());
         if (robotContainer.limelightLogic.limelight.getLatestResult().isValid()) {
             robotContainer.telemetry.addData("robot pos on field", robotContainer.limelightLogic.logicBotPose());
-            robotContainer.telemetry.addData("disTANCE to goal", robotContainer.limelightLogic.disToGoal());
+            robotContainer.telemetry.addData("distance to goal", robotContainer.limelightLogic.disToGoal());
         } else if (robotContainer.limelightLogic.limelight.getLatestResult() == null){
             robotContainer.telemetry.addLine("robot pos on field no see");
         }
