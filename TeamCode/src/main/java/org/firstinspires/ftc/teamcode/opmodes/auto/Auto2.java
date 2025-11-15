@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.LocalizationUpdate
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
+import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
 @Autonomous(name="Auto2", group="Robot")
 @Config
@@ -68,10 +69,12 @@ public class Auto2 extends OpMode {
         Status.slotColor[2] = Constants.Game.ARTIFACT_COLOR.PURPLE;
         RobotContainer.HardwareDevices.pinpoint.setPosition(Status.startingPose);
         if (Status.alliance == Constants.Game.ALLIANCE.BLUE) {
+            robotContainer.pathPlanner.addPose(Status.startingPose);
+            robotContainer.pathPlanner.addPose(6000);
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_LOW, BEFORE_TAPE, AngleUnit.DEGREES, 90));
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_LOW, AFTER_TAPE, AngleUnit.DEGREES, 90));
             robotContainer.pathPlanner.addPose(Status.startingPose);
-            robotContainer.pathPlanner.addPose(15000);
+            robotContainer.pathPlanner.addPose(6000);
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_MID, BEFORE_TAPE, AngleUnit.DEGREES, 90));
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_MID, AFTER_TAPE, AngleUnit.DEGREES, 90));
             robotContainer.pathPlanner.addPose(BLUE_MIDPOINT);
@@ -79,10 +82,12 @@ public class Auto2 extends OpMode {
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_HIGH, BEFORE_TAPE, AngleUnit.DEGREES, 90));
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_HIGH, AFTER_TAPE, AngleUnit.DEGREES, 90));
         } else {
+            robotContainer.pathPlanner.addPose(Status.startingPose);
+            robotContainer.pathPlanner.addPose(6000);
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_LOW, -BEFORE_TAPE, AngleUnit.DEGREES, -90));
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_LOW, -AFTER_TAPE, AngleUnit.DEGREES, -90));
             robotContainer.pathPlanner.addPose(Status.startingPose);
-            robotContainer.pathPlanner.addPose(15000);
+            robotContainer.pathPlanner.addPose(6000);
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_MID, -BEFORE_TAPE, AngleUnit.DEGREES, -90));
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_MID, -AFTER_TAPE, AngleUnit.DEGREES, -90));
             robotContainer.pathPlanner.addPose(RED_MIDPOINT);
@@ -91,40 +96,45 @@ public class Auto2 extends OpMode {
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_HIGH, -AFTER_TAPE, AngleUnit.DEGREES, -90));
         }
 
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0.8), 1);
-        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP /= 2, 1);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.shootAll(), 0);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.turret.flywheel.setTargetVelocity(HelperFunctions.interpolate(Constants.Turret.FLYWHEEL_SPEED_TABLE[1], Constants.Turret.FLYWHEEL_SPEED_TABLE[2], (HelperFunctions.disToGoal()-100.0)/160.0-100.0)), 0);;
 
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0), 2);
-        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP *= 2, 2);
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.turret.flywheel.setTargetVelocity(0), 2);
 
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.spindexer.shootAll(), 3);
-//        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.shootNextBall(), 4000), 3);
-//        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.shootNextBall(), 8000), 3);
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0.8), 2);
+        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP /= 2, 2);
 
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.turret.flywheel.setTargetVelocity(0.63), 3);
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0), 4);
+        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP *= 2, 4);
 
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.turret.flywheel.setTargetVelocity(0), 4);
-        robotContainer.delayedActionManager.schedulePose(() -> Status.turretToggle = false, 5);
-        robotContainer.delayedActionManager.schedulePose(() -> Status.intakeToggle = true, 5);
-        robotContainer.delayedActionManager.schedulePose(() -> Status.flywheelToggle = false, 5);
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0.3), 5);
-        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP /= 2, 5);
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.spindexer.shootAll(), 5);
+//        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.shootNextBall(), 4000), 5);
+//        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.shootNextBall(), 8000), 5);
 
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0), 6);
-        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP *= 2, 6);
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.turret.flywheel.setTargetVelocity(HelperFunctions.interpolate(Constants.Turret.FLYWHEEL_SPEED_TABLE[1], Constants.Turret.FLYWHEEL_SPEED_TABLE[2], (HelperFunctions.disToGoal()-100.0)/160.0-100.0)), 5);
 
-        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_PID_TOLERANCE_CM += 4, 8);
-        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LONGITUDE_PID_TOLERANCE_CM += 4, 8);
-        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.HEADING_PID_TOLERANCE_DEGREES += 8, 8);
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.turret.flywheel.setTargetVelocity(0), 6);
+        robotContainer.delayedActionManager.schedulePose(() -> Status.turretToggle = false, 7);
+        robotContainer.delayedActionManager.schedulePose(() -> Status.intakeToggle = true, 7);
+        robotContainer.delayedActionManager.schedulePose(() -> Status.flywheelToggle = false, 7);
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0.3), 7);
+        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP /= 2, 7);
 
-        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_PID_TOLERANCE_CM -= 4, 9);
-        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LONGITUDE_PID_TOLERANCE_CM -= 4, 9);
-        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.HEADING_PID_TOLERANCE_DEGREES -= 8, 9);
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0.3), 9);
-        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP /= 2, 9);
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0), 8);
+        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP *= 2, 8);
 
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0), 10);
-        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP *= 2, 10);
+        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_PID_TOLERANCE_CM += 4, 10);
+        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LONGITUDE_PID_TOLERANCE_CM += 4, 10);
+        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.HEADING_PID_TOLERANCE_DEGREES += 8, 10);
+
+        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_PID_TOLERANCE_CM -= 4, 11);
+        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LONGITUDE_PID_TOLERANCE_CM -= 4, 11);
+        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.HEADING_PID_TOLERANCE_DEGREES -= 8, 11);
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0.3), 12);
+        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP /= 2, 12);
+
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0), 13);
+        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP *= 2, 13);
 
         Status.turretToggle = true;
         Status.intakeToggle = false;
