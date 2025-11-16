@@ -55,7 +55,7 @@ public class HelperFunctions {
 
     public static double disToGoal() {
             double xDiff = Status.GOAL_POSE.getX(DistanceUnit.INCH) - Status.currentPose.getX(DistanceUnit.INCH);
-            double yDiff = Status.GOAL_POSE.getY(DistanceUnit.INCH) - Status.currentPose.getY(DistanceUnit.INCH);
+            double yDiff = -Status.GOAL_POSE.getY(DistanceUnit.INCH) - Status.currentPose.getY(DistanceUnit.INCH);
             return Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
     }
 

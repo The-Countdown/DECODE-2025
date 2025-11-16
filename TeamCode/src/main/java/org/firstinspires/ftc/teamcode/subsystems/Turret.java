@@ -91,7 +91,7 @@ public class Turret extends RobotContainer.HardwareDevices {
     public class Flywheel {
         double targetVelocity = 0;
         public void setTargetVelocity(double power) {
-            targetVelocity = Constants.Turret.FLYWHEEL_MAX_VELOCITY * power;
+            targetVelocity = Constants.Swerve.MOTOR_MAX_VELOCITY_TICKS_PER_SECOND * power;
             if (Status.flywheelToggle) {
                 flyWheelMotors.setVelocity(targetVelocity);
             } else {
@@ -105,15 +105,15 @@ public class Turret extends RobotContainer.HardwareDevices {
             double higherPoint = Constants.Turret.FLYWHEEL_SPEED_TABLE_DISTANCES[Constants.Turret.FLYWHEEL_SPEED_TABLE_DISTANCES.length-1];
             int higherPointIndex = Constants.Turret.FLYWHEEL_SPEED_TABLE_DISTANCES.length-1;
             double currentDistance;
-            for (int i = Constants.Turret.FLYWHEEL_SPEED_TABLE_DISTANCES.length; i>0;i--){
-                currentDistance = Constants.Turret.FLYWHEEL_SPEED_TABLE_DISTANCES[i-1];
+            for (int i = Constants.Turret.FLYWHEEL_SPEED_TABLE_DISTANCES.length-2; i>0;i--){
+                currentDistance = Constants.Turret.FLYWHEEL_SPEED_TABLE_DISTANCES[i];
                 if(currentDistance > disToGoal){
                     if (currentDistance < higherPoint) {
                         higherPoint = currentDistance;
                         higherPointIndex = i;
                     }
                 }else if (currentDistance < disToGoal){
-                    if (currentDistance > lowerPoint) {
+                    if (currentDistance >= lowerPoint) {
                         lowerPoint = currentDistance;
                         lowerPointIndex = i;
                     }
@@ -121,9 +121,10 @@ public class Turret extends RobotContainer.HardwareDevices {
                     return Constants.Turret.FLYWHEEL_SPEED_TABLE[i];
                 }
             }
-            lowerPoint = Constants.Turret.FLYWHEEL_SPEED_TABLE[lowerPointIndex];
-            higherPoint = Constants.Turret.FLYWHEEL_SPEED_TABLE[higherPointIndex];
-            return HelperFunctions.interpolate(lowerPoint, higherPoint, (disToGoal-lowerPoint)/(higherPoint-lowerPoint));
+            double lowerSpeed = Constants.Turret.FLYWHEEL_SPEED_TABLE[lowerPointIndex];
+            double higherSpeed = Constants.Turret.FLYWHEEL_SPEED_TABLE[higherPointIndex];
+
+            return HelperFunctions.interpolate(lowerSpeed, higherSpeed, (disToGoal-lowerPoint)/(higherPoint-lowerPoint));
         }
 
         public boolean atTargetVelocity() {
