@@ -16,16 +16,17 @@ import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
 public class LimelightLogic {
-    private RobotContainer robot;
+    private RobotContainer robotContainer;
     private Telemetry telemetry;
     public Limelight3A limelight;
     private LLResult result;
     private ElapsedTime turretTime = new ElapsedTime();
     private Pose2D botPose = new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
     private double p = 177.5;
+
     // 50, 100, 160
     public LimelightLogic(RobotContainer robot, Telemetry telemetry, Limelight3A limelight) {
-        this.robot = robot;
+        this.robotContainer = robot;
         this.telemetry = telemetry;
         this.limelight = limelight;
 
@@ -47,7 +48,7 @@ public class LimelightLogic {
     public void trackGoal() {
         if (limelight.getLatestResult() != null && Math.abs(limelight.getLatestResult().getTx()) > 1) {
             p += limelight.getLatestResult().getTx() * Constants.Turret.TRACK_GOAL_P;
-            robot.turret.setTargetAngle(p);
+            robotContainer.turret.setTargetAngle(p);
             telemetry.addData("TX", limelight.getLatestResult().getTx());
             telemetry.addData("p", p);
         }
@@ -58,6 +59,15 @@ public class LimelightLogic {
             double a = Turret.turretServoMaster.getPosition() - 0.5;
             double r = 6.819323 / 2.54; //68.19323mm
             botPose = new Pose2D(DistanceUnit.INCH, -((result.getBotpose().getPosition().x * 100) / 2.54) + (Math.cos(a) * r), (((result.getBotpose().getPosition().y * 100) / 2.54) + (Math.sin(a)) * r), AngleUnit.DEGREES, 0);
+        }
+        return botPose;
+    }
+
+    public Pose2D logicBotPoseCM() {
+        if (result != null) {
+            double a = Turret.turretServoMaster.getPosition() - 0.5;
+            double r = 6.819323 / 2.54; //68.19323mm
+            botPose = new Pose2D(DistanceUnit.CM, -(result.getBotpose().getPosition().x * 100) + (Math.cos(a) * r), ((result.getBotpose().getPosition().y * 100) + (Math.sin(a)) * r), AngleUnit.DEGREES, 0);
         }
         return botPose;
     }
@@ -88,7 +98,7 @@ public class LimelightLogic {
         for (LLResultTypes.FiducialResult tag : result.getFiducialResults()) {
             if (checkMotif(tag) != null) {
                 Status.motif = checkMotif(tag);
-                robot.addRetainedTelemetry("Motif Found" , checkMotif(tag));
+                robotContainer.addRetainedTelemetry("Motif Found", checkMotif(tag));
             }
         }
     }
@@ -106,7 +116,7 @@ public class LimelightLogic {
         for (LLResultTypes.FiducialResult tag : result.getFiducialResults()) {
             if (checkMotif(tag) != null) {
                 Status.alliance = checkAlliance(tag);
-                robot.addRetainedTelemetry("Alliance Found" , checkAlliance(tag));
+                robotContainer.addRetainedTelemetry("Alliance Found", checkAlliance(tag));
             }
         }
     }
@@ -127,17 +137,23 @@ public class LimelightLogic {
         return turretSpeed;
     }
 
+    public void limelightLocalization() {
+        if (limelight.getLatestResult() != null) {
+            RobotContainer.HardwareDevices.pinpoint.setPosY(-limelight.getLatestResult().getBotpose_MT2().getPosition().y * 100, DistanceUnit.CM);
+            RobotContainer.HardwareDevices.pinpoint.setPosX(-limelight.getLatestResult().getBotpose_MT2().getPosition().x * 100, DistanceUnit.CM);
+        }
 
-    // * look at april tag give pose2d (for initialization)
-    // track april tag constantly (with offset) (with turret)
-    // * look at random thing for color combo
-    // drive to function with offset options
-    // * get alliance
+        // * look at april tag give pose2d (for initialization)
+        // track april tag constantly (with offset) (with turret)
+        // * look at random thing for color combo
+        // drive to function with offset options
+        // * get alliance
 
-    //ID 21 GPP
-    //ID 22 PGP
-    //ID 23 PPG
-    //ID 20 BLEU
-    //ID 24 RED
+        //ID 21 GPP
+        //ID 22 PGP
+        //ID 23 PPG
+        //ID 20 BLEU
+        //ID 24 RED
 
+    }
 }
