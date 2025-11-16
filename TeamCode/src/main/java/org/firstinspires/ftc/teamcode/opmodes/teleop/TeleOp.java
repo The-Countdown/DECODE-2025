@@ -94,17 +94,22 @@ public class TeleOp extends OpMode {
         telemetry.addData("Pow", Math.pow(robotContainer.gamepadEx2.dpadRight.getHoldDuration(), Constants.Turret.FLYWHEEL_CURVE));
         if (Status.manualControl && robotContainer.gamepadEx2.dpadRight.isHeld()) {
             robotContainer.turret.flywheel.setTargetVelocity(Math.min(Math.pow(robotContainer.gamepadEx2.dpadRight.getHoldDuration(), Constants.Turret.FLYWHEEL_CURVE), 1));
+            if (robotContainer.turret.flywheel.getFlywheelVelocity() >= 1) {
+                Status.flywheelAtTargetSpeed = true;
+            } else {
+                Status.flywheelAtTargetSpeed = false;
+            }
         } else if (!Status.intakeToggle) {
             robotContainer.turret.flywheel.setTargetVelocity(Math.min(Status.turretToggleButton.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, robotContainer.limelightLogic.getRequiredFlywheelSpeed()));
+            if (robotContainer.turret.flywheel.getFlywheelVelocity() >= robotContainer.limelightLogic.getRequiredFlywheelSpeed()) {
+                Status.flywheelAtTargetSpeed = true;
+            } else {
+                Status.flywheelAtTargetSpeed = false;
+            }
         } else {
             robotContainer.turret.flywheel.setTargetVelocity(0);
         }
 
-        if (robotContainer.turret.flywheel.getFlywheelVelocity() >= 1 || robotContainer.turret.flywheel.getFlywheelVelocity() == robotContainer.limelightLogic.getRequiredFlywheelSpeed()) {
-            Status.flywheelAtTargetSpeed = true;
-        } else {
-            Status.flywheelAtTargetSpeed = false;
-        }
 
 //        turret turn -right stick X
         if (Status.manualControl) {
