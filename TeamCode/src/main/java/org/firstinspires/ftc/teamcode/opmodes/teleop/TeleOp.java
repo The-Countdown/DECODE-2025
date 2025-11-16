@@ -100,6 +100,12 @@ public class TeleOp extends OpMode {
             robotContainer.turret.flywheel.setTargetVelocity(0);
         }
 
+        if (robotContainer.turret.flywheel.getFlywheelVelocity() >= 1 || robotContainer.turret.flywheel.getFlywheelVelocity() == robotContainer.limelightLogic.getRequiredFlywheelSpeed()) {
+            Status.flywheelAtTargetSpeed = true;
+        } else {
+            Status.flywheelAtTargetSpeed = false;
+        }
+
 //        turret turn -right stick X
         if (Status.manualControl) {
             turretPos -= robotContainer.gamepadEx2.rightStickX() != 0 ? (Constants.Turret.TURRET_SPEED_FACTOR * CURRENT_LOOP_TIME_MS) * Math.pow(robotContainer.gamepadEx2.rightStickX(), 3) : 0;

@@ -55,6 +55,7 @@ public class Status {
     public static boolean intakeToggle = false;
     public static final GamepadWrapper.ButtonReader turretToggleButton = new GamepadWrapper.ButtonReader();
     public static boolean turretToggle = false;
+    public static boolean flywheelAtTargetSpeed = true;
     public static boolean flywheelToggle = false;
     public static boolean manualControl = false;
     public static int ballsToShoot = 0;
