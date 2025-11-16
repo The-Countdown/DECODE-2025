@@ -129,6 +129,10 @@ public class Turret extends RobotContainer.HardwareDevices {
         public boolean atTargetVelocity() {
             return flyWheelMotors.getAverageVelocity() - targetVelocity < 100;
         }
+
+        public double getFlywheelVelocity() {
+            return flyWheelMotors.getAverageVelocity();
+        }
     }
 
     public class Hood {

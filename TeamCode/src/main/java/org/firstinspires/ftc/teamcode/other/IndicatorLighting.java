@@ -83,10 +83,10 @@ public class IndicatorLighting {
                 robotContainer.allIndicatorLights.setColor(Constants.LED.COLOR.GREEN);
             }  else if (Status.intakeToggle) {
                 robotContainer.allIndicatorLights.setColor(Constants.LED.COLOR.ORANGE);
-            } else if (!robotContainer.turret.flywheel.atTargetVelocity()) {
-                robotContainer.allIndicatorLights.setColor(Constants.LED.COLOR.RED);
-            } else if (robotContainer.turret.flywheel.atTargetVelocity()) {
+            } else if (!Status.flywheelAtTargetSpeed) {
                 robotContainer.allIndicatorLights.setColor(Constants.LED.COLOR.AZURE);
+            } else {
+                robotContainer.allIndicatorLights.setColor(Constants.LED.COLOR.RED);
             }
         }
 
