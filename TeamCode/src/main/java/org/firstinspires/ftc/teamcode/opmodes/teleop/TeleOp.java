@@ -94,21 +94,13 @@ public class TeleOp extends OpMode {
         telemetry.addData("Pow", Math.pow(robotContainer.gamepadEx2.dpadRight.getHoldDuration(), Constants.Turret.FLYWHEEL_CURVE));
         if (Status.manualControl && robotContainer.gamepadEx2.dpadRight.isHeld()) {
             robotContainer.turret.flywheel.setTargetVelocity(Math.min(Math.pow(robotContainer.gamepadEx2.dpadRight.getHoldDuration(), Constants.Turret.FLYWHEEL_CURVE), 1));
-            if (robotContainer.turret.flywheel.getFlywheelVelocity() >= 1) {
-                Status.flywheelAtTargetSpeed = true;
-            } else {
-                Status.flywheelAtTargetSpeed = false;
-            }
         } else if (!Status.intakeToggle) {
             robotContainer.turret.flywheel.setTargetVelocity(Math.min(Status.turretToggleButton.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, robotContainer.turret.flywheel.interpolateByDistance(HelperFunctions.disToGoal())));
-            if (robotContainer.turret.flywheel.getFlywheelVelocity() >= robotContainer.turret.flywheel.interpolateByDistance(HelperFunctions.disToGoal())) {
-                Status.flywheelAtTargetSpeed = true;
-            } else {
-                Status.flywheelAtTargetSpeed = false;
-            }
         } else {
             robotContainer.turret.flywheel.setTargetVelocity(0);
         }
+
+        Status.flywheelAtTargetSpeed = robotContainer.turret.flywheel.atTargetVelocity();
 
 
 //        turret turn -right stick X
