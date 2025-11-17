@@ -125,7 +125,7 @@ public class TeleOp extends OpMode {
 
         if (spindexerError > 1) {
             if (spindexAccel.seconds() <= 1) {
-                robotContainer.spindexer.setPower(Math.min(robotContainer.spindexer.pdf.calculate() * spindexAccel.seconds(), 0.5));
+                robotContainer.spindexer.setPower(Math.min(robotContainer.spindexer.pdf.calculate() * spindexAccel.seconds(), 0.75));
             } else {
                  robotContainer.spindexer.setPower(robotContainer.spindexer.pdf.calculate());
 //                robotContainer.spindexer.setPower(0.5);
