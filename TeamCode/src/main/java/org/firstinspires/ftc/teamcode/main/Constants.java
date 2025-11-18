@@ -72,8 +72,8 @@ public class Constants {
                 EXPANSION_HUB_INDEX = 1;
 
         public static final double
-                WHEELBASE_WIDTH_MM = 320,
-                WHEELBASE_LENGTH_MM = 285.68668;
+                WHEELBASE_WIDTH_MM = 432,
+                WHEELBASE_LENGTH_MM = 367.067;
 
         public static final double
                 WHEELBASE_ICR_X = WHEELBASE_LENGTH_MM / 2,

@@ -54,13 +54,13 @@ public class Auto extends OpMode {
         }
         robotContainer.turret.flywheel.setTargetVelocity(0.5);
         robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[1]);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.setTargetAngle(Constants.Spindexer.TRANSFER_SLOT_ANGLES[0]), 1000);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.setPosDegrees(Constants.Spindexer.TRANSFER_SLOT_ANGLES[0]), 1000);
         robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapUp(), 2500);
         robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapDown(), 2800);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.setTargetAngle(Constants.Spindexer.TRANSFER_SLOT_ANGLES[1]), 3000);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.setPosDegrees(Constants.Spindexer.TRANSFER_SLOT_ANGLES[1]), 3000);
         robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapUp(), 4500);
         robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapDown(), 4800);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.setTargetAngle(Constants.Spindexer.TRANSFER_SLOT_ANGLES[2]), 5000);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.setPosDegrees(Constants.Spindexer.TRANSFER_SLOT_ANGLES[2]), 5000);
         robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapUp(), 6500);
         robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapDown(), 6800);
         robotContainer.delayedActionManager.schedule(() -> robotContainer.turret.flywheel.setTargetVelocity(0), 7000);
@@ -70,25 +70,7 @@ public class Auto extends OpMode {
     @Override
     public void loop() {
         robotContainer.delayedActionManager.update();
-
-        double spindexerError = Math.abs(robotContainer.spindexer.pdf.getError());
-
-        // If the error changes by a lot in a short period of time reset the timer
-        if (Math.abs(lastError - spindexerError) > 50) {
-            spindexAccel.reset();
-        }
-
-        if (spindexerError > 2) {
-            if (spindexAccel.seconds() <= 1) {
-                robotContainer.spindexer.setPower(Math.min(robotContainer.spindexer.pdf.calculate() * spindexAccel.seconds(), 0.5));
-            } else {
-                robotContainer.spindexer.setPower(robotContainer.spindexer.pdf.calculate());
-            }
-        } else {
-            robotContainer.spindexer.setPower(0);
-        }
-        lastError = spindexerError;
-//        blackboard.put("pose", Status.currentPose);
+        blackboard.put("pose", Status.currentPose);
     }
 
     @Override

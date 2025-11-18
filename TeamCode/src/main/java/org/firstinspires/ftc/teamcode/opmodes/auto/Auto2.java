@@ -111,11 +111,11 @@ public class Auto2 extends OpMode {
         robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0.8), 3);
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP /= 2, 3);
 
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0), 4);
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(-0.8), 4);
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP *= 2, 4);
 
         robotContainer.delayedActionManager.schedulePose(() -> Status.turretToggle = true, 5);
-        robotContainer.delayedActionManager.schedulePose(() -> Status.intakeToggle = false, 5);
+//        robotContainer.delayedActionManager.schedulePose(() -> Status.intakeToggle = false, 5);
         robotContainer.delayedActionManager.schedulePose(() -> Status.flywheelToggle = true, 5);
         robotContainer.delayedActionManager.schedulePose(() -> robotContainer.spindexer.goToNextTransferSlot(), 5);
         robotContainer.delayedActionManager.schedulePose(() -> robotContainer.spindexer.shootAll(), 5);
@@ -124,7 +124,7 @@ public class Auto2 extends OpMode {
 
         robotContainer.delayedActionManager.schedulePose(() -> robotContainer.turret.flywheel.setTargetVelocity(0), 6);
         robotContainer.delayedActionManager.schedulePose(() -> Status.turretToggle = false, 6);
-        robotContainer.delayedActionManager.schedulePose(() -> Status.intakeToggle = true, 6);
+//        robotContainer.delayedActionManager.schedulePose(() -> Status.intakeToggle = true, 6);
         robotContainer.delayedActionManager.schedulePose(() -> Status.flywheelToggle = false, 6);
         robotContainer.delayedActionManager.schedulePose(() -> robotContainer.spindexer.goToNextIntakeSlot(), 6);
 
@@ -132,7 +132,7 @@ public class Auto2 extends OpMode {
         robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0.8), 7);
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP /= 2, 7);
 
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0), 8);
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(-0.8), 8);
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP *= 2, 8);
 
         /*
@@ -181,25 +181,6 @@ public class Auto2 extends OpMode {
         robotContainer.telemetry.addData("Intake Velocity: ", robotContainer.intake.getVelocity());
         robotContainer.telemetry.addData("Flywheel Velocity: ", RobotContainer.HardwareDevices.flyWheelMotorMaster.getVelocity());
         robotContainer.telemetry.update();
-
-
-        double spindexerError = Math.abs(robotContainer.spindexer.pdf.getError());
-        // If the error changes by a lot in a short period of time reset the timer
-
-        if (Math.abs(lastError - spindexerError) > 50) {
-            spindexAccel.reset();
-        }
-
-        if (spindexerError > 2) {
-            if (spindexAccel.seconds() <= 1) {
-                robotContainer.spindexer.setPower(Math.min(robotContainer.spindexer.pdf.calculate() * spindexAccel.seconds(), 1));
-            } else {
-                robotContainer.spindexer.setPower(robotContainer.spindexer.pdf.calculate());
-            }
-        } else {
-            robotContainer.spindexer.setPower(0);
-        }
-        lastError = spindexerError;
 
         if (robotContainer.beamBreakToggleButton.wasJustReleased()) {
             robotContainer.spindexer.goToNextIntakeSlot();
