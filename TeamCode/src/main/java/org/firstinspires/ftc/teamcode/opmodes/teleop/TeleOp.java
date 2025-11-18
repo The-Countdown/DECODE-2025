@@ -118,6 +118,7 @@ public class TeleOp extends OpMode {
 
         if (robotContainer.gamepadEx1.options.wasJustPressed()) {
             Status.manualControl = !Status.manualControl;
+            robotContainer.spindexer.setPos(0);
         }
 
         if (robotContainer.gamepadEx2.square.wasJustPressed()) {
