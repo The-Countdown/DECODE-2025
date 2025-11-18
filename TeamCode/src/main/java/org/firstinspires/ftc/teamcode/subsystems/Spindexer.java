@@ -116,6 +116,8 @@ public class Spindexer {
 
         for (int i = 1; i <= Constants.Spindexer.INTAKE_SLOT_ANGLES.length; i++) {
             int nextSlot = (robotContainer.spindexer.getCurrentIntakeSlot() + i) % Constants.Spindexer.INTAKE_SLOT_ANGLES.length;
+            robotContainer.telemetry.addData("currentSlot", robotContainer.spindexer.getCurrentIntakeSlot());
+            robotContainer.telemetry.addData("nextSlot", nextSlot);
 
             if (Status.slotColor[nextSlot] == Constants.Game.ARTIFACT_COLOR.UNKNOWN || Status.slotColor[nextSlot] == Constants.Game.ARTIFACT_COLOR.NONE) {
                 robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.setPosDegrees(Constants.Spindexer.INTAKE_SLOT_ANGLES[nextSlot]), Constants.Spindexer.COLOR_SENSE_TIME);
@@ -218,6 +220,8 @@ public class Spindexer {
     }
 
     public void setPosDegrees(double angle) {
-        spindexerServo.updateSetPosition(angle/360);
+        robotContainer.telemetry.addData("Spindexer Target Angle", angle);
+        spindexerServo.updateSetPosition((angle + 180)/360);
+        robotContainer.telemetry.addData("Spindexer Angle After Math", (HelperFunctions.normalizeAngle(angle) + 180)/360);
     }
 }

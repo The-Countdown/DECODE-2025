@@ -182,12 +182,16 @@ public class TeleOp extends OpMode {
 
         if (robotContainer.gamepadEx1.leftBumper.wasJustPressed()) {
             Constants.Spindexer.ANGLE_OFFSET -= 15;
+            robotContainer.spindexer.setPosDegrees(Constants.Spindexer.ANGLE_OFFSET);
         } else if (robotContainer.gamepadEx1.rightBumper.wasJustPressed()) {
             Constants.Spindexer.ANGLE_OFFSET += 15;
+            robotContainer.spindexer.setPosDegrees(Constants.Spindexer.ANGLE_OFFSET);
         } else if (robotContainer.gamepadEx1.dpadLeft.wasJustPressed()) {
             Constants.Spindexer.ANGLE_OFFSET -= 30;
+            robotContainer.spindexer.setPosDegrees(Constants.Spindexer.ANGLE_OFFSET);
         } else if (robotContainer.gamepadEx1.dpadRight.wasJustPressed()) {
             Constants.Spindexer.ANGLE_OFFSET += 30;
+            robotContainer.spindexer.setPosDegrees(Constants.Spindexer.ANGLE_OFFSET);
         }
 
         if (robotContainer.gamepadEx1.square.wasJustPressed()) {
