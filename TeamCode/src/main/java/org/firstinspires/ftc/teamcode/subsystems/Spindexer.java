@@ -82,15 +82,16 @@ public class Spindexer {
 
         int closestIndex = 0;
         double smallestDistance = Math.abs(HelperFunctions.normalizeAngle(currentAngle - Constants.Spindexer.INTAKE_SLOT_ANGLES[0]));
-        robotContainer.telemetry.addData("Spindexer distance", smallestDistance);
         robotContainer.telemetry.addData("Spindexer index distance", 0);
+        robotContainer.telemetry.addData("Spindexer distance", smallestDistance);
+
 
         for (int i = 1; i < Constants.Spindexer.INTAKE_SLOT_ANGLES.length; i++) {
             double distance = Math.abs(HelperFunctions.normalizeAngle(currentAngle - Constants.Spindexer.INTAKE_SLOT_ANGLES[i]));
-            robotContainer.telemetry.addData("Spindexer distance", distance);
             robotContainer.telemetry.addData("Spindexer index distance", i);
+            robotContainer.telemetry.addData("Spindexer distance", distance);
             robotContainer.telemetry.addData("Spinder distance compare", Constants.Spindexer.INTAKE_SLOT_ANGLES[i]);
-            if (distance < smallestDistance) {
+            if (distance <= smallestDistance) {
                 smallestDistance = distance;
                 robotContainer.telemetry.addData("Set Closest Index", i);
                 closestIndex = i;
@@ -121,12 +122,12 @@ public class Spindexer {
         robotContainer.spindexer.slotsUpdate();
         boolean intakeSlotFound = false;
 
-        for (int i = 1; i <= Constants.Spindexer.INTAKE_SLOT_ANGLES.length; i++) {
+        for (int i = 0; i <= Constants.Spindexer.INTAKE_SLOT_ANGLES.length; i++) {
             int nextSlot = (robotContainer.spindexer.getCurrentIntakeSlot() + i) % Constants.Spindexer.INTAKE_SLOT_ANGLES.length;
             robotContainer.telemetry.addData("currentSlot" + i, robotContainer.spindexer.getCurrentIntakeSlot());
             robotContainer.telemetry.addData("nextSlot" + i, nextSlot);
 
-            if (Status.slotColor[nextSlot] == Constants.Game.ARTIFACT_COLOR.UNKNOWN || Status.slotColor[nextSlot] == Constants.Game.ARTIFACT_COLOR.NONE) {
+            if (Status.slotColor[nextSlot] != Constants.Game.ARTIFACT_COLOR.PURPLE && Status.slotColor[nextSlot] != Constants.Game.ARTIFACT_COLOR.GREEN) {
                 robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.setPosDegrees(Constants.Spindexer.INTAKE_SLOT_ANGLES[nextSlot]), Constants.Spindexer.COLOR_SENSE_TIME);
                 intakeSlotFound = true;
                 break;
@@ -143,10 +144,10 @@ public class Spindexer {
     public void goToNextTransferSlot() {
         boolean turretSlotFound = false;
 
-        for (int i = 1; i <= Constants.Spindexer.TRANSFER_SLOT_ANGLES.length; i++) {
+        for (int i = 0; i <= Constants.Spindexer.TRANSFER_SLOT_ANGLES.length; i++) {
             int nextSlot = (robotContainer.spindexer.getCurrentTransferSlot() + i) % Constants.Spindexer.TRANSFER_SLOT_ANGLES.length;
 
-            if (Status.slotColor[nextSlot] == Constants.Game.ARTIFACT_COLOR.PURPLE || Status.slotColor[nextSlot] == Constants.Game.ARTIFACT_COLOR.GREEN) {
+            if (Status.slotColor[nextSlot] != Constants.Game.ARTIFACT_COLOR.PURPLE && Status.slotColor[nextSlot] != Constants.Game.ARTIFACT_COLOR.GREEN) {
                 robotContainer.spindexer.setPosDegrees(Constants.Spindexer.TRANSFER_SLOT_ANGLES[nextSlot]);
                 turretSlotFound = true;
                 break;
@@ -228,7 +229,7 @@ public class Spindexer {
 
     public void setPosDegrees(double angle) {
         robotContainer.telemetry.addData("Spindexer Target Angle", angle);
-        spindexerServo.updateSetPosition(angle/360);
+        spindexerServo.updateSetPosition((HelperFunctions.normalizeAngle(angle + Constants.Spindexer.ANGLE_OFFSET) + 180) /360);
         robotContainer.telemetry.addData("Spindexer Angle After Math", (HelperFunctions.normalizeAngle(angle) + 180)/360);
     }
 }

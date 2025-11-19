@@ -22,6 +22,7 @@ public class TeleOp extends OpMode {
     private double lastError = 0;
     private double lastTransferAngle = -1;
     private final ElapsedTime tranferTimer = new ElapsedTime();
+    private int currentAngle = 0;
 
     @Override
     public void init() {
@@ -49,6 +50,7 @@ public class TeleOp extends OpMode {
         RobotContainer.HardwareDevices.limelight.start();
         robotContainer.start(this, false);
         Status.isDrivingActive = true;
+        robotContainer.spindexer.setPosDegrees(0);
     }
 
     @Override
@@ -71,6 +73,12 @@ public class TeleOp extends OpMode {
         robotContainer.controlHubCurrent = robotContainer.getCurrent(Constants.Robot.CONTROL_HUB_INDEX);
         robotContainer.expansionHubCurrent = robotContainer.getCurrent(Constants.Robot.EXPANSION_HUB_INDEX);
         //gamepad 1
+
+        if (robotContainer.gamepadEx1.dpadUp.wasJustPressed()) {
+            Status.slotColor[robotContainer.spindexer.getCurrentIntakeSlot()] = Constants.Game.ARTIFACT_COLOR.PURPLE;
+            robotContainer.spindexer.goToNextIntakeSlot();
+        }
+        robotContainer.telemetry.addData("ca", currentAngle);
 
         robotContainer.drivetrain.controlUpdate();
 
