@@ -22,12 +22,14 @@ public class Spindexer {
     private final BetterAnalogInput spindexAnalog;
     private final BetterColorSensor colorSensor;
     public double targetAngle = 0;
+    public double lastPosition = 0;
 
     public Spindexer (RobotContainer robotContainer, BetterServo spindexerServo, BetterAnalogInput spindexAnalog, BetterColorSensor colorSensor) {
         this.robotContainer = robotContainer;
         this.spindexerServo = spindexerServo;
         this.spindexAnalog = spindexAnalog;
         this.colorSensor = colorSensor;
+        this.lastPosition = getRawAngle();
     }
 
     public double getAngle() {
@@ -54,11 +56,15 @@ public class Spindexer {
     }
 
     public void slotUpdate() {
-        double blue = -1;
-        double green = -1;
-        blue = RobotContainer.HardwareDevices.colorSensor.updateBlue();
-        green = RobotContainer.HardwareDevices.colorSensor.updateGreen();
-        Status.slotColor[getCurrentIntakeSlot()] = getArtifactColor(blue, green);
+        // double blue = -1;
+        // double green = -1;
+        // blue = RobotContainer.HardwareDevices.colorSensor.updateBlue();
+        // green = RobotContainer.HardwareDevices.colorSensor.updateGreen();
+        // Status.slotColor[getCurrentIntakeSlot()] = getArtifactColor(blue, green);
+
+        if (!jam()) {
+            Status.slotColor[getCurrentIntakeSlot()] = Constants.Game.ARTIFACT_COLOR.PURPLE;
+        }
     }
 
     // Assume the Spindexer is always at target
@@ -184,6 +190,18 @@ public class Spindexer {
         }
     }
 
+    public boolean jam() {
+        double position = getRawAngle();
+        if (Math.abs(position - lastPosition) > Constants.Spindexer.JAM_ANGLE && getError() > 10) {
+            this.lastPosition = position;
+            return true;
+        } else {
+            this.lastPosition = position;
+            return false;
+        }
+
+    }
+
     public double getError() {
         return getAngle() - targetAngle;
     }
@@ -194,10 +212,14 @@ public class Spindexer {
     }
 
     public void setPosDegrees(double angle) { // Between 0 and 360
-        angle = angle + Constants.Spindexer.ANGLE_OFFSET;
-        targetAngle = angle;
-        double target = angle / 360;
-        robotContainer.telemetry.addData("Spin Power target", target);
-        spindexerServo.updateSetPosition(target);
+        if (!jam()) {
+            angle = angle + Constants.Spindexer.ANGLE_OFFSET;
+            targetAngle = angle;
+            double target = angle / 360;
+            robotContainer.telemetry.addData("Spin Power target", target);
+            spindexerServo.updateSetPosition(target);
+        } else {
+            spindexerServo.updateSetPosition(Constants.Spindexer.INTAKE_SLOT_ANGLES[getCurrentIntakeSlot()]);
+        }
     }
 }

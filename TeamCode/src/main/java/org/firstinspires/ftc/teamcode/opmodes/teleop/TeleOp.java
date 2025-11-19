@@ -46,7 +46,7 @@ public class TeleOp extends OpMode {
         RobotContainer.HardwareDevices.limelight.start();
         robotContainer.start(this, false);
         Status.isDrivingActive = true;
-        robotContainer.spindexer.setPosDegrees(0);
+        robotContainer.spindexer.setPosDegrees(Constants.Spindexer.INTAKE_SLOT_ANGLES[0]);
     }
 
     @Override

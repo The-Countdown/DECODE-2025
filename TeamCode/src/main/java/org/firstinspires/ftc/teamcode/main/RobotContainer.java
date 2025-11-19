@@ -545,6 +545,8 @@ public class RobotContainer {
         telemetry.addData("Spindexer Angle", spindexer.getAngle());
         telemetry.addData("Spindexer raw angle", spindexer.getRawAngle());
         telemetry.addData("Spindexer target", spindexer.targetAngle);
+        telemetry.addData("Spindexer jam", spindexer.jam());
+        telemetry.addData("Spindexer lastPosition", spindexer.lastPosition);
         telemetry.addData("Spindexer Slot Colors", Arrays.toString(Status.slotColor));
         telemetry.addLine();
         telemetry.addData("lower servo pos", HardwareDevices.transferServoLeft.getPosition());
