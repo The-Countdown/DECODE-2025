@@ -29,6 +29,8 @@ import java.lang.Thread;
 // x <- -> -x
 //      |
 //     -y
+//
+//     There are a few more I need to write the rest.
 
 public class PathPlanner {
     private Telemetry telemetry;
@@ -58,51 +60,6 @@ public class PathPlanner {
         poses.add(new SleepPose(time));
     }
 
-
-    /**
-    * Calculates angle of the target relative to the current position of the robotContainer and drives to target
-    * @param index which pose to drive to from first to last
-    */
-//    public void driveToPose(int index) {
-//        atTarget = false;
-//        while (!atTarget) {
-//            Status.targetPose = poses.get(index);
-//            robotContainer.telemetry.addData("Current Position X: ", Status.currentPose.getX(DistanceUnit.CM));
-//            robotContainer.telemetry.addData("Current Position Y: ", Status.currentPose.getY(DistanceUnit.CM));
-//
-//            robotContainer.telemetry.addData("diff X", Status.targetPose.getX(DistanceUnit.CM) - Status.currentPose.getX(DistanceUnit.CM));
-//            robotContainer.telemetry.addData("diff Y", Status.targetPose.getY(DistanceUnit.CM) - Status.currentPose.getY(DistanceUnit.CM));
-//            robotContainer.telemetry.update();
-//
-//            // Know when the robotContainer is there
-//            if (Status.currentPose.getX(DistanceUnit.CM) + tolerance >= Status.targetPose.getX(DistanceUnit.CM) && Status.currentPose.getX(DistanceUnit.CM) - tolerance <= Status.targetPose.getX(DistanceUnit.CM)) { // Check X
-//                if (Status.currentPose.getY(DistanceUnit.CM) + tolerance >= Status.targetPose.getY(DistanceUnit.CM) && Status.currentPose.getY(DistanceUnit.CM) - tolerance <= Status.targetPose.getY(DistanceUnit.CM)) { // Check Y
-//                    atTarget = true;
-//                }
-//            }
-//
-//            double deltaX = Status.targetPose.getX(DistanceUnit.CM) - Status.currentPose.getX(DistanceUnit.CM);
-//            double deltaY = Status.targetPose.getY(DistanceUnit.CM) - Status.currentPose.getY(DistanceUnit.CM);
-//
-////            double angleToTarget = -Math.toDegrees(Math.atan2(deltaY, deltaX)) + 90;
-//            double angleToTarget = -Math.toDegrees(Math.atan2(deltaY, deltaX));
-//            double[] angles = {angleToTarget, angleToTarget, angleToTarget, angleToTarget};
-//
-//            double[] powers;
-//            // Slow down if close to the target.
-//            if (deltaX > 5 || deltaY > 5) {
-//                powers = new double[] {0.1, 0.1, 0.1, 0.1};
-//            } else {
-//                powers = new double[] {0.1, 0.1, 0.1, 0.1};
-//            }
-//
-//            robotContainer.drivetrain.setTargets(angles, powers);
-////            robotContainer.pathPlanner.waitForTarget();
-//        }
-//        double[] emptyAngles = {0, 0, 0, 0};
-//        robotContainer.drivetrain.setTargets(emptyAngles, Constants.Swerve.NO_POWER);
-//    }
-
     public boolean driveUsingPID(int index) {
         if (poses.get(index) instanceof PositionPose) {
             Status.targetPose = poses.get(index).getPose();
@@ -111,22 +68,6 @@ public class PathPlanner {
         }
         return PoseMath.isAtPos();
     }
-
-//    public boolean driveUsingPIDWithoutThread(int index) {
-//        Status.targetPose = poses.get(index);
-//        robotContainer.drivetrain.powerInput(
-//                robotContainer.latitudePID.calculate(),
-//                robotContainer.longitudePID.calculate(),
-//                robotContainer.headingPID.calculate()
-//        );
-//        return PoseMath.isAtPos();
-//    }
-
-//    public void setTarget(int index) {
-//        Status.targetPose = poses.get(index);
-//        Status.currentPath = index;
-//        Status.pathCompleted[index] = false;
-//    }
 
     public void updatePathStatus() {
         if (Status.currentPath == -1) {

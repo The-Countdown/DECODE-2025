@@ -76,7 +76,7 @@ public class IndicatorLighting {
         }
 
         public void lightsUpdate() {
-            // see if i can lower the timer (0.4)
+            // See if I can lower the timer (0.4)
             if (robotContainer.beamBreakToggleButton.getLetGoDuration() < 0.4 && Status.slotColor[robotContainer.spindexer.getCurrentIntakeSlot()] == Constants.Game.ARTIFACT_COLOR.PURPLE) {
                 robotContainer.allIndicatorLights.flashing(Constants.LED.COLOR.VIOLET, Constants.LED.COLOR.OFF, 2, 1);
             } else if (robotContainer.beamBreakToggleButton.getLetGoDuration() < 0.4 && Status.slotColor[robotContainer.spindexer.getCurrentIntakeSlot()] == Constants.Game.ARTIFACT_COLOR.GREEN) {

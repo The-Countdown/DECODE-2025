@@ -150,7 +150,7 @@ public class RobotContainer {
         public static BetterServo transferServoRight;
         public static BetterDcMotor spindexerEncoder;
 
-        public static BetterCRServo spindexServo;
+        public static BetterServo spindexServo;
         public static BetterAnalogInput spindexAnalog;
 
         // Intake
@@ -212,7 +212,7 @@ public class RobotContainer {
         HardwareDevices.transferServoLeft = new BetterServo(getHardwareDevice(ServoImplEx.class, "transferServoLeft"), Constants.Robot.SERVO_UPDATE_TIME);
         HardwareDevices.transferServoRight = new BetterServo(getHardwareDevice(ServoImplEx.class, "transferServoRight"), Constants.Robot.SERVO_UPDATE_TIME);
         HardwareDevices.spindexerEncoder = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "spindexEncoder"), Constants.Robot.MOTOR_UPDATE_TIME);
-        HardwareDevices.spindexServo = new BetterCRServo(getHardwareDevice(CRServoImplEx.class, "spindexServo"), Constants.Robot.SERVO_UPDATE_TIME);
+        HardwareDevices.spindexServo = new BetterServo(getHardwareDevice(ServoImplEx.class, "spindexServo"), Constants.Robot.SERVO_UPDATE_TIME);
         HardwareDevices.spindexAnalog = new BetterAnalogInput(getHardwareDevice(AnalogInput.class, "spindexAnalog"), Constants.Robot.ANALOG_UPDATE_TIME);
         HardwareDevices.intakeMotor = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "intakeMotor"), Constants.Robot.MOTOR_UPDATE_TIME);
         HardwareDevices.flyWheelMotorMaster = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "flyWheelMotorMaster"), Constants.Robot.MOTOR_UPDATE_TIME);
@@ -281,9 +281,10 @@ public class RobotContainer {
                                 new Pose2D(DistanceUnit.INCH, -64, 64, AngleUnit.DEGREES, 45) :
                                 new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
         Status.startingPose = Status.alliance == Constants.Game.ALLIANCE.RED ? new Pose2D(DistanceUnit.CM, Constants.Robot.startingX, Constants.Robot.startingY, AngleUnit.DEGREES, Constants.Robot.startingHeading) :
-                Status.alliance == Constants.Game.ALLIANCE.BLUE ? new Pose2D(DistanceUnit.CM, Constants.Robot.startingX, -Constants.Robot.startingY, AngleUnit.DEGREES, -Constants.Robot.startingHeading) :
+                Status.alliance == Constants.Game.ALLIANCE.BLUE ? new Pose2D(DistanceUnit.CM, Constants.Robot.startingX, -Constants.Robot.startingY, AngleUnit.DEGREES, Constants.Robot.startingHeading) :
                         new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
 
+        // Start the required treads
         localizationUpdater = new LocalizationUpdater(this);
         localizationUpdater.start();
         drivetrainUpdater = new DrivetrainUpdater(this);
@@ -542,11 +543,9 @@ public class RobotContainer {
         telemetry.addData("Intake Enabled", Status.intakeToggle);
         telemetry.addLine();
         telemetry.addData("Spindexer Angle", spindexer.getAngle());
+        telemetry.addData("Spindexer raw angle", spindexer.getRawAngle());
+        telemetry.addData("Spindexer target", spindexer.targetAngle);
         telemetry.addData("Spindexer Slot Colors", Arrays.toString(Status.slotColor));
-        telemetry.addData("Spindexer Target angle", spindexer.getTargetAngle());
-        telemetry.addData("Spindexer error angle", spindexer.pdf.getError());
-        telemetry.addData("Spindexer Servo Power", HardwareDevices.spindexServo.getPower());
-        telemetry.addData("Spindexer calc power", spindexer.pdf.calculate());
         telemetry.addLine();
         telemetry.addData("lower servo pos", HardwareDevices.transferServoLeft.getPosition());
         telemetry.addData("flywheel speed", HardwareDevices.flyWheelMotorMaster.getVelocity());

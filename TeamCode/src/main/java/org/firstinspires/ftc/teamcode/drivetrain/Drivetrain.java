@@ -71,7 +71,7 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
             return;
         }
 
-        Status.flywheelToggle = false;
+//        Status.flywheelToggle = false;
 
         // Determine the rotational direction based on the sign of rX.
         int rotationalDirection = rX >= 0 ? 1 : -1;

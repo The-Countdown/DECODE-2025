@@ -105,25 +105,6 @@ public class Auto3 extends OpMode {
         robotContainer.beamBreakToggleButton.update(RobotContainer.HardwareDevices.beamBreak.isPressed());
         Status.turretToggleButton.update(Status.turretToggle);
 
-
-        double spindexerError = Math.abs(robotContainer.spindexer.pdf.getError());
-        // If the error changes by a lot in a short period of time reset the timer
-
-        if (Math.abs(lastError - spindexerError) > 50) {
-            spindexAccel.reset();
-        }
-
-        if (spindexerError > 2) {
-            if (spindexAccel.seconds() <= 1) {
-                robotContainer.spindexer.setPower(Math.min(robotContainer.spindexer.pdf.calculate() * spindexAccel.seconds(), 1));
-            } else {
-                robotContainer.spindexer.setPower(robotContainer.spindexer.pdf.calculate());
-            }
-        } else {
-            robotContainer.spindexer.setPower(0);
-        }
-        lastError = spindexerError;
-
         if (robotContainer.beamBreakToggleButton.wasJustReleased()) {
             robotContainer.spindexer.goToNextIntakeSlot();
         }

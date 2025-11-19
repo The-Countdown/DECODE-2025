@@ -28,7 +28,7 @@ public class Constants {
         }
 
         public static Pose2D ORIGIN = new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
-        // Starting positions of the sets of 3 balls (I don't know what to call them)
+        // Starting positions of the sets of 3 artifacts
         public static Pose2D POSPPG = new Pose2D(DistanceUnit.CM, -91.44, -109.22, AngleUnit.DEGREES, 0);
         public static Pose2D POSPGP = new Pose2D(DistanceUnit.CM, -30.48, -109.22, AngleUnit.DEGREES, 0);
         public static Pose2D POSGPP = new Pose2D(DistanceUnit.CM, 30.48, -109.22, AngleUnit.DEGREES, 0);
@@ -72,8 +72,8 @@ public class Constants {
                 EXPANSION_HUB_INDEX = 1;
 
         public static final double
-                WHEELBASE_WIDTH_MM = 320,
-                WHEELBASE_LENGTH_MM = 285.68668;
+                WHEELBASE_WIDTH_MM = 432,
+                WHEELBASE_LENGTH_MM = 367.067;
 
         public static final double
                 WHEELBASE_ICR_X = WHEELBASE_LENGTH_MM / 2,
@@ -289,7 +289,7 @@ public class Constants {
         public static double[] FLYWHEEL_SPEED_TABLE = {0.52, 0.5325, 0.56, 0.67, 0.72};
         public static double[] FLYWHEEL_SPEED_TABLE_DISTANCES = {75, 80, 90, 130, 140};
         public static double TRACK_GOAL_P = -0.2;
-        public static double[] HOOD_PRESETS = {0.54, 0.13};
+        public static double[] HOOD_PRESETS = {0.51, 0.13};
         public static double TURRET_LIMIT_MIN_ANGLE = 30;
         public static double TURRET_LIMIT_MAX_ANGLE = 265;
         public static double TURRET_LIMIT_MIN_SERVO = TURRET_LIMIT_MIN_ANGLE / 355;
@@ -300,21 +300,21 @@ public class Constants {
 
     @Config
     public static class Transfer {
-        public static int FLIP_TIME = 200;
+        public static int FLIP_TIME = 300;
         public static double DOWN = 0.295;
-        public static double UP = 0.47;
+        public static double UP = 0.49;
     }
 
     @Config
     public static class Spindexer {
         public static int NUM_SLOTS = 3;
-        public static double ANGLE_OFFSET = 120;
-        public static double[] TRANSFER_SLOT_ANGLES = {179, 60, -60};
-        public static double [] INTAKE_SLOT_ANGLES = {0, -120, 120};
+        public static double ANGLE_OFFSET =  -40;
+        public static double[] TRANSFER_SLOT_ANGLES = {0, 120, 240};
+        public static double[] INTAKE_SLOT_ANGLES = {60, 180, 300};
         public static double KP = 0.01;
         public static double KD = 0.008;
         public static double KF = 0.01;
-        public static int COLOR_SENSE_TIME = 0;
+        public static int COLOR_SENSE_TIME = 250;
     }
 
     @Config

@@ -14,6 +14,7 @@ public class DelayedActionManager {
     private final List<Action> delayedActions = new ArrayList<>();
     List<Double> timeAtPause = new ArrayList<>();
     volatile boolean enabled = true;
+    public static int currentPose = 0;
 
     public DelayedActionManager(RobotContainer robotContainer) {
         this.robotContainer = robotContainer;
@@ -28,15 +29,36 @@ public class DelayedActionManager {
     public void  schedule(Runnable action, BooleanSupplier condition) {
         delayedActions.add(new DelayedAction(robotContainer, action, condition));
     }
-    public void schedule(Runnable action, BooleanSupplier condition, int timeoutMs) {
-        delayedActions.add(new DelayedAction(robotContainer, action, condition, timeoutMs));
+    public void schedule(Runnable action, BooleanSupplier condition, int delayMs) {
+        delayedActions.add(new DelayedAction(robotContainer, action, condition, delayMs));
+    }
+
+    public void schedulePose(Runnable action) {
+        delayedActions.add(new PoseAction(robotContainer, action, currentPose));
     }
 
     public void schedulePose(Runnable action, int poseDelay) {
         delayedActions.add(new PoseAction(robotContainer, action, poseDelay));
     }
+
+    public void schedulePose(Runnable action, BooleanSupplier condition) {
+        delayedActions.add(new PoseAction(robotContainer, action, condition, currentPose));
+    }
+    
     public void schedulePose(Runnable action, BooleanSupplier condition, int poseDelay) {
         delayedActions.add(new PoseAction(robotContainer, action, condition, poseDelay));
+    }
+
+    public void incrementPoseOffset() {
+        currentPose += 1;
+    }
+
+    public void incrementPoseOffset(int amount) {
+        currentPose += amount;
+    }
+
+    public void setPoseOffset(int index) {
+        currentPose = index;
     }
 
     public synchronized void update() {
@@ -141,11 +163,11 @@ public class DelayedActionManager {
             this.delayMs = -1;
         }
 
-        public DelayedAction(RobotContainer robotContainer, Runnable action, BooleanSupplier condition, int timeoutMs) {
+        public DelayedAction(RobotContainer robotContainer, Runnable action, BooleanSupplier condition, int delayMs) {
             this.robotContainer = robotContainer;
             this.action = action;
             this.condition = condition;
-            this.delayMs = timeoutMs;
+            this.delayMs = delayMs;
         }
 
         @Override

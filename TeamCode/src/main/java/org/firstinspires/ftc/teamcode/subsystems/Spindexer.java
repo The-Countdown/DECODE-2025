@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.hardware.BetterServo;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
@@ -16,47 +17,26 @@ import org.firstinspires.ftc.teamcode.hardware.BetterColorSensor;
 
 public class Spindexer {
     private final RobotContainer robotContainer;
-    private final BetterCRServo spindexerServo;
+    private final BetterServo spindexerServo;
     private final BetterAnalogInput spindexAnalog;
     private final BetterColorSensor colorSensor;
-    private static double targetAngle = 0;
-    private double error;
-    private double lastError;
-    private boolean lastSign;
-    private double p;
-    private double i;
-    private double d;
-    private double ff;
-    private ElapsedTime iTimer;
+    public double targetAngle = 0;
 
-    public Spindexer (RobotContainer robotContainer, BetterCRServo spindexerServo, BetterAnalogInput spindexAnalog, BetterColorSensor colorSensor) {
+    public Spindexer (RobotContainer robotContainer, BetterServo spindexerServo, BetterAnalogInput spindexAnalog, BetterColorSensor colorSensor) {
         this.robotContainer = robotContainer;
         this.spindexerServo = spindexerServo;
         this.spindexAnalog = spindexAnalog;
         this.colorSensor = colorSensor;
-        this.iTimer = new ElapsedTime();
-    }
-
-    public void setPower(double power) {
-        spindexerServo.updateSetPower(power);
-    }
-
-    public void setTargetAngle(double angle) {
-        targetAngle = HelperFunctions.normalizeAngle(angle);
-    }
-
-    public double getTargetAngle() {
-        return targetAngle;
     }
 
     public double getAngle() {
         double angle = (spindexAnalog.updateGetVoltage() / Constants.System.ANALOG_MAX_VOLTAGE) * 360;
-
         angle += Constants.Spindexer.ANGLE_OFFSET;
-
-        angle = HelperFunctions.normalizeAngle(angle);
-
         return angle;
+    }
+
+    public double getRawAngle() {
+        return (spindexAnalog.updateGetVoltage() / Constants.System.ANALOG_MAX_VOLTAGE) * 360;
     }
 
     public Constants.Game.ARTIFACT_COLOR getArtifactColor(double blue, double green) {
@@ -72,102 +52,81 @@ public class Spindexer {
         return Constants.Game.ARTIFACT_COLOR.UNKNOWN;
     }
 
-    public void slotsUpdate() {
+    public void slotUpdate() {
         double blue = -1;
         double green = -1;
-        if (robotContainer.spindexer.getAngle() > Constants.Spindexer.INTAKE_SLOT_ANGLES[0] - 10 && robotContainer.spindexer.getAngle() < Constants.Spindexer.INTAKE_SLOT_ANGLES[0] + 10 && (Status.slotColor[0] == Constants.Game.ARTIFACT_COLOR.UNKNOWN || Status.slotColor[0] == Constants.Game.ARTIFACT_COLOR.NONE)) {
-            blue = RobotContainer.HardwareDevices.colorSensor.updateBlue();
-            green = RobotContainer.HardwareDevices.colorSensor.updateGreen();
-            Status.slotColor[0] = getArtifactColor(blue, green);
-        }
-        if (robotContainer.spindexer.getAngle() > Constants.Spindexer.INTAKE_SLOT_ANGLES[1] - 10 && robotContainer.spindexer.getAngle() < Constants.Spindexer.INTAKE_SLOT_ANGLES[1] + 10 && (Status.slotColor[1] == Constants.Game.ARTIFACT_COLOR.UNKNOWN || Status.slotColor[1] == Constants.Game.ARTIFACT_COLOR.NONE)) {
-            if (blue == -1) {
-                blue = RobotContainer.HardwareDevices.colorSensor.updateBlue();
-                green = RobotContainer.HardwareDevices.colorSensor.updateGreen();
-            }
-            Status.slotColor[1] = getArtifactColor(blue, green);
-        }
-        if (robotContainer.spindexer.getAngle() > Constants.Spindexer.INTAKE_SLOT_ANGLES[2] - 10 && robotContainer.spindexer.getAngle() < Constants.Spindexer.INTAKE_SLOT_ANGLES[2] + 10 && (Status.slotColor[2] == Constants.Game.ARTIFACT_COLOR.UNKNOWN || Status.slotColor[2] == Constants.Game.ARTIFACT_COLOR.NONE)) {
-            if (green == -1) {
-                blue = RobotContainer.HardwareDevices.colorSensor.updateBlue();
-                green = RobotContainer.HardwareDevices.colorSensor.updateGreen();
-            }
-            Status.slotColor[2] = getArtifactColor(blue, green);
-        }
+        blue = RobotContainer.HardwareDevices.colorSensor.updateBlue();
+        green = RobotContainer.HardwareDevices.colorSensor.updateGreen();
+        Status.slotColor[getCurrentIntakeSlot()] = getArtifactColor(blue, green);
     }
 
+    // Assume the Spindexer is always at target
     public int getCurrentIntakeSlot() {
-        double currentAngle = getAngle();
-
-        int closestIndex = 0;
-        double smallestDistance = Math.abs(HelperFunctions.normalizeAngle(currentAngle - Constants.Spindexer.INTAKE_SLOT_ANGLES[0]));
-
-        for (int i = 1; i < Constants.Spindexer.INTAKE_SLOT_ANGLES.length; i++) {
-            double distance = Math.abs(HelperFunctions.normalizeAngle(currentAngle - Constants.Spindexer.INTAKE_SLOT_ANGLES[i]));
-            if (distance < smallestDistance) {
-                smallestDistance = distance;
-                closestIndex = i;
-            }
-        }
-
-        return closestIndex;
+        int current = (int) ((targetAngle + 60) / 120);
+        robotContainer.telemetry.addData("current intake", current);
+        return current;
     }
 
+    // Assume the Spindexer is always at target
     public int getCurrentTransferSlot() {
-        double currentAngle = getAngle();
-
-        int closestIndex = 0;
-        double smallestDistance = Math.abs(HelperFunctions.normalizeAngle(currentAngle - Constants.Spindexer.TRANSFER_SLOT_ANGLES[0]));
-
-        for (int i = 1; i < Constants.Spindexer.TRANSFER_SLOT_ANGLES.length; i++) {
-            double distance = Math.abs(HelperFunctions.normalizeAngle(currentAngle - Constants.Spindexer.TRANSFER_SLOT_ANGLES[i]));
-            if (distance < smallestDistance) {
-                smallestDistance = distance;
-                closestIndex = i;
-            }
-        }
-
-        return closestIndex;
+        return (int) (targetAngle / 120);
     }
 
     public void goToNextIntakeSlot() {
-        robotContainer.spindexer.slotsUpdate();
-        boolean intakeSlotFound = false;
-
-        for (int i = 1; i <= Constants.Spindexer.INTAKE_SLOT_ANGLES.length; i++) {
-            int nextSlot = (robotContainer.spindexer.getCurrentIntakeSlot() + i) % Constants.Spindexer.INTAKE_SLOT_ANGLES.length;
-
-            if (Status.slotColor[nextSlot] == Constants.Game.ARTIFACT_COLOR.UNKNOWN || Status.slotColor[nextSlot] == Constants.Game.ARTIFACT_COLOR.NONE) {
-                robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.setTargetAngle(Constants.Spindexer.INTAKE_SLOT_ANGLES[nextSlot]), Constants.Spindexer.COLOR_SENSE_TIME);
-                intakeSlotFound = true;
+        int firstSlotNoColor = -1;
+        int currentSlot = getCurrentIntakeSlot();
+        for (int i = 0; i < 3; i++) {
+            if (Status.slotColor[currentSlot] != Constants.Game.ARTIFACT_COLOR.PURPLE || Status.slotColor[currentSlot] != Constants.Game.ARTIFACT_COLOR.GREEN) {
+                firstSlotNoColor = (currentSlot % 3);
                 break;
             }
+            currentSlot++;
         }
-
-        if (!intakeSlotFound) {
-            Status.turretToggle = true;
-            goToNextTransferSlot();
-            Status.intakeToggle = false;
+        if (firstSlotNoColor != -1) {
+            setPosDegrees(Constants.Spindexer.INTAKE_SLOT_ANGLES[firstSlotNoColor]);
         }
+        robotContainer.telemetry.addData("Next Spindexer ange", Constants.Spindexer.INTAKE_SLOT_ANGLES[firstSlotNoColor]);
     }
 
     public void goToNextTransferSlot() {
-        boolean turretSlotFound = false;
-
-        for (int i = 1; i <= Constants.Spindexer.TRANSFER_SLOT_ANGLES.length; i++) {
-            int nextSlot = (robotContainer.spindexer.getCurrentTransferSlot() + i) % Constants.Spindexer.TRANSFER_SLOT_ANGLES.length;
-
-            if (Status.slotColor[nextSlot] == Constants.Game.ARTIFACT_COLOR.PURPLE || Status.slotColor[nextSlot] == Constants.Game.ARTIFACT_COLOR.GREEN) {
-                robotContainer.spindexer.setTargetAngle(Constants.Spindexer.TRANSFER_SLOT_ANGLES[nextSlot]);
-                turretSlotFound = true;
-                break;
+        int firstSlotNoColor = -1;
+        int currentSlot = getCurrentTransferSlot();
+        for (int i = 0; i < 3; i++) {
+            if (Status.slotColor[currentSlot] == Constants.Game.ARTIFACT_COLOR.PURPLE || Status.slotColor[currentSlot] == Constants.Game.ARTIFACT_COLOR.GREEN) {
+                firstSlotNoColor = (currentSlot % 3);
             }
+            currentSlot++;
         }
+        if (firstSlotNoColor != -1) {
+            setPosDegrees(Constants.Spindexer.TRANSFER_SLOT_ANGLES[firstSlotNoColor]);
+        }
+    }
 
-        if (!turretSlotFound) {
-            Status.turretToggle = false;
-            Status.intakeToggle = true;
-            goToNextIntakeSlot();
+    public void goToNextPurpleSlot() {
+        int firstSlotNoPurple = -1;
+        int currentSlot = getCurrentTransferSlot();
+        for (int i = 0; i < 3; i++) {
+            if (Status.slotColor[currentSlot] == Constants.Game.ARTIFACT_COLOR.PURPLE) {
+                firstSlotNoPurple = (currentSlot % 3);
+            }
+            currentSlot++;
+        }
+        if (firstSlotNoPurple != -1) {
+            setPosDegrees(Constants.Spindexer.TRANSFER_SLOT_ANGLES[firstSlotNoPurple] + 60);
+        }
+    }
+
+    public void goToNextGreenSlot() {
+        int firstSlotNoGreen = -1;
+        int currentSlot = getCurrentTransferSlot();
+        for (int i = 0; i < 3; i++) {
+            if (Status.slotColor[currentSlot] == Constants.Game.ARTIFACT_COLOR.GREEN) {
+                firstSlotNoGreen = (currentSlot % 3);
+            }
+            currentSlot++;
+        }
+        if (firstSlotNoGreen != -1) {
+            setPosDegrees(Constants.Spindexer.TRANSFER_SLOT_ANGLES[firstSlotNoGreen] + 60);
         }
     }
 
@@ -180,9 +139,9 @@ public class Spindexer {
         if (Status.intakeToggle) {
             return;
         }
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.delayedActionManager.schedule(()-> robotContainer.transfer.flapUp(), () -> Math.abs(robotContainer.spindexer.pdf.getError()) < 7), 1000);
-        robotContainer.delayedActionManager.schedule(()-> robotContainer.delayedActionManager.schedule(()-> robotContainer.transfer.flapDown(), Constants.Transfer.FLIP_TIME + 1000), () -> Math.abs(robotContainer.spindexer.pdf.getError()) < 7);
-        robotContainer.delayedActionManager.schedule(()-> robotContainer.delayedActionManager.schedule(()-> Status.slotColor[robotContainer.spindexer.getCurrentTransferSlot()] = Constants.Game.ARTIFACT_COLOR.NONE, Constants.Transfer.FLIP_TIME + 1000), () -> Math.abs(robotContainer.spindexer.pdf.getError()) < 7);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.delayedActionManager.schedule(()-> robotContainer.transfer.flapUp(), () -> Math.abs(robotContainer.spindexer.getError()) < 5), 1000);
+        robotContainer.delayedActionManager.schedule(()-> robotContainer.delayedActionManager.schedule(()-> robotContainer.transfer.flapDown(), Constants.Transfer.FLIP_TIME + 1000), () -> Math.abs(robotContainer.spindexer.getError()) < 5);
+        robotContainer.delayedActionManager.schedule(()-> robotContainer.delayedActionManager.schedule(()-> Status.slotColor[robotContainer.spindexer.getCurrentTransferSlot()] = Constants.Game.ARTIFACT_COLOR.NONE, Constants.Transfer.FLIP_TIME + 1000), () -> Math.abs(robotContainer.spindexer.getError()) < 5);
         if (Status.ballsToShoot > 0) {
             robotContainer.delayedActionManager.schedule(() -> shootNextBall(), Constants.Transfer.FLIP_TIME + 2000);
         }
@@ -193,64 +152,18 @@ public class Spindexer {
         shootNextBall();
     }
 
-    public void goToNextGreenSlot() {
-        boolean turretFound = false;
-
-        for (int i = 1; i <= Constants.Spindexer.TRANSFER_SLOT_ANGLES.length; i++) {
-            int nextSlot = (robotContainer.spindexer.getCurrentTransferSlot() + i) % Constants.Spindexer.TRANSFER_SLOT_ANGLES.length;
-
-            if (Status.slotColor[nextSlot] == Constants.Game.ARTIFACT_COLOR.GREEN) {
-                robotContainer.spindexer.setTargetAngle(Constants.Spindexer.TRANSFER_SLOT_ANGLES[nextSlot]);
-                turretFound = true;
-                break;
-            }
-        }
-
-        if (!turretFound) {
-            robotContainer.gamepadEx2.rumble();
-        }
+    public double getError() {
+        return getAngle() - targetAngle;
     }
 
-    public void goToNextPurpleSlot() {
-        boolean turretFound = false;
-
-        for (int i = 1; i <= Constants.Spindexer.TRANSFER_SLOT_ANGLES.length; i++) {
-            int nextSlot = (robotContainer.spindexer.getCurrentTransferSlot() + i) % Constants.Spindexer.TRANSFER_SLOT_ANGLES.length;
-
-            if (Status.slotColor[nextSlot] == Constants.Game.ARTIFACT_COLOR.PURPLE) {
-                robotContainer.spindexer.setTargetAngle(Constants.Spindexer.TRANSFER_SLOT_ANGLES[nextSlot]);
-                turretFound = true;
-                break;
-            }
-        }
-
-        if (!turretFound) {
-            robotContainer.gamepadEx2.rumble();
-        }
+    @Deprecated
+    public void setPos(double pos) { // Between 0 and 1
+        spindexerServo.updateSetPosition(pos);
     }
 
-    public class PDF {
-
-        public double getError() {
-            return error = HelperFunctions.normalizeAngle(targetAngle - robotContainer.spindexer.getAngle());
-        }
-
-        public double calculate() {
-            error = getError();
-
-            p = Constants.Spindexer.KP * error;
-            d = Math.signum(error) * (Constants.Spindexer.KD * (lastError - error));
-
-
-            if (Math.signum(error) > 0) { // Current sign pos
-                lastSign = true;
-            } else if (Math.signum(error) < 0) { // Current sign neg
-                lastSign = false;
-            }
-
-            lastError = error;
-            return p + d + (Constants.Spindexer.KF * Math.signum(error));
-        }
+    public void setPosDegrees(double angle) { // Between 0 and 360
+        angle = angle + Constants.Spindexer.ANGLE_OFFSET;
+        targetAngle = angle;
+        spindexerServo.updateSetPosition(angle / 360);
     }
-    public PDF pdf = new PDF();
 }
