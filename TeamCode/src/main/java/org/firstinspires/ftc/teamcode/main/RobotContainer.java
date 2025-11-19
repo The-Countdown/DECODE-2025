@@ -499,11 +499,15 @@ public class RobotContainer {
         telemetry.addData("Expansion Hub Current", expansionHubCurrent + " A");
         telemetry.addLine();
 
+        telemetry.addData("target max vel", turret.flywheel.targetMaxVelocity);
+        telemetry.addData("target vel", turret.flywheel.targetVelocity);
+        telemetry.addData("current vel", turret.flywheel.getFlywheelVelocity());
+        telemetry.addData("atVelocity", turret.flywheel.atTargetVelocity());
 
         if (limelightLogic.limelight.getLatestResult().isValid()) {
-            telemetry.addData("LL SEEE", "");
+            telemetry.addData("LL SEEE", "yay");
         } else {
-            telemetry.addData("LL IS BLINDDD", "");
+            telemetry.addData("LL IS BLINDDD", "no yay");
         }
         telemetry.addData("robot pos on field CM", limelightLogic.logicBotPoseCM());
         telemetry.addData("Pinpoint X", Status.currentPose.getX(DistanceUnit.CM) + " cm");
