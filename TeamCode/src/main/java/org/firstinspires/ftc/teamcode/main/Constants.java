@@ -28,7 +28,7 @@ public class Constants {
         }
 
         public static Pose2D ORIGIN = new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
-        // Starting positions of the sets of 3 balls (I don't know what to call them)
+        // Starting positions of the sets of 3 artifacts
         public static Pose2D POSPPG = new Pose2D(DistanceUnit.CM, -91.44, -109.22, AngleUnit.DEGREES, 0);
         public static Pose2D POSPGP = new Pose2D(DistanceUnit.CM, -30.48, -109.22, AngleUnit.DEGREES, 0);
         public static Pose2D POSGPP = new Pose2D(DistanceUnit.CM, 30.48, -109.22, AngleUnit.DEGREES, 0);
@@ -309,8 +309,8 @@ public class Constants {
     public static class Spindexer {
         public static int NUM_SLOTS = 3;
         public static double ANGLE_OFFSET = 60;
-        public static double[] TRANSFER_SLOT_ANGLES = {179, 60, -60};
-        public static double[] INTAKE_SLOT_ANGLES = {0, -120, 120};
+        public static double[] TRANSFER_SLOT_ANGLES = {0, 120, 240};
+        public static double[] INTAKE_SLOT_ANGLES = {60, 180, 300};
         public static double KP = 0.01;
         public static double KD = 0.008;
         public static double KF = 0.01;
