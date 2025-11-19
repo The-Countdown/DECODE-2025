@@ -308,9 +308,10 @@ public class Constants {
     @Config
     public static class Spindexer {
         public static int NUM_SLOTS = 3;
-        public static double ANGLE_OFFSET =  -60;
-        public static double[] TRANSFER_SLOT_ANGLES = {0, 120, 240};
-        public static double[] INTAKE_SLOT_ANGLES = {60, 180, 300};
+        public static double ANGLE_OFFSET = -60;
+        public static double[] TRANSFER_SLOT_ANGLES = {100, 230, 365};
+         public static double[] INTAKE_SLOT_ANGLES = {440, 175, 310};
+//        public static double[] INTAKE_SLOT_ANGLES = {60, 180, 300};
         public static double KP = 0.01;
         public static double KD = 0.008;
         public static double KF = 0.01;
@@ -320,6 +321,7 @@ public class Constants {
     @Config
     public static class Intake {
         public static double TOP_SPEED = 0.8;
+        public static double REVERSE_TOP_SPEED = 0.5;
         public static int RUNTIME_MS = 800;
         public static double DELAY_SECONDS = 0.2;
     }

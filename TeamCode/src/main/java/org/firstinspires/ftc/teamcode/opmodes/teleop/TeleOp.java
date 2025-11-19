@@ -90,7 +90,11 @@ public class TeleOp extends OpMode {
 
         // Intake - Circle
         Status.intakeToggle = robotContainer.gamepadEx2.circle.wasJustPressed() != Status.intakeToggle;
-        robotContainer.intake.setPower(Status.intakeToggle ? (robotContainer.gamepadEx1.rightTriggerRaw() - robotContainer.gamepadEx1.leftTriggerRaw()) * Constants.Intake.TOP_SPEED : 0);
+        if (Status.intakeToggle) {
+            robotContainer.intake.setPower(Status.intakeToggle ? (robotContainer.gamepadEx1.rightTriggerRaw() - robotContainer.gamepadEx1.leftTriggerRaw()) * Constants.Intake.TOP_SPEED : 0);
+        } else {
+            robotContainer.intake.setPower(Constants.Intake.REVERSE_TOP_SPEED);
+        }
 
         // Flywheel - Automated
         if (robotContainer.gamepadEx2.circle.wasJustReleased() && !Status.intakeToggle) {
@@ -142,6 +146,11 @@ public class TeleOp extends OpMode {
         if (robotContainer.gamepadEx2.cross.wasJustPressed()) {
             Status.slotColor[robotContainer.spindexer.getCurrentTransferSlot()] = Constants.Game.ARTIFACT_COLOR.NONE;
             robotContainer.spindexer.goToNextTransferSlot();
+            if (robotContainer.spindexer.isEmpty()) {
+                Status.intakeToggle = true;
+                Status.turretToggle = false;
+                robotContainer.spindexer.goToNextIntakeSlot();
+            }
         }
 
         if (robotContainer.gamepadEx2.leftBumper.wasJustPressed()) {
