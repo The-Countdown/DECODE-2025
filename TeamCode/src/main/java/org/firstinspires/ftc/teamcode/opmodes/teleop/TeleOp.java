@@ -77,7 +77,13 @@ public class TeleOp extends OpMode {
         }
 
         if (robotContainer.gamepadEx1.dpadLeft.wasJustPressed()) {
-            robotContainer.spindexer.setPosDegrees(0);
+            robotContainer.spindexer.slotUpdate();
+            robotContainer.spindexer.goToNextIntakeSlot();
+            if (robotContainer.spindexer.isFull()) { // If it is full after an intake
+                Status.intakeToggle = false;
+                Status.turretToggle = true;
+                robotContainer.spindexer.goToNextTransferSlot();
+            }
         }
 
         // Gamepad 2
@@ -157,8 +163,13 @@ public class TeleOp extends OpMode {
         robotContainer.beamBreakToggleButton.update(RobotContainer.HardwareDevices.beamBreak.isPressed());
 
         if (robotContainer.beamBreakToggleButton.wasJustReleased() && Status.intakeToggle) {
-            robotContainer.spindexer.goToNextIntakeSlot();
             robotContainer.spindexer.slotUpdate();
+            robotContainer.spindexer.goToNextIntakeSlot();
+            if (robotContainer.spindexer.isFull()) { // If it is full after an intake
+                Status.intakeToggle = false;
+                Status.turretToggle = true;
+                robotContainer.spindexer.goToNextTransferSlot();
+            }
         }
 
         // If all are none or unknown, turret toggle

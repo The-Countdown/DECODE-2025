@@ -308,7 +308,7 @@ public class Constants {
     @Config
     public static class Spindexer {
         public static int NUM_SLOTS = 3;
-        public static double ANGLE_OFFSET =  -40;
+        public static double ANGLE_OFFSET =  -60;
         public static double[] TRANSFER_SLOT_ANGLES = {0, 120, 240};
         public static double[] INTAKE_SLOT_ANGLES = {60, 180, 300};
         public static double KP = 0.01;

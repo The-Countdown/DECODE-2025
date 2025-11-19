@@ -4,6 +4,7 @@ import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.sun.tools.javac.code.Attribute;
 
 import org.firstinspires.ftc.teamcode.hardware.BetterServo;
 import org.firstinspires.ftc.teamcode.main.Constants;
@@ -76,7 +77,7 @@ public class Spindexer {
         int firstSlotNoColor = -1;
         int currentSlot = getCurrentIntakeSlot();
         for (int i = 0; i < 3; i++) {
-            if (Status.slotColor[currentSlot] != Constants.Game.ARTIFACT_COLOR.PURPLE || Status.slotColor[currentSlot] != Constants.Game.ARTIFACT_COLOR.GREEN) {
+            if (Status.slotColor[currentSlot % 3] != Constants.Game.ARTIFACT_COLOR.PURPLE && Status.slotColor[currentSlot % 3] != Constants.Game.ARTIFACT_COLOR.GREEN) {
                 firstSlotNoColor = (currentSlot % 3);
                 break;
             }
@@ -84,15 +85,15 @@ public class Spindexer {
         }
         if (firstSlotNoColor != -1) {
             setPosDegrees(Constants.Spindexer.INTAKE_SLOT_ANGLES[firstSlotNoColor]);
+            robotContainer.telemetry.addData("Next Spindexer ange", Constants.Spindexer.INTAKE_SLOT_ANGLES[firstSlotNoColor]);
         }
-        robotContainer.telemetry.addData("Next Spindexer ange", Constants.Spindexer.INTAKE_SLOT_ANGLES[firstSlotNoColor]);
     }
 
     public void goToNextTransferSlot() {
         int firstSlotNoColor = -1;
         int currentSlot = getCurrentTransferSlot();
         for (int i = 0; i < 3; i++) {
-            if (Status.slotColor[currentSlot] == Constants.Game.ARTIFACT_COLOR.PURPLE || Status.slotColor[currentSlot] == Constants.Game.ARTIFACT_COLOR.GREEN) {
+            if (Status.slotColor[currentSlot % 3] == Constants.Game.ARTIFACT_COLOR.PURPLE || Status.slotColor[currentSlot % 3] == Constants.Game.ARTIFACT_COLOR.GREEN) {
                 firstSlotNoColor = (currentSlot % 3);
             }
             currentSlot++;
@@ -150,6 +151,20 @@ public class Spindexer {
     public void shootAll() {
         Status.ballsToShoot = 3;
         shootNextBall();
+    }
+
+    public boolean isFull() {
+        int balls = 0;
+        for (int i = 0; i < Constants.Spindexer.INTAKE_SLOT_ANGLES.length; i++) {
+            if (Status.slotColor[i] == Constants.Game.ARTIFACT_COLOR.PURPLE || Status.slotColor[i] == Constants.Game.ARTIFACT_COLOR.GREEN) {
+                balls += 1;
+            }
+        }
+        if (balls == 3) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public double getError() {
