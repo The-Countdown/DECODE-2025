@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
+import static org.firstinspires.ftc.teamcode.main.Constants.Spindexer.axonTestAngle;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -84,6 +86,27 @@ public class TeleOp extends OpMode {
                 Status.turretToggle = true;
                 robotContainer.spindexer.goToNextTransferSlot();
             }
+        }
+
+        // This is for testing on Nov 19th and should be removed after today.
+        if (robotContainer.gamepadEx1.dpadUp.wasJustPressed()) {
+            robotContainer.spindexer.setPos(axonTestAngle);
+        }
+
+        if (robotContainer.gamepadEx1.dpadDown.wasJustPressed()) {
+
+        }
+
+        if (robotContainer.gamepadEx1.dpadRight.wasJustPressed()) {
+            int currentSlot = robotContainer.spindexer.getCurrentIntakeSlot();
+            if (currentSlot == 0) {
+                currentSlot = 2;
+            }
+            currentSlot -= 1;
+            double targetAngle = Constants.Spindexer.INTAKE_SLOT_ANGLES[currentSlot];
+            robotContainer.spindexer.setPosDegrees(targetAngle);
+            int finalCurrentSlot = currentSlot;
+            robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.setPosDegrees(finalCurrentSlot), 300);
         }
 
         // Gamepad 2

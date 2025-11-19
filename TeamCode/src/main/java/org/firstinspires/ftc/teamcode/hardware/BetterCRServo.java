@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.CRServoImplEx;
 
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
+// Warning the Axon servos in servo mode do not work.
 public class BetterCRServo {
     private CRServoImplEx servo;
 

@@ -310,8 +310,9 @@ public class Constants {
         public static int NUM_SLOTS = 3;
         public static double ANGLE_OFFSET = -60;
         public static double JAM_ANGLE = 30;
+        public static double axonTestAngle = 0;
         public static double[] TRANSFER_SLOT_ANGLES = {100, 230, 365};
-         public static double[] INTAKE_SLOT_ANGLES = {440, 175, 310};
+        public static double[] INTAKE_SLOT_ANGLES = {440, 175, 310};
 //        public static double[] INTAKE_SLOT_ANGLES = {60, 180, 300};
         public static double KP = 0.01;
         public static double KD = 0.008;

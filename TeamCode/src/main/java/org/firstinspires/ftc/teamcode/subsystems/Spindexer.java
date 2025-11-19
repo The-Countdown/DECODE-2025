@@ -63,7 +63,17 @@ public class Spindexer {
         // Status.slotColor[getCurrentIntakeSlot()] = getArtifactColor(blue, green);
 
         if (!jam()) {
-            Status.slotColor[getCurrentIntakeSlot()] = Constants.Game.ARTIFACT_COLOR.PURPLE;
+            Status.slotColor[getCurrentIntakeSlot() % 3] = Constants.Game.ARTIFACT_COLOR.PURPLE;
+        } else {
+            int currentSlot = getCurrentIntakeSlot();
+            if (currentSlot == 0) {
+                currentSlot = 2;
+            }
+            currentSlot -= 1;
+            targetAngle = Constants.Spindexer.INTAKE_SLOT_ANGLES[currentSlot];
+            spindexerServo.updateSetPosition(targetAngle);
+            int finalCurrentSlot = currentSlot;
+            robotContainer.delayedActionManager.schedule(() -> spindexerServo.updateSetPosition(finalCurrentSlot), 300);
         }
     }
 
@@ -71,14 +81,14 @@ public class Spindexer {
     public int getCurrentIntakeSlot() {
         int current = (int) (((targetAngle % 360) + 60) / 120);
         robotContainer.telemetry.addData("current intake", current);
-        return current;
+        return current % 3;
     }
 
     // Assume the Spindexer is always at target
     public int getCurrentTransferSlot() {
         int current = (int) (targetAngle % 360) / 120;
         robotContainer.telemetry.addData("current transfer", current);
-        return current;
+        return current % 3;
     }
 
     public void goToNextIntakeSlot() {
@@ -192,18 +202,17 @@ public class Spindexer {
 
     public boolean jam() {
         double position = getRawAngle();
-        if (Math.abs(position - lastPosition) > Constants.Spindexer.JAM_ANGLE && getError() > 10) {
+        if (Math.abs(position - lastPosition) < Constants.Spindexer.JAM_ANGLE && robotContainer.beamBreakToggleButton.isPressed()) {
             this.lastPosition = position;
             return true;
         } else {
             this.lastPosition = position;
             return false;
         }
-
     }
 
     public double getError() {
-        return getAngle() - targetAngle;
+        return getAngle() - (targetAngle + (Constants.Spindexer.ANGLE_OFFSET - 17));
     }
 
     @Deprecated
@@ -219,7 +228,15 @@ public class Spindexer {
             robotContainer.telemetry.addData("Spin Power target", target);
             spindexerServo.updateSetPosition(target);
         } else {
-            spindexerServo.updateSetPosition(Constants.Spindexer.INTAKE_SLOT_ANGLES[getCurrentIntakeSlot()]);
+            int currentSlot = getCurrentIntakeSlot();
+            if (currentSlot == 0) {
+                currentSlot = 2;
+            }
+            currentSlot -= 1;
+            targetAngle = Constants.Spindexer.INTAKE_SLOT_ANGLES[currentSlot];
+            spindexerServo.updateSetPosition(targetAngle);
+            int finalCurrentSlot = currentSlot;
+            robotContainer.delayedActionManager.schedule(() -> spindexerServo.updateSetPosition(finalCurrentSlot), 300);
         }
     }
 }
