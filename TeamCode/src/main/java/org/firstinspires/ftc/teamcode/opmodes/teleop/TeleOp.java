@@ -18,16 +18,12 @@ public class TeleOp extends OpMode {
     public static double CURRENT_LOOP_TIME_MS;
     public double turretPos = 0;
     private final GamepadWrapper.ButtonReader transferConditionButton = new GamepadWrapper.ButtonReader();
-    private final ElapsedTime spindexAccel = new ElapsedTime();
-    private double lastError = 0;
-    private double lastTransferAngle = -1;
-    private final ElapsedTime tranferTimer = new ElapsedTime();
-    private int currentAngle = 0;
 
     @Override
     public void init() {
         robotContainer = new RobotContainer(this);
         robotContainer.init();
+        // Get the blackboard pose that was set during auto or if it was not set set the starting pose to 0.
         RobotContainer.HardwareDevices.pinpoint.setPosition((Pose2D) blackboard.getOrDefault("pose", new Pose2D(DistanceUnit.CM, 0, 0, AngleUnit.DEGREES, 0)));
         robotContainer.telemetry.addData("Alliance Color", Status.alliance == Constants.Game.ALLIANCE.BLUE ? "BLUE" : "RED");
         robotContainer.telemetry.update();
@@ -57,40 +53,40 @@ public class TeleOp extends OpMode {
     public void loop() {
         CURRENT_LOOP_TIME_MS = robotContainer.updateLoopTime("teleOp");
         robotContainer.refreshData();
-        robotContainer.delayedActionManager.update();
         robotContainer.gamepadEx1.update();
         robotContainer.gamepadEx2.update();
         robotContainer.limelightLogic.update();
+        robotContainer.delayedActionManager.update();
         robotContainer.pathPlanner.updatePathStatus();
         Status.turretToggleButton.update(Status.turretToggle);
-        robotContainer.beamBreakToggleButton.update(RobotContainer.HardwareDevices.beamBreak.isPressed());
 
         robotContainer.allIndicatorLights.lightsUpdate();
 
-        // Get current and voltage
+        // Get current and voltage for telemetry
         robotContainer.controlHubVoltage = robotContainer.getVoltage(Constants.Robot.CONTROL_HUB_INDEX);
         robotContainer.expansionHubVoltage = robotContainer.getVoltage(Constants.Robot.EXPANSION_HUB_INDEX);
         robotContainer.controlHubCurrent = robotContainer.getCurrent(Constants.Robot.CONTROL_HUB_INDEX);
         robotContainer.expansionHubCurrent = robotContainer.getCurrent(Constants.Robot.EXPANSION_HUB_INDEX);
-        //gamepad 1
 
-        if (robotContainer.gamepadEx1.dpadUp.wasJustPressed()) {
-            Status.slotColor[robotContainer.spindexer.getCurrentIntakeSlot()] = Constants.Game.ARTIFACT_COLOR.PURPLE;
-            robotContainer.spindexer.goToNextIntakeSlot();
-        }
-        robotContainer.telemetry.addData("ca", currentAngle);
-
+        // Gamepad 1
         robotContainer.drivetrain.controlUpdate();
-
         robotContainer.turret.hood.setPos(robotContainer.gamepadEx1.circle.isPressed() ? Constants.Turret.HOOD_PRESETS[1] : Constants.Turret.HOOD_PRESETS[0]);
 
-        //gamepad 2
+        if (robotContainer.gamepadEx1.options.wasJustPressed()) {
+            Status.manualControl = !Status.manualControl;
+        }
 
-        //intake -circle
+        if (robotContainer.gamepadEx1.dpadLeft.wasJustPressed()) {
+            robotContainer.spindexer.setPosDegrees(0);
+        }
+
+        // Gamepad 2
+
+        // Intake - Circle
         Status.intakeToggle = robotContainer.gamepadEx2.circle.wasJustPressed() != Status.intakeToggle;
         robotContainer.intake.setPower(Status.intakeToggle ? (robotContainer.gamepadEx1.rightTriggerRaw() - robotContainer.gamepadEx1.leftTriggerRaw()) * Constants.Intake.TOP_SPEED : 0);
 
-        //flywheel -automated
+        // Flywheel - Automated
         if (robotContainer.gamepadEx2.circle.wasJustReleased() && !Status.intakeToggle) {
             Status.turretToggle = true;
             robotContainer.spindexer.goToNextTransferSlot();
@@ -99,7 +95,6 @@ public class TeleOp extends OpMode {
             robotContainer.spindexer.goToNextIntakeSlot();
         }
 
-        telemetry.addData("Pow", Math.pow(robotContainer.gamepadEx2.dpadRight.getHoldDuration(), Constants.Turret.FLYWHEEL_CURVE));
         if (Status.manualControl && robotContainer.gamepadEx2.dpadRight.isHeld()) {
             robotContainer.turret.flywheel.setTargetVelocity(Math.min(Math.pow(robotContainer.gamepadEx2.dpadRight.getHoldDuration(), Constants.Turret.FLYWHEEL_CURVE), 1));
         } else if (!Status.intakeToggle) {
@@ -110,8 +105,7 @@ public class TeleOp extends OpMode {
 
         Status.flywheelAtTargetSpeed = robotContainer.turret.flywheel.atTargetVelocity();
 
-
-//        turret turn -right stick X
+        // Turret turn - Right stick X
         if (Status.manualControl) {
             turretPos -= robotContainer.gamepadEx2.rightStickX() != 0 ? (Constants.Turret.TURRET_SPEED_FACTOR * CURRENT_LOOP_TIME_MS) * Math.pow(robotContainer.gamepadEx2.rightStickX(), 3) : 0;
             turretPos = HelperFunctions.clamp(turretPos, Constants.Turret.TURRET_LIMIT_MIN, Constants.Turret.TURRET_LIMIT_MAX);
@@ -120,15 +114,7 @@ public class TeleOp extends OpMode {
             robotContainer.turret.pointAtGoal();
         }
 
-        if (robotContainer.beamBreakToggleButton.wasJustReleased() && Status.intakeToggle) {
-            robotContainer.spindexer.goToNextIntakeSlot();
-        }
-
-        if (robotContainer.gamepadEx1.options.wasJustPressed()) {
-            Status.manualControl = !Status.manualControl;
-            robotContainer.spindexer.setPos(0);
-        }
-
+        // For when automatic spindexer fails
         if (robotContainer.gamepadEx2.square.wasJustPressed()) {
             Status.slotColor[0] = Constants.Game.ARTIFACT_COLOR.PURPLE;
             Status.slotColor[1] = Constants.Game.ARTIFACT_COLOR.PURPLE;
@@ -136,7 +122,6 @@ public class TeleOp extends OpMode {
             Status.intakeToggle = false;
             Status.turretToggle = true;
             robotContainer.spindexer.goToNextTransferSlot();
-            tranferTimer.reset();
         }
 
         if (robotContainer.gamepadEx2.triangle.wasJustPressed()) {
@@ -146,30 +131,11 @@ public class TeleOp extends OpMode {
             Status.intakeToggle = true;
             Status.turretToggle = false;
             robotContainer.spindexer.goToNextIntakeSlot();
-            tranferTimer.reset();
         }
-
-        //if all are none or unknown, turret toggle
-        if ((Status.slotColor[0] != Constants.Game.ARTIFACT_COLOR.NONE && Status.slotColor[1] != Constants.Game.ARTIFACT_COLOR.NONE && Status.slotColor[2] != Constants.Game.ARTIFACT_COLOR.NONE) || (Status.slotColor[0] != Constants.Game.ARTIFACT_COLOR.UNKNOWN && Status.slotColor[1] != Constants.Game.ARTIFACT_COLOR.UNKNOWN && Status.slotColor[2] != Constants.Game.ARTIFACT_COLOR.UNKNOWN)) {
-            Status.turretToggle = true;
-            // tranferTimer.reset();
-        }
-
-
-
-       //localization
-        //robotContainer.limelightLogic.limelightLocalization();
-
-//        if (robotContainer.gamepadEx1.triangle.wasJustPressed()) {
-//            Pose2D botPose = robotContainer.limelightLogic.logicBotPose();
-//            RobotContainer.HardwareDevices.pinpoint.setPosX(botPose.getX(DistanceUnit.CM), DistanceUnit.CM);
-//            RobotContainer.HardwareDevices.pinpoint.setPosY(botPose.getY(DistanceUnit.CM), DistanceUnit.CM);
-//        }
 
         if (robotContainer.gamepadEx2.cross.wasJustPressed()) {
             Status.slotColor[robotContainer.spindexer.getCurrentTransferSlot()] = Constants.Game.ARTIFACT_COLOR.NONE;
             robotContainer.spindexer.goToNextTransferSlot();
-            tranferTimer.reset();
         }
 
         if (robotContainer.gamepadEx2.leftBumper.wasJustPressed()) {
@@ -178,67 +144,27 @@ public class TeleOp extends OpMode {
             robotContainer.transfer.flapDown();
         }
 
-//        robotContainer.telemetry.addData("Spindexer Timer", tranferTimer.seconds());
-//        robotContainer.telemetry.addData("Transfer lastAngle", lastTransferAngle);
-//        transferConditionButton.update((robotContainer.spindexer.getTargetAngle() == Constants.Spindexer.TRANSFER_SLOT_ANGLES[0] || robotContainer.spindexer.getTargetAngle() == Constants.Spindexer.TRANSFER_SLOT_ANGLES[1] || robotContainer.spindexer.getTargetAngle() == Constants.Spindexer.TRANSFER_SLOT_ANGLES[2]) && robotContainer.turret.flywheel.atTargetVelocity() && !Status.intakeToggle && lastTransferAngle != robotContainer.spindexer.getTargetAngle() && robotContainer.turret.atTarget() && tranferTimer.milliseconds() > 1000);
-//        robotContainer.telemetry.addData("TransferControl", transferConditionButton);
-//        if (transferConditionButton.wasJustPressed()) {
-//            robotContainer.transfer.flapUp();
-//            robotContainer.delayedActionManager.schedule(() -> robotContainer.transfer.flapDown(), Constants.Transfer.FLIP_TIME);
-//            robotContainer.delayedActionManager.schedule(() -> lastTransferAngle = robotContainer.spindexer.getTargetAngle(), Constants.Transfer.FLIP_TIME * 2);
-//            tranferTimer.reset();
-//        }
-
-        if (robotContainer.gamepadEx1.leftBumper.wasJustPressed()) {
-            Constants.Spindexer.ANGLE_OFFSET -= 15;
-            robotContainer.spindexer.setPosDegrees(Constants.Spindexer.ANGLE_OFFSET);
-        } else if (robotContainer.gamepadEx1.rightBumper.wasJustPressed()) {
-            Constants.Spindexer.ANGLE_OFFSET += 15;
-            robotContainer.spindexer.setPosDegrees(Constants.Spindexer.ANGLE_OFFSET);
-        } else if (robotContainer.gamepadEx1.dpadLeft.wasJustPressed()) {
-            Constants.Spindexer.ANGLE_OFFSET -= 30;
-            robotContainer.spindexer.setPosDegrees(Constants.Spindexer.ANGLE_OFFSET);
-        } else if (robotContainer.gamepadEx1.dpadRight.wasJustPressed()) {
-            Constants.Spindexer.ANGLE_OFFSET += 30;
-            robotContainer.spindexer.setPosDegrees(Constants.Spindexer.ANGLE_OFFSET);
+        if (robotContainer.gamepadEx2.dpadUp.wasJustPressed()) {
+            robotContainer.spindexer.goToNextGreenSlot();
+        }
+        if (robotContainer.gamepadEx2.dpadDown.wasJustPressed()) {
+            robotContainer.spindexer.goToNextPurpleSlot();
         }
 
-        if (robotContainer.gamepadEx1.square.wasJustPressed()) {
-            Status.isDrivingActive = false;
-            if (Status.alliance == Constants.Game.ALLIANCE.RED) {
-                robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, 12, 12, AngleUnit.DEGREES, -135));
-            } else {
-                robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, 12, -12, AngleUnit.DEGREES, 135));            }
-        }
-        if (robotContainer.gamepadEx1.square.isHeld()) {
-            Status.isDrivingActive = false;
-            robotContainer.pathPlanner.driveThroughPath();
-        }
-        if (robotContainer.gamepadEx1.square.wasJustReleased()) {
-            Status.isDrivingActive = true;
-            robotContainer.pathPlanner.pathCompleted = true;
+        // No gamepad
+
+        // Update the breamBreak state
+        robotContainer.beamBreakToggleButton.update(RobotContainer.HardwareDevices.beamBreak.isPressed());
+
+        if (robotContainer.beamBreakToggleButton.wasJustReleased() && Status.intakeToggle) {
+            robotContainer.spindexer.goToNextIntakeSlot();
+            robotContainer.spindexer.slotUpdate();
         }
 
-        if (robotContainer.gamepadEx1.dpadDown.wasJustPressed()) {
-            Status.isDrivingActive = false;
-            if (Status.alliance == Constants.Game.ALLIANCE.RED) {
-                robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, -39, 33, AngleUnit.DEGREES, -135));
-            } else {
-                robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, -39, -33, AngleUnit.DEGREES, 135));            }
+        // If all are none or unknown, turret toggle
+        if ((Status.slotColor[0] != Constants.Game.ARTIFACT_COLOR.NONE && Status.slotColor[1] != Constants.Game.ARTIFACT_COLOR.NONE && Status.slotColor[2] != Constants.Game.ARTIFACT_COLOR.NONE) || (Status.slotColor[0] != Constants.Game.ARTIFACT_COLOR.UNKNOWN && Status.slotColor[1] != Constants.Game.ARTIFACT_COLOR.UNKNOWN && Status.slotColor[2] != Constants.Game.ARTIFACT_COLOR.UNKNOWN)) {
+            Status.turretToggle = true;
         }
-        if (robotContainer.gamepadEx1.dpadDown.isHeld()) {
-            Status.isDrivingActive = false;
-            robotContainer.pathPlanner.driveThroughPath();
-        }
-        if (robotContainer.gamepadEx1.dpadDown.wasJustReleased()) {
-            Status.isDrivingActive = true;
-            robotContainer.pathPlanner.pathCompleted = true;
-        }
-
-        robotContainer.telemetry.addData("hood angle", robotContainer.turret.hoodServo.getPosition());
-        robotContainer.telemetry.addData("Pinpoint distance to goal", HelperFunctions.disToGoal());
-        robotContainer.telemetry.addData("Turret mode", Status.turretToggle);
-        robotContainer.telemetry.addData("Flywheel Toggle", Status.flywheelToggle);
 
         if (robotContainer.limelightLogic.limelight.getLatestResult().isValid()) {
             robotContainer.telemetry.addData("robot pos on field", robotContainer.limelightLogic.logicBotPose());
@@ -249,15 +175,6 @@ public class TeleOp extends OpMode {
 
         robotContainer.telemetry.addData("turret interpolation", robotContainer.turret.flywheel.interpolateByDistance(HelperFunctions.disToGoal()));
 
-        if (robotContainer.gamepadEx2.dpadUp.wasJustPressed()) {
-            robotContainer.spindexer.goToNextGreenSlot();
-        }
-        if (robotContainer.gamepadEx2.dpadDown.wasJustPressed()) {
-            robotContainer.spindexer.goToNextPurpleSlot();
-        }
-
-//        robotContainer.limelightLogic.trackGoal();
-
         robotContainer.telemetry("teleOp");
         Thread.yield();
     }
@@ -266,6 +183,7 @@ public class TeleOp extends OpMode {
     public void stop() {
         robotContainer.drivetrain.setTargets(Constants.Swerve.STOP_FORMATION, Constants.Swerve.NO_POWER);
 
+        Status.isDrivingActive = false;
         Status.opModeIsActive = false;
         robotContainer.isRunning = false;
     }

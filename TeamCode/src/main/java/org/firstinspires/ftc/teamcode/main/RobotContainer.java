@@ -284,6 +284,7 @@ public class RobotContainer {
                 Status.alliance == Constants.Game.ALLIANCE.BLUE ? new Pose2D(DistanceUnit.CM, Constants.Robot.startingX, -Constants.Robot.startingY, AngleUnit.DEGREES, Constants.Robot.startingHeading) :
                         new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
 
+        // Start the required treads
         localizationUpdater = new LocalizationUpdater(this);
         localizationUpdater.start();
         drivetrainUpdater = new DrivetrainUpdater(this);
@@ -538,6 +539,8 @@ public class RobotContainer {
         telemetry.addData("Intake Enabled", Status.intakeToggle);
         telemetry.addLine();
         telemetry.addData("Spindexer Angle", spindexer.getAngle());
+        telemetry.addData("Spindexer raw angle", spindexer.getRawAngle());
+        telemetry.addData("Spindexer target", spindexer.targetAngle);
         telemetry.addData("Spindexer Slot Colors", Arrays.toString(Status.slotColor));
         telemetry.addLine();
         telemetry.addData("lower servo pos", HardwareDevices.transferServoLeft.getPosition());

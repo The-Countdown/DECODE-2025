@@ -24,7 +24,6 @@ public class LimelightLogic {
     private Pose2D botPose = new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
     private double p = 177.5;
 
-    // 50, 100, 160
     public LimelightLogic(RobotContainer robot, Telemetry telemetry, Limelight3A limelight) {
         this.robotContainer = robot;
         this.telemetry = telemetry;
