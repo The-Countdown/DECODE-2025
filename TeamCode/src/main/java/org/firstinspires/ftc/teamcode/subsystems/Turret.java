@@ -18,7 +18,7 @@ public class Turret extends RobotContainer.HardwareDevices {
     private final LinkedServos turretServos;
     public final BetterServo hoodServo;
     private double targetPosition = 0;
-    private double[] turretPositionTable = {0.785, 0.50, 0.2225}; // -90, 0, 90
+    private double[] turretPositionTable = {0.798, 0.50, 0.2225}; // -90, 0, 90
 
     public Turret(RobotContainer robotContainer, LinkedMotors flyWheelMotors, BetterServo hoodServo, LinkedServos turretServos) {
         this.robotContainer = robotContainer;
