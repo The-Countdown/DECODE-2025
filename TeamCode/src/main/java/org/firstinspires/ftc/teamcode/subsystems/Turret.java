@@ -91,6 +91,7 @@ public class Turret extends RobotContainer.HardwareDevices {
     public class Flywheel {
         public double targetVelocity = 0;
         public double targetMaxVelocity = 0;
+
         public void setTargetVelocity(double power) {
             targetVelocity = Constants.Swerve.MOTOR_MAX_VELOCITY_TICKS_PER_SECOND * power;
             if (Status.flywheelToggle) {
@@ -98,6 +99,10 @@ public class Turret extends RobotContainer.HardwareDevices {
             } else {
                 flyWheelMotors.setVelocity(0);
             }
+        }
+
+        public void alwaysSetTargetVelocity(double power) {
+            flyWheelMotors.setVelocity(targetVelocity);
         }
 
         public double interpolateByDistance(double disToGoal){

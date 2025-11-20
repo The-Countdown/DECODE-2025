@@ -147,4 +147,8 @@ public class PathPlanner {
             return false;
         }
     }
+
+    public boolean isPathCompleted() {
+        return this.pathCompleted;
+    }
 }

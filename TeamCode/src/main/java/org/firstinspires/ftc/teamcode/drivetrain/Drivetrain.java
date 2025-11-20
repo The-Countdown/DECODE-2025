@@ -130,25 +130,25 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
                 yButton.wasJustReleased() ||
                 rXButton.wasJustReleased()) &&
                 x == 0 && y == 0 && rX == 0) {
-            Status.flywheelToggle = true;
+//            Status.flywheelToggle = true;
             setTargets(lastAngles, Constants.Swerve.NO_POWER);
             stopTimer.reset();
             return;
         }
 
         if (x == 0 && y == 0 && rX == 0 && stopTimer.seconds() >= 1) {
-            Status.flywheelToggle = true;
+//            Status.flywheelToggle = true;
             setTargets(Constants.Swerve.STOP_FORMATION, Constants.Swerve.NO_POWER);
             return;
         }
 
         if (x == 0 && y == 0 && rX == 0) {
-            Status.flywheelToggle = true;
+//            Status.flywheelToggle = true;
             setTargets(lastAngles, Constants.Swerve.NO_POWER);
             return;
         }
-
-        Status.flywheelToggle = false;
+//
+//        Status.flywheelToggle = false;
 
         double rotationalMagnitude = Math.abs(rX);
         // Determine the rotational direction based on the sign of rX.

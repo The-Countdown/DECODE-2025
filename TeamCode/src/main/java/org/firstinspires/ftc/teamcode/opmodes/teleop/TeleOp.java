@@ -155,7 +155,7 @@ public class TeleOp extends OpMode {
             if (robotContainer.spindexer.isEmpty()) {
                 Status.intakeToggle = true;
                 Status.turretToggle = false;
-                robotContainer.spindexer.goToNextIntakeSlot();
+                robotContainer.spindexer.alwaysGoToNextIntakeSlot();
             }
         }
 
