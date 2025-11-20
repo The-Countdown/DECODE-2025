@@ -286,7 +286,7 @@ public class Constants {
         public static double FLYWHEEL_TOP_SPEED = 0.95;
         public static int FLYWHEEL_MAX_VELOCITY = 3000;
         public static double FLYWHEEL_CURVE = 4;
-        public static double[] FLYWHEEL_SPEED_TABLE = {0.52, 0.5325, 0.56, 0.67, 0.72};
+        public static double[] FLYWHEEL_SPEED_TABLE = {0.52, 0.5325, 0.56, 0.6525, 0.7075};
         public static double[] FLYWHEEL_SPEED_TABLE_DISTANCES = {75, 80, 90, 130, 140};
         public static double TRACK_GOAL_P = -0.2;
         public static double[] HOOD_PRESETS = {0.51, 0.13};
@@ -311,7 +311,7 @@ public class Constants {
         public static double ANGLE_OFFSET = -10;
         public static double JAM_ANGLE = 30;
         public static double axonTestAngle = 0;
-        public static double[] TRANSFER_SLOT_ANGLES = {60, 180, 300};
+        public static double[] TRANSFER_SLOT_ANGLES = {60, 180, 309};
         public static double[] INTAKE_SLOT_ANGLES = {120, 240, 360};
         public static int COLOR_SENSE_TIME = 250;
     }

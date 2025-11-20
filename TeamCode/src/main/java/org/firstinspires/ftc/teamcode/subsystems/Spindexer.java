@@ -66,6 +66,15 @@ public class Spindexer {
         }
     }
 
+    public void autoFunction() {
+        robotContainer.spindexer.slotUpdate();
+        if (robotContainer.spindexer.isFull()) { // If it is full after an intake
+            robotContainer.spindexer.goToNextTransferSlot();
+        } else {
+            robotContainer.spindexer.goToNextIntakeSlot();
+        }
+    }
+
     public void slotUpdate() {
         // double blue = -1;
         // double green = -1;
@@ -183,14 +192,11 @@ public class Spindexer {
         Status.intakeToggle = false;
         Status.flywheelToggle = true;
         robotContainer.spindexer.goToNextTransferSlot();
-        if (Status.intakeToggle) {
-            return;
-        }
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.delayedActionManager.schedule(()-> robotContainer.transfer.flapUp(), () -> Math.abs(robotContainer.spindexer.getError()) < 5), 1000);
-        robotContainer.delayedActionManager.schedule(()-> robotContainer.delayedActionManager.schedule(()-> robotContainer.transfer.flapDown(), Constants.Transfer.FLIP_TIME + 1000), () -> Math.abs(robotContainer.spindexer.getError()) < 5);
-        robotContainer.delayedActionManager.schedule(()-> robotContainer.delayedActionManager.schedule(()-> Status.slotColor[robotContainer.spindexer.getCurrentTransferSlot()] = Constants.Game.ARTIFACT_COLOR.NONE, Constants.Transfer.FLIP_TIME + 1000), () -> Math.abs(robotContainer.spindexer.getError()) < 5);
+        robotContainer.delayedActionManager.schedule(()-> robotContainer.transfer.flapUp(), 500);
+        robotContainer.delayedActionManager.schedule(()-> robotContainer.transfer.flapDown(), Constants.Transfer.FLIP_TIME + 500);
+        robotContainer.delayedActionManager.schedule(()-> Status.slotColor[robotContainer.spindexer.getCurrentTransferSlot()] = Constants.Game.ARTIFACT_COLOR.NONE, Constants.Transfer.FLIP_TIME + 500);
         if (Status.ballsToShoot > 0) {
-            robotContainer.delayedActionManager.schedule(() -> shootNextBall(), Constants.Transfer.FLIP_TIME + 2000);
+            robotContainer.delayedActionManager.schedule(() -> shootNextBall(), Constants.Transfer.FLIP_TIME + 1000);
         }
     }
 

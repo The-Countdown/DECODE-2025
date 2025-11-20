@@ -298,11 +298,13 @@ public class RobotContainer {
 
     public void stop() {
         Status.opModeIsActive = false;
-        this.localizationUpdater.stopThread();
-        try {
-            this.localizationUpdater.join();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        if (this.localizationUpdater != null) {
+            this.localizationUpdater.stopThread();
+            try {
+                this.localizationUpdater.join();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         this.drivetrainUpdater.stopThread();
