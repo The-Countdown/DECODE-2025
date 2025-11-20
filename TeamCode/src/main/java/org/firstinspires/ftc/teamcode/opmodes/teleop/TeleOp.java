@@ -80,6 +80,18 @@ public class TeleOp extends OpMode {
             Status.manualControl = !Status.manualControl;
         }
 
+        if (robotContainer.gamepadEx1.dpadLeft.wasJustPressed()) {
+            robotContainer.spindexer.alwaysGoBackOneIntakeSlot();
+        }
+
+        if (robotContainer.gamepadEx1.dpadRight.wasJustPressed()) {
+            robotContainer.spindexer.alwaysGoToNextIntakeSlot();
+        }
+
+        if (robotContainer.gamepadEx1.dpadUp.wasJustPressed()) {
+            robotContainer.spindexer.slotUpdate(); // Fill the current slot
+        }
+
         // Gamepad 2
 
         // Intake - Circle
@@ -98,8 +110,6 @@ public class TeleOp extends OpMode {
             Status.turretToggle = false;
             robotContainer.spindexer.goToNextIntakeSlot();
         }
-
-
 
         if (Status.manualControl && robotContainer.gamepadEx2.dpadRight.isHeld()) {
             robotContainer.turret.flywheel.setTargetVelocity(Math.min(Math.pow(robotContainer.gamepadEx2.dpadRight.getHoldDuration(), Constants.Turret.FLYWHEEL_CURVE), 1));

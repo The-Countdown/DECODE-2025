@@ -82,31 +82,31 @@ public class Spindexer {
         // green = RobotContainer.HardwareDevices.colorSensor.updateGreen();
         // Status.slotColor[getCurrentIntakeSlot()] = getArtifactColor(blue, green);
 
-        if (!jam()) {
+        // if (!jam()) {
             Status.slotColor[getCurrentIntakeSlot() % 3] = Constants.Game.ARTIFACT_COLOR.PURPLE;
-        } else {
-            int currentSlot = getCurrentIntakeSlot();
-            if (currentSlot == 0) {
-                currentSlot = 2;
-            }
-            currentSlot -= 1;
-            targetAngle = Constants.Spindexer.INTAKE_SLOT_ANGLES[currentSlot];
-            spindexerServo.updateSetPosition(targetAngle);
-            int finalCurrentSlot = currentSlot;
-            robotContainer.delayedActionManager.schedule(() -> spindexerServo.updateSetPosition(finalCurrentSlot), 300);
-        }
+        // } else {
+        //     int currentSlot = getCurrentIntakeSlot();
+        //     if (currentSlot == 0) {
+        //         currentSlot = 2;
+        //     }
+        //     currentSlot -= 1;
+        //     targetAngle = Constants.Spindexer.INTAKE_SLOT_ANGLES[currentSlot];
+        //     spindexerServo.updateSetPosition(targetAngle);
+        //     int finalCurrentSlot = currentSlot;
+        //     robotContainer.delayedActionManager.schedule(() -> spindexerServo.updateSetPosition(finalCurrentSlot), 300);
+        // }
     }
 
     // Assume the Spindexer is always at target
     public int getCurrentIntakeSlot() {
-        int current = (int) (((targetAngle % 360)) / 120);
+        int current = (int) ((((targetAngle - 10) % 360)) / 120);
         robotContainer.telemetry.addData("current intake", current);
         return current % 3;
     }
 
     // Assume the Spindexer is always at target
     public int getCurrentTransferSlot() {
-        int current = (int) ((targetAngle % 360) + 60) / 120;
+        int current = (int) (((targetAngle - 10) % 360) + 60) / 120;
         robotContainer.telemetry.addData("current transfer", current);
         return current % 3;
     }
@@ -144,19 +144,34 @@ public class Spindexer {
         }
     }
 
-    public void goToNextTransferSlot() {
+    public void moveIntakeSlotLeft() {
+        int currentSlot = getCurrentIntakeSlot();
+        setPosDegrees(Constants.Spindexer.INTAKE_SLOT_ANGLES[(currentSlot + 2) % 3]);
+    }
+
+    public void moveIntakeSlotRight() {
+        int currentSlot = getCurrentIntakeSlot();
+        setPosDegrees(Constants.Spindexer.INTAKE_SLOT_ANGLES[(currentSlot + 1) % 3]);
+    }
+
+    public void alwaysGoBackOneIntakeSlot() {
         int firstSlotNoColor = -1;
-        int currentSlot = getCurrentTransferSlot();
-        for (int i = 0; i < 3; i++) {
-            if (Status.slotColor[currentSlot % 3] == Constants.Game.ARTIFACT_COLOR.PURPLE || Status.slotColor[currentSlot % 3] == Constants.Game.ARTIFACT_COLOR.GREEN) {
-                firstSlotNoColor = (currentSlot % 3);
+        int currentSlot = getCurrentIntakeSlot();
+        for (int i = 2; i != 0; i--) {
+            if (Status.slotColor[(currentSlot + i) % 3] != Constants.Game.ARTIFACT_COLOR.PURPLE && Status.slotColor[(currentSlot + i) % 3] != Constants.Game.ARTIFACT_COLOR.GREEN) {
+                firstSlotNoColor = ((currentSlot + i) % 3);
+                break;
             }
-            currentSlot++;
         }
         if (firstSlotNoColor != -1) {
-            setPosDegrees(Constants.Spindexer.TRANSFER_SLOT_ANGLES[firstSlotNoColor]);
-            robotContainer.telemetry.addData("Next Spindexer ange", Constants.Spindexer.TRANSFER_SLOT_ANGLES[firstSlotNoColor]);
+            setPosDegrees(Constants.Spindexer.INTAKE_SLOT_ANGLES[firstSlotNoColor]);
+            robotContainer.telemetry.addData("Next Spindexer ange", Constants.Spindexer.INTAKE_SLOT_ANGLES[firstSlotNoColor]);
         }
+    }
+
+    public void goToNextTransferSlot() {
+        int currentSlot = getCurrentTransferSlot();
+        setPosDegrees(Constants.Spindexer.TRANSFER_SLOT_ANGLES[(currentSlot + 1) % 3]);
     }
 
     public void goToNextPurpleSlot() {
@@ -234,16 +249,16 @@ public class Spindexer {
         }
     }
 
-    public boolean jam() {
-        double position = getRawAngle();
-        if (Math.abs(position - lastPosition) < Constants.Spindexer.JAM_ANGLE && robotContainer.beamBreakToggleButton.isPressed() && Math.abs(getError() - targetAngle) < 10) {
-            this.lastPosition = position;
-            return true;
-        } else {
-            this.lastPosition = position;
-            return false;
-        }
-    }
+    // public boolean jam() {
+    //     double position = getRawAngle();
+    //     if (Math.abs(position - lastPosition) < Constants.Spindexer.JAM_ANGLE && robotContainer.beamBreakToggleButton.isPressed() && Math.abs(getError() - targetAngle) < 10) {
+    //         this.lastPosition = position;
+    //         return true;
+    //     } else {
+    //         this.lastPosition = position;
+    //         return false;
+    //     }
+    // }
 
     public double getError() {
         return getAngle() - (targetAngle + (Constants.Spindexer.ANGLE_OFFSET));
@@ -255,22 +270,22 @@ public class Spindexer {
     }
 
     public void setPosDegrees(double angle) { // Between 0 and 360
-        if (!jam()) {
+        // if (!jam()) {
             angle = angle + Constants.Spindexer.ANGLE_OFFSET;
             targetAngle = angle;
             double target = angle / 355;
             robotContainer.telemetry.addData("Spin Power target", target);
             spindexerServo.updateSetPosition(target);
-        } else {
-            int currentSlot = getCurrentIntakeSlot();
-            if (currentSlot == 0) {
-                currentSlot = 2;
-            }
-            currentSlot -= 1;
-            targetAngle = Constants.Spindexer.INTAKE_SLOT_ANGLES[currentSlot];
-            spindexerServo.updateSetPosition(targetAngle);
-            int finalCurrentSlot = currentSlot;
-            robotContainer.delayedActionManager.schedule(() -> spindexerServo.updateSetPosition(finalCurrentSlot), 300);
-        }
+        // } else {
+        //     int currentSlot = getCurrentIntakeSlot();
+        //     if (currentSlot == 0) {
+        //         currentSlot = 2;
+        //     }
+        //     currentSlot -= 1;
+        //     targetAngle = Constants.Spindexer.INTAKE_SLOT_ANGLES[currentSlot];
+        //     spindexerServo.updateSetPosition(targetAngle);
+        //     int finalCurrentSlot = currentSlot;
+        //     robotContainer.delayedActionManager.schedule(() -> spindexerServo.updateSetPosition(finalCurrentSlot), 300);
+        // }
     }
 }

@@ -311,8 +311,8 @@ public class Constants {
         public static double ANGLE_OFFSET = -10;
         public static double JAM_ANGLE = 30;
         public static double axonTestAngle = 0;
-        public static double[] TRANSFER_SLOT_ANGLES = {60, 180, 309};
-        public static double[] INTAKE_SLOT_ANGLES = {120, 240, 360};
+        public static double[] TRANSFER_SLOT_ANGLES = {53, 186, 311};
+        public static double[] INTAKE_SLOT_ANGLES = {122, 249, 369};
         public static int COLOR_SENSE_TIME = 250;
     }
 
