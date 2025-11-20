@@ -500,6 +500,9 @@ public class RobotContainer {
         telemetry.addData("Control Hub Current", controlHubCurrent + " A");
         telemetry.addData("Expansion Hub Current", expansionHubCurrent + " A");
         telemetry.addLine();
+        telemetry.addData("Spindexer Angle", spindexer.getAngle());
+        telemetry.addData("Spindexer Slot Colors", Arrays.toString(Status.slotColor));
+        telemetry.addLine();
 
         telemetry.addData("target max vel", turret.flywheel.targetMaxVelocity);
         telemetry.addData("target vel", turret.flywheel.targetVelocity);
@@ -543,14 +546,6 @@ public class RobotContainer {
 //        telemetry.addData("Motor 3 Current Velocity", swerveModules[3].motor.getVelocity());
         telemetry.addData("Field Oriented", Status.fieldOriented);
         telemetry.addData("Intake Enabled", Status.intakeToggle);
-        telemetry.addLine();
-        telemetry.addData("Spindexer Angle", spindexer.getAngle());
-        telemetry.addData("Spindexer raw angle", spindexer.getRawAngle());
-        telemetry.addData("Spindexer target", spindexer.targetAngle);
-        // telemetry.addData("Spindexer jam", spindexer.jam());
-        telemetry.addData("Spindexer error", spindexer.getError());
-        telemetry.addData("Spindexer lastPosition", spindexer.lastPosition);
-        telemetry.addData("Spindexer Slot Colors", Arrays.toString(Status.slotColor));
         telemetry.addLine();
         telemetry.addData("lower servo pos", HardwareDevices.transferServoLeft.getPosition());
         telemetry.addData("flywheel speed", HardwareDevices.flyWheelMotorMaster.getVelocity());
