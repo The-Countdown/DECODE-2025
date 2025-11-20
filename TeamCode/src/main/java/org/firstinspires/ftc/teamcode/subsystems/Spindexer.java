@@ -57,13 +57,7 @@ public class Spindexer {
 
     public void function() {
         robotContainer.spindexer.slotUpdate();
-        if (robotContainer.spindexer.isFull()) { // If it is full after an intake
-            Status.intakeToggle = false;
-            Status.turretToggle = true;
-            robotContainer.spindexer.goToNextTransferSlot();
-        } else {
-            robotContainer.spindexer.goToNextIntakeSlot();
-        }
+        robotContainer.spindexer.goToNextIntakeSlot();
     }
 
     public void autoFunction() {
@@ -82,8 +76,9 @@ public class Spindexer {
         // green = RobotContainer.HardwareDevices.colorSensor.updateGreen();
         // Status.slotColor[getCurrentIntakeSlot()] = getArtifactColor(blue, green);
 
-        // if (!jam()) {
+        if (!jam()) {
             Status.slotColor[getCurrentIntakeSlot() % 3] = Constants.Game.ARTIFACT_COLOR.PURPLE;
+        }
         // } else {
         //     int currentSlot = getCurrentIntakeSlot();
         //     if (currentSlot == 0) {
@@ -99,14 +94,14 @@ public class Spindexer {
 
     // Assume the Spindexer is always at target
     public int getCurrentIntakeSlot() {
-        int current = (int) ((((targetAngle - 10) % 360)) / 120);
+        int current = (int) ((((targetAngle - 20) % 360)) / 120);
         robotContainer.telemetry.addData("current intake", current);
         return current % 3;
     }
 
     // Assume the Spindexer is always at target
     public int getCurrentTransferSlot() {
-        int current = (int) (((targetAngle - 10) % 360) + 60) / 120;
+        int current = (int) (((targetAngle - 20) % 360) + 60) / 120;
         robotContainer.telemetry.addData("current transfer", current);
         return current % 3;
     }
@@ -249,16 +244,16 @@ public class Spindexer {
         }
     }
 
-    // public boolean jam() {
-    //     double position = getRawAngle();
-    //     if (Math.abs(position - lastPosition) < Constants.Spindexer.JAM_ANGLE && robotContainer.beamBreakToggleButton.isPressed() && Math.abs(getError() - targetAngle) < 10) {
-    //         this.lastPosition = position;
-    //         return true;
-    //     } else {
-    //         this.lastPosition = position;
-    //         return false;
-    //     }
-    // }
+    public boolean jam() {
+        double position = getRawAngle();
+        if (Math.abs(position - lastPosition) < Constants.Spindexer.JAM_ANGLE && robotContainer.beamBreakToggleButton.isPressed()) {
+            this.lastPosition = position;
+            return true;
+        } else {
+            this.lastPosition = position;
+            return false;
+        }
+    }
 
     public double getError() {
         return getAngle() - (targetAngle + (Constants.Spindexer.ANGLE_OFFSET));

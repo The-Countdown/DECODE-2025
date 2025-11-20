@@ -81,11 +81,11 @@ public class TeleOp extends OpMode {
         }
 
         if (robotContainer.gamepadEx1.dpadLeft.wasJustPressed()) {
-            robotContainer.spindexer.alwaysGoBackOneIntakeSlot();
+            robotContainer.spindexer.moveIntakeSlotLeft();
         }
 
         if (robotContainer.gamepadEx1.dpadRight.wasJustPressed()) {
-            robotContainer.spindexer.alwaysGoToNextIntakeSlot();
+            robotContainer.spindexer.moveIntakeSlotRight();
         }
 
         if (robotContainer.gamepadEx1.dpadUp.wasJustPressed()) {
@@ -151,8 +151,9 @@ public class TeleOp extends OpMode {
 
         if (robotContainer.gamepadEx2.cross.wasJustPressed()) {
             Status.slotColor[robotContainer.spindexer.getCurrentTransferSlot()] = Constants.Game.ARTIFACT_COLOR.NONE;
-            robotContainer.spindexer.goToNextTransferSlot();
-            if (robotContainer.spindexer.isEmpty()) {
+            if (!robotContainer.spindexer.isEmpty()) {
+                robotContainer.spindexer.goToNextTransferSlot();
+            } else {
                 Status.intakeToggle = true;
                 Status.turretToggle = false;
                 robotContainer.spindexer.alwaysGoToNextIntakeSlot();
@@ -177,15 +178,15 @@ public class TeleOp extends OpMode {
         // Update the breamBreak state
         robotContainer.beamBreakToggleButton.update(RobotContainer.HardwareDevices.beamBreak.isPressed());
 
-        if (robotContainer.beamBreakToggleButton.wasJustReleased() && robotContainer.intake.getPower() > 0 && spinTimer.milliseconds() > 200) {
+        if (robotContainer.beamBreakToggleButton.wasJustReleased() && robotContainer.intake.getPower() > 0 && spinTimer.milliseconds() > 400) {
             robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.function(), Constants.Spindexer.COLOR_SENSE_TIME);
             spinTimer.reset();
         }
 
         // If all are none or unknown, turret toggle
-        if ((Status.slotColor[0] != Constants.Game.ARTIFACT_COLOR.NONE && Status.slotColor[1] != Constants.Game.ARTIFACT_COLOR.NONE && Status.slotColor[2] != Constants.Game.ARTIFACT_COLOR.NONE) || (Status.slotColor[0] != Constants.Game.ARTIFACT_COLOR.UNKNOWN && Status.slotColor[1] != Constants.Game.ARTIFACT_COLOR.UNKNOWN && Status.slotColor[2] != Constants.Game.ARTIFACT_COLOR.UNKNOWN)) {
-            Status.turretToggle = true;
-        }
+        // if ((Status.slotColor[0] != Constants.Game.ARTIFACT_COLOR.NONE && Status.slotColor[1] != Constants.Game.ARTIFACT_COLOR.NONE && Status.slotColor[2] != Constants.Game.ARTIFACT_COLOR.NONE) || (Status.slotColor[0] != Constants.Game.ARTIFACT_COLOR.UNKNOWN && Status.slotColor[1] != Constants.Game.ARTIFACT_COLOR.UNKNOWN && Status.slotColor[2] != Constants.Game.ARTIFACT_COLOR.UNKNOWN)) {
+        //     Status.turretToggle = true;
+        // }
 
         if (robotContainer.limelightLogic.limelight.getLatestResult().isValid()) {
             robotContainer.telemetry.addData("robot pos on field", robotContainer.limelightLogic.logicBotPose());
