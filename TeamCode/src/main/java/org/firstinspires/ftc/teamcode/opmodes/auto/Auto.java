@@ -53,6 +53,7 @@ public class Auto extends OpMode {
         Status.isDrivingActive = false;
         Status.intakeToggle = true;
         Status.turretToggle = false;
+        Status.flywheelToggle = false;
         robotContainer.start(this, true);
         // This is important do not remove it, we do not know why it is here. (Cole, Elliot)
         robotContainer.localizationUpdater = new LocalizationUpdater(robotContainer);
@@ -80,7 +81,7 @@ public class Auto extends OpMode {
         robotContainer.delayedActionManager.schedule(() -> Status.intakeToggle = false, 0);
         robotContainer.delayedActionManager.schedule(() -> Status.turretToggle = true, 0);
         robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.shootAll(), 500);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.turret.flywheel.setTargetVelocity(robotContainer.turret.flywheel.interpolateByDistance(HelperFunctions.disToGoal())),0);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.turret.flywheel.setTargetVelocity(Constants.Turret.FLYWHEEL_POWER_AUTO), 0);
         robotContainer.delayedActionManager.schedule(() -> robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[1]), 0);
 
         robotContainer.delayedActionManager.incrementPoseOffset(2);
@@ -96,12 +97,19 @@ public class Auto extends OpMode {
         robotContainer.pathPlanner.updatePathStatus();
         robotContainer.turret.pointAtGoal();
         robotContainer.pathPlanner.driveThroughPath();
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[1]), 0);
         robotContainer.telemetry.addData("Flywheel Toggle: ", Status.flywheelToggle);
         robotContainer.telemetry.addData("Intake Toggle: ", Status.intakeToggle);
         robotContainer.telemetry.addData("Turret Toggle: ", Status.turretToggle);
         robotContainer.telemetry.addData("Intake Velocity: ", robotContainer.intake.getVelocity());
         robotContainer.telemetry.addData("Flywheel Velocity: ", RobotContainer.HardwareDevices.flyWheelMotorMaster.getVelocity());
         robotContainer.telemetry.update();
+
+        if (!Status.intakeToggle) {
+            robotContainer.intake.setPower(Constants.Intake.REVERSE_TOP_SPEED);
+        } else {
+            robotContainer.intake.setPower(0);
+        }
 
         blackboard.put("pose", Status.currentPose);
     }

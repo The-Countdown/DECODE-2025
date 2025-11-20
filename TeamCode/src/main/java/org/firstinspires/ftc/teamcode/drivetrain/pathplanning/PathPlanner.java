@@ -78,6 +78,7 @@ public class PathPlanner {
     }
 
     public void driveThroughPath () {
+        robotContainer.telemetry.addData("Pose", this.currentPose);
         if (!this.pathCompleted) {
             if (driveUsingPID(this.currentPose)) {
                 this.currentPose += 1;

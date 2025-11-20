@@ -101,8 +101,8 @@ public class Turret extends RobotContainer.HardwareDevices {
             }
         }
 
-        public void alwaysSetTargetVelocity(double power) {
-            flyWheelMotors.setVelocity(targetVelocity);
+        public void setPower(double power) {
+            flyWheelMotors.setPower(targetVelocity);
         }
 
         public double interpolateByDistance(double disToGoal){

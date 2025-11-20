@@ -208,11 +208,11 @@ public class Spindexer {
         Status.intakeToggle = false;
         Status.flywheelToggle = true;
         robotContainer.spindexer.goToNextTransferSlot();
-        robotContainer.delayedActionManager.schedule(()-> robotContainer.transfer.flapUp(), 500);
-        robotContainer.delayedActionManager.schedule(()-> robotContainer.transfer.flapDown(), Constants.Transfer.FLIP_TIME + 500);
-        robotContainer.delayedActionManager.schedule(()-> Status.slotColor[robotContainer.spindexer.getCurrentTransferSlot()] = Constants.Game.ARTIFACT_COLOR.NONE, Constants.Transfer.FLIP_TIME + 500);
+        robotContainer.delayedActionManager.schedule(()-> robotContainer.transfer.flapUp(), 1200);
+        robotContainer.delayedActionManager.schedule(()-> robotContainer.transfer.flapDown(), Constants.Transfer.FLIP_TIME + 1200);
+        robotContainer.delayedActionManager.schedule(()-> Status.slotColor[robotContainer.spindexer.getCurrentTransferSlot()] = Constants.Game.ARTIFACT_COLOR.NONE, Constants.Transfer.FLIP_TIME + 1200);
         if (Status.ballsToShoot > 0) {
-            robotContainer.delayedActionManager.schedule(() -> shootNextBall(), Constants.Transfer.FLIP_TIME + 1000);
+            robotContainer.delayedActionManager.schedule(() -> shootNextBall(), Constants.Transfer.FLIP_TIME + 1600);
         }
     }
 
