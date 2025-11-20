@@ -130,7 +130,8 @@ public class Spindexer {
     public void alwaysGoToNextIntakeSlot() {
         int firstSlotNoColor = -1;
         int currentSlot = getCurrentIntakeSlot();
-        for (int i = 1; i < 3; i++) {
+        currentSlot += 1;
+        for (int i = 0; i < 3; i++) {
             if (Status.slotColor[currentSlot % 3] != Constants.Game.ARTIFACT_COLOR.PURPLE && Status.slotColor[currentSlot % 3] != Constants.Game.ARTIFACT_COLOR.GREEN) {
                 firstSlotNoColor = (currentSlot % 3);
                 break;
