@@ -26,4 +26,8 @@ public class Intake {
     public double getVelocity() {
         return intakeMotor.getVelocity();
     }
+
+    public double getPower() {
+        return intakeMotor.getPower();
+    }
 }

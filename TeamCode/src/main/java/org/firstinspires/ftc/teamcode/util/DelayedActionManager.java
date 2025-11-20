@@ -26,9 +26,16 @@ public class DelayedActionManager {
     public void schedule(Runnable action, int delayMs) {
         delayedActions.add(new DelayedAction(robotContainer, action, delayMs));
     }
+    public void schedule(Runnable[] action, int delayMs) {
+        for (Runnable runnable : action) {
+            delayedActions.add(new DelayedAction(robotContainer, runnable, delayMs));
+        }
+    }
+
     public void  schedule(Runnable action, BooleanSupplier condition) {
         delayedActions.add(new DelayedAction(robotContainer, action, condition));
     }
+
     public void schedule(Runnable action, BooleanSupplier condition, int delayMs) {
         delayedActions.add(new DelayedAction(robotContainer, action, condition, delayMs));
     }

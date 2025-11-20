@@ -20,6 +20,8 @@ public class TeleOp extends OpMode {
     public static double CURRENT_LOOP_TIME_MS;
     public double turretPos = 0;
     private final GamepadWrapper.ButtonReader transferConditionButton = new GamepadWrapper.ButtonReader();
+    private final ElapsedTime spinTimer = new ElapsedTime();
+
 
     @Override
     public void init() {
@@ -78,37 +80,6 @@ public class TeleOp extends OpMode {
             Status.manualControl = !Status.manualControl;
         }
 
-        if (robotContainer.gamepadEx1.dpadLeft.wasJustPressed()) {
-            robotContainer.spindexer.slotUpdate();
-            robotContainer.spindexer.goToNextIntakeSlot();
-            if (robotContainer.spindexer.isFull()) { // If it is full after an intake
-                Status.intakeToggle = false;
-                Status.turretToggle = true;
-                robotContainer.spindexer.goToNextTransferSlot();
-            }
-        }
-
-        // This is for testing on Nov 19th and should be removed after today.
-        if (robotContainer.gamepadEx1.dpadUp.wasJustPressed()) {
-            robotContainer.spindexer.setPos(axonTestAngle);
-        }
-
-        if (robotContainer.gamepadEx1.dpadDown.wasJustPressed()) {
-
-        }
-
-        if (robotContainer.gamepadEx1.dpadRight.wasJustPressed()) {
-            int currentSlot = robotContainer.spindexer.getCurrentIntakeSlot();
-            if (currentSlot == 0) {
-                currentSlot = 2;
-            }
-            currentSlot -= 1;
-            double targetAngle = Constants.Spindexer.INTAKE_SLOT_ANGLES[currentSlot];
-            robotContainer.spindexer.setPosDegrees(targetAngle);
-            int finalCurrentSlot = currentSlot;
-            robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.setPosDegrees(finalCurrentSlot), 300);
-        }
-
         // Gamepad 2
 
         // Intake - Circle
@@ -127,6 +98,8 @@ public class TeleOp extends OpMode {
             Status.turretToggle = false;
             robotContainer.spindexer.goToNextIntakeSlot();
         }
+
+
 
         if (Status.manualControl && robotContainer.gamepadEx2.dpadRight.isHeld()) {
             robotContainer.turret.flywheel.setTargetVelocity(Math.min(Math.pow(robotContainer.gamepadEx2.dpadRight.getHoldDuration(), Constants.Turret.FLYWHEEL_CURVE), 1));
@@ -163,7 +136,7 @@ public class TeleOp extends OpMode {
             Status.slotColor[2] = Constants.Game.ARTIFACT_COLOR.NONE;
             Status.intakeToggle = true;
             Status.turretToggle = false;
-            robotContainer.spindexer.goToNextIntakeSlot();
+            robotContainer.spindexer.alwaysGoToNextIntakeSlot();
         }
 
         if (robotContainer.gamepadEx2.cross.wasJustPressed()) {
@@ -194,14 +167,9 @@ public class TeleOp extends OpMode {
         // Update the breamBreak state
         robotContainer.beamBreakToggleButton.update(RobotContainer.HardwareDevices.beamBreak.isPressed());
 
-        if (robotContainer.beamBreakToggleButton.wasJustReleased() && Status.intakeToggle) {
-            robotContainer.spindexer.slotUpdate();
-            robotContainer.spindexer.goToNextIntakeSlot();
-            if (robotContainer.spindexer.isFull()) { // If it is full after an intake
-                Status.intakeToggle = false;
-                Status.turretToggle = true;
-                robotContainer.spindexer.goToNextTransferSlot();
-            }
+        if (robotContainer.beamBreakToggleButton.wasJustReleased() && robotContainer.intake.getPower() > 0 && spinTimer.milliseconds() > 200) {
+            robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.function(), Constants.Spindexer.COLOR_SENSE_TIME);
+            spinTimer.reset();
         }
 
         // If all are none or unknown, turret toggle

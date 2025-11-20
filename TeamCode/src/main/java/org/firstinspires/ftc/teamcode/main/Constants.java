@@ -308,15 +308,11 @@ public class Constants {
     @Config
     public static class Spindexer {
         public static int NUM_SLOTS = 3;
-        public static double ANGLE_OFFSET = -60;
+        public static double ANGLE_OFFSET = -10;
         public static double JAM_ANGLE = 30;
         public static double axonTestAngle = 0;
-        public static double[] TRANSFER_SLOT_ANGLES = {100, 230, 365};
-        public static double[] INTAKE_SLOT_ANGLES = {440, 175, 310};
-//        public static double[] INTAKE_SLOT_ANGLES = {60, 180, 300};
-        public static double KP = 0.01;
-        public static double KD = 0.008;
-        public static double KF = 0.01;
+        public static double[] TRANSFER_SLOT_ANGLES = {60, 180, 300};
+        public static double[] INTAKE_SLOT_ANGLES = {120, 240, 360};
         public static int COLOR_SENSE_TIME = 250;
     }
 

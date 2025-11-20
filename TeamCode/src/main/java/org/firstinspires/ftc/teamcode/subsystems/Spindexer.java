@@ -33,13 +33,13 @@ public class Spindexer {
     }
 
     public double getAngle() {
-        double angle = (spindexAnalog.updateGetVoltage() / Constants.System.ANALOG_MAX_VOLTAGE) * 360;
+        double angle = (spindexAnalog.updateGetVoltage() / Constants.System.ANALOG_MAX_VOLTAGE) * 355;
         angle += Constants.Spindexer.ANGLE_OFFSET;
         return angle;
     }
 
     public double getRawAngle() {
-        return (spindexAnalog.updateGetVoltage() / Constants.System.ANALOG_MAX_VOLTAGE) * 360;
+        return (spindexAnalog.updateGetVoltage() / Constants.System.ANALOG_MAX_VOLTAGE) * 355;
     }
 
     public Constants.Game.ARTIFACT_COLOR getArtifactColor(double blue, double green) {
@@ -53,6 +53,17 @@ public class Spindexer {
             }
         }
         return Constants.Game.ARTIFACT_COLOR.UNKNOWN;
+    }
+
+    public void function() {
+        robotContainer.spindexer.slotUpdate();
+        if (robotContainer.spindexer.isFull()) { // If it is full after an intake
+            Status.intakeToggle = false;
+            Status.turretToggle = true;
+            robotContainer.spindexer.goToNextTransferSlot();
+        } else {
+            robotContainer.spindexer.goToNextIntakeSlot();
+        }
     }
 
     public void slotUpdate() {
@@ -79,14 +90,14 @@ public class Spindexer {
 
     // Assume the Spindexer is always at target
     public int getCurrentIntakeSlot() {
-        int current = (int) (((targetAngle % 360) + 60) / 120);
+        int current = (int) (((targetAngle % 360)) / 120);
         robotContainer.telemetry.addData("current intake", current);
         return current % 3;
     }
 
     // Assume the Spindexer is always at target
     public int getCurrentTransferSlot() {
-        int current = (int) (targetAngle % 360) / 120;
+        int current = (int) ((targetAngle % 360) + 60) / 120;
         robotContainer.telemetry.addData("current transfer", current);
         return current % 3;
     }
@@ -95,6 +106,22 @@ public class Spindexer {
         int firstSlotNoColor = -1;
         int currentSlot = getCurrentIntakeSlot();
         for (int i = 0; i < 3; i++) {
+            if (Status.slotColor[currentSlot % 3] != Constants.Game.ARTIFACT_COLOR.PURPLE && Status.slotColor[currentSlot % 3] != Constants.Game.ARTIFACT_COLOR.GREEN) {
+                firstSlotNoColor = (currentSlot % 3);
+                break;
+            }
+            currentSlot++;
+        }
+        if (firstSlotNoColor != -1) {
+            setPosDegrees(Constants.Spindexer.INTAKE_SLOT_ANGLES[firstSlotNoColor]);
+            robotContainer.telemetry.addData("Next Spindexer ange", Constants.Spindexer.INTAKE_SLOT_ANGLES[firstSlotNoColor]);
+        }
+    }
+
+    public void alwaysGoToNextIntakeSlot() {
+        int firstSlotNoColor = -1;
+        int currentSlot = getCurrentIntakeSlot();
+        for (int i = 1; i < 3; i++) {
             if (Status.slotColor[currentSlot % 3] != Constants.Game.ARTIFACT_COLOR.PURPLE && Status.slotColor[currentSlot % 3] != Constants.Game.ARTIFACT_COLOR.GREEN) {
                 firstSlotNoColor = (currentSlot % 3);
                 break;
@@ -202,7 +229,7 @@ public class Spindexer {
 
     public boolean jam() {
         double position = getRawAngle();
-        if (Math.abs(position - lastPosition) < Constants.Spindexer.JAM_ANGLE && robotContainer.beamBreakToggleButton.isPressed()) {
+        if (Math.abs(position - lastPosition) < Constants.Spindexer.JAM_ANGLE && robotContainer.beamBreakToggleButton.isPressed() && Math.abs(getError() - targetAngle) < 10) {
             this.lastPosition = position;
             return true;
         } else {
@@ -212,7 +239,7 @@ public class Spindexer {
     }
 
     public double getError() {
-        return getAngle() - (targetAngle + (Constants.Spindexer.ANGLE_OFFSET - 17));
+        return getAngle() - (targetAngle + (Constants.Spindexer.ANGLE_OFFSET));
     }
 
     @Deprecated
@@ -224,7 +251,7 @@ public class Spindexer {
         if (!jam()) {
             angle = angle + Constants.Spindexer.ANGLE_OFFSET;
             targetAngle = angle;
-            double target = angle / 360;
+            double target = angle / 355;
             robotContainer.telemetry.addData("Spin Power target", target);
             spindexerServo.updateSetPosition(target);
         } else {
