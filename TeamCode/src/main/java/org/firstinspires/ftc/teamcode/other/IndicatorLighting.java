@@ -15,6 +15,7 @@ public class IndicatorLighting {
     public static class Group {
         private final List<Light> lights = new ArrayList<>();
         private final RobotContainer robotContainer;
+        private final ElapsedTime lightTimer = new ElapsedTime();
 
         public Group(RobotContainer robotContainer) {
             this.robotContainer = robotContainer;
@@ -76,17 +77,19 @@ public class IndicatorLighting {
         }
 
         public void lightsUpdate() {
-            // See if I can lower the timer (0.4)
-            if (robotContainer.beamBreakToggleButton.getLetGoDuration() < 0.4 && Status.slotColor[robotContainer.spindexer.getCurrentIntakeSlot() % 3] == Constants.Game.ARTIFACT_COLOR.PURPLE) {
-                robotContainer.allIndicatorLights.flashing(Constants.LED.COLOR.VIOLET, Constants.LED.COLOR.OFF, 2, 1);
-            } else if (robotContainer.beamBreakToggleButton.getLetGoDuration() < 0.4 && Status.slotColor[robotContainer.spindexer.getCurrentIntakeSlot() % 3] == Constants.Game.ARTIFACT_COLOR.GREEN) {
-                robotContainer.allIndicatorLights.flashing(Constants.LED.COLOR.GREEN, Constants.LED.COLOR.OFF, 2, 1);
-            } else if (robotContainer.turret.flywheel.atTargetVelocity() && Status.flywheelToggle) {
-                robotContainer.allIndicatorLights.setColor(Constants.LED.COLOR.AZURE);
-            } else if (Status.flywheelToggle) {
-                robotContainer.allIndicatorLights.setColor(Constants.LED.COLOR.RED);
-            } else if (Status.intakeToggle) {
-                robotContainer.allIndicatorLights.setColor(Constants.LED.COLOR.ORANGE);
+            if (lightTimer.milliseconds() > 500) {
+                lightTimer.reset();
+                if (robotContainer.beamBreakToggleButton.getLetGoDuration() < 0.4 && Status.slotColor[robotContainer.spindexer.getCurrentIntakeSlot() % 3] == Constants.Game.ARTIFACT_COLOR.PURPLE) {
+                    robotContainer.allIndicatorLights.flashing(Constants.LED.COLOR.VIOLET, Constants.LED.COLOR.OFF, 2, 1);
+                } else if (robotContainer.beamBreakToggleButton.getLetGoDuration() < 0.4 && Status.slotColor[robotContainer.spindexer.getCurrentIntakeSlot() % 3] == Constants.Game.ARTIFACT_COLOR.GREEN) {
+                    robotContainer.allIndicatorLights.flashing(Constants.LED.COLOR.GREEN, Constants.LED.COLOR.OFF, 2, 1);
+                } else if (robotContainer.turret.flywheel.atTargetVelocity() && Status.flywheelToggle) {
+                    robotContainer.allIndicatorLights.setColor(Constants.LED.COLOR.AZURE);
+                } else if (Status.flywheelToggle) {
+                    robotContainer.allIndicatorLights.setColor(Constants.LED.COLOR.RED);
+                } else if (Status.intakeToggle) {
+                    robotContainer.allIndicatorLights.setColor(Constants.LED.COLOR.ORANGE);
+                }
             }
         }
 

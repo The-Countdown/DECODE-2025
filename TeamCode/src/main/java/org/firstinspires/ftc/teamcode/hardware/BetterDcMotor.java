@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.hardware;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorImplEx;
+import com.qualcomm.robotcore.hardware.PIDCoefficients;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
@@ -36,7 +39,7 @@ public class BetterDcMotor extends Thread {
         }
     }
 
-    public synchronized void updateSetPower(double power) {
+    public void updateSetPower(double power) {
         this.power = power;
         long currentTime = System.currentTimeMillis();
         if (currentTime - lastTimePower >= minTimeBetweenUpdates && power != lastPower) {
@@ -46,11 +49,11 @@ public class BetterDcMotor extends Thread {
         }
     }
 
-    public synchronized void setPower(double power) {
+    public void setPower(double power) {
         this.power = power;
     }
 
-    public synchronized void updateSetVelocity(double velocity) {
+    public void updateSetVelocity(double velocity) {
         this.velocity = velocity;
         long currentTime = System.currentTimeMillis();
         if (currentTime - lastTimeVelocity >= minTimeBetweenUpdates && velocity != lastVelocity) {
@@ -60,27 +63,34 @@ public class BetterDcMotor extends Thread {
         }
     }
 
-    public synchronized void setVelocity(double velocity) {
+    public void setVelocity(double velocity) {
         this.velocity = velocity;
     }
 
-    public synchronized void setZeroPowerBehavior(DcMotorImplEx.ZeroPowerBehavior mode) {
+    public void setZeroPowerBehavior(DcMotorImplEx.ZeroPowerBehavior mode) {
         motor.setZeroPowerBehavior(mode);
     }
 
-    public synchronized void setMode(DcMotorImplEx.RunMode mode) {
+    public void setMode(DcMotorImplEx.RunMode mode) {
         motor.setMode(mode);
     }
 
-    public synchronized void setDirection(DcMotorImplEx.Direction direction) {
+    public void setDirection(DcMotorImplEx.Direction direction) {
         motor.setDirection(direction);
+    }
+
+    public void setPIDF(PIDFCoefficients pidf) {
+        motor.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidf);
     }
     
     public double getPower() {
         return this.power;
     }
 
+//    public double getVelocity() {
+//        return this.velocity;
+//    }
     public double getVelocity() {
-        return this.velocity;
+        return motor.getVelocity();
     }
 }

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes.teleop;
 import static org.firstinspires.ftc.teamcode.main.Constants.Spindexer.axonTestAngle;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -72,11 +73,15 @@ public class TeleOp extends OpMode {
         robotContainer.controlHubCurrent = robotContainer.getCurrent(Constants.Robot.CONTROL_HUB_INDEX);
         robotContainer.expansionHubCurrent = robotContainer.getCurrent(Constants.Robot.EXPANSION_HUB_INDEX);
 
+        // Delete this
+        RobotContainer.HardwareDevices.flyWheelMotorMaster.setPIDF(new PIDFCoefficients(Constants.Turret.FLYWHEEL_P, Constants.Turret.FLYWHEEL_I, Constants.Turret.FLYWHEEL_D, Constants.Turret.FLYWHEEL_F));
+        RobotContainer.HardwareDevices.flyWheelMotorSlave.setPIDF(new PIDFCoefficients(Constants.Turret.FLYWHEEL_P, Constants.Turret.FLYWHEEL_I, Constants.Turret.FLYWHEEL_D, Constants.Turret.FLYWHEEL_F));
+
         // Gamepad 1
         robotContainer.drivetrain.controlUpdate();
         robotContainer.turret.hood.setPos(robotContainer.gamepadEx1.circle.isPressed() ? Constants.Turret.HOOD_PRESETS[1] : Constants.Turret.HOOD_PRESETS[0]);
 
-        if (robotContainer.gamepadEx1.options.wasJustPressed()) {
+        if (robotContainer.gamepadEx1.triangle.wasJustPressed()) {
             Status.manualControl = !Status.manualControl;
         }
 
@@ -178,7 +183,7 @@ public class TeleOp extends OpMode {
         // Update the breamBreak state
         robotContainer.beamBreakToggleButton.update(RobotContainer.HardwareDevices.beamBreak.isPressed());
 
-        if (robotContainer.beamBreakToggleButton.wasJustReleased() && robotContainer.intake.getPower() > 0 && spinTimer.milliseconds() > 400) {
+        if (robotContainer.beamBreakToggleButton.wasJustReleased() && robotContainer.intake.getPower() > 0 && spinTimer.milliseconds() > 300) {
             robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.function(), Constants.Spindexer.COLOR_SENSE_TIME);
             spinTimer.reset();
         }

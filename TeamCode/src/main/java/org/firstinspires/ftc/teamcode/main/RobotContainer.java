@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorImplEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -217,6 +218,8 @@ public class RobotContainer {
         HardwareDevices.intakeMotor = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "intakeMotor"), Constants.Robot.MOTOR_UPDATE_TIME);
         HardwareDevices.flyWheelMotorMaster = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "flyWheelMotorMaster"), Constants.Robot.MOTOR_UPDATE_TIME);
         HardwareDevices.flyWheelMotorSlave = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "flyWheelMotorSlave"), Constants.Robot.MOTOR_UPDATE_TIME);
+        HardwareDevices.flyWheelMotorMaster.setPIDF(new PIDFCoefficients(Constants.Turret.FLYWHEEL_P, Constants.Turret.FLYWHEEL_I, Constants.Turret.FLYWHEEL_D, Constants.Turret.FLYWHEEL_F));
+        HardwareDevices.flyWheelMotorSlave.setPIDF(new PIDFCoefficients(Constants.Turret.FLYWHEEL_P, Constants.Turret.FLYWHEEL_I, Constants.Turret.FLYWHEEL_D, Constants.Turret.FLYWHEEL_F));
 
         //sensor
         HardwareDevices.colorSensor = new BetterColorSensor(getHardwareDevice(RevColorSensorV3.class, "colorSensor"), Constants.Robot.COLOR_UPDATE_TIME);
@@ -492,6 +495,7 @@ public class RobotContainer {
             return;
         }
         if (Status.competitionMode) {
+            telemetry.addData("Spindexer Slot Colors", Arrays.toString(Status.slotColor));
             return;
         }
 //        TelemetryPacket packet = new TelemetryPacket();
@@ -502,12 +506,13 @@ public class RobotContainer {
         telemetry.addLine();
         telemetry.addData("Spindexer Angle", spindexer.getAngle());
         telemetry.addData("Spindexer Slot Colors", Arrays.toString(Status.slotColor));
-        telemetry.addLine();
+        telemetry.addData("flywheel target max vel", turret.flywheel.targetMaxVelocity);
+        telemetry.addData("flywheel target vel", turret.flywheel.targetVelocity);
+        telemetry.addData("flywheel current vel", turret.flywheel.getFlywheelVelocity());
+        telemetry.addData("flywheel atVelocity", turret.flywheel.atTargetVelocity());
+        telemetry.addData("flywheel speed", HardwareDevices.flyWheelMotorMaster.getVelocity());
 
-        telemetry.addData("target max vel", turret.flywheel.targetMaxVelocity);
-        telemetry.addData("target vel", turret.flywheel.targetVelocity);
-        telemetry.addData("current vel", turret.flywheel.getFlywheelVelocity());
-        telemetry.addData("atVelocity", turret.flywheel.atTargetVelocity());
+        telemetry.addLine();
 
         if (limelightLogic.limelight.getLatestResult().isValid()) {
             telemetry.addData("LL SEEE", "yay");
@@ -548,7 +553,6 @@ public class RobotContainer {
         telemetry.addData("Intake Enabled", Status.intakeToggle);
         telemetry.addLine();
         telemetry.addData("lower servo pos", HardwareDevices.transferServoLeft.getPosition());
-        telemetry.addData("flywheel speed", HardwareDevices.flyWheelMotorMaster.getVelocity());
         // telemetry.addData("flywheel current mA", HardwareDevices.flyWheelMotorMaster.getCurrent(CurrentUnit.MILLIAMPS));
         telemetry.addData("upper flywheel speed", HardwareDevices.flyWheelMotorSlave.getVelocity());
         // telemetry.addData("upper flywheel current mA", HardwareDevices.flyWheelMotorSlave.getCurrent(CurrentUnit.MILLIAMPS));

@@ -210,8 +210,8 @@ public class Constants {
     @Config
     public static class Pathing {
         public static final double
-                PINPOINT_X_OFFSET_MM = 176;
-        public static final double PINPOINT_Y_OFFSET_MM = 8;
+                PINPOINT_X_OFFSET_MM = 177;
+        public static final double PINPOINT_Y_OFFSET_MM = 7;
         public static final GoBildaPinpointDriver.GoBildaOdometryPods
                 PINPOINT_ODOM_POD = GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD;
         public static final GoBildaPinpointDriver.EncoderDirection
@@ -286,7 +286,7 @@ public class Constants {
         public static double FLYWHEEL_TOP_SPEED = 0.95;
         public static int FLYWHEEL_MAX_VELOCITY = 3000;
         public static double FLYWHEEL_CURVE = 4;
-        public static double[] FLYWHEEL_SPEED_TABLE = {0.51, 0.52, 0.54, 0.615, 0.645};
+        public static double[] FLYWHEEL_SPEED_TABLE = {0.48, 0.49, 0.516, 0.605, 0.6225};
         public static double[] FLYWHEEL_SPEED_TABLE_DISTANCES = {75, 80, 90, 130, 140};
         public static double TRACK_GOAL_P = -0.2;
         public static double[] HOOD_PRESETS = {0.51, 0.13};
@@ -296,7 +296,11 @@ public class Constants {
         public static double TURRET_LIMIT_MAX_SERVO = TURRET_LIMIT_MAX_ANGLE / 355;
         public static double TURRET_LIMIT_MIN = (TURRET_LIMIT_MIN_SERVO * 2) - 1;
         public static double TURRET_LIMIT_MAX = (TURRET_LIMIT_MAX_SERVO * 2) - 1;
-        public static double FLYWHEEL_POWER_AUTO = 0.62;
+        public static double FLYWHEEL_POWER_AUTO = 0.6;
+        public static double FLYWHEEL_P = 500;
+        public static double FLYWHEEL_I = 20;
+        public static double FLYWHEEL_D = 25;
+        public static double FLYWHEEL_F = 1200;
     }
 
     @Config
