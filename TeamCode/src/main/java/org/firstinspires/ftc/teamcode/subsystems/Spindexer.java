@@ -183,20 +183,6 @@ public class Spindexer {
         }
     }
 
-    public void goToNextGreenSlot() {
-        int firstSlotGreen = -1;
-        int currentSlot = getCurrentTransferSlot();
-        for (int i = 0; i < 3; i++) {
-            if (Status.slotColor[currentSlot] == Constants.Game.ARTIFACT_COLOR.GREEN) {
-                firstSlotGreen = (currentSlot % 3);
-            }
-            currentSlot++;
-        }
-        if (firstSlotGreen != -1) {
-            setPosDegrees(Constants.Spindexer.TRANSFER_SLOT_ANGLES[firstSlotGreen] + 60);
-        }
-    }
-
     public void shootNextBall() {
         Status.ballsToShoot -= 1;
         Status.turretToggle = true;

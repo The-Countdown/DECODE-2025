@@ -94,6 +94,13 @@ public class TeleOp extends OpMode {
 
         // Gamepad 2
 
+        if (robotContainer.gamepadEx2.dpadLeft.wasJustPressed()) {
+            robotContainer.spindexer.moveIntakeSlotLeft();
+        }
+
+        if (robotContainer.gamepadEx2.dpadRight.wasJustPressed()) {
+            robotContainer.spindexer.moveIntakeSlotRight();
+        }
         // Intake - Circle
         Status.intakeToggle = robotContainer.gamepadEx2.circle.wasJustPressed() != Status.intakeToggle;
         if (Status.intakeToggle) {
@@ -111,9 +118,9 @@ public class TeleOp extends OpMode {
             robotContainer.spindexer.goToNextIntakeSlot();
         }
 
-        if (Status.manualControl && robotContainer.gamepadEx2.dpadRight.isHeld()) {
-            robotContainer.turret.flywheel.setTargetVelocity(Math.min(Math.pow(robotContainer.gamepadEx2.dpadRight.getHoldDuration(), Constants.Turret.FLYWHEEL_CURVE), 1));
-        } else if (!Status.intakeToggle) {
+//        if (Status.manualControl && robotContainer.gamepadEx2.dpadRight.isHeld()) {
+//            robotContainer.turret.flywheel.setTargetVelocity(Math.min(Math.pow(robotContainer.gamepadEx2.dpadRight.getHoldDuration(), Constants.Turret.FLYWHEEL_CURVE), 1));
+        if (!Status.intakeToggle) {
             robotContainer.turret.flywheel.setTargetVelocity(Math.min(Status.turretToggleButton.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, robotContainer.turret.flywheel.interpolateByDistance(HelperFunctions.disToGoal())));
         } else {
             robotContainer.turret.flywheel.setTargetVelocity(0);
@@ -164,13 +171,6 @@ public class TeleOp extends OpMode {
             robotContainer.transfer.flapUp();
         } else if (robotContainer.gamepadEx2.leftBumper.wasJustReleased()) {
             robotContainer.transfer.flapDown();
-        }
-
-        if (robotContainer.gamepadEx2.dpadUp.wasJustPressed()) {
-            robotContainer.spindexer.goToNextGreenSlot();
-        }
-        if (robotContainer.gamepadEx2.dpadDown.wasJustPressed()) {
-            robotContainer.spindexer.goToNextPurpleSlot();
         }
 
         // No gamepad

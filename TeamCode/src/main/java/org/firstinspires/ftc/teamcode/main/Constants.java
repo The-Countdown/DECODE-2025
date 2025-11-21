@@ -286,7 +286,7 @@ public class Constants {
         public static double FLYWHEEL_TOP_SPEED = 0.95;
         public static int FLYWHEEL_MAX_VELOCITY = 3000;
         public static double FLYWHEEL_CURVE = 4;
-        public static double[] FLYWHEEL_SPEED_TABLE = {0.52, 0.5325, 0.56, 0.6515, 0.7065};
+        public static double[] FLYWHEEL_SPEED_TABLE = {0.51, 0.52, 0.54, 0.615, 0.645};
         public static double[] FLYWHEEL_SPEED_TABLE_DISTANCES = {75, 80, 90, 130, 140};
         public static double TRACK_GOAL_P = -0.2;
         public static double[] HOOD_PRESETS = {0.51, 0.13};
