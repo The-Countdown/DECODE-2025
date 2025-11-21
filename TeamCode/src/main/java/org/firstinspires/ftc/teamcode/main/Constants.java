@@ -319,7 +319,7 @@ public class Constants {
 
     @Config
     public static class Intake {
-        public static double TOP_SPEED = 0.8;
+        public static double TOP_SPEED = 0.9;
         public static double REVERSE_TOP_SPEED = 0.5;
         public static int RUNTIME_MS = 800;
         public static double DELAY_SECONDS = 0.2;

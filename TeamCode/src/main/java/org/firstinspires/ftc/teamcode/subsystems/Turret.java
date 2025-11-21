@@ -18,7 +18,7 @@ public class Turret extends RobotContainer.HardwareDevices {
     private final LinkedServos turretServos;
     public final BetterServo hoodServo;
     private double targetPosition = 0;
-    public double[] turretPositionTable = {0.78, 0.50, 0.2225}; // -90, 0, 90
+    public double[] turretPositionTable = {0.785, 0.50, 0.2225}; // -90, 0, 90
 
     public Turret(RobotContainer robotContainer, LinkedMotors flyWheelMotors, BetterServo hoodServo, LinkedServos turretServos) {
         this.robotContainer = robotContainer;
@@ -32,7 +32,7 @@ public class Turret extends RobotContainer.HardwareDevices {
     }
 
     public void resetTurretPositionTable () {
-        turretPositionTable[0] = 0.78;
+        turretPositionTable[0] = 0.785;
     }
 
     // TODO: Limit angle of rotation, and have that be configurable in constants

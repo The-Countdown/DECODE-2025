@@ -81,7 +81,7 @@ public class Auto extends OpMode {
         robotContainer.delayedActionManager.schedule(() -> Status.flywheelToggle = true, 0);
         robotContainer.delayedActionManager.schedule(() -> Status.intakeToggle = false, 0);
         robotContainer.delayedActionManager.schedule(() -> Status.turretToggle = true, 0);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.shootAll(), 500);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.shootAll(), 800);
         robotContainer.delayedActionManager.schedule(() -> robotContainer.turret.flywheel.setTargetVelocity(Constants.Turret.FLYWHEEL_POWER_AUTO), 0);
         robotContainer.delayedActionManager.schedule(() -> robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[1]), 0);
 
