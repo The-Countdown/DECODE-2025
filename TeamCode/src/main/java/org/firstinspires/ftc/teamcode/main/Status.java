@@ -36,8 +36,7 @@ public class Status {
 
     public static Pose2D GOAL_POSE;
     public static Pose2D startingPose;
-
-
+    public static Pose2D goalsideStartingPose;
     public static boolean robotTargetReached = false;
     public static boolean robotHeadingTargetReached = false;
     public static boolean robotLatitudeTargetReached = false;

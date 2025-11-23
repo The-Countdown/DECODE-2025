@@ -54,14 +54,14 @@ public class SixBallGoalsideAuto extends OpMode {
         robotContainer.localizationUpdater.start();
 
         if (Status.wentBackToStart) {
-            Status.startingPose = (Pose2D) blackboard.getOrDefault("pose", Status.startingPose);
+            Status.goalsideStartingPose = (Pose2D) blackboard.getOrDefault("pose", Status.goalsideStartingPose);
         }
         Status.slotColor[0] = Constants.Game.ARTIFACT_COLOR.PURPLE;
         Status.slotColor[1] = Constants.Game.ARTIFACT_COLOR.PURPLE;
         Status.slotColor[2] = Constants.Game.ARTIFACT_COLOR.PURPLE;
-        RobotContainer.HardwareDevices.pinpoint.setPosition(Status.startingPose);
+        RobotContainer.HardwareDevices.pinpoint.setPosition(Status.goalsideStartingPose);
         if (Status.alliance == Constants.Game.ALLIANCE.BLUE) {
-            robotContainer.pathPlanner.addPose(Status.startingPose);
+            robotContainer.pathPlanner.addPose(Status.goalsideStartingPose);
             robotContainer.pathPlanner.addPose(6000);
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_HIGH, BEFORE_TAPE, AngleUnit.DEGREES, 90));
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_HIGH, AFTER_TAPE, AngleUnit.DEGREES, 90));
@@ -70,7 +70,7 @@ public class SixBallGoalsideAuto extends OpMode {
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_MID, BEFORE_TAPE, AngleUnit.DEGREES, 90));
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_MID, AFTER_TAPE, AngleUnit.DEGREES, 90));
         } else {
-            robotContainer.pathPlanner.addPose(Status.startingPose);
+            robotContainer.pathPlanner.addPose(Status.goalsideStartingPose);
             robotContainer.pathPlanner.addPose(6000);
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_HIGH, -BEFORE_TAPE, AngleUnit.DEGREES, -90));
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_HIGH, -AFTER_TAPE, AngleUnit.DEGREES, -90));

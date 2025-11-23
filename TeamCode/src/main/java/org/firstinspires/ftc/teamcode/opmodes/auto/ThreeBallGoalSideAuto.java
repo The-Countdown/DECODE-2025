@@ -42,20 +42,20 @@ public class ThreeBallGoalSideAuto extends OpMode {
         robotContainer.localizationUpdater.start();
 
         if (Status.wentBackToStart) {
-            Status.startingPose = (Pose2D) blackboard.getOrDefault("pose", Status.startingPose);
+            Status.goalsideStartingPose = (Pose2D) blackboard.getOrDefault("pose", Status.goalsideStartingPose);
         }
         Status.slotColor[0] = Constants.Game.ARTIFACT_COLOR.PURPLE;
         Status.slotColor[1] = Constants.Game.ARTIFACT_COLOR.PURPLE;
         Status.slotColor[2] = Constants.Game.ARTIFACT_COLOR.PURPLE;
-        RobotContainer.HardwareDevices.pinpoint.setPosition(Status.startingPose);
+        RobotContainer.HardwareDevices.pinpoint.setPosition(Status.goalsideStartingPose);
         if (Status.alliance == Constants.Game.ALLIANCE.BLUE) {
-            robotContainer.pathPlanner.addPose(Status.startingPose);
+            robotContainer.pathPlanner.addPose(Status.goalsideStartingPose);
             robotContainer.pathPlanner.addPose(6000);
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.INCH, Status.startingPose.getX(DistanceUnit.INCH)-20, Status.startingPose.getY(DistanceUnit.INCH), AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)));
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.INCH, Status.goalsideStartingPose.getX(DistanceUnit.INCH)-20, Status.goalsideStartingPose.getY(DistanceUnit.INCH), AngleUnit.DEGREES, Status.goalsideStartingPose.getHeading(AngleUnit.DEGREES)));
         } else {
-            robotContainer.pathPlanner.addPose(Status.startingPose);
+            robotContainer.pathPlanner.addPose(Status.goalsideStartingPose);
             robotContainer.pathPlanner.addPose(6000);
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.INCH, Status.startingPose.getX(DistanceUnit.INCH)-20, Status.startingPose.getY(DistanceUnit.INCH), AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)));
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.INCH, Status.goalsideStartingPose.getX(DistanceUnit.INCH)-20, Status.goalsideStartingPose.getY(DistanceUnit.INCH), AngleUnit.DEGREES, Status.goalsideStartingPose.getHeading(AngleUnit.DEGREES)));
         }
 
         robotContainer.delayedActionManager.schedule(() -> Status.flywheelToggle = true, 0);

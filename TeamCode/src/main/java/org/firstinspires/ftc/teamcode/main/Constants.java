@@ -65,7 +65,9 @@ public class Constants {
                 )
         );
 
+        //public static double startingX = -142.5575, startingY = -18.415, startingHeading = -180;
         public static double startingX = -160.9725, startingY = -43.02125, startingHeading = -180; // Do NOT NOT ever change this heading unless you really know what you are doing.
+        public static double GoalsideStartingX = 142.5575, GoalsideStartingY = -18.415, GoalsideStartingHeading = 0;
 
         public static final int
                 CONTROL_HUB_INDEX = 0,
