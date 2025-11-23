@@ -67,15 +67,14 @@ public class SixBallAuto extends OpMode {
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_MID, AFTER_TAPE, AngleUnit.DEGREES, 90));
         } else {
             robotContainer.pathPlanner.addPose(Status.startingPose);
-            robotContainer.pathPlanner.addPose(6500);
+            robotContainer.pathPlanner.addPose(6000);
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_LOW, -BEFORE_TAPE, AngleUnit.DEGREES, -90));
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_LOW, -AFTER_TAPE, AngleUnit.DEGREES, -90));
             robotContainer.pathPlanner.addPose(Status.startingPose);
-            robotContainer.pathPlanner.addPose(6500);
+            robotContainer.pathPlanner.addPose(6000);
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_MID, -BEFORE_TAPE, AngleUnit.DEGREES, -90));
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_MID, -AFTER_TAPE, AngleUnit.DEGREES, -90));
         }
-
         robotContainer.delayedActionManager.schedule(() -> Status.flywheelToggle = true, 0);
         robotContainer.delayedActionManager.schedule(() -> Status.intakeToggle = false, 0);
         robotContainer.delayedActionManager.schedule(() -> Status.turretToggle = true, 0);
@@ -116,7 +115,6 @@ public class SixBallAuto extends OpMode {
         robotContainer.delayedActionManager.schedulePose(() -> robotContainer.turret.flywheel.setTargetVelocity(0));
         robotContainer.delayedActionManager.schedulePose(() -> robotContainer.spindexer.goToNextIntakeSlot());
 
-
         robotContainer.delayedActionManager.incrementPoseOffset();
         robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0.6));
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP /= 2);
@@ -145,7 +143,6 @@ public class SixBallAuto extends OpMode {
             robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.autoFunction(), Constants.Spindexer.COLOR_SENSE_TIME);
             spinTimer.reset();
         }
-
         blackboard.put("pose", Status.currentPose);
     }
 
