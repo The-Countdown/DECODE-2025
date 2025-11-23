@@ -296,7 +296,8 @@ public class Constants {
         public static double TURRET_LIMIT_MAX_SERVO = TURRET_LIMIT_MAX_ANGLE / 355;
         public static double TURRET_LIMIT_MIN = (TURRET_LIMIT_MIN_SERVO * 2) - 1;
         public static double TURRET_LIMIT_MAX = (TURRET_LIMIT_MAX_SERVO * 2) - 1;
-        public static double FLYWHEEL_POWER_AUTO = 0.6;
+        public static double FLYWHEEL_POWER_AUTO_FAR = 0.605;
+        public static double FLYWHEEL_POWER_AUTO_MIDDLE = 0.49;
         public static double FLYWHEEL_P = 500;
         public static double FLYWHEEL_I = 20;
         public static double FLYWHEEL_D = 25;
