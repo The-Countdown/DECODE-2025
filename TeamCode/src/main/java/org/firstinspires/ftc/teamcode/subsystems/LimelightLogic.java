@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
+import org.firstinspires.ftc.teamcode.util.LimeLightInfo;
 
 public class LimelightLogic {
     private RobotContainer robotContainer;
@@ -56,13 +57,20 @@ public class LimelightLogic {
     public Pose2D limelightBotPose() {
         if (result != null) {
             double a = Turret.turretServoMaster.getPosition() - 0.5;
-            double r = 6.819323 * 2.54; //68.19323mm
+            double r = 6.819323 * 2.54; // 6.819323cm to inch
             botPose = new Pose2D(DistanceUnit.INCH, -((result.getBotpose().getPosition().x * 100) / 2.54) + (Math.cos(a) * r), (((result.getBotpose().getPosition().y * 100) / 2.54) + (Math.sin(a)) * r), AngleUnit.DEGREES, 0);
         }
         return botPose;
     }
 
-
+    public LimeLightInfo limelightInfo() {
+        if (result != null) {
+            double a = Turret.turretServoMaster.getPosition() - 0.5;
+            double r = 6.819323 * 2.54; // 6.819323cm to inch
+            botPose = new Pose2D(DistanceUnit.INCH, -((result.getBotpose().getPosition().x * 100) / 2.54) + (Math.cos(a) * r), (((result.getBotpose().getPosition().y * 100) / 2.54) + (Math.sin(a)) * r), AngleUnit.DEGREES, 0);
+        }
+        return new LimeLightInfo(botPose, result);
+    }
 
     public Pose2D logicBotPoseCM() {
         if (result != null) {
@@ -158,3 +166,4 @@ public class LimelightLogic {
 
     }
 }
+

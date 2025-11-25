@@ -1,0 +1,51 @@
+package org.firstinspires.ftc.teamcode.util;
+
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.teamcode.hardware.BetterDcMotor;
+import org.firstinspires.ftc.teamcode.main.Constants;
+import org.firstinspires.ftc.teamcode.main.RobotContainer;
+import org.firstinspires.ftc.teamcode.main.Status;
+
+public class FlywheelPDF {
+    private final RobotContainer robotContainer;
+    private LinkedMotors flywheelMotors;
+
+    private boolean lastSign;
+    private double error;
+    private double lastError;
+    private double p;
+    private double ff;
+    private double d;
+
+    public FlywheelPDF(RobotContainer robotContainer, LinkedMotors flywheelMotors) {
+        this.robotContainer = robotContainer;
+        this.flywheelMotors = flywheelMotors;
+    }
+
+    /**
+     * Calculates the PDF output for the servo.
+     * @return The calculated PDF output.
+     */
+    public double calculate(double targetSpeed) {
+        double error = targetSpeed - flywheelMotors.getVelocity();
+
+        if (error > 200) {
+            return targetSpeed;
+        }
+
+        p = Constants.Turret.FLYWHEEL_P * error;
+        ff = Constants.Turret.FLYWHEEL_F * Math.signum(error);
+
+        d = Math.signum(error) * (Constants.Turret.FLYWHEEL_D * (lastError - error));
+
+        if (Math.signum(error) > 0) { // Current sign pos
+            lastSign = true;
+        } else if (Math.signum(error) < 0) { // Current sign neg
+            lastSign = false;
+        }
+
+        lastError = error;
+        return p + d + ff;
+    }
+}

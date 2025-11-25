@@ -6,6 +6,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
+import org.firstinspires.ftc.teamcode.util.FlywheelPDF;
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 import org.firstinspires.ftc.teamcode.util.LinkedMotors;
 import org.firstinspires.ftc.teamcode.util.LinkedServos;
@@ -17,6 +18,7 @@ public class Turret extends RobotContainer.HardwareDevices {
     private final LinkedMotors flyWheelMotors;
     private final LinkedServos turretServos;
     public final BetterServo hoodServo;
+    private final FlywheelPDF flywheelPDF;
     private double targetPosition = 0;
     public double[] turretPositionTable = {0.785, 0.50, 0.2225}; // -90, 0, 90
 
@@ -25,6 +27,23 @@ public class Turret extends RobotContainer.HardwareDevices {
         this.flyWheelMotors = flyWheelMotors;
         this.hoodServo = hoodServo;
         this.turretServos = turretServos;
+        this.flywheelPDF = new FlywheelPDF(robotContainer, flyWheelMotors);
+    }
+
+    public void update(boolean controllerInput) {
+        double flywheelTargetSpeed = 0;
+        if (controllerInput) {
+            if (!Status.intakeToggle) {
+                flywheelTargetSpeed = Math.min(Status.turretToggleButton.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, robotContainer.turret.flywheel.interpolateByDistance(HelperFunctions.disToGoal()));
+            } else {
+                flywheelTargetSpeed = 0;
+            }
+        }
+
+        Status.flywheelAtTargetSpeed = robotContainer.turret.flywheel.atTargetVelocity();
+        double targetPower = flywheelPDF.calculate(flywheelTargetSpeed);
+        flyWheelMotors.setPower(targetPower);
+
     }
 
     public void setTurretPositionTableForAuto () {
@@ -100,14 +119,14 @@ public class Turret extends RobotContainer.HardwareDevices {
         public double targetVelocity = 0;
         public double targetMaxVelocity = 0;
 
-        public void setTargetVelocity(double power) {
-            targetVelocity = Constants.Swerve.MOTOR_MAX_VELOCITY_TICKS_PER_SECOND * power;
-            if (Status.flywheelToggle) {
-                flyWheelMotors.setVelocity(targetVelocity);
-            } else {
-                flyWheelMotors.setVelocity(0);
-            }
-        }
+        // public void setTargetVelocity(double power) {
+        //     targetVelocity = Constants.Swerve.MOTOR_MAX_VELOCITY_TICKS_PER_SECOND * power;
+        //     if (Status.flywheelToggle) {
+        //         flyWheelMotors.setVelocity(targetVelocity);
+        //     } else {
+        //         flyWheelMotors.setVelocity(0);
+        //     }
+        // }
 
         public void setPower(double power) {
             flyWheelMotors.setPower(targetVelocity);

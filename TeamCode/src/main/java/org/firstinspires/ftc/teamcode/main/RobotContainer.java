@@ -41,6 +41,7 @@ import org.firstinspires.ftc.teamcode.subsystems.LimelightLogic;
 import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.PathPlanner;
 import org.firstinspires.ftc.teamcode.other.IndicatorLighting;
 import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.LocalizationUpdater;
+import org.firstinspires.ftc.teamcode.subsystems.PositionProvider;
 import org.firstinspires.ftc.teamcode.subsystems.Spindexer;
 import org.firstinspires.ftc.teamcode.subsystems.Transfer;
 import org.firstinspires.ftc.teamcode.subsystems.Turret;
@@ -93,6 +94,7 @@ public class RobotContainer {
     public PathingUpdater pathingUpdater;
     public PathPlanner pathPlanner;
     public LimelightLogic limelightLogic;
+    public PositionProvider positionProvider;
     public HuskyLensLogic huskyLensLogic1;
     public HuskyLensLogic huskyLensLogic2;
     public DelayedActionManager delayedActionManager = new DelayedActionManager(this);
@@ -218,8 +220,6 @@ public class RobotContainer {
         HardwareDevices.intakeMotor = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "intakeMotor"), Constants.Robot.MOTOR_UPDATE_TIME);
         HardwareDevices.flyWheelMotorMaster = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "flyWheelMotorMaster"), Constants.Robot.MOTOR_UPDATE_TIME);
         HardwareDevices.flyWheelMotorSlave = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "flyWheelMotorSlave"), Constants.Robot.MOTOR_UPDATE_TIME);
-        HardwareDevices.flyWheelMotorMaster.setPIDF(new PIDFCoefficients(Constants.Turret.FLYWHEEL_P, Constants.Turret.FLYWHEEL_I, Constants.Turret.FLYWHEEL_D, Constants.Turret.FLYWHEEL_F));
-        HardwareDevices.flyWheelMotorSlave.setPIDF(new PIDFCoefficients(Constants.Turret.FLYWHEEL_P, Constants.Turret.FLYWHEEL_I, Constants.Turret.FLYWHEEL_D, Constants.Turret.FLYWHEEL_F));
 
         //sensor
         HardwareDevices.colorSensor = new BetterColorSensor(getHardwareDevice(RevColorSensorV3.class, "colorSensor"), Constants.Robot.COLOR_UPDATE_TIME);
@@ -235,6 +235,7 @@ public class RobotContainer {
         Arrays.fill(Status.pathCompleted, false);
 
         limelightLogic = new LimelightLogic(this, telemetry, HardwareDevices.limelight);
+        positionProvider = new PositionProvider(this, limelightLogic, HardwareDevices.pinpoint);
         huskyLensLogic1 = new HuskyLensLogic(this, RobotContainer.HardwareDevices.huskyLens1);
         huskyLensLogic2 = new HuskyLensLogic(this, RobotContainer.HardwareDevices.huskyLens2);
         turret = new Turret(this, flyWheelMotors, HardwareDevices.hoodServo, turretServos);
@@ -514,7 +515,7 @@ public class RobotContainer {
         telemetry.addData("flywheel current vel", turret.flywheel.getFlywheelVelocity());
         telemetry.addData("flywheel atVelocity", turret.flywheel.atTargetVelocity());
         telemetry.addData("flywheel speed", HardwareDevices.flyWheelMotorMaster.getVelocity());
-
+        // telemetry.addData("turret interpolation", robotContainer.turret.flywheel.interpolateByDistance(HelperFunctions.disToGoal()));
         telemetry.addLine();
 
         if (limelightLogic.limelight.getLatestResult().isValid()) {
@@ -522,7 +523,7 @@ public class RobotContainer {
         } else {
             telemetry.addData("LL IS BLINDDD", "no yay");
         }
-        telemetry.addData("robot pos on field CM", limelightLogic.logicBotPoseCM());
+        telemetry.addData("robot pos on field CM", positionProvider.getRobotPose());
         telemetry.addData("Pinpoint X", Status.currentPose.getX(DistanceUnit.CM) + " cm");
         telemetry.addData("Pinpoint Y", Status.currentPose.getY(DistanceUnit.CM) + " cm");
         telemetry.addData("Pinpoint Heading", Status.currentHeading + "°");

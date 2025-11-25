@@ -71,10 +71,6 @@ public class TeleOp extends OpMode {
         robotContainer.controlHubCurrent = robotContainer.getCurrent(Constants.Robot.CONTROL_HUB_INDEX);
         robotContainer.expansionHubCurrent = robotContainer.getCurrent(Constants.Robot.EXPANSION_HUB_INDEX);
 
-        // Delete this
-        RobotContainer.HardwareDevices.flyWheelMotorMaster.setPIDF(new PIDFCoefficients(Constants.Turret.FLYWHEEL_P, Constants.Turret.FLYWHEEL_I, Constants.Turret.FLYWHEEL_D, Constants.Turret.FLYWHEEL_F));
-        RobotContainer.HardwareDevices.flyWheelMotorSlave.setPIDF(new PIDFCoefficients(Constants.Turret.FLYWHEEL_P, Constants.Turret.FLYWHEEL_I, Constants.Turret.FLYWHEEL_D, Constants.Turret.FLYWHEEL_F));
-
         // Gamepad 1
         robotContainer.drivetrain.controlUpdate();
         robotContainer.turret.hood.setPos(robotContainer.gamepadEx1.circle.isPressed() ? Constants.Turret.HOOD_PRESETS[1] : Constants.Turret.HOOD_PRESETS[0]);
@@ -120,16 +116,6 @@ public class TeleOp extends OpMode {
             Status.turretToggle = false;
             robotContainer.spindexer.goToNextIntakeSlot();
         }
-
-//        if (Status.manualControl && robotContainer.gamepadEx2.dpadRight.isHeld()) {
-//            robotContainer.turret.flywheel.setTargetVelocity(Math.min(Math.pow(robotContainer.gamepadEx2.dpadRight.getHoldDuration(), Constants.Turret.FLYWHEEL_CURVE), 1));
-        if (!Status.intakeToggle) {
-            robotContainer.turret.flywheel.setTargetVelocity(Math.min(Status.turretToggleButton.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, robotContainer.turret.flywheel.interpolateByDistance(HelperFunctions.disToGoal())));
-        } else {
-            robotContainer.turret.flywheel.setTargetVelocity(0);
-        }
-
-        Status.flywheelAtTargetSpeed = robotContainer.turret.flywheel.atTargetVelocity();
 
         // Turret turn - Right stick X
         if (Status.manualControl) {
@@ -197,8 +183,6 @@ public class TeleOp extends OpMode {
         } else if (robotContainer.limelightLogic.limelight.getLatestResult() == null){
             robotContainer.telemetry.addLine("robot pos on field no see");
         }
-
-        robotContainer.telemetry.addData("turret interpolation", robotContainer.turret.flywheel.interpolateByDistance(HelperFunctions.disToGoal()));
 
         robotContainer.telemetry("teleOp");
         Thread.yield();
