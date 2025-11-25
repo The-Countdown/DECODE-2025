@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.LocalizationUpdate
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
+import org.firstinspires.ftc.teamcode.subsystems.LimelightLogic;
 
 @Autonomous(name="ThreeBallAuto", group="Robot")
 @Config
@@ -36,6 +37,7 @@ public class ThreeBallAuto extends OpMode {
         Status.intakeToggle = true;
         Status.turretToggle = false;
         Status.flywheelToggle = false;
+        Constants.Game.MOTIF motif = Constants.Game.MOTIF.Unknown;
         robotContainer.start(this, true);
         // This is important do not remove it, we do not know why it is here. (Cole, Elliot)
         robotContainer.localizationUpdater = new LocalizationUpdater(robotContainer);
@@ -58,10 +60,11 @@ public class ThreeBallAuto extends OpMode {
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.INCH, Status.startingPose.getX(DistanceUnit.INCH)+20, Status.startingPose.getY(DistanceUnit.INCH), AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)));
         }
 
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.limelightLogic.findMotif(), 0);
         robotContainer.delayedActionManager.schedule(() -> Status.flywheelToggle = true, 0);
         robotContainer.delayedActionManager.schedule(() -> Status.intakeToggle = false, 0);
         robotContainer.delayedActionManager.schedule(() -> Status.turretToggle = true, 0);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.shootAll(), 800);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.shootAll(true), 800);
         robotContainer.delayedActionManager.schedule(() -> robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[1]), 0);
 
         robotContainer.delayedActionManager.incrementPoseOffset(2);

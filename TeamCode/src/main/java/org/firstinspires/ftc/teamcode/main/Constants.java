@@ -36,7 +36,8 @@ public class Constants {
         public enum MOTIF {
             GPP,
             PGP,
-            PPG
+            PPG,
+            Unknown
         }
 
         public enum ARTIFACT_COLOR{

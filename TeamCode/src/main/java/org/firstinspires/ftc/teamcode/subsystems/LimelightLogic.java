@@ -108,6 +108,26 @@ public class LimelightLogic {
         for (LLResultTypes.FiducialResult tag : result.getFiducialResults()) {
             if (checkMotif(tag) != null) {
                 Status.motif = checkMotif(tag);
+                switch(Status.motif){
+                    case PPG:
+                        Status.ballsToShootOrder[0] = 0;
+                        Status.ballsToShootOrder[1] = 0;
+                        Status.ballsToShootOrder[2] = 1;
+                        break;
+                    case PGP:
+                        Status.ballsToShootOrder[0] = 0;
+                        Status.ballsToShootOrder[1] = 1;
+                        Status.ballsToShootOrder[2] = 0;
+                        break;
+                    case GPP:
+                        Status.ballsToShootOrder[0] = 1;
+                        Status.ballsToShootOrder[1] = 0;
+                        Status.ballsToShootOrder[2] = 0;
+                        break;
+                    default:
+                        break;
+                }
+
                 robotContainer.addRetainedTelemetry("Motif Found", checkMotif(tag));
             }
         }
