@@ -47,6 +47,8 @@ import org.firstinspires.ftc.teamcode.subsystems.Transfer;
 import org.firstinspires.ftc.teamcode.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.util.DelayedActionManager;
 import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
+import org.firstinspires.ftc.teamcode.util.HelperFunctions;
+import org.firstinspires.ftc.teamcode.util.LimeLightInfo;
 import org.firstinspires.ftc.teamcode.util.LinkedMotors;
 import org.firstinspires.ftc.teamcode.util.LinkedServos;
 
@@ -503,31 +505,44 @@ public class RobotContainer {
             return;
         }
 //        TelemetryPacket packet = new TelemetryPacket();
-        telemetry.addData("Control Hub Voltage", controlHubVoltage + " V");
-        telemetry.addData("Expansion Hub Voltage", expansionHubVoltage + " V");
-        telemetry.addData("Control Hub Current", controlHubCurrent + " A");
-        telemetry.addData("Expansion Hub Current", expansionHubCurrent + " A");
+//        telemetry.addData("Control Hub Voltage", controlHubVoltage + " V");
+//        telemetry.addData("Expansion Hub Voltage", expansionHubVoltage + " V");
+//        telemetry.addData("Control Hub Current", controlHubCurrent + " A");
+//        telemetry.addData("Expansion Hub Current", expansionHubCurrent + " A");
+//        telemetry.addLine();
+//        telemetry.addData("Spindexer Angle", spindexer.getAngle());
+//        telemetry.addData("Spindexer Slot Colors", Arrays.toString(Status.slotColor));
+//        telemetry.addData("flywheel target max vel", turret.flywheel.targetMaxVelocity);
+//        telemetry.addData("flywheel target vel", turret.flywheel.targetVelocity);
+//        telemetry.addData("flywheel current vel", turret.flywheel.getFlywheelVelocity());
+//        telemetry.addData("flywheel atVelocity", turret.flywheel.atTargetVelocity());
+//        telemetry.addData("flywheel speed", HardwareDevices.flyWheelMotorMaster.getVelocity());
+        telemetry.addData("turret interpolation", turret.flywheel.interpolateByDistance(HelperFunctions.disToGoal()));
         telemetry.addLine();
-        telemetry.addData("Spindexer Angle", spindexer.getAngle());
-        telemetry.addData("Spindexer Slot Colors", Arrays.toString(Status.slotColor));
-        telemetry.addData("flywheel target max vel", turret.flywheel.targetMaxVelocity);
-        telemetry.addData("flywheel target vel", turret.flywheel.targetVelocity);
-        telemetry.addData("flywheel current vel", turret.flywheel.getFlywheelVelocity());
-        telemetry.addData("flywheel atVelocity", turret.flywheel.atTargetVelocity());
-        telemetry.addData("flywheel speed", HardwareDevices.flyWheelMotorMaster.getVelocity());
-        // telemetry.addData("turret interpolation", robotContainer.turret.flywheel.interpolateByDistance(HelperFunctions.disToGoal()));
-        telemetry.addLine();
+        telemetry.addData("Vision Pose List Size", positionProvider.getVisionPoseList().size());
 
-        if (limelightLogic.limelight.getLatestResult().isValid()) {
-            telemetry.addData("LL SEEE", "yay");
+        if (limelightLogic.limelight.getLatestResult() != null) {
+            telemetry.addData("LL SEE", "yay");
         } else {
-            telemetry.addData("LL IS BLINDDD", "no yay");
+            telemetry.addData("LL IS BLIND", "no yay");
         }
+        LimeLightInfo LLInfo = limelightLogic.limelightInfo();
+        if (LLInfo != null) {
+            telemetry.addData("Vision tx", limelightLogic.limelightInfo().result.getTx());
+            telemetry.addData("Vision ty", limelightLogic.limelightInfo().result.getTy());
+        } else {
+            telemetry.addData("Vision tx", 0);
+            telemetry.addData("Vision ty", 0);
+        }
+
         telemetry.addData("robot pos on field CM", positionProvider.getRobotPose());
         telemetry.addLine();
-        telemetry.addData("Pinpoint X", Status.currentPose.getX(DistanceUnit.CM) + " cm");
-        telemetry.addData("Pinpoint Y", Status.currentPose.getY(DistanceUnit.CM) + " cm");
-        telemetry.addData("Pinpoint Heading", Status.currentHeading + "°");
+        telemetry.addData("Vision offset pose", positionProvider.getVisionOffsetPose());
+        telemetry.addLine();
+        telemetry.addData("Pinpoint position", HardwareDevices.pinpoint.getPosition());
+//        telemetry.addData("Pinpoint X", Status.currentPose.getX(DistanceUnit.CM) + " cm");
+//        telemetry.addData("Pinpoint Y", Status.currentPose.getY(DistanceUnit.CM) + " cm");
+//        telemetry.addData("Pinpoint Heading", Status.currentHeading + "°");
         telemetry.addData("PINPOINT STATUS", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
         telemetry.addLine();
         telemetry.addData("OpMode Avg Loop Time", (int) getRollingAverageLoopTime(opMode) + " ms");

@@ -66,10 +66,11 @@ public class LimelightLogic {
     public LimeLightInfo limelightInfo() {
         if (result != null) {
             double a = Turret.turretServoMaster.getPosition() - 0.5;
-            double r = 6.819323 * 2.54; // 6.819323cm to inch
+            double r = 6.819323 / 2.54; // This should in fact be a negative I think
             botPose = new Pose2D(DistanceUnit.INCH, -((result.getBotpose().getPosition().x * 100) / 2.54) + (Math.cos(a) * r), (((result.getBotpose().getPosition().y * 100) / 2.54) + (Math.sin(a)) * r), AngleUnit.DEGREES, 0);
+            return new LimeLightInfo(botPose, result);
         }
-        return new LimeLightInfo(botPose, result);
+        return null;
     }
 
     public Pose2D logicBotPoseCM() {

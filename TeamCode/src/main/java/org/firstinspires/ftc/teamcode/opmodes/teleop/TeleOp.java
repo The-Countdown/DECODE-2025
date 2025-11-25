@@ -71,6 +71,9 @@ public class TeleOp extends OpMode {
         robotContainer.controlHubCurrent = robotContainer.getCurrent(Constants.Robot.CONTROL_HUB_INDEX);
         robotContainer.expansionHubCurrent = robotContainer.getCurrent(Constants.Robot.EXPANSION_HUB_INDEX);
 
+        robotContainer.turret.update(true);
+        robotContainer.positionProvider.update();
+
         // Gamepad 1
         robotContainer.drivetrain.controlUpdate();
         robotContainer.turret.hood.setPos(robotContainer.gamepadEx1.circle.isPressed() ? Constants.Turret.HOOD_PRESETS[1] : Constants.Turret.HOOD_PRESETS[0]);

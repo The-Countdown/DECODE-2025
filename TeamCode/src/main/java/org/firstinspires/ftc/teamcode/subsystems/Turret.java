@@ -93,12 +93,6 @@ public class Turret extends RobotContainer.HardwareDevices {
             xDiff = Status.GOAL_POSE.getX(DistanceUnit.CM) + Status.currentPose.getX(DistanceUnit.CM);
             yDiff = Status.GOAL_POSE.getY(DistanceUnit.CM) - Status.currentPose.getY(DistanceUnit.CM);
         }
-        // double angleToFaceGoal = Math.toDegrees(Math.atan2(yDiff, xDiff)) - Status.currentHeading;
-        // if (!Double.isNaN(angleToFaceGoal)) {
-        //     setTargetAngle(angleToFaceGoal);
-        //     robotContainer.telemetry.addData("Angle To Face Goal", angleToFaceGoal);
-        // }
-        //
         robotContainer.telemetry.addData("Goal x cm", Status.GOAL_POSE.getX(DistanceUnit.CM));
         robotContainer.telemetry.addData("Goal y cm", Status.GOAL_POSE.getY(DistanceUnit.CM));
         robotContainer.telemetry.addData("Robot x cm", Status.currentPose.getX(DistanceUnit.CM));
