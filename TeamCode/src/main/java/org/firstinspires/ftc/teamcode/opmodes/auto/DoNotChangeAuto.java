@@ -12,9 +12,9 @@ import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 
-@Autonomous(name="ThreeBallGoalSideAuto", group="Robot")
+@Autonomous(name="ThreeBallAuto", group="Robot")
 @Config
-public class ThreeBallGoalSideAuto extends OpMode {
+public class DoNotChangeAuto extends OpMode {
     private RobotContainer robotContainer;
 
     @Override
@@ -42,26 +42,27 @@ public class ThreeBallGoalSideAuto extends OpMode {
         robotContainer.localizationUpdater.start();
 
         if (Status.wentBackToStart) {
-            Status.goalsideStartingPose = (Pose2D) blackboard.getOrDefault("pose", Status.goalsideStartingPose);
+            Status.startingPose = (Pose2D) blackboard.getOrDefault("pose", Status.startingPose);
         }
         Status.slotColor[0] = Constants.Game.ARTIFACT_COLOR.PURPLE;
         Status.slotColor[1] = Constants.Game.ARTIFACT_COLOR.PURPLE;
         Status.slotColor[2] = Constants.Game.ARTIFACT_COLOR.PURPLE;
-        RobotContainer.HardwareDevices.pinpoint.setPosition(Status.goalsideStartingPose);
+        RobotContainer.HardwareDevices.pinpoint.setPosition(Status.startingPose);
         if (Status.alliance == Constants.Game.ALLIANCE.BLUE) {
-            robotContainer.pathPlanner.addPose(Status.goalsideStartingPose);
+            robotContainer.pathPlanner.addPose(Status.startingPose);
             robotContainer.pathPlanner.addPose(6000);
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.INCH, Status.goalsideStartingPose.getX(DistanceUnit.INCH)-20, Status.goalsideStartingPose.getY(DistanceUnit.INCH), AngleUnit.DEGREES, Status.goalsideStartingPose.getHeading(AngleUnit.DEGREES)));
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.INCH, Status.startingPose.getX(DistanceUnit.INCH)+20, Status.startingPose.getY(DistanceUnit.INCH), AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)));
         } else {
-            robotContainer.pathPlanner.addPose(Status.goalsideStartingPose);
+            robotContainer.pathPlanner.addPose(Status.startingPose);
             robotContainer.pathPlanner.addPose(6000);
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.INCH, Status.goalsideStartingPose.getX(DistanceUnit.INCH)-20, Status.goalsideStartingPose.getY(DistanceUnit.INCH), AngleUnit.DEGREES, Status.goalsideStartingPose.getHeading(AngleUnit.DEGREES)));
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.INCH, Status.startingPose.getX(DistanceUnit.INCH)+20, Status.startingPose.getY(DistanceUnit.INCH), AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)));
         }
 
         robotContainer.delayedActionManager.schedule(() -> Status.flywheelToggle = true, 0);
         robotContainer.delayedActionManager.schedule(() -> Status.intakeToggle = false, 0);
         robotContainer.delayedActionManager.schedule(() -> Status.turretToggle = true, 0);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.shootAll(true), 800);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.shootAll(false), 800);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[1]), 0);
 
         robotContainer.delayedActionManager.incrementPoseOffset(2);
         robotContainer.delayedActionManager.schedulePose(() -> Status.flywheelToggle = false);

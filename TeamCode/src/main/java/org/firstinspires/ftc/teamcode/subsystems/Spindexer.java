@@ -178,23 +178,48 @@ public class Spindexer {
         }
     }
 
-    public void shootNextBall() {
+    public void goToNextGreenSlot() {
+        int firstSlotGreen = -1;
+        int currentSlot = getCurrentTransferSlot();
+        for (int i = 0; i < 3; i++) {
+            if (Status.slotColor[currentSlot] == Constants.Game.ARTIFACT_COLOR.GREEN) {
+                firstSlotGreen = (currentSlot % 3);
+            }
+            currentSlot++;
+        }
+        if (firstSlotGreen != -1) {
+            setPosDegrees(Constants.Spindexer.TRANSFER_SLOT_ANGLES[firstSlotGreen] + 60);
+        }
+    }
+
+    public void shootNextBall(boolean matchMotif) {
         Status.ballsToShoot -= 1;
         Status.turretToggle = true;
         Status.intakeToggle = false;
         Status.flywheelToggle = true;
-        robotContainer.spindexer.goToNextTransferSlot();
+
+        if (matchMotif) {
+            if (Status.ballsToShootOrder[Status.ballsToShoot-1] == 0) {
+                robotContainer.spindexer.goToNextPurpleSlot();
+            } else {
+                robotContainer.spindexer.goToNextGreenSlot();
+            }
+        } else {
+            robotContainer.spindexer.goToNextTransferSlot();
+        }
+
         robotContainer.delayedActionManager.schedule(()-> robotContainer.transfer.flapUp(), 1200);
         robotContainer.delayedActionManager.schedule(()-> robotContainer.transfer.flapDown(), Constants.Transfer.FLIP_TIME + 1200);
         robotContainer.delayedActionManager.schedule(()-> Status.slotColor[robotContainer.spindexer.getCurrentTransferSlot()] = Constants.Game.ARTIFACT_COLOR.NONE, Constants.Transfer.FLIP_TIME + 1200);
+
         if (Status.ballsToShoot > 0) {
-            robotContainer.delayedActionManager.schedule(() -> shootNextBall(), Constants.Transfer.FLIP_TIME + 1600);
+            robotContainer.delayedActionManager.schedule(() -> shootNextBall(matchMotif), Constants.Transfer.FLIP_TIME + 1600);
         }
     }
 
-    public void shootAll() {
+    public void shootAll(boolean matchMotif) {
         Status.ballsToShoot = 3;
-        shootNextBall();
+        shootNextBall(matchMotif);
     }
 
     public boolean isFull() {
