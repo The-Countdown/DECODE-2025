@@ -46,6 +46,7 @@ public class PositionProvider {
 
             visionOffsetPose = new Pose2D(DistanceUnit.CM, llX - odPose.getX(DistanceUnit.CM), llY - odPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, llHeading - odPose.getHeading(AngleUnit.DEGREES));
         }
+        Status.currentPose = getRobotPose();
     }
 
     private Pose2D getGoodLimeLightPose() {
@@ -58,11 +59,11 @@ public class PositionProvider {
         double y = info.pose.getY(DistanceUnit.CM);
         double yaw = info.pose.getHeading(AngleUnit.DEGREES);
         // If outside the field x
-        if (x < 0 || x > 1.8288) {
+        if (x < -1.8288 || x > 1.8288) {
             return null;
         }
         // If outside the field y
-        if (y < 0 || y > 1.8288) {
+        if (y < -1.8288 || y > 1.8288) {
             return null;
         }
         // If yaw is impossible

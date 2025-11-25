@@ -524,6 +524,7 @@ public class RobotContainer {
             telemetry.addData("LL IS BLINDDD", "no yay");
         }
         telemetry.addData("robot pos on field CM", positionProvider.getRobotPose());
+        telemetry.addLine();
         telemetry.addData("Pinpoint X", Status.currentPose.getX(DistanceUnit.CM) + " cm");
         telemetry.addData("Pinpoint Y", Status.currentPose.getY(DistanceUnit.CM) + " cm");
         telemetry.addData("Pinpoint Heading", Status.currentHeading + "°");
