@@ -53,14 +53,16 @@ public class LimelightLogic {
         }
     }
 
-    public Pose2D logicBotPose() {
+    public Pose2D limelightBotPose() {
         if (result != null) {
             double a = Turret.turretServoMaster.getPosition() - 0.5;
-            double r = 6.819323 / 2.54; //68.19323mm
+            double r = 6.819323 * 2.54; //68.19323mm
             botPose = new Pose2D(DistanceUnit.INCH, -((result.getBotpose().getPosition().x * 100) / 2.54) + (Math.cos(a) * r), (((result.getBotpose().getPosition().y * 100) / 2.54) + (Math.sin(a)) * r), AngleUnit.DEGREES, 0);
         }
         return botPose;
     }
+
+
 
     public Pose2D logicBotPoseCM() {
         if (result != null) {
@@ -73,7 +75,7 @@ public class LimelightLogic {
 
     public double disToGoal() {
         if (result != null) {
-            Pose2D botPose = logicBotPose();
+            Pose2D botPose = limelightBotPose();
             double xDiff = Status.GOAL_POSE.getX(DistanceUnit.INCH) - botPose.getX(DistanceUnit.INCH);
             double yDiff = Status.GOAL_POSE.getY(DistanceUnit.INCH) - botPose.getY(DistanceUnit.INCH);
             return Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));

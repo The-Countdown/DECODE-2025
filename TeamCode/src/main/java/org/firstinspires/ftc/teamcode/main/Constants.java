@@ -65,7 +65,9 @@ public class Constants {
                 )
         );
 
+        //public static double startingX = -142.5575, startingY = -18.415, startingHeading = -180;
         public static double startingX = -160.9725, startingY = -43.02125, startingHeading = -180; // Do NOT NOT ever change this heading unless you really know what you are doing.
+        public static double GoalsideStartingX = 142.5575, GoalsideStartingY = -18.415, GoalsideStartingHeading = 0;
 
         public static final int
                 CONTROL_HUB_INDEX = 0,
@@ -240,6 +242,7 @@ public class Constants {
         public static double LATITUDE_PID_TOLERANCE_CM = 1;
         public static double LONGITUDE_PID_TOLERANCE_CM = 1;
         public static int PINPOINT_UPDATE_DELAY_MS = 50;
+        public static int LIMELIGHT_UPDATE_AVERAGING_MS = 500;
     }
 
     @Config
@@ -296,7 +299,9 @@ public class Constants {
         public static double TURRET_LIMIT_MAX_SERVO = TURRET_LIMIT_MAX_ANGLE / 355;
         public static double TURRET_LIMIT_MIN = (TURRET_LIMIT_MIN_SERVO * 2) - 1;
         public static double TURRET_LIMIT_MAX = (TURRET_LIMIT_MAX_SERVO * 2) - 1;
-        public static double FLYWHEEL_POWER_AUTO = 0.6;
+        public static double FLYWHEEL_POWER_AUTO_FAR = 0.605;
+        public static double FLYWHEEL_POWER_AUTO_MIDDLE = 0.49;
+        public static double FLYWHEEL_POWER_AUTO_NEAR = 0.48;
         public static double FLYWHEEL_P = 500;
         public static double FLYWHEEL_I = 20;
         public static double FLYWHEEL_D = 25;
