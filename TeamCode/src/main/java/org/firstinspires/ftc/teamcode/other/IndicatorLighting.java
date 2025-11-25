@@ -77,7 +77,7 @@ public class IndicatorLighting {
         }
 
         public void lightsUpdate() {
-            if (lightTimer.milliseconds() > 500) {
+            if (lightTimer.milliseconds() > 250) {
                 lightTimer.reset();
                 if (robotContainer.beamBreakToggleButton.getLetGoDuration() < 0.4 && Status.slotColor[robotContainer.spindexer.getCurrentIntakeSlot() % 3] == Constants.Game.ARTIFACT_COLOR.PURPLE) {
                     robotContainer.allIndicatorLights.flashing(Constants.LED.COLOR.VIOLET, Constants.LED.COLOR.OFF, 2, 1);
