@@ -242,6 +242,7 @@ public class Constants {
         public static double LATITUDE_PID_TOLERANCE_CM = 1;
         public static double LONGITUDE_PID_TOLERANCE_CM = 1;
         public static int PINPOINT_UPDATE_DELAY_MS = 50;
+        public static int LIMELIGHT_UPDATE_AVERAGING_MS = 500;
     }
 
     @Config

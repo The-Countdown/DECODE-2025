@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
-import static org.firstinspires.ftc.teamcode.main.Constants.Spindexer.axonTestAngle;
-
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -194,7 +192,7 @@ public class TeleOp extends OpMode {
         // }
 
         if (robotContainer.limelightLogic.limelight.getLatestResult().isValid()) {
-            robotContainer.telemetry.addData("robot pos on field", robotContainer.limelightLogic.logicBotPose());
+            robotContainer.telemetry.addData("robot pos on field", robotContainer.limelightLogic.limelightBotPose());
             robotContainer.telemetry.addData("distance to goal", robotContainer.limelightLogic.disToGoal());
         } else if (robotContainer.limelightLogic.limelight.getLatestResult() == null){
             robotContainer.telemetry.addLine("robot pos on field no see");
