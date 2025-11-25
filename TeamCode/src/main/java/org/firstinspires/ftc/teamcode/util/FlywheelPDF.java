@@ -11,7 +11,6 @@ public class FlywheelPDF {
     private final RobotContainer robotContainer;
     private LinkedMotors flywheelMotors;
 
-    private boolean lastSign;
     private double error;
     private double lastError;
     private double p;
@@ -31,19 +30,13 @@ public class FlywheelPDF {
         double error = targetSpeed - flywheelMotors.getVelocity();
 
         if (error > 200) {
-            return targetSpeed;
+            return 1;
         }
 
         p = Constants.Turret.FLYWHEEL_P * error;
         ff = Constants.Turret.FLYWHEEL_F * Math.signum(error);
 
         d = Math.signum(error) * (Constants.Turret.FLYWHEEL_D * (lastError - error));
-
-        if (Math.signum(error) > 0) { // Current sign pos
-            lastSign = true;
-        } else if (Math.signum(error) < 0) { // Current sign neg
-            lastSign = false;
-        }
 
         lastError = error;
         return p + d + ff;
