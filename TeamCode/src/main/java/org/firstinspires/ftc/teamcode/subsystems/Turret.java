@@ -40,9 +40,11 @@ public class Turret extends RobotContainer.HardwareDevices {
             }
         }
 
+        flywheelTargetSpeed = flywheelTargetSpeed * Constants.Turret.FLYWHEEL_MAX_VELOCITY;
         Status.flywheelAtTargetSpeed = robotContainer.turret.flywheel.atTargetVelocity();
         double targetPower = flywheelPDF.calculate(flywheelTargetSpeed);
-        robotContainer.telemetry.addData("Flywheel", targetPower);
+        robotContainer.telemetry.addData("Flywheel Target Speed", flywheelTargetSpeed);
+        robotContainer.telemetry.addData("Flywheel Power", targetPower);
         flyWheelMotors.setPower(targetPower);
 
     }

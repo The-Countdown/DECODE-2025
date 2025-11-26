@@ -47,7 +47,7 @@ public class TeleOp extends OpMode {
         Status.slotColor[1] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;
         Status.slotColor[2] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;
         RobotContainer.HardwareDevices.limelight.start();
-        robotContainer.start(this, false);
+        robotContainer.start(this, true);
         Status.isDrivingActive = true;
         robotContainer.spindexer.setPosDegrees(Constants.Spindexer.INTAKE_SLOT_ANGLES[0]);
     }
@@ -92,6 +92,10 @@ public class TeleOp extends OpMode {
 
         if (robotContainer.gamepadEx1.dpadUp.wasJustPressed()) {
             robotContainer.spindexer.slotUpdate(); // Fill the current slot
+        }
+
+        if(robotContainer.gamepadEx1.dpadDown.wasJustPressed()){
+
         }
 
         // Gamepad 2

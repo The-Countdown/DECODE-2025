@@ -303,7 +303,7 @@ public class Constants {
         public static double FLYWHEEL_POWER_AUTO_FAR = 0.605;
         public static double FLYWHEEL_POWER_AUTO_MIDDLE = 0.49;
         public static double FLYWHEEL_POWER_AUTO_NEAR = 0.48;
-        public static double FLYWHEEL_P = 0.5;
+        public static double FLYWHEEL_P = 0.0003;
         public static double FLYWHEEL_I = 0.0;
         public static double FLYWHEEL_D = 0.0;
         public static double FLYWHEEL_F = 0.0;
