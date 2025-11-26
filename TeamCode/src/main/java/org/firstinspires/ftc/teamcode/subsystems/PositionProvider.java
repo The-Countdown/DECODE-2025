@@ -46,42 +46,46 @@ public class PositionProvider {
         return visionPoseList;
     }
 
-    public void update() {
-        Pose2D odPose = RobotContainer.HardwareDevices.pinpoint.getPosition();
-        Pose2D visionPose = getGoodLimeLightPose();
-        if (lastODPose == null) {
-            lastODPose = odPose;
-        }
+    public void update(boolean LimeLight) {
+        if (LimeLight) {
+            Pose2D odPose = RobotContainer.HardwareDevices.pinpoint.getPosition();
+            Pose2D visionPose = getGoodLimeLightPose();
+            if (lastODPose == null) {
+                lastODPose = odPose;
+            }
 
-        if (visionPose != null) {
-            // If robot has not moved much
-            if (Math.abs(lastODPose.getX(DistanceUnit.CM) - odPose.getX(DistanceUnit.CM)) < 0.1 && Math.abs(lastODPose.getY(DistanceUnit.CM) - odPose.getY(DistanceUnit.CM)) < 0.1) {
-                visionPoseList.add(visionPose);
+            if (visionPose != null) {
+                // If robot has not moved much
+                if (Math.abs(lastODPose.getX(DistanceUnit.CM) - odPose.getX(DistanceUnit.CM)) < 0.1 && Math.abs(lastODPose.getY(DistanceUnit.CM) - odPose.getY(DistanceUnit.CM)) < 0.1) {
+                    visionPoseList.add(visionPose);
+                } else {
+                    visionPoseList = new ArrayList<>();
+                }
             } else {
+                visionTimer.reset();
                 visionPoseList = new ArrayList<>();
             }
-        } else {
-            visionTimer.reset();
-            visionPoseList = new ArrayList<>();
-        }
-        if (visionTimer.seconds() > 5 && visionPoseList.size() > 100)  {
-            // Average all vision estimates over the time.
-            double llX = 0;
-            double llY = 0;
-            for (int i = 0; i < visionPoseList.size(); i++) {
-                llX += visionPoseList.get(i).getX(DistanceUnit.CM);
-                llY += visionPoseList.get(i).getY(DistanceUnit.CM);
+            if (visionTimer.seconds() > 5 && visionPoseList.size() > 100) {
+                // Average all vision estimates over the time.
+                double llX = 0;
+                double llY = 0;
+                for (int i = 0; i < visionPoseList.size(); i++) {
+                    llX += visionPoseList.get(i).getX(DistanceUnit.CM);
+                    llY += visionPoseList.get(i).getY(DistanceUnit.CM);
+                }
+
+                llX = llX / visionPoseList.size();
+                llY = llY / visionPoseList.size();
+
+                visionOffsetPose = new Pose2D(DistanceUnit.CM, llX - odPose.getX(DistanceUnit.CM), llY - odPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, 0);
+                visionTimer.reset();
+                visionPoseList = new ArrayList<>();
             }
-
-            llX = llX / visionPoseList.size();
-            llY = llY / visionPoseList.size();
-
-            visionOffsetPose = new Pose2D(DistanceUnit.CM, llX - odPose.getX(DistanceUnit.CM), llY - odPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, 0);
-            visionTimer.reset();
-            visionPoseList = new ArrayList<>();
+            Status.currentPose = getRobotPose();
+            lastODPose = odPose;
+        } else {
+            Status.currentPose = RobotContainer.HardwareDevices.pinpoint.getPosition();
         }
-        Status.currentPose = getRobotPose();
-        lastODPose = odPose;
     }
 
     private Pose2D getGoodLimeLightPose() {
