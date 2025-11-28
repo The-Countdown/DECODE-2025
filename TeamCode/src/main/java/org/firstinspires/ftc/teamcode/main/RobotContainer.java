@@ -510,7 +510,8 @@ public class RobotContainer {
 //        telemetry.addData("Control Hub Current", controlHubCurrent + " A");
 //        telemetry.addData("Expansion Hub Current", expansionHubCurrent + " A");
 //        telemetry.addLine();
-//        telemetry.addData("Spindexer Angle", spindexer.getAngle());
+        telemetry.addData("Spindexer Angle", spindexer.getAngle());
+        telemetry.addData("Spindexer Target Angle", spindexer.targetAngle);
 //        telemetry.addData("Spindexer Slot Colors", Arrays.toString(Status.slotColor));
 //        telemetry.addData("flywheel target max vel", turret.flywheel.targetMaxVelocity);
 //        telemetry.addData("flywheel target vel", turret.flywheel.targetVelocity);

@@ -294,8 +294,8 @@ public class Constants {
         public static double[] FLYWHEEL_SPEED_TABLE_DISTANCES = {75, 80, 90, 130, 140};
         public static double TRACK_GOAL_P = -0.2;
         public static double[] HOOD_PRESETS = {0.51, 0.13};
-        public static double TURRET_LIMIT_MIN_ANGLE = 30;
-        public static double TURRET_LIMIT_MAX_ANGLE = 265;
+        public static double TURRET_LIMIT_MIN_ANGLE = -90;
+        public static double TURRET_LIMIT_MAX_ANGLE = 125;
         public static double TURRET_LIMIT_MIN_SERVO = TURRET_LIMIT_MIN_ANGLE / 355;
         public static double TURRET_LIMIT_MAX_SERVO = TURRET_LIMIT_MAX_ANGLE / 355;
         public static double TURRET_LIMIT_MIN = (TURRET_LIMIT_MIN_SERVO * 2) - 1;
@@ -319,7 +319,7 @@ public class Constants {
     @Config
     public static class Spindexer {
         public static int NUM_SLOTS = 3;
-        public static double ANGLE_OFFSET = -10;
+        public static double ANGLE_OFFSET = 0;
         public static double JAM_ANGLE = 30;
         public static double axonTestAngle = 0;
         public static double[] TRANSFER_SLOT_ANGLES = {53, 186, 311};

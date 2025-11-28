@@ -23,7 +23,6 @@ public class ThreeBallAuto extends OpMode {
         robotContainer = new RobotContainer(this);
         robotContainer.init();
         RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU();
-        robotContainer.turret.setTurretPositionTableForAuto();
         blackboard.put("pose", Status.currentPose);
         robotContainer.telemetry.addData("Alliance Color", Status.alliance == Constants.Game.ALLIANCE.BLUE ? "BLUE" : "RED");
         robotContainer.telemetry.update();
@@ -98,7 +97,6 @@ public class ThreeBallAuto extends OpMode {
     @Override
     public void stop() {
         blackboard.put("pose", Status.currentPose);
-        robotContainer.turret.resetTurretPositionTable();
         robotContainer.stop();
     }
 }

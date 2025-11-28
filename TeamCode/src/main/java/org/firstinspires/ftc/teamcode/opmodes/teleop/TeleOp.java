@@ -17,7 +17,6 @@ import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 public class TeleOp extends OpMode {
     private RobotContainer robotContainer;
     public static double CURRENT_LOOP_TIME_MS;
-    public double turretPos = 0;
     private final GamepadWrapper.ButtonReader transferConditionButton = new GamepadWrapper.ButtonReader();
     private final ElapsedTime spinTimer = new ElapsedTime();
 
@@ -49,7 +48,7 @@ public class TeleOp extends OpMode {
         RobotContainer.HardwareDevices.limelight.start();
         robotContainer.start(this, false);
         Status.isDrivingActive = true;
-        robotContainer.spindexer.setPosDegrees(Constants.Spindexer.INTAKE_SLOT_ANGLES[0]);
+        robotContainer.spindexer.goToFirstIntakeSlot();
     }
 
     @Override
@@ -61,7 +60,6 @@ public class TeleOp extends OpMode {
         robotContainer.limelightLogic.update();
         robotContainer.delayedActionManager.update();
         robotContainer.pathPlanner.updatePathStatus();
-        Status.turretToggleButton.update(Status.turretToggle);
 
         robotContainer.allIndicatorLights.lightsUpdate();
 
@@ -71,38 +69,19 @@ public class TeleOp extends OpMode {
         robotContainer.controlHubCurrent = robotContainer.getCurrent(Constants.Robot.CONTROL_HUB_INDEX);
         robotContainer.expansionHubCurrent = robotContainer.getCurrent(Constants.Robot.EXPANSION_HUB_INDEX);
 
-        robotContainer.turret.update(true);
+        robotContainer.turret.update(true, CURRENT_LOOP_TIME_MS);
+        robotContainer.spindexer.update(true);
         robotContainer.positionProvider.update();
 
         // Gamepad 1
         robotContainer.drivetrain.controlUpdate();
-        robotContainer.turret.hood.setPos(robotContainer.gamepadEx1.circle.isPressed() ? Constants.Turret.HOOD_PRESETS[1] : Constants.Turret.HOOD_PRESETS[0]);
 
         if (robotContainer.gamepadEx1.triangle.wasJustPressed()) {
             Status.manualControl = !Status.manualControl;
         }
 
-        if (robotContainer.gamepadEx1.dpadLeft.wasJustPressed()) {
-            robotContainer.spindexer.moveIntakeSlotLeft();
-        }
-
-        if (robotContainer.gamepadEx1.dpadRight.wasJustPressed()) {
-            robotContainer.spindexer.moveIntakeSlotRight();
-        }
-
-        if (robotContainer.gamepadEx1.dpadUp.wasJustPressed()) {
-            robotContainer.spindexer.slotUpdate(); // Fill the current slot
-        }
-
         // Gamepad 2
 
-        if (robotContainer.gamepadEx2.dpadLeft.wasJustPressed()) {
-            robotContainer.spindexer.moveIntakeSlotLeft();
-        }
-
-        if (robotContainer.gamepadEx2.dpadRight.wasJustPressed()) {
-            robotContainer.spindexer.moveIntakeSlotRight();
-        }
         // Intake - Circle
         Status.intakeToggle = robotContainer.gamepadEx2.circle.wasJustPressed() != Status.intakeToggle;
         if (Status.intakeToggle) {
@@ -111,43 +90,7 @@ public class TeleOp extends OpMode {
             robotContainer.intake.setPower(Constants.Intake.REVERSE_TOP_SPEED);
         }
 
-        // Flywheel - Automated
-        if (robotContainer.gamepadEx2.circle.wasJustReleased() && !Status.intakeToggle) {
-            Status.turretToggle = true;
-            robotContainer.spindexer.goToNextTransferSlot();
-        } else if (robotContainer.gamepadEx2.circle.wasJustReleased() && Status.intakeToggle) {
-            Status.turretToggle = false;
-            robotContainer.spindexer.goToNextIntakeSlot();
-        }
-
-        // Turret turn - Right stick X
-        if (Status.manualControl) {
-            turretPos -= robotContainer.gamepadEx2.rightStickX() != 0 ? (Constants.Turret.TURRET_SPEED_FACTOR * CURRENT_LOOP_TIME_MS) * Math.pow(robotContainer.gamepadEx2.rightStickX(), 3) : 0;
-            turretPos = HelperFunctions.clamp(turretPos, Constants.Turret.TURRET_LIMIT_MIN, Constants.Turret.TURRET_LIMIT_MAX);
-            robotContainer.turret.setTargetPosition(turretPos);
-        } else {
-            robotContainer.turret.pointAtGoal();
-        }
-
-        // For when automatic spindexer fails
-        if (robotContainer.gamepadEx2.square.wasJustPressed()) {
-            Status.slotColor[0] = Constants.Game.ARTIFACT_COLOR.PURPLE;
-            Status.slotColor[1] = Constants.Game.ARTIFACT_COLOR.PURPLE;
-            Status.slotColor[2] = Constants.Game.ARTIFACT_COLOR.PURPLE;
-            Status.intakeToggle = false;
-            Status.turretToggle = true;
-            robotContainer.spindexer.goToNextTransferSlot();
-        }
-
-        if (robotContainer.gamepadEx2.triangle.wasJustPressed()) {
-            Status.slotColor[0] = Constants.Game.ARTIFACT_COLOR.NONE;
-            Status.slotColor[1] = Constants.Game.ARTIFACT_COLOR.NONE;
-            Status.slotColor[2] = Constants.Game.ARTIFACT_COLOR.NONE;
-            Status.intakeToggle = true;
-            Status.turretToggle = false;
-            robotContainer.spindexer.alwaysGoToNextIntakeSlot();
-        }
-
+        // Rotate transfer slot
         if (robotContainer.gamepadEx2.cross.wasJustPressed()) {
             Status.slotColor[robotContainer.spindexer.getCurrentTransferSlot()] = Constants.Game.ARTIFACT_COLOR.NONE;
             if (!robotContainer.spindexer.isEmpty()) {
@@ -155,10 +98,11 @@ public class TeleOp extends OpMode {
             } else {
                 Status.intakeToggle = true;
                 Status.turretToggle = false;
-                robotContainer.spindexer.alwaysGoToNextIntakeSlot();
+                robotContainer.spindexer.goToNextIntakeSlot(false);
             }
         }
 
+        // Kick ball into turret (This will be removed when transfer is removed)
         if (robotContainer.gamepadEx2.leftBumper.wasJustPressed()) {
             robotContainer.transfer.flapUp();
         } else if (robotContainer.gamepadEx2.leftBumper.wasJustReleased()) {
@@ -174,11 +118,6 @@ public class TeleOp extends OpMode {
             robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.function(), Constants.Spindexer.COLOR_SENSE_TIME);
             spinTimer.reset();
         }
-
-        // If all are none or unknown, turret toggle
-        // if ((Status.slotColor[0] != Constants.Game.ARTIFACT_COLOR.NONE && Status.slotColor[1] != Constants.Game.ARTIFACT_COLOR.NONE && Status.slotColor[2] != Constants.Game.ARTIFACT_COLOR.NONE) || (Status.slotColor[0] != Constants.Game.ARTIFACT_COLOR.UNKNOWN && Status.slotColor[1] != Constants.Game.ARTIFACT_COLOR.UNKNOWN && Status.slotColor[2] != Constants.Game.ARTIFACT_COLOR.UNKNOWN)) {
-        //     Status.turretToggle = true;
-        // }
 
         if (robotContainer.limelightLogic.limelight.getLatestResult().isValid()) {
             robotContainer.telemetry.addData("robot pos on field", robotContainer.limelightLogic.limelightBotPose());

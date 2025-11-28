@@ -20,6 +20,7 @@ public class Turret extends RobotContainer.HardwareDevices {
     public final BetterServo hoodServo;
     private final FlywheelPDF flywheelPDF;
     private double targetPosition = 0;
+    private double manualTurretPos = 0;
     public double[] turretPositionTable = {0.785, 0.50, 0.2225}; // -90, 0, 90
 
     public Turret(RobotContainer robotContainer, LinkedMotors flyWheelMotors, BetterServo hoodServo, LinkedServos turretServos) {
@@ -30,52 +31,65 @@ public class Turret extends RobotContainer.HardwareDevices {
         this.flywheelPDF = new FlywheelPDF(robotContainer, flyWheelMotors);
     }
 
-    public void update(boolean controllerInput) {
+    public void update(boolean teleop, double CURRENT_LOOP_TIME_MS) {
+        Status.turretToggleButton.update(Status.turretToggle);
         double flywheelTargetSpeed = 0;
-        if (controllerInput) {
+
+        if (teleop) {
             if (!Status.intakeToggle) {
                 flywheelTargetSpeed = Math.min(Status.turretToggleButton.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, robotContainer.turret.flywheel.interpolateByDistance(HelperFunctions.disToGoal()));
             } else {
                 flywheelTargetSpeed = 0;
+            }
+
+            // Manual turret hood
+            robotContainer.turret.hood.setPos(robotContainer.gamepadEx1.circle.isPressed() ? Constants.Turret.HOOD_PRESETS[1] : Constants.Turret.HOOD_PRESETS[0]);
+
+            // Automated flywheel
+            if (robotContainer.gamepadEx2.circle.wasJustReleased() && !Status.intakeToggle) {
+                Status.turretToggle = true;
+                robotContainer.spindexer.goToNextTransferSlot();
+            } else if (robotContainer.gamepadEx2.circle.wasJustReleased() && Status.intakeToggle) {
+                Status.turretToggle = false;
+                robotContainer.spindexer.goToNextIntakeSlot(true);
+            }
+
+            // Turret turn - Right stick X
+            if (Status.manualControl) {
+                // Manual turret turning
+                manualTurretPos -= robotContainer.gamepadEx2.rightStickX() != 0 ? (Constants.Turret.TURRET_SPEED_FACTOR * CURRENT_LOOP_TIME_MS) * Math.pow(robotContainer.gamepadEx2.rightStickX(), 3) : 0;
+                manualTurretPos = HelperFunctions.clamp(manualTurretPos, Constants.Turret.TURRET_LIMIT_MIN, Constants.Turret.TURRET_LIMIT_MAX);
+                robotContainer.turret.setTargetPosition(manualTurretPos);
+            } else {
+                // Automatic turret turning
+                robotContainer.turret.pointAtGoal();
             }
         }
 
         Status.flywheelAtTargetSpeed = robotContainer.turret.flywheel.atTargetVelocity();
         double targetPower = flywheelPDF.calculate(flywheelTargetSpeed);
         flyWheelMotors.setPower(targetPower);
-
     }
 
-    public void setTurretPositionTableForAuto () {
-        turretPositionTable[0] = 0.798;
-    }
-
-    public void resetTurretPositionTable () {
-        turretPositionTable[0] = 0.785;
-    }
-
-    // TODO: Limit angle of rotation, and have that be configurable in constants
-
+    // This is for manual control
     public void setTargetPosition(double position) {
         targetPosition = position;
         turretServos.setPosition(HelperFunctions.clamp(((position + 1) / 2), Constants.Turret.TURRET_LIMIT_MIN_SERVO, Constants.Turret.TURRET_LIMIT_MAX_SERVO));
     }
 
-    public void setTargetRaw(double position) {
-        turretServos.setPosition(position);
-    }
-//    public void setTargetAngle(double angle) {
-//        turretServos.setPosition((HelperFunctions.clamp(angle > 355 || angle < 0 ? (angle + 355) % 355 : angle, Constants.Turret.TURRET_LIMIT_MIN_ANGLE, Constants.Turret.TURRET_LIMIT_MAX_ANGLE)) / 355);
-//    }
     public void setTargetAngle(double angleInDegrees) { // angleInDegrees should be between -180 and 180
-        if (angleInDegrees > 90 || angleInDegrees < -90) {
+        if (angleInDegrees < Constants.Turret.TURRET_LIMIT_MIN_ANGLE || angleInDegrees > Constants.Turret.TURRET_LIMIT_MAX_ANGLE) {
             return;
         }
-        if (angleInDegrees < 0) { // If angle between -90 and 0
-            turretServos.setPosition(HelperFunctions.interpolate(turretPositionTable[0], turretPositionTable[1], ((angleInDegrees + 90) / 90)));
-        } else { // If angle between 0 and 90
-            turretServos.setPosition(HelperFunctions.interpolate(turretPositionTable[1], turretPositionTable[2], ((angleInDegrees - 90) / 90) + 1));
-        }
+
+        turretServos.setPositionDegrees(angleInDegrees);
+
+        // Legacy interpolate
+        // if (angleInDegrees < 0) { // If angle between -90 and 0
+        //     turretServos.setPosition(HelperFunctions.interpolate(turretPositionTable[0], turretPositionTable[1], ((angleInDegrees + 90) / 90)));
+        // } else { // If angle between 0 and 90
+        //     turretServos.setPosition(HelperFunctions.interpolate(turretPositionTable[1], turretPositionTable[2], ((angleInDegrees - 90) / 90) + 1));
+        // }
     }
 
     public double getPosition() {
