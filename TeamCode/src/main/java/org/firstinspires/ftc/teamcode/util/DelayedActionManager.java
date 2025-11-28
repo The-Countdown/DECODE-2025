@@ -92,6 +92,7 @@ public class DelayedActionManager {
         for (Action delayedAction : delayedActions) {
             delayedAction.cancel();
         }
+        currentPose = 0;
         delayedActions.clear();
     }
 

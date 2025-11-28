@@ -144,6 +144,7 @@ public class SixBallAuto extends OpMode {
 
     @Override
     public void stop() {
+        robotContainer.delayedActionManager.cancelAll();
         blackboard.put("pose", Status.currentPose);
         robotContainer.stop();
     }

@@ -27,7 +27,7 @@ public class FlywheelPDF {
      * @return The calculated PDF output.
      */
     public double calculate(double targetSpeed) {
-        double error = targetSpeed - flywheelMotors.getVelocity();
+        double error = Math.abs(targetSpeed - flywheelMotors.getVelocity());
 
         if (error > 200) {
             return 1;
@@ -39,6 +39,6 @@ public class FlywheelPDF {
         d = Math.signum(error) * (Constants.Turret.FLYWHEEL_D * (lastError - error));
 
         lastError = error;
-        return p + d + ff;
+        return Math.abs(p + d + ff);
     }
 }

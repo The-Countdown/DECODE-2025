@@ -18,7 +18,7 @@ public class Turret extends RobotContainer.HardwareDevices {
     private final LinkedMotors flyWheelMotors;
     private final LinkedServos turretServos;
     public final BetterServo hoodServo;
-    private final FlywheelPDF flywheelPDF;
+    private FlywheelPDF flywheelPDF;
     private double targetPosition = 0;
     private double manualTurretPos = 0;
     public double[] turretPositionTable = {0.785, 0.50, 0.2225}; // -90, 0, 90
@@ -68,6 +68,7 @@ public class Turret extends RobotContainer.HardwareDevices {
 
         Status.flywheelAtTargetSpeed = robotContainer.turret.flywheel.atTargetVelocity();
         double targetPower = flywheelPDF.calculate(flywheelTargetSpeed);
+        robotContainer.telemetry.addData("Flywheel", targetPower);
         flyWheelMotors.setPower(targetPower);
     }
 
