@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
+import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
 /**
  * The `ThreadedPIDF` class is responsible for managing the Proportional-Integral-Derivative-Feedforward (PIDF)
@@ -21,7 +22,8 @@ public class DrivetrainUpdater extends Thread {
     private final double[] currentPowers = new double[4];
     private final ElapsedTime deltaTimer = new ElapsedTime();
 
-    public boolean enabled = true;
+    private boolean enabled = true;
+    private boolean controllerEnabled = true;
 
     public DrivetrainUpdater(RobotContainer robotContainer) {
         this.robotContainer = robotContainer;
@@ -32,59 +34,85 @@ public class DrivetrainUpdater extends Thread {
 
     @Override
     public void run() {
-        if (!enabled) {
-         return;
-        }
-        while (!Status.opModeIsActive) {
-            return;
-        }
-        deltaTimer.reset();
-        robotContainer.refreshData();
-        for (int i = 0; i < robotContainer.swerveModules.length; i++) {
+        if (!enabled) return;
+        if (controllerEnabled) {
+            while (!Status.opModeIsActive) {
+                return;
+            }
+            deltaTimer.reset();
+            robotContainer.refreshData();
+            for (int i = 0; i < robotContainer.swerveModules.length; i++) {
                 currentPowers[i] = RobotContainer.HardwareDevices.swerveMotors[i].getPower();
             }
-        while (Status.opModeIsActive) {
-            robotContainer.refreshData();
+            while (Status.opModeIsActive) {
+                robotContainer.refreshData();
 
-            CURRENT_LOOP_TIME_MS = robotContainer.updateLoopTime("drivetrainUpdater");
-            CURRENT_LOOP_TIME_AVG_MS = robotContainer.getRollingAverageLoopTime("drivetrainUpdater");
+                CURRENT_LOOP_TIME_MS = robotContainer.updateLoopTime("drivetrainUpdater");
+                CURRENT_LOOP_TIME_AVG_MS = robotContainer.getRollingAverageLoopTime("drivetrainUpdater");
 
-            double deltaTime = deltaTimer.seconds();
-            deltaTimer.reset();
+                double deltaTime = deltaTimer.seconds();
+                deltaTimer.reset();
 
-            for (int i = 0; i < robotContainer.swerveModules.length; i++) {
-                double target = robotContainer.swerveModules[i].motor.targetPower;
+                for (int i = 0; i < robotContainer.swerveModules.length; i++) {
+                    double target = robotContainer.swerveModules[i].motor.targetPower;
 
-                if (Math.abs(target) < Constants.Control.ZERO_POWER_TOLERANCE) {
-                    currentPowers[i] = 0;
-                } else {
-                    double error = target - currentPowers[i];
-                    double maxDelta = Constants.Control.MAX_DRIVE_ACCELERATION * deltaTime;
-
-                    if (Math.signum(error) == Math.signum(target) && Math.signum(target) != 0) {
-                        double delta = Math.copySign(Math.min(Math.abs(error), maxDelta), error);
-                        currentPowers[i] += delta;
+                    if (Math.abs(target) < Constants.Control.ZERO_POWER_TOLERANCE) {
+                        currentPowers[i] = 0;
                     } else {
-                        currentPowers[i] = target;
+                        double error = target - currentPowers[i];
+                        double maxDelta = Constants.Control.MAX_DRIVE_ACCELERATION * deltaTime;
+
+                        if (Math.signum(error) == Math.signum(target) && Math.signum(target) != 0) {
+                            double delta = Math.copySign(Math.min(Math.abs(error), maxDelta), error);
+                            currentPowers[i] += delta;
+                        } else {
+                            currentPowers[i] = target;
+                        }
+                    }
+
+                    double acceleratedMotorPower = currentPowers[i];
+
+                    if (Math.abs(robotContainer.swerveServosPDF[i].getError()) <= Constants.Swerve.SERVO_PIDF_TOLERANCE_DEGREES) {
+                        Status.swerveServoStatus[i] = Status.ServoStatus.TARGET_REACHED;
+                        robotContainer.swerveModules[i].servo.setPower(0);
+
+                        robotContainer.swerveModules[i].motor.setVelocity(acceleratedMotorPower);
+                    } else {
+                        robotContainer.swerveModules[i].servo.setPower(robotContainer.swerveServosPDF[i].calculate() * (1 - (Math.abs(acceleratedMotorPower) * Constants.Swerve.SERVO_PIDF_SCALER)));
+                        Status.swerveServoStatus[i] = Status.ServoStatus.MOVING;
+
+                        robotContainer.swerveModules[i].motor.setVelocity(acceleratedMotorPower * Math.abs(Math.cos(Math.toRadians(robotContainer.swerveServosPDF[i].getError()))));
                     }
                 }
-
-                double acceleratedMotorPower = currentPowers[i];
-
-                if (Math.abs(robotContainer.swerveServosPDF[i].getError()) <= Constants.Swerve.SERVO_PIDF_TOLERANCE_DEGREES) {
-                    Status.swerveServoStatus[i] = Status.ServoStatus.TARGET_REACHED;
-                    robotContainer.swerveModules[i].servo.setPower(0);
-
-                    robotContainer.swerveModules[i].motor.setVelocity(acceleratedMotorPower);
-                } else {
-                    robotContainer.swerveModules[i].servo.setPower(robotContainer.swerveServosPDF[i].calculate() * (1 - (Math.abs(acceleratedMotorPower) * Constants.Swerve.SERVO_PIDF_SCALER)));
-                    Status.swerveServoStatus[i] = Status.ServoStatus.MOVING;
-
-                    robotContainer.swerveModules[i].motor.setVelocity(acceleratedMotorPower * Math.abs(Math.cos(Math.toRadians(robotContainer.swerveServosPDF[i].getError()))));
+                Thread.yield();
+            }
+        } else {
+            while (Status.opModeIsActive) {
+                if (Status.isDrivingActive) {
+                    Thread.yield();
+                }
+                if (robotContainer.latitudePID.calculate() > Constants.Control.ZERO_POWER_TOLERANCE || robotContainer.longitudePID.calculate() > Constants.Control.ZERO_POWER_TOLERANCE || robotContainer.headingPID.calculate() < Constants.Control.ZERO_POWER_TOLERANCE) {
+                    robotContainer.drivetrain.powerInput(
+                            HelperFunctions.clamp(robotContainer.latitudePID.calculate(), -0.4, 0.4),
+                            HelperFunctions.clamp(robotContainer.longitudePID.calculate(), -0.4, 0.4),
+                            HelperFunctions.clamp(robotContainer.headingPID.calculate(), -0.4, 0.4)
+                    );
+                }
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
                 }
             }
-            Thread.yield();
         }
+    }
+
+    public void setEnabledTrue(){
+        controllerEnabled = true;
+    }
+
+    public void setEnabledFalse(){
+        controllerEnabled = false;
     }
 
     public void stopThread() {

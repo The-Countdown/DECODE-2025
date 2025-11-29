@@ -16,6 +16,7 @@ public class FlywheelPDF {
     private double p;
     private double ff;
     private double d;
+    private double lastTargetPower = 0;
 
     public FlywheelPDF(RobotContainer robotContainer, LinkedMotors flywheelMotors) {
         this.robotContainer = robotContainer;
@@ -27,13 +28,18 @@ public class FlywheelPDF {
      * @return The calculated PDF output.
      */
     public double calculate(double targetSpeed) {
-        double error = Math.abs(targetSpeed - flywheelMotors.getVelocity());
-        if (targetSpeed < 0.2) {
+        if (targetSpeed == 0) {
+            lastTargetPower = 0;
             return 0;
         }
+
         if (error > 200) {
             return 1;
         }
+
+        double error = Math.abs(targetSpeed - flywheelMotors.getVelocity());
+
+        robotContainer.telemetry.addData("Flywheel Error", error);
 
         p = Constants.Turret.FLYWHEEL_P * error;
         ff = Constants.Turret.FLYWHEEL_F * Math.signum(error);
@@ -41,6 +47,6 @@ public class FlywheelPDF {
         d = Math.signum(error) * (Constants.Turret.FLYWHEEL_D * (lastError - error));
 
         lastError = error;
-        return Math.abs(p + d + ff) * 1 + ((14 - robotContainer.getVoltage(Constants.Robot.CONTROL_HUB_INDEX)) / 14);
+        return Math.abs(p + d + ff)  * 1 + ((14 - robotContainer.getVoltage(Constants.Robot.CONTROL_HUB_INDEX)) / 14);
     }
 }

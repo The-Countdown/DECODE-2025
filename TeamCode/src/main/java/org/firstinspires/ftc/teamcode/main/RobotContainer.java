@@ -34,7 +34,6 @@ import org.firstinspires.ftc.teamcode.drivetrain.SwerveModule;
 import org.firstinspires.ftc.teamcode.drivetrain.SwervePDF;
 import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.LatitudePID;
 import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.LongitudePID;
-import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.PathingUpdater;
 import org.firstinspires.ftc.teamcode.subsystems.HuskyLensLogic;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.LimelightLogic;
@@ -93,7 +92,6 @@ public class RobotContainer {
     public SwervePDF[] swerveServosPDF = new SwervePDF[Constants.Swerve.NUM_SERVOS];
     public LocalizationUpdater localizationUpdater;
     public DrivetrainUpdater drivetrainUpdater;
-    public PathingUpdater pathingUpdater;
     public PathPlanner pathPlanner;
     public LimelightLogic limelightLogic;
     public PositionProvider positionProvider;
@@ -277,7 +275,7 @@ public class RobotContainer {
         transfer.flapDown();
     }
 
-    public void start(OpMode opmode, boolean runPathplanner) {
+    public void start(OpMode opmode, boolean teleop) {
         gamepadEx1 = new GamepadWrapper(opmode.gamepad1);
         gamepadEx2 = new GamepadWrapper(opmode.gamepad2);
         Status.isDrivingActive = false;
@@ -298,10 +296,13 @@ public class RobotContainer {
         localizationUpdater.start();
         drivetrainUpdater = new DrivetrainUpdater(this);
         drivetrainUpdater.start();
-        pathingUpdater = new PathingUpdater(this);
-        if (runPathplanner) {
-            pathingUpdater.start();
+
+        if (teleop) {
+            drivetrainUpdater.setEnabledTrue();
+        } else {
+            drivetrainUpdater.setEnabledFalse();
         }
+
         telemetryLoopTimer.reset();
     }
 
@@ -319,13 +320,6 @@ public class RobotContainer {
         this.drivetrainUpdater.stopThread();
         try {
             this.drivetrainUpdater.join();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-        this.pathingUpdater.stopThread();
-        try {
-            this.pathingUpdater.join();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -504,17 +498,15 @@ public class RobotContainer {
             telemetry.addData("Spindexer Slot Colors", Arrays.toString(Status.slotColor));
             return;
         }
-//        TelemetryPacket packet = new TelemetryPacket();
-//        telemetry.addData("Control Hub Voltage", controlHubVoltage + " V");
-//        telemetry.addData("Expansion Hub Voltage", expansionHubVoltage + " V");
-//        telemetry.addData("Control Hub Current", controlHubCurrent + " A");
-//        telemetry.addData("Expansion Hub Current", expansionHubCurrent + " A");
-//        telemetry.addLine();
+        //TelemetryPacket packet = new TelemetryPacket();
+        telemetry.addData("Control Hub Voltage", controlHubVoltage + " V");
+        telemetry.addData("Expansion Hub Voltage", expansionHubVoltage + " V");
+        telemetry.addData("Control Hub Current", controlHubCurrent + " A");
+        telemetry.addData("Expansion Hub Current", expansionHubCurrent + " A");
+        telemetry.addLine();
         telemetry.addData("Spindexer Angle", spindexer.getAngle());
-        telemetry.addData("Spindexer Target Angle", spindexer.targetAngle);
         telemetry.addData("Spindexer Slot Colors", Arrays.toString(Status.slotColor));
-        telemetry.addData("flywheel target vel", turret.flywheel.targetVelocity);
-        telemetry.addData("flywheel current vel", turret.flywheel.getFlywheelVelocity());
+        telemetry.addData("flywheel target max vel", turret.flywheel.targetMaxVelocity);
         telemetry.addData("flywheel atVelocity", turret.flywheel.atTargetVelocity());
         telemetry.addData("flywheel speed", HardwareDevices.flyWheelMotorMaster.getVelocity());
         telemetry.addData("turret interpolation", turret.flywheel.interpolateByDistance(HelperFunctions.disToGoal()));
