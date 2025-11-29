@@ -28,7 +28,9 @@ public class FlywheelPDF {
      */
     public double calculate(double targetSpeed) {
         double error = Math.abs(targetSpeed - flywheelMotors.getVelocity());
-
+        if (targetSpeed < 0.2) {
+            return 0;
+        }
         if (error > 200) {
             return 1;
         }
@@ -39,6 +41,6 @@ public class FlywheelPDF {
         d = Math.signum(error) * (Constants.Turret.FLYWHEEL_D * (lastError - error));
 
         lastError = error;
-        return Math.abs(p + d + ff);
+        return Math.abs(p + d + ff) * 1 + ((14 - robotContainer.getVoltage(Constants.Robot.CONTROL_HUB_INDEX)) / 14);
     }
 }

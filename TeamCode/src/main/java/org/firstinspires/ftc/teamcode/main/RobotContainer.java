@@ -512,12 +512,11 @@ public class RobotContainer {
 //        telemetry.addLine();
         telemetry.addData("Spindexer Angle", spindexer.getAngle());
         telemetry.addData("Spindexer Target Angle", spindexer.targetAngle);
-//        telemetry.addData("Spindexer Slot Colors", Arrays.toString(Status.slotColor));
-//        telemetry.addData("flywheel target max vel", turret.flywheel.targetMaxVelocity);
-//        telemetry.addData("flywheel target vel", turret.flywheel.targetVelocity);
-//        telemetry.addData("flywheel current vel", turret.flywheel.getFlywheelVelocity());
-//        telemetry.addData("flywheel atVelocity", turret.flywheel.atTargetVelocity());
-//        telemetry.addData("flywheel speed", HardwareDevices.flyWheelMotorMaster.getVelocity());
+        telemetry.addData("Spindexer Slot Colors", Arrays.toString(Status.slotColor));
+        telemetry.addData("flywheel target vel", turret.flywheel.targetVelocity);
+        telemetry.addData("flywheel current vel", turret.flywheel.getFlywheelVelocity());
+        telemetry.addData("flywheel atVelocity", turret.flywheel.atTargetVelocity());
+        telemetry.addData("flywheel speed", HardwareDevices.flyWheelMotorMaster.getVelocity());
         telemetry.addData("turret interpolation", turret.flywheel.interpolateByDistance(HelperFunctions.disToGoal()));
         telemetry.addLine();
         telemetry.addData("Vision Pose List Size", positionProvider.getVisionPoseList().size());

@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 
-@Autonomous(name="NineBallAuto", group="Robot")
+@Autonomous(name="NineBallGoalsideAuto", group="Robot")
 @Config
 public class NineBallGoalsideAuto extends OpMode {
     private RobotContainer robotContainer;
