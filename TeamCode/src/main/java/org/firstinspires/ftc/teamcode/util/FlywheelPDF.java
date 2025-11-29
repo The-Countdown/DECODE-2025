@@ -32,21 +32,20 @@ public class FlywheelPDF {
             lastTargetPower = 0;
             return 0;
         }
-
-        if (error > 200) {
-            return 1;
-        }
-
-        double error = Math.abs(targetSpeed - flywheelMotors.getVelocity());
+        double error = targetSpeed - flywheelMotors.getVelocity();
 
         robotContainer.telemetry.addData("Flywheel Error", error);
 
         p = Constants.Turret.FLYWHEEL_P * error;
-        ff = Constants.Turret.FLYWHEEL_F * Math.signum(error);
+        //ff = Constants.Turret.FLYWHEEL_F * Math.signum(error);
 
-        d = Math.signum(error) * (Constants.Turret.FLYWHEEL_D * (lastError - error));
+        d = (Constants.Turret.FLYWHEEL_D * (lastError - error));
 
+        lastTargetPower = lastTargetPower + (p - d);
+        if (lastTargetPower > 1) {
+            lastTargetPower = 1;
+        }
         lastError = error;
-        return Math.abs(p + d + ff)  * 1 + ((14 - robotContainer.getVoltage(Constants.Robot.CONTROL_HUB_INDEX)) / 14);
+        return lastTargetPower  * 1 + ((14 - robotContainer.getVoltage(Constants.Robot.CONTROL_HUB_INDEX)) / 14);
     }
 }

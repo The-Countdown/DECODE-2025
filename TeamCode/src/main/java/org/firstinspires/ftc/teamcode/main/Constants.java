@@ -288,7 +288,7 @@ public class Constants {
     public static class Turret {
         public static double TURRET_SPEED_FACTOR = 0.001;
         public static double FLYWHEEL_TOP_SPEED = 0.95;
-        public static int FLYWHEEL_MAX_VELOCITY = 3000;
+        public static int FLYWHEEL_MAX_VELOCITY = 1720;
         public static double FLYWHEEL_CURVE = 4;
         public static double[] FLYWHEEL_SPEED_TABLE = {0.50, 0.52, 0.518, 0.605, 0.6213};
         public static double[] FLYWHEEL_SPEED_TABLE_DISTANCES = {75, 80, 90, 130, 140};
@@ -305,7 +305,7 @@ public class Constants {
         public static double FLYWHEEL_POWER_AUTO_NEAR = 0.48;
         public static double FLYWHEEL_P = 0.0003;
         public static double FLYWHEEL_I = 0.0;
-        public static double FLYWHEEL_D = 0.0;
+        public static double FLYWHEEL_D = 0.002;
         public static double FLYWHEEL_F = 0.0;
     }
 
