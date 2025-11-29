@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.hardware.BetterCRServo;
 import org.firstinspires.ftc.teamcode.hardware.BetterAnalogInput;
@@ -18,24 +19,52 @@ import org.firstinspires.ftc.teamcode.hardware.BetterColorSensor;
 
 public class Spindexer {
     private final RobotContainer robotContainer;
-    private final BetterServo spindexerServo;
+    private final BetterCRServo spindexerServo;
     private final BetterAnalogInput spindexAnalog;
     private final BetterColorSensor colorSensor;
-    public double targetAngle = 0;
-    public double lastPosition = 0;
+    private final ElapsedTime spindexAccel = new ElapsedTime();
+    public double targetAngle;
+    public double lastPosition;
+    private double error;
+    private double lastError;
+    private double p;
+    private double d;
+    private double ff;
 
-    public Spindexer (RobotContainer robotContainer, BetterServo spindexerServo, BetterAnalogInput spindexAnalog, BetterColorSensor colorSensor) {
+    public Spindexer (RobotContainer robotContainer, BetterCRServo spindexerServo, BetterAnalogInput spindexAnalog, BetterColorSensor colorSensor) {
         this.robotContainer = robotContainer;
         this.spindexerServo = spindexerServo;
         this.spindexAnalog = spindexAnalog;
         this.colorSensor = colorSensor;
         this.lastPosition = getRawAngle();
+        this.targetAngle = 0;
+        this.lastPosition = 0;
     }
 
     public void update(boolean teleop) {
         double error = Math.abs(getError());
         if (error > 4) {
-            spindexerServo.updateSetPositionDegrees(targetAngle);
+            double spindexerError = Math.abs(pdf.getError());
+            // If the error changes by a lot in a short period of time reset the timer
+
+            if (Math.abs(lastError - spindexerError) > 50) {
+                spindexAccel.reset();
+            }
+
+            if (spindexerError > 1) {
+                if (spindexAccel.seconds() <= 1) {
+                    spindexerServo.updateSetPower(Math.min(robotContainer.spindexer.pdf.calculate() * spindexAccel.seconds(), 0.75));
+                } else {
+                    spindexerServo.updateSetPower(robotContainer.spindexer.pdf.calculate());
+                    //                robotContainer.spindexer.setPower(0.5);
+                }
+            } else {
+                spindexerServo.updateSetPower(0);
+            }
+            lastError = spindexerError;
+
+            // This is only for non CR servo
+            // spindexerServo.updateSetPositionDegrees(targetAngle);
         }
 
         if (teleop) {
@@ -145,26 +174,26 @@ public class Spindexer {
         }
         if (firstSlotNoColor != -1) {
             if (includeCurrent) {
-                spindexerServo.updateSetPositionDegrees(Constants.Spindexer.INTAKE_SLOT_ANGLES[firstSlotNoColor]);
+                targetAngle = Constants.Spindexer.INTAKE_SLOT_ANGLES[firstSlotNoColor];
             } else {
-                spindexerServo.updateSetPositionDegrees(Constants.Spindexer.INTAKE_SLOT_ANGLES[(firstSlotNoColor + 1) % 3]);
+                targetAngle = Constants.Spindexer.INTAKE_SLOT_ANGLES[(firstSlotNoColor + 1) % 3];
             }
         }
     }
 
     public void moveIntakeSlotLeft() {
         int currentSlot = getCurrentIntakeSlot();
-        spindexerServo.updateSetPositionDegrees(Constants.Spindexer.INTAKE_SLOT_ANGLES[(currentSlot + 2) % 3]);
+        targetAngle = Constants.Spindexer.INTAKE_SLOT_ANGLES[(currentSlot + 2) % 3];
     }
 
     public void moveIntakeSlotRight() {
         int currentSlot = getCurrentIntakeSlot();
-        spindexerServo.updateSetPositionDegrees(Constants.Spindexer.INTAKE_SLOT_ANGLES[(currentSlot + 1) % 3]);
+        targetAngle = Constants.Spindexer.INTAKE_SLOT_ANGLES[(currentSlot + 1) % 3];
     }
 
     public void goToNextTransferSlot() {
         int currentSlot = getCurrentTransferSlot();
-        spindexerServo.updateSetPositionDegrees(Constants.Spindexer.TRANSFER_SLOT_ANGLES[(currentSlot + 1) % 3]);
+        targetAngle = Constants.Spindexer.TRANSFER_SLOT_ANGLES[(currentSlot + 1) % 3];
     }
 
     public void goToNextPurpleSlot() {
@@ -177,7 +206,7 @@ public class Spindexer {
             currentSlot++;
         }
         if (firstSlotPurple != -1) {
-            spindexerServo.updateSetPositionDegrees(Constants.Spindexer.TRANSFER_SLOT_ANGLES[firstSlotPurple] + 60);
+            targetAngle = Constants.Spindexer.TRANSFER_SLOT_ANGLES[firstSlotPurple] + 60;
         }
     }
 
@@ -191,7 +220,7 @@ public class Spindexer {
             currentSlot++;
         }
         if (firstSlotGreen != -1) {
-            spindexerServo.updateSetPositionDegrees(Constants.Spindexer.TRANSFER_SLOT_ANGLES[firstSlotGreen] + 60);
+            targetAngle = Constants.Spindexer.TRANSFER_SLOT_ANGLES[firstSlotGreen] + 60;
         }
     }
 
@@ -265,4 +294,22 @@ public class Spindexer {
     public void setTargetAngle(double angle) {
         targetAngle = angle;
     }
+
+    public class PDF {
+
+        public double getError() {
+            return error = HelperFunctions.normalizeAngle(targetAngle - robotContainer.spindexer.getAngle());
+        }
+
+        public double calculate() {
+            error = getError();
+
+            p = Constants.Spindexer.KP * error;
+            d = Math.signum(error) * (Constants.Spindexer.KD * (lastError - error));
+
+            lastError = error;
+            return p + d;
+        }
+    }
+    public PDF pdf = new PDF();
 }

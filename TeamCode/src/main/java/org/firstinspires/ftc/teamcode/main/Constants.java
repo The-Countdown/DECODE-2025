@@ -325,6 +325,10 @@ public class Constants {
         public static double[] TRANSFER_SLOT_ANGLES = {53, 186, 311};
         public static double[] INTAKE_SLOT_ANGLES = {122, 249, 369};
         public static int COLOR_SENSE_TIME = 250;
+        public static double KP = 0;
+        public static double KI = 0;
+        public static double KD = 0;
+        public static double KF = 0;
     }
 
     @Config

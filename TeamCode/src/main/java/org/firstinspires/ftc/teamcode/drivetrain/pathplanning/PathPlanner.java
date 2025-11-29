@@ -50,6 +50,7 @@ public class PathPlanner {
     public PathPlanner(Telemetry telemetry, RobotContainer robotContainer) {
         this.telemetry = telemetry;
         this.robotContainer = robotContainer;
+        this.currentPose = 0;
     }
 
     public void addPose(Pose2D pose) {
