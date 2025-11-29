@@ -18,6 +18,7 @@ public class DelayedActionManager {
 
     public DelayedActionManager(RobotContainer robotContainer) {
         this.robotContainer = robotContainer;
+        this.currentPose = 0;
     }
 
     public void schedule(DelayedAction delayedAction) {

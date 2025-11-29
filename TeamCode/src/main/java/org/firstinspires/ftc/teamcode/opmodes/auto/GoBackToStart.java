@@ -39,7 +39,7 @@ public class GoBackToStart extends OpMode {
         Status.opModeIsActive = true;
         Status.lightsOn = true;
         Status.isDrivingActive = false;
-        robotContainer.start(this, true);
+        robotContainer.start(this, false);
         robotContainer.localizationUpdater = new LocalizationUpdater(robotContainer);
         robotContainer.localizationUpdater.start();
         RobotContainer.HardwareDevices.pinpoint.setPosition((Pose2D) blackboard.getOrDefault("pose", new Pose2D(DistanceUnit.CM, 0, 0, AngleUnit.DEGREES, 0)));
