@@ -298,9 +298,9 @@ public class RobotContainer {
         drivetrainUpdater.start();
 
         if (teleop) {
-            drivetrainUpdater.setEnabledTrue();
+            drivetrainUpdater.setControllerDrivingEnabled();
         } else {
-            drivetrainUpdater.setEnabledFalse();
+            drivetrainUpdater.setControllerDrivingDisabled();
         }
 
         telemetryLoopTimer.reset();

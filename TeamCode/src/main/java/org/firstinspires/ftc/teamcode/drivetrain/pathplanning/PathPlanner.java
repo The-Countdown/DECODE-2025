@@ -92,6 +92,10 @@ public class PathPlanner {
         }
     }
 
+    public void clearPoses() {
+        this.poses.clear();
+    }
+
     public class GeneralPose {
         public GeneralPose() {
         }

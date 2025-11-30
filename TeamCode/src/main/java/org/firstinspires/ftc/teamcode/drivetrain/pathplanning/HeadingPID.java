@@ -20,7 +20,7 @@ public class HeadingPID {
     private double i;
     private double d;
 
-    public HeadingPID(RobotContainer robotContainer) {
+    public HeadingPID() {
         this.lastError = 0;
         this.currentTime = 0;
         this.lastTime = 0;

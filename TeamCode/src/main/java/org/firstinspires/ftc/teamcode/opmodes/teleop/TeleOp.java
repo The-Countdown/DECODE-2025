@@ -80,6 +80,25 @@ public class TeleOp extends OpMode {
             Status.manualControl = !Status.manualControl;
         }
 
+        if (robotContainer.gamepadEx1.cross.wasJustPressed()) {
+            Status.isDrivingActive = false;
+            robotContainer.pathPlanner.clearPoses();
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, 0, 10, AngleUnit.DEGREES, 0));
+            robotContainer.drivetrainUpdater.setControllerDrivingDisabled();
+        }
+
+        while (robotContainer.gamepadEx1.cross.isHeld()) {
+            if (robotContainer.pathPlanner.driveUsingPID(0)) {
+                robotContainer.drivetrainUpdater.setControllerDrivingEnabled();
+                Status.isDrivingActive = true;
+            }
+        }
+
+        if (robotContainer.gamepadEx1.cross.wasJustReleased()) {
+            robotContainer.drivetrainUpdater.setControllerDrivingEnabled();
+            Status.isDrivingActive = true;
+        }
+
         // Gamepad 2
 
         // Intake - Circle

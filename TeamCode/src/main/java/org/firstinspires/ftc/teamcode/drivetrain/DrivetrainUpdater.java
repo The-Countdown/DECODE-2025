@@ -21,7 +21,6 @@ public class DrivetrainUpdater extends Thread {
     private final RobotContainer robotContainer;
     private final double[] currentPowers;
     private final ElapsedTime deltaTimer = new ElapsedTime();
-
     private boolean enabled;
     private boolean controllerEnabled;
 
@@ -92,31 +91,23 @@ public class DrivetrainUpdater extends Thread {
                 Thread.yield();
             }
         } else {
-            while (Status.opModeIsActive) {
-                if (Status.isDrivingActive) {
-                    Thread.yield();
-                }
-                if (robotContainer.latitudePID.calculate() > Constants.Control.ZERO_POWER_TOLERANCE || robotContainer.longitudePID.calculate() > Constants.Control.ZERO_POWER_TOLERANCE || robotContainer.headingPID.calculate() < Constants.Control.ZERO_POWER_TOLERANCE) {
-                    robotContainer.drivetrain.powerInput(
-                            HelperFunctions.clamp(robotContainer.latitudePID.calculate(), -0.4, 0.4),
-                            HelperFunctions.clamp(robotContainer.longitudePID.calculate(), -0.4, 0.4),
-                            HelperFunctions.clamp(robotContainer.headingPID.calculate(), -0.4, 0.4)
-                    );
-                }
-                try {
-                    Thread.sleep(10);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
+            robotContainer.telemetry.addData("Target Pose", Status.targetPose);
+            if (robotContainer.latitudePID.calculate() > Constants.Control.ZERO_POWER_TOLERANCE || robotContainer.longitudePID.calculate() > Constants.Control.ZERO_POWER_TOLERANCE || robotContainer.headingPID.calculate() < Constants.Control.ZERO_POWER_TOLERANCE) {
+                robotContainer.drivetrain.powerInput(
+                        HelperFunctions.clamp(robotContainer.latitudePID.calculate(), -0.4, 0.4),
+                        HelperFunctions.clamp(robotContainer.longitudePID.calculate(), -0.4, 0.4),
+                        HelperFunctions.clamp(robotContainer.headingPID.calculate(), -0.4, 0.4)
+                );
             }
+            Thread.yield();
         }
     }
 
-    public void setEnabledTrue(){
+    public void setControllerDrivingEnabled(){
         controllerEnabled = true;
     }
 
-    public void setEnabledFalse(){
+    public void setControllerDrivingDisabled(){
         controllerEnabled = false;
     }
 
