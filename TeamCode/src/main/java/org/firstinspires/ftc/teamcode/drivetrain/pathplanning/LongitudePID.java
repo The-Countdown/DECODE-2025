@@ -11,17 +11,16 @@ import org.firstinspires.ftc.teamcode.main.Status;
  * A PID controller for maintaining a specific LONGITUDE.
  */
 public class LongitudePID {
-    private final RobotContainer robotContainer;
     private final ElapsedTime timer = new ElapsedTime();
-    private double lastError = 0;
+    private double lastError;
     private double currentTime;
     private double lastTime;
     private double p;
     private double i;
     private double d;
 
-    public LongitudePID(RobotContainer robotContainer) {
-        this.robotContainer = robotContainer;
+    public LongitudePID() {
+        this.lastError = 0;
     }
 
     public double getError(){

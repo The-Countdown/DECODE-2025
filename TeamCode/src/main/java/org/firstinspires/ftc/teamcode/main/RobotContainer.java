@@ -231,7 +231,7 @@ public class RobotContainer {
         flyWheelMotors.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         LinkedServos turretServos = new LinkedServos(HardwareDevices.turretServoMaster, HardwareDevices.turretServoSlave);
 
-        pathPlanner = new PathPlanner(telemetry, this);
+        pathPlanner = new PathPlanner(telemetry);
         Arrays.fill(Status.pathCompleted, false);
 
         limelightLogic = new LimelightLogic(this, telemetry, HardwareDevices.limelight);
@@ -251,9 +251,9 @@ public class RobotContainer {
         allIndicatorLights.addLight(indicatorLightBack);
 
         drivetrain = new Drivetrain(this);
-        headingPID = new HeadingPID(this);
-        latitudePID = new LatitudePID(this);
-        longitudePID = new LongitudePID(this);
+        headingPID = new HeadingPID();
+        latitudePID = new LatitudePID();
+        longitudePID = new LongitudePID();
 
         registerLoopTimer("teleOp");
         registerLoopTimer("drivetrainUpdater");
@@ -263,7 +263,7 @@ public class RobotContainer {
     public void init() {
         this.isRunning = true;
         RobotContainer.HardwareDevices.imu.resetYaw();
-        this.pathPlanner = new PathPlanner(this.telemetry, this);
+        this.pathPlanner = new PathPlanner(this.telemetry);
         HardwareDevices.allHubs = hardwareMap.getAll(LynxModule.class);
         HardwareDevices.controlHub = hardwareMap.get(LynxModule.class, "Control Hub");
         HardwareDevices.expansionHub = hardwareMap.get(LynxModule.class, "Expansion Hub 2");

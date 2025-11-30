@@ -21,14 +21,14 @@ public class LimelightLogic {
     private Telemetry telemetry;
     public Limelight3A limelight;
     private LLResult result;
-    private ElapsedTime turretTime = new ElapsedTime();
-    private Pose2D botPose = new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
+    private Pose2D botPose;
     private double p = 177.5;
 
     public LimelightLogic(RobotContainer robot, Telemetry telemetry, Limelight3A limelight) {
         this.robotContainer = robot;
         this.telemetry = telemetry;
         this.limelight = limelight;
+        this.botPose = new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
 
         LLFieldMap field = new LLFieldMap();
     }

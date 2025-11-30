@@ -4,9 +4,7 @@ import org.firstinspires.ftc.teamcode.main.RobotContainer;
 
 public class HuskyLensLogic {
     private final RobotContainer robotContainer;
-
     private final HuskyLens huskyLens;
-
     public enum Color {
         GREEN,
         PURPLE,

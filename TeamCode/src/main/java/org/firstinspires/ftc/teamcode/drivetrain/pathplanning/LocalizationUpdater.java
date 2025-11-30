@@ -7,10 +7,9 @@ import org.firstinspires.ftc.teamcode.main.Status;
 
 public class LocalizationUpdater extends Thread {
     private final RobotContainer robotContainer;
-    public double CURRENT_LOOP_TIME_MS = 0;
-    public double CURRENT_LOOP_TIME_AVG_MS = 0;
-
-    public boolean enabled = true;
+    public double CURRENT_LOOP_TIME_MS;
+    public double CURRENT_LOOP_TIME_AVG_MS;
+    public boolean enabled;
 
     /**
      * The pinpoint takes more time than a normal device, however, I don't know how much that is,
@@ -18,6 +17,9 @@ public class LocalizationUpdater extends Thread {
      */
     public LocalizationUpdater(RobotContainer robotContainer) {
         this.robotContainer = robotContainer;
+        this.CURRENT_LOOP_TIME_AVG_MS = 0;
+        this.CURRENT_LOOP_TIME_MS = 0;
+        this.enabled = true;
         // Set the thread to be a daemon thread so that it will not prevent the program from exiting.
         setDaemon(true);
         setName("PinpointUpdater");

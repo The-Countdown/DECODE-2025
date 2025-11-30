@@ -16,11 +16,12 @@ public class FlywheelPDF {
     private double p;
     private double ff;
     private double d;
-    private double lastTargetPower = 0;
+    private double lastTargetPower;
 
     public FlywheelPDF(RobotContainer robotContainer, LinkedMotors flywheelMotors) {
         this.robotContainer = robotContainer;
         this.flywheelMotors = flywheelMotors;
+        this.lastTargetPower = 0;
     }
 
     /**

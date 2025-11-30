@@ -16,17 +16,22 @@ import org.firstinspires.ftc.teamcode.util.HelperFunctions;
  * improving efficiency.
  */
 public class DrivetrainUpdater extends Thread {
-    public double CURRENT_LOOP_TIME_MS = 0;
-    public double CURRENT_LOOP_TIME_AVG_MS = 0;
+    public double CURRENT_LOOP_TIME_MS;
+    public double CURRENT_LOOP_TIME_AVG_MS;
     private final RobotContainer robotContainer;
-    private final double[] currentPowers = new double[4];
+    private final double[] currentPowers;
     private final ElapsedTime deltaTimer = new ElapsedTime();
 
-    private boolean enabled = true;
-    private boolean controllerEnabled = true;
+    private boolean enabled;
+    private boolean controllerEnabled;
 
     public DrivetrainUpdater(RobotContainer robotContainer) {
         this.robotContainer = robotContainer;
+        this.currentPowers = new double[4];
+        this.CURRENT_LOOP_TIME_AVG_MS = 0;
+        this.CURRENT_LOOP_TIME_MS = 0;
+        this.enabled = true;
+        this.controllerEnabled = true;
         // Set the thread to be a daemon thread so that it will not prevent the program from exiting.
         setDaemon(true);
         setName("DrivetrainUpdater");
