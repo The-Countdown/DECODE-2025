@@ -57,6 +57,11 @@ public class Status {
     public static boolean flywheelAtTargetSpeed = true;
     public static boolean flywheelToggle = false;
     public static boolean manualControl = false;
+    public enum spindexerMode {
+        INTAKE,
+        TRANSFER;
+    }
+    public static spindexerMode currentSpindexerMode;
     public static int ballsToShoot = 0;
     public static int[] ballsToShootOrder = {0,0,0};
 }

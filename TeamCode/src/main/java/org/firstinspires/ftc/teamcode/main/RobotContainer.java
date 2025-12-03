@@ -505,6 +505,9 @@ public class RobotContainer {
         telemetry.addData("Expansion Hub Current", expansionHubCurrent + " A");
         telemetry.addLine();
         telemetry.addData("Spindexer Angle", spindexer.getAngle());
+        telemetry.addData("Spindexer Intake Slot", spindexer.getCurrentIntakeSlot());
+        telemetry.addData("Spindexer Target Angle", spindexer.targetAngle);
+        telemetry.addData("Spindexer Error Angle", spindexer.getError());
         telemetry.addData("Spindexer Slot Colors", Arrays.toString(Status.slotColor));
         telemetry.addData("flywheel target max vel", turret.flywheel.targetMaxVelocity);
         telemetry.addData("flywheel atVelocity", turret.flywheel.atTargetVelocity());

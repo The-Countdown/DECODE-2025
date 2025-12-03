@@ -1,17 +1,11 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.qualcomm.hardware.rev.RevColorSensorV3;
-import com.qualcomm.robotcore.hardware.AnalogInput;
-import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.sun.tools.javac.code.Attribute;
 
-import org.firstinspires.ftc.teamcode.hardware.BetterServo;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.hardware.BetterCRServo;
 import org.firstinspires.ftc.teamcode.hardware.BetterAnalogInput;
@@ -69,11 +63,11 @@ public class Spindexer {
 
         if (teleop) {
             if (robotContainer.gamepadEx1.dpadLeft.wasJustPressed()) {
-                robotContainer.spindexer.moveIntakeSlotLeft();
+                robotContainer.spindexer.moveIntakeSlotClockwise();
             }
 
             if (robotContainer.gamepadEx1.dpadRight.wasJustPressed()) {
-                robotContainer.spindexer.moveIntakeSlotRight();
+                robotContainer.spindexer.moveIntakeSlotCounterClockwise();
             }
 
             if (robotContainer.gamepadEx1.dpadUp.wasJustPressed()) {
@@ -81,11 +75,11 @@ public class Spindexer {
             }
 
             if (robotContainer.gamepadEx2.dpadLeft.wasJustPressed()) {
-                robotContainer.spindexer.moveIntakeSlotLeft();
+                robotContainer.spindexer.moveIntakeSlotClockwise();
             }
 
             if (robotContainer.gamepadEx2.dpadRight.wasJustPressed()) {
-                robotContainer.spindexer.moveIntakeSlotRight();
+                robotContainer.spindexer.moveIntakeSlotCounterClockwise();
             }
 
             // Start up turret
@@ -152,13 +146,13 @@ public class Spindexer {
 
     // Assume the Spindexer is always at target
     public int getCurrentIntakeSlot() {
-        int current = (int) ((getAngle() % 360) / 120);
-        return current % 3;
+        int current = (int) ((targetAngle % 360) / 120);
+        return (current + 2) % 3;
     }
 
     // Assume the Spindexer is always at target
     public int getCurrentTransferSlot() {
-        int current = (int) ((getAngle() % 360) + 60) / 120;
+        int current = (int) ((targetAngle % 360) + 60) / 120;
         return current % 3;
     }
 
@@ -181,14 +175,14 @@ public class Spindexer {
         }
     }
 
-    public void moveIntakeSlotLeft() {
-        int currentSlot = getCurrentIntakeSlot();
-        targetAngle = Constants.Spindexer.INTAKE_SLOT_ANGLES[(currentSlot + 2) % 3];
-    }
-
-    public void moveIntakeSlotRight() {
+    public void moveIntakeSlotClockwise() {
         int currentSlot = getCurrentIntakeSlot();
         targetAngle = Constants.Spindexer.INTAKE_SLOT_ANGLES[(currentSlot + 1) % 3];
+    }
+
+    public void moveIntakeSlotCounterClockwise() {
+        int currentSlot = getCurrentIntakeSlot();
+        targetAngle = Constants.Spindexer.INTAKE_SLOT_ANGLES[(currentSlot + 2) % 3];
     }
 
     public void goToNextTransferSlot() {
@@ -298,11 +292,16 @@ public class Spindexer {
     public class PDF {
 
         public double getError() {
-            return error = HelperFunctions.normalizeAngle(targetAngle - robotContainer.spindexer.getAngle());
+            return targetAngle - robotContainer.spindexer.getAngle();
         }
 
         public double calculate() {
             error = getError();
+            if (Status.currentSpindexerMode == Status.spindexerMode.INTAKE && Math.signum(error) == -1 && Math.abs(error) > 30) {
+                error += 360;
+            } else if (Status.currentSpindexerMode == Status.spindexerMode.TRANSFER && Math.signum(error) == 1) {
+                error -= 360;
+            }
 
             p = Constants.Spindexer.KP * error;
             d = Math.signum(error) * (Constants.Spindexer.KD * (lastError - error));
