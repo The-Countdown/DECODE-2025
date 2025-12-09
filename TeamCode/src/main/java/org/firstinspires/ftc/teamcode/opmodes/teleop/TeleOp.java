@@ -8,6 +8,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.LocalizationUpdater;
+import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.PathingUpdater;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
@@ -101,7 +102,7 @@ public class TeleOp extends OpMode {
             robotContainer.pathingUpdater.start();
         }
 
-        while (robotContainer.gamepadEx1.cross.isHeld()) {
+        if (robotContainer.gamepadEx1.cross.isHeld()) {
             if (robotContainer.pathPlanner.driveUsingPID(0)) {
                 Status.isDrivingActive = true;
             } else{
@@ -120,6 +121,7 @@ public class TeleOp extends OpMode {
                     throw new RuntimeException(e);
                 }
             }
+            robotContainer.pathingUpdater = new PathingUpdater(robotContainer);
         }
 
         // Gamepad 2
