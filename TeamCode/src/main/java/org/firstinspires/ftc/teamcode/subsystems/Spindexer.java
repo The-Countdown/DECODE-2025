@@ -50,6 +50,7 @@ public class Spindexer {
         } else if (!this.pause) {
             spindexerServo.updateSetPower(0);
         }
+        //Should this stop running when right bumper is held???? -Elliot
 
         if (teleop) {
             if (robotContainer.beamBreakToggleButton.wasJustPressed() && beamTimer.seconds() > 0.8) {
