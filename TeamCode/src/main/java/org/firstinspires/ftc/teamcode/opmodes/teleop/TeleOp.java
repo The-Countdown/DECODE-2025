@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.LocalizationUpdater;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
@@ -16,7 +17,6 @@ import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "TeleOp")
 public class TeleOp extends OpMode {
     private RobotContainer robotContainer;
-    public static double CURRENT_LOOP_TIME_MS;
     private final GamepadWrapper.ButtonReader transferConditionButton = new GamepadWrapper.ButtonReader();
     private final ElapsedTime spinTimer = new ElapsedTime();
 
@@ -45,15 +45,17 @@ public class TeleOp extends OpMode {
         Status.slotColor[0] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;
         Status.slotColor[1] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;
         Status.slotColor[2] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;
+        Status.currentSpindexerMode = Status.spindexerMode.INTAKE;
         RobotContainer.HardwareDevices.limelight.start();
-        robotContainer.start(this, false);
+        robotContainer.start(this, true);
         Status.isDrivingActive = true;
         robotContainer.spindexer.goToFirstIntakeSlot();
     }
 
     @Override
     public void loop() {
-        CURRENT_LOOP_TIME_MS = robotContainer.updateLoopTime("teleOp");
+        robotContainer.CURRENT_LOOP_TIME_MS = robotContainer.updateLoopTime("teleOp");
+        robotContainer.DELTA_TIME_MS = robotContainer.CURRENT_LOOP_TIME_MS - robotContainer.PREV_LOOP_TIME_MS;
         robotContainer.refreshData();
         robotContainer.gamepadEx1.update();
         robotContainer.gamepadEx2.update();
@@ -69,15 +71,55 @@ public class TeleOp extends OpMode {
         robotContainer.controlHubCurrent = robotContainer.getCurrent(Constants.Robot.CONTROL_HUB_INDEX);
         robotContainer.expansionHubCurrent = robotContainer.getCurrent(Constants.Robot.EXPANSION_HUB_INDEX);
 
-        robotContainer.turret.update(true, CURRENT_LOOP_TIME_MS);
+        robotContainer.turret.update(true);
         robotContainer.spindexer.update(true);
         robotContainer.positionProvider.update(true);
 
         // Gamepad 1
         robotContainer.drivetrain.controlUpdate();
 
+//        if (robotContainer.gamepadEx1.dpadDown.wasJustReleased()) {
+//            robotContainer.turret.setTargetAngle(0);
+//        }
+//
+//        if (robotContainer.gamepadEx1.dpadLeft.wasJustReleased()) {
+//            robotContainer.turret.setTargetAngle(-90);
+//        }
+//
+//        if (robotContainer.gamepadEx1.dpadRight.wasJustReleased()) {
+//            robotContainer.turret.setTargetAngle(90);
+//        }
+
         if (robotContainer.gamepadEx1.triangle.wasJustPressed()) {
             Status.manualControl = !Status.manualControl;
+        }
+
+        if (robotContainer.gamepadEx1.cross.wasJustPressed()) {
+            Status.isDrivingActive = false;
+            robotContainer.pathPlanner.clearPoses();
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, 0, 10, AngleUnit.DEGREES, 0));
+            robotContainer.pathingUpdater.start();
+        }
+
+        while (robotContainer.gamepadEx1.cross.isHeld()) {
+            if (robotContainer.pathPlanner.driveUsingPID(0)) {
+                Status.isDrivingActive = true;
+            } else{
+                robotContainer.pathPlanner.updatePathStatus();
+                robotContainer.refreshData();
+            }
+        }
+
+        if (robotContainer.gamepadEx1.cross.wasJustReleased()) {
+            Status.isDrivingActive = true;
+            if (robotContainer.pathingUpdater != null) {
+                robotContainer.pathingUpdater.stopThread();
+                try {
+                    robotContainer.pathingUpdater.join();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
 
         // Gamepad 2
@@ -85,7 +127,16 @@ public class TeleOp extends OpMode {
         // Intake - Circle
         Status.intakeToggle = robotContainer.gamepadEx2.circle.wasJustPressed() != Status.intakeToggle;
         if (Status.intakeToggle) {
-            robotContainer.intake.setPower(Status.intakeToggle ? (robotContainer.gamepadEx1.rightTriggerRaw() - robotContainer.gamepadEx1.leftTriggerRaw()) * Constants.Intake.TOP_SPEED : 0);
+            double power = robotContainer.gamepadEx1.rightTriggerRaw() - (robotContainer.gamepadEx1.leftTriggerRaw());
+            if (Status.intakeToggle) {
+                if (Math.abs(robotContainer.spindexer.getError()) < 20) {
+                    robotContainer.intake.setPower(Math.signum(power) * Math.min(Math.abs(power), Constants.Intake.TOP_SPEED));
+                } else {
+                    robotContainer.intake.setPower(Math.signum(power) * Math.min(Math.abs(power), Constants.Intake.SPIN_ERROR_SPEED));
+                }
+            } else {
+                robotContainer.intake.setPower(0);
+            }
         } else {
             robotContainer.intake.setPower(Constants.Intake.REVERSE_TOP_SPEED);
         }
@@ -94,7 +145,6 @@ public class TeleOp extends OpMode {
         if (robotContainer.gamepadEx2.cross.wasJustPressed()) {
             Status.slotColor[robotContainer.spindexer.getCurrentTransferSlot()] = Constants.Game.ARTIFACT_COLOR.NONE;
             if (!robotContainer.spindexer.isEmpty()) {
-                robotContainer.spindexer.goToNextTransferSlot();
             } else {
                 Status.intakeToggle = true;
                 Status.turretToggle = false;
@@ -126,6 +176,7 @@ public class TeleOp extends OpMode {
             robotContainer.telemetry.addLine("robot pos on field no see");
         }
 
+        robotContainer.PREV_LOOP_TIME_MS = robotContainer.CURRENT_LOOP_TIME_MS;
         robotContainer.telemetry("teleOp");
         Thread.yield();
     }

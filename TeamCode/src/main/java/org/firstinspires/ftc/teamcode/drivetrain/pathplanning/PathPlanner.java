@@ -26,7 +26,7 @@ import java.lang.Thread;
 // Teleop Pinpoint
 //      y
 //      ^
-// x <- -> -x
+// x <-   -> -x
 //      |
 //     -y
 //
@@ -34,22 +34,13 @@ import java.lang.Thread;
 
 public class PathPlanner {
     private Telemetry telemetry;
-    private RobotContainer robotContainer;
-    private DelayedActionManager delayedActionManager;
     ArrayList<GeneralPose> poses = new ArrayList<>();
-    boolean atTarget;
-    double tolerance = 1;
-    private static final ElapsedTime stopTimer = new ElapsedTime();
-    private static final ElapsedTime sleepTimer = new ElapsedTime();
-    double[] calculatedAngles = new double[Constants.Swerve.NUM_SERVOS];
-    double[] calculatedPowers = new double[Constants.Swerve.NUM_MOTORS];
-    double[] lastAngles = Constants.Swerve.STOP_FORMATION;
     public boolean pathCompleted = false;
-    public int currentPose = 0;
+    public int currentPose;
 
-    public PathPlanner(Telemetry telemetry, RobotContainer robotContainer) {
+    public PathPlanner(Telemetry telemetry) {
         this.telemetry = telemetry;
-        this.robotContainer = robotContainer;
+        this.currentPose = 0;
     }
 
     public void addPose(Pose2D pose) {
@@ -101,6 +92,10 @@ public class PathPlanner {
         }
     }
 
+    public void clearPoses() {
+        this.poses.clear();
+    }
+
     public class GeneralPose {
         public GeneralPose() {
         }
@@ -146,9 +141,5 @@ public class PathPlanner {
             }
             return false;
         }
-    }
-
-    public boolean isPathCompleted() {
-        return this.pathCompleted;
     }
 }

@@ -16,8 +16,8 @@ import java.util.Arrays;
 public class Drivetrain extends RobotContainer.HardwareDevices {
     private final RobotContainer robotContainer;
     private static final ElapsedTime stopTimer = new ElapsedTime();
-    double[] calculatedAngles = new double[Constants.Swerve.NUM_SERVOS];
-    double[] calculatedPowers = new double[Constants.Swerve.NUM_MOTORS];
+    double[] calculatedAngles;
+    double[] calculatedPowers;
     double[] lastAngles = Constants.Swerve.STOP_FORMATION;
     GamepadWrapper.ButtonReader xButton = new GamepadWrapper.ButtonReader();
     GamepadWrapper.ButtonReader yButton = new GamepadWrapper.ButtonReader();
@@ -29,6 +29,8 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
      */
     public Drivetrain(RobotContainer robotContainer) {
         this.robotContainer = robotContainer;
+        this.calculatedAngles = new double[Constants.Swerve.NUM_SERVOS];
+        this.calculatedPowers = new double[Constants.Swerve.NUM_MOTORS];
     }
 
     /**

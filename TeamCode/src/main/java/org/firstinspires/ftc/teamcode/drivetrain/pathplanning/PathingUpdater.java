@@ -22,6 +22,9 @@ public class PathingUpdater extends Thread {
             return;
         }
         while (Status.opModeIsActive) {
+            if (!enabled) {
+                return;
+            }
             if (Status.isDrivingActive) {
                 Thread.yield();
             }
@@ -32,11 +35,7 @@ public class PathingUpdater extends Thread {
                         HelperFunctions.clamp(robotContainer.headingPID.calculate(), -0.4, 0.4)
                 );
             }
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            Thread.yield();
         }
     }
 

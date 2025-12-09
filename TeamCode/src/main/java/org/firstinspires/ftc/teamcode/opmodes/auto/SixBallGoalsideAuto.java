@@ -48,7 +48,7 @@ public class SixBallGoalsideAuto extends OpMode {
         Status.isDrivingActive = false;
         Status.intakeToggle = true;
         Status.turretToggle = false;
-        robotContainer.start(this, true);
+        robotContainer.start(this, false);
         // This is important do not remove it, we do not know why it is here. (Cole, Elliot)
         robotContainer.localizationUpdater = new LocalizationUpdater(robotContainer);
         robotContainer.localizationUpdater.start();
@@ -101,7 +101,6 @@ public class SixBallGoalsideAuto extends OpMode {
 
         robotContainer.delayedActionManager.incrementPoseOffset();
         robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0.6));
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.spindexer.goToNextTransferSlot());
         robotContainer.delayedActionManager.schedulePose(() -> Status.flywheelToggle = true);
         robotContainer.delayedActionManager.schedulePose(() -> Status.intakeToggle = false);
         robotContainer.delayedActionManager.schedulePose(() -> Status.turretToggle = true);

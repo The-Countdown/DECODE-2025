@@ -14,9 +14,9 @@ import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
-@Autonomous(name="BasicThreeBallAuto", group="Robot")
+@Autonomous(name="TestingAuto", group="Robot")
 @Config
-public class DoNotChangeAuto extends OpMode {
+public class TestingAuto extends OpMode {
     private RobotContainer robotContainer;
     // 102.22
     // 91.44
@@ -54,7 +54,7 @@ public class DoNotChangeAuto extends OpMode {
         Status.intakeToggle = true;
         Status.turretToggle = false;
         Status.flywheelToggle = false;
-        robotContainer.start(this, false);
+        robotContainer.start(this, true);
         // This is important do not remove it, we do not know why it is here. (Cole, Elliot)
         robotContainer.localizationUpdater = new LocalizationUpdater(robotContainer);
         robotContainer.localizationUpdater.start();
@@ -62,9 +62,6 @@ public class DoNotChangeAuto extends OpMode {
         if (Status.wentBackToStart) {
             Status.startingPose = (Pose2D) blackboard.getOrDefault("pose", Status.startingPose);
         }
-        Status.slotColor[0] = Constants.Game.ARTIFACT_COLOR.PURPLE;
-        Status.slotColor[1] = Constants.Game.ARTIFACT_COLOR.PURPLE;
-        Status.slotColor[2] = Constants.Game.ARTIFACT_COLOR.PURPLE;
         RobotContainer.HardwareDevices.pinpoint.setPosition(Status.startingPose);
         if (Status.alliance == Constants.Game.ALLIANCE.BLUE) {
             robotContainer.pathPlanner.addPose(Status.startingPose);
@@ -76,13 +73,10 @@ public class DoNotChangeAuto extends OpMode {
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.INCH, Status.startingPose.getX(DistanceUnit.INCH)+20, Status.startingPose.getY(DistanceUnit.INCH), AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)));
         }
 
-//        robotContainer.delayedActionManager.incrementPoseOffset(); // Goes from 0 to 2
-        robotContainer.delayedActionManager.schedule(() -> Status.flywheelToggle = true, 0);
-        robotContainer.delayedActionManager.schedule(() -> Status.intakeToggle = false, 0);
-        robotContainer.delayedActionManager.schedule(() -> Status.turretToggle = true, 0);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.shootAll(false), 800);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.turret.flywheel.setPower(Constants.Turret.FLYWHEEL_POWER_AUTO_FAR), 0);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[1]), 0);
+        robotContainer.delayedActionManager.schedulePose(() -> Status.flywheelToggle = true);
+        robotContainer.delayedActionManager.schedulePose(() -> Status.intakeToggle = false);
+        robotContainer.delayedActionManager.schedulePose(() -> Status.turretToggle = true);
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.turret.flywheel.setPower(Constants.Turret.FLYWHEEL_POWER_AUTO_FAR), 0);
 
         robotContainer.delayedActionManager.incrementPoseOffset(2);
         robotContainer.delayedActionManager.schedulePose(() -> robotContainer.turret.flywheel.setPower(0));
@@ -93,17 +87,17 @@ public class DoNotChangeAuto extends OpMode {
 
     @Override
     public void loop() {
+        robotContainer.turret.update(false);
         robotContainer.positionProvider.update(false);
         robotContainer.delayedActionManager.update();
         robotContainer.pathPlanner.updatePathStatus();
-        robotContainer.turret.pointAtGoal();
         robotContainer.pathPlanner.driveThroughPath();
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[1]), 0);
         robotContainer.telemetry.addData("Flywheel Toggle: ", Status.flywheelToggle);
         robotContainer.telemetry.addData("Intake Toggle: ", Status.intakeToggle);
         robotContainer.telemetry.addData("Turret Toggle: ", Status.turretToggle);
         robotContainer.telemetry.addData("Intake Velocity: ", robotContainer.intake.getVelocity());
         robotContainer.telemetry.addData("Flywheel Velocity: ", RobotContainer.HardwareDevices.flyWheelMotorMaster.getVelocity());
+        robotContainer.telemetry.addData("Current Pose: ", Status.currentPose);
         robotContainer.telemetry.update();
 
         if (!Status.intakeToggle) {

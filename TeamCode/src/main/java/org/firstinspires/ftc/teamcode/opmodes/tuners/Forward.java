@@ -50,7 +50,6 @@ public class Forward extends OpMode {
             robotContainer.addRetainedTelemetry("WARNING, PINPOINT STATUS:", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
         }
         targetTimer.reset();
-        robotContainer.pathingUpdater.stopThread();
     }
 
     @Override

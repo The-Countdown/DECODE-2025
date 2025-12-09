@@ -18,15 +18,17 @@ public class PositionProvider {
     private RobotContainer robotContainer;
     private LimelightLogic limelightLogic;
     private GoBildaPinpointDriver pinpoint;
-    private Pose2D visionOffsetPose = new Pose2D(DistanceUnit.CM, 0, 0, AngleUnit.DEGREES, 0);
+    private Pose2D visionOffsetPose;
     private ElapsedTime visionTimer = new ElapsedTime();
-    private ArrayList<Pose2D> visionPoseList = new ArrayList<>();
+    private ArrayList<Pose2D> visionPoseList;
     private Pose2D lastODPose;
 
     public PositionProvider(RobotContainer robotContainer, LimelightLogic limelightLogic, GoBildaPinpointDriver pinpoint) {
         this.robotContainer = robotContainer;
         this.limelightLogic = limelightLogic;
         this.pinpoint = pinpoint;
+        this.visionOffsetPose = new Pose2D(DistanceUnit.CM, 0, 0, AngleUnit.DEGREES, 0);
+        this.visionPoseList = new ArrayList<>();
     }
 
     public Pose2D getRobotPose() {

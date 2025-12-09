@@ -12,17 +12,18 @@ import org.firstinspires.ftc.teamcode.util.HelperFunctions;
  * A PID controller for maintaining a specific heading.
  */
 public class HeadingPID {
-    private final RobotContainer robotContainer;
     private final ElapsedTime timer = new ElapsedTime();
-    private double lastError = 0;
+    private double lastError;
     private double currentTime;
     private double lastTime;
     private double p;
     private double i;
     private double d;
 
-    public HeadingPID(RobotContainer robotContainer) {
-        this.robotContainer = robotContainer;
+    public HeadingPID() {
+        this.lastError = 0;
+        this.currentTime = 0;
+        this.lastTime = 0;
     }
 
     /**

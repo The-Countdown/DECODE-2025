@@ -44,6 +44,9 @@ public class DrivetrainUpdater extends Thread {
                 currentPowers[i] = RobotContainer.HardwareDevices.swerveMotors[i].getPower();
             }
         while (Status.opModeIsActive) {
+            if (!enabled) {
+                return;
+            }
             robotContainer.refreshData();
 
             CURRENT_LOOP_TIME_MS = robotContainer.updateLoopTime("drivetrainUpdater");

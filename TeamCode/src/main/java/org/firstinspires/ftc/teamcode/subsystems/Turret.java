@@ -19,9 +19,8 @@ public class Turret extends RobotContainer.HardwareDevices {
     private final LinkedServos turretServos;
     public final BetterServo hoodServo;
     private FlywheelPDF flywheelPDF;
-    private double targetPosition = 0;
-    private double manualTurretPos = 0;
-    public double[] turretPositionTable = {0.785, 0.50, 0.2225}; // -90, 0, 90
+    private double targetPosition;
+    private double manualTurretPos;
 
     public Turret(RobotContainer robotContainer, LinkedMotors flyWheelMotors, BetterServo hoodServo, LinkedServos turretServos) {
         this.robotContainer = robotContainer;
@@ -29,46 +28,52 @@ public class Turret extends RobotContainer.HardwareDevices {
         this.hoodServo = hoodServo;
         this.turretServos = turretServos;
         this.flywheelPDF = new FlywheelPDF(robotContainer, flyWheelMotors);
+        this.targetPosition = 0;
+        this.manualTurretPos = 0;
     }
 
-    public void update(boolean teleop, double CURRENT_LOOP_TIME_MS) {
+    public void update(boolean teleop) {
         Status.turretToggleButton.update(Status.turretToggle);
-        double flywheelTargetSpeed = 0;
 
         if (teleop) {
             if (!Status.intakeToggle) {
-                flywheelTargetSpeed = Math.min(Status.turretToggleButton.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, robotContainer.turret.flywheel.interpolateByDistance(HelperFunctions.disToGoal()));
+                flywheel.targetVelocity = Math.min(Status.turretToggleButton.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, robotContainer.turret.flywheel.interpolateByDistance(HelperFunctions.disToGoal()));
             } else {
-                flywheelTargetSpeed = 0;
+                flywheel.targetVelocity = 0;
             }
 
             // Manual turret hood
-            robotContainer.turret.hood.setPos(robotContainer.gamepadEx1.circle.isPressed() ? Constants.Turret.HOOD_PRESETS[1] : Constants.Turret.HOOD_PRESETS[0]);
+            if (robotContainer.gamepadEx1.circle.isPressed() || Status.currentPose.getX(DistanceUnit.CM) < -75) {
+                robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[1]);
+            } else {
+                robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[0]);
+            }
 
             // Automated flywheel
             if (robotContainer.gamepadEx2.circle.wasJustReleased() && !Status.intakeToggle) {
                 Status.turretToggle = true;
-                robotContainer.spindexer.goToNextTransferSlot();
             } else if (robotContainer.gamepadEx2.circle.wasJustReleased() && Status.intakeToggle) {
                 Status.turretToggle = false;
                 robotContainer.spindexer.goToNextIntakeSlot(true);
             }
 
             // Turret turn - Right stick X
-            if (Status.manualControl) {
-                // Manual turret turning
-                manualTurretPos -= robotContainer.gamepadEx2.rightStickX() != 0 ? (Constants.Turret.TURRET_SPEED_FACTOR * CURRENT_LOOP_TIME_MS) * Math.pow(robotContainer.gamepadEx2.rightStickX(), 3) : 0;
-                manualTurretPos = HelperFunctions.clamp(manualTurretPos, Constants.Turret.TURRET_LIMIT_MIN, Constants.Turret.TURRET_LIMIT_MAX);
-                robotContainer.turret.setTargetPosition(manualTurretPos);
-            } else {
-                // Automatic turret turning
-                robotContainer.turret.pointAtGoal();
-            }
+            // if (Status.manualControl) {
+            //     // Manual turret turning
+            //     manualTurretPos -= robotContainer.gamepadEx2.rightStickX() != 0 ? (Constants.Turret.TURRET_SPEED_FACTOR * CURRENT_LOOP_TIME_MS) * Math.pow(robotContainer.gamepadEx2.rightStickX(), 3) : 0;
+            //     manualTurretPos = HelperFunctions.clamp(manualTurretPos, Constants.Turret.TURRET_LIMIT_MIN, Constants.Turret.TURRET_LIMIT_MAX);
+            //     robotContainer.turret.setTargetPosition(manualTurretPos);
+            // } else {
+            //     // Automatic turret turning
+            // }
+            robotContainer.turret.pointAtGoal();
         }
 
+        flywheel.targetVelocity = flywheel.targetVelocity * Constants.Turret.FLYWHEEL_MAX_VELOCITY;
         Status.flywheelAtTargetSpeed = robotContainer.turret.flywheel.atTargetVelocity();
-        double targetPower = flywheelPDF.calculate(flywheelTargetSpeed);
-        robotContainer.telemetry.addData("Flywheel", targetPower);
+        double targetPower = flywheelPDF.calculate(flywheel.targetVelocity);
+        robotContainer.telemetry.addData("Flywheel Target Speed", flywheel.targetVelocity);
+        robotContainer.telemetry.addData("Flywheel Power", targetPower);
         flyWheelMotors.setPower(targetPower);
     }
 
@@ -83,14 +88,12 @@ public class Turret extends RobotContainer.HardwareDevices {
             return;
         }
 
-        turretServos.setPositionDegrees(angleInDegrees);
-
         // Legacy interpolate
-        // if (angleInDegrees < 0) { // If angle between -90 and 0
-        //     turretServos.setPosition(HelperFunctions.interpolate(turretPositionTable[0], turretPositionTable[1], ((angleInDegrees + 90) / 90)));
-        // } else { // If angle between 0 and 90
-        //     turretServos.setPosition(HelperFunctions.interpolate(turretPositionTable[1], turretPositionTable[2], ((angleInDegrees - 90) / 90) + 1));
-        // }
+        if (angleInDegrees < 0) { // If angle between -90 and 0
+            turretServos.setPosition(HelperFunctions.interpolate(Constants.Turret.TURRET_MAX, Constants.Turret.TURRET_NEUTRAL, ((angleInDegrees + 90) / 90)));
+        } else { // If angle between 0 and 90
+            turretServos.setPosition(HelperFunctions.interpolate(Constants.Turret.TURRET_NEUTRAL, Constants.Turret.TURRET_MIN, ((angleInDegrees - 90) / 90) + 1));
+        }
     }
 
     public double getPosition() {
@@ -127,15 +130,6 @@ public class Turret extends RobotContainer.HardwareDevices {
     public class Flywheel {
         public double targetVelocity = 0;
         public double targetMaxVelocity = 0;
-
-        // public void setTargetVelocity(double power) {
-        //     targetVelocity = Constants.Swerve.MOTOR_MAX_VELOCITY_TICKS_PER_SECOND * power;
-        //     if (Status.flywheelToggle) {
-        //         flyWheelMotors.setVelocity(targetVelocity);
-        //     } else {
-        //         flyWheelMotors.setVelocity(0);
-        //     }
-        // }
 
         public void setPower(double power) {
             flyWheelMotors.setPower(targetVelocity);

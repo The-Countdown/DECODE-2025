@@ -29,12 +29,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
 import org.firstinspires.ftc.teamcode.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.drivetrain.DrivetrainUpdater;
+import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.PathingUpdater;
 import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.HeadingPID;
 import org.firstinspires.ftc.teamcode.drivetrain.SwerveModule;
 import org.firstinspires.ftc.teamcode.drivetrain.SwervePDF;
 import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.LatitudePID;
 import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.LongitudePID;
-import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.PathingUpdater;
 import org.firstinspires.ftc.teamcode.subsystems.HuskyLensLogic;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.LimelightLogic;
@@ -112,10 +112,14 @@ public class RobotContainer {
     public Spindexer spindexer;
     public Transfer transfer;
 
-    public double controlHubVoltage = 0;
-    public double expansionHubVoltage = 0;
-    public double controlHubCurrent = 0;
-    public double expansionHubCurrent = 0;
+    public double controlHubVoltage;
+    public double expansionHubVoltage;
+    public double controlHubCurrent;
+    public double expansionHubCurrent;
+
+    public double CURRENT_LOOP_TIME_MS;
+    public double PREV_LOOP_TIME_MS;
+    public double DELTA_TIME_MS;
 
     public static class HardwareDevices {
         public static List<LynxModule> allHubs;
@@ -155,7 +159,7 @@ public class RobotContainer {
         public static BetterServo transferServoRight;
         public static BetterDcMotor spindexerEncoder;
 
-        public static BetterServo spindexServo;
+        public static BetterCRServo spindexServo;
         public static BetterAnalogInput spindexAnalog;
 
         // Intake
@@ -217,7 +221,7 @@ public class RobotContainer {
         HardwareDevices.transferServoLeft = new BetterServo(getHardwareDevice(ServoImplEx.class, "transferServoLeft"), Constants.Robot.SERVO_UPDATE_TIME);
         HardwareDevices.transferServoRight = new BetterServo(getHardwareDevice(ServoImplEx.class, "transferServoRight"), Constants.Robot.SERVO_UPDATE_TIME);
         HardwareDevices.spindexerEncoder = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "spindexEncoder"), Constants.Robot.MOTOR_UPDATE_TIME);
-        HardwareDevices.spindexServo = new BetterServo(getHardwareDevice(ServoImplEx.class, "spindexServo"), Constants.Robot.SERVO_UPDATE_TIME);
+        HardwareDevices.spindexServo = new BetterCRServo(getHardwareDevice(CRServoImplEx.class, "spindexServo"), Constants.Robot.SERVO_UPDATE_TIME);
         HardwareDevices.spindexAnalog = new BetterAnalogInput(getHardwareDevice(AnalogInput.class, "spindexAnalog"), Constants.Robot.ANALOG_UPDATE_TIME);
         HardwareDevices.intakeMotor = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "intakeMotor"), Constants.Robot.MOTOR_UPDATE_TIME);
         HardwareDevices.flyWheelMotorMaster = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "flyWheelMotorMaster"), Constants.Robot.MOTOR_UPDATE_TIME);
@@ -233,7 +237,7 @@ public class RobotContainer {
         flyWheelMotors.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         LinkedServos turretServos = new LinkedServos(HardwareDevices.turretServoMaster, HardwareDevices.turretServoSlave);
 
-        pathPlanner = new PathPlanner(telemetry, this);
+        pathPlanner = new PathPlanner(telemetry);
         Arrays.fill(Status.pathCompleted, false);
 
         limelightLogic = new LimelightLogic(this, telemetry, HardwareDevices.limelight);
@@ -253,9 +257,9 @@ public class RobotContainer {
         allIndicatorLights.addLight(indicatorLightBack);
 
         drivetrain = new Drivetrain(this);
-        headingPID = new HeadingPID(this);
-        latitudePID = new LatitudePID(this);
-        longitudePID = new LongitudePID(this);
+        headingPID = new HeadingPID();
+        latitudePID = new LatitudePID();
+        longitudePID = new LongitudePID();
 
         registerLoopTimer("teleOp");
         registerLoopTimer("drivetrainUpdater");
@@ -265,7 +269,7 @@ public class RobotContainer {
     public void init() {
         this.isRunning = true;
         RobotContainer.HardwareDevices.imu.resetYaw();
-        this.pathPlanner = new PathPlanner(this.telemetry, this);
+        this.pathPlanner = new PathPlanner(this.telemetry);
         HardwareDevices.allHubs = hardwareMap.getAll(LynxModule.class);
         HardwareDevices.controlHub = hardwareMap.get(LynxModule.class, "Control Hub");
         HardwareDevices.expansionHub = hardwareMap.get(LynxModule.class, "Expansion Hub 2");
@@ -277,7 +281,7 @@ public class RobotContainer {
         transfer.flapDown();
     }
 
-    public void start(OpMode opmode, boolean runPathplanner) {
+    public void start(OpMode opmode, boolean teleop) {
         gamepadEx1 = new GamepadWrapper(opmode.gamepad1);
         gamepadEx2 = new GamepadWrapper(opmode.gamepad2);
         Status.isDrivingActive = false;
@@ -299,7 +303,7 @@ public class RobotContainer {
         drivetrainUpdater = new DrivetrainUpdater(this);
         drivetrainUpdater.start();
         pathingUpdater = new PathingUpdater(this);
-        if (runPathplanner) {
+        if (!teleop) {
             pathingUpdater.start();
         }
         telemetryLoopTimer.reset();
@@ -323,11 +327,13 @@ public class RobotContainer {
             throw new RuntimeException(e);
         }
 
-        this.pathingUpdater.stopThread();
-        try {
-            this.pathingUpdater.join();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        if (this.pathingUpdater != null) {
+            this.pathingUpdater.stopThread();
+            try {
+                this.pathingUpdater.join();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -504,21 +510,21 @@ public class RobotContainer {
             telemetry.addData("Spindexer Slot Colors", Arrays.toString(Status.slotColor));
             return;
         }
-//        TelemetryPacket packet = new TelemetryPacket();
-//        telemetry.addData("Control Hub Voltage", controlHubVoltage + " V");
-//        telemetry.addData("Expansion Hub Voltage", expansionHubVoltage + " V");
-//        telemetry.addData("Control Hub Current", controlHubCurrent + " A");
-//        telemetry.addData("Expansion Hub Current", expansionHubCurrent + " A");
-//        telemetry.addLine();
+        //TelemetryPacket packet = new TelemetryPacket();
+        telemetry.addData("Control Hub Voltage", controlHubVoltage + " V");
+        telemetry.addData("Expansion Hub Voltage", expansionHubVoltage + " V");
+        telemetry.addData("Control Hub Current", controlHubCurrent + " A");
+        telemetry.addData("Expansion Hub Current", expansionHubCurrent + " A");
+        telemetry.addLine();
         telemetry.addData("Spindexer Angle", spindexer.getAngle());
+        telemetry.addData("Spindexer Intake Slot", spindexer.getCurrentIntakeSlot());
         telemetry.addData("Spindexer Target Angle", spindexer.targetAngle);
-//        telemetry.addData("Spindexer Slot Colors", Arrays.toString(Status.slotColor));
-//        telemetry.addData("flywheel target max vel", turret.flywheel.targetMaxVelocity);
-//        telemetry.addData("flywheel target vel", turret.flywheel.targetVelocity);
-//        telemetry.addData("flywheel current vel", turret.flywheel.getFlywheelVelocity());
-//        telemetry.addData("flywheel atVelocity", turret.flywheel.atTargetVelocity());
-//        telemetry.addData("flywheel speed", HardwareDevices.flyWheelMotorMaster.getVelocity());
-        telemetry.addData("turret interpolation", turret.flywheel.interpolateByDistance(HelperFunctions.disToGoal()));
+        telemetry.addData("Spindexer Error Angle", spindexer.getError());
+        telemetry.addData("Spindexer Slot Colors", Arrays.toString(Status.slotColor));
+        telemetry.addData("flywheel target max vel", turret.flywheel.targetVelocity);
+        telemetry.addData("flywheel speed", HardwareDevices.flyWheelMotorMaster.getVelocity());
+        telemetry.addData("flywheel atVelocity", turret.flywheel.atTargetVelocity());
+         telemetry.addData("turret interpolation", turret.flywheel.interpolateByDistance(HelperFunctions.disToGoal()));
         telemetry.addLine();
         telemetry.addData("Vision Pose List Size", positionProvider.getVisionPoseList().size());
 
@@ -545,9 +551,11 @@ public class RobotContainer {
 //        telemetry.addData("Pinpoint Y", Status.currentPose.getY(DistanceUnit.CM) + " cm");
 //        telemetry.addData("Pinpoint Heading", Status.currentHeading + "°");
         telemetry.addData("PINPOINT STATUS", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
+        telemetry.addData("Dist to goal", HelperFunctions.disToGoal());
         telemetry.addLine();
         telemetry.addData("OpMode Avg Loop Time", (int) getRollingAverageLoopTime(opMode) + " ms");
-        telemetry.addData("OpMode Loop Time", (int) getLoopTime(opMode) + " ms");
+        telemetry.addData("OpMode Loop Time", CURRENT_LOOP_TIME_MS + " ms");
+        telemetry.addData("OpMode Delta Time", DELTA_TIME_MS + " ms");
         telemetry.addLine();
         telemetry.addData("DriveTrain Avg Loop Time", (int) drivetrainUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms");
         telemetry.addData("DriveTrain Loop Time", (int) drivetrainUpdater.CURRENT_LOOP_TIME_MS + " ms");
@@ -575,7 +583,6 @@ public class RobotContainer {
         telemetry.addLine();
         telemetry.addData("lower servo pos", HardwareDevices.transferServoLeft.getPosition());
         // telemetry.addData("flywheel current mA", HardwareDevices.flyWheelMotorMaster.getCurrent(CurrentUnit.MILLIAMPS));
-        telemetry.addData("upper flywheel speed", HardwareDevices.flyWheelMotorSlave.getVelocity());
         // telemetry.addData("upper flywheel current mA", HardwareDevices.flyWheelMotorSlave.getCurrent(CurrentUnit.MILLIAMPS));
         telemetry.addData("turret pos", turret.getPosition());
         telemetry.addData("slave servo", HardwareDevices.turretServoSlave.getPosition());

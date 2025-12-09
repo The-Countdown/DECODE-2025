@@ -12,12 +12,13 @@ import java.lang.Thread;
 public class DelayedActionManager {
     RobotContainer robotContainer;
     private final List<Action> delayedActions = new ArrayList<>();
-    List<Double> timeAtPause = new ArrayList<>();
-    volatile boolean enabled = true;
-    public static int currentPose = 0;
+    volatile boolean enabled;
+    public static int currentPose;
 
     public DelayedActionManager(RobotContainer robotContainer) {
         this.robotContainer = robotContainer;
+        this.currentPose = 0;
+        this.enabled = true;
     }
 
     public void schedule(DelayedAction delayedAction) {
