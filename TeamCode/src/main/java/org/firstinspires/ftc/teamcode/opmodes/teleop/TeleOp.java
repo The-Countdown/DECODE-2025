@@ -95,33 +95,38 @@ public class TeleOp extends OpMode {
             Status.manualControl = !Status.manualControl;
         }
 
-        if (robotContainer.gamepadEx1.cross.wasJustPressed()) {
+        if (robotContainer.gamepadEx1.square.wasJustPressed()) {
             Status.isDrivingActive = false;
             robotContainer.pathPlanner.clearPoses();
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, 0, 10, AngleUnit.DEGREES, 0));
+            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.INCH, -39, -31, AngleUnit.DEGREES, 0));
             robotContainer.pathingUpdater.start();
         }
 
-        if (robotContainer.gamepadEx1.cross.isHeld()) {
+        if (robotContainer.gamepadEx1.square.isHeld()) {
             if (robotContainer.pathPlanner.driveUsingPID(0)) {
                 Status.isDrivingActive = true;
-            } else{
-                robotContainer.pathPlanner.updatePathStatus();
-                robotContainer.refreshData();
+                if (robotContainer.pathingUpdater != null) {
+                    robotContainer.pathingUpdater.stopThread();
+                    try {
+                        robotContainer.pathingUpdater.join();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
             }
         }
 
-        if (robotContainer.gamepadEx1.cross.wasJustReleased()) {
-            Status.isDrivingActive = true;
-            if (robotContainer.pathingUpdater != null) {
-                robotContainer.pathingUpdater.stopThread();
-                try {
-                    robotContainer.pathingUpdater.join();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+        if (robotContainer.gamepadEx1.square.wasJustReleased()) {
+                if (robotContainer.pathingUpdater != null) {
+                    robotContainer.pathingUpdater.stopThread();
+                    try {
+                        robotContainer.pathingUpdater.join();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
-            }
             robotContainer.pathingUpdater = new PathingUpdater(robotContainer);
+            Status.isDrivingActive = true;
         }
 
         // Gamepad 2
