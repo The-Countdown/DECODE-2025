@@ -136,7 +136,7 @@ public class TeleOp extends OpMode {
         if (Status.intakeToggle) {
             double power = robotContainer.gamepadEx1.rightTriggerRaw() - (robotContainer.gamepadEx1.leftTriggerRaw());
             if (Status.intakeToggle) {
-                if (Math.abs(robotContainer.spindexer.getError()) < 20) {
+                if (Math.abs(robotContainer.spindexer.getError()) < 40) {
                     robotContainer.intake.setPower(Math.signum(power) * Math.min(Math.abs(power), Constants.Intake.TOP_SPEED));
                 } else {
                     robotContainer.intake.setPower(Math.signum(power) * Math.min(Math.abs(power), Constants.Intake.SPIN_ERROR_SPEED));
@@ -169,7 +169,7 @@ public class TeleOp extends OpMode {
         // No gamepad
 
         // Update the breamBreak state
-        robotContainer.beamBreakToggleButton.update(RobotContainer.HardwareDevices.beamBreak.isPressed());
+        robotContainer.beamBreakToggleButton.update(RobotContainer.HardwareDevices.beamBreak.isPressed() && Math.abs(RobotContainer.HardwareDevices.intakeMotor.getPower()) > 0.2);
 
         if (robotContainer.beamBreakToggleButton.wasJustReleased() && robotContainer.intake.getPower() > 0 && spinTimer.milliseconds() > 300) {
             robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.function(), Constants.Spindexer.COLOR_SENSE_TIME);
