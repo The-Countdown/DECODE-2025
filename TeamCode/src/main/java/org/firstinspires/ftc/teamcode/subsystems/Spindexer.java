@@ -71,9 +71,9 @@ public class Spindexer {
             if (robotContainer.gamepadEx1.rightBumper.isHeld()) {
                 this.pause = true;
                 if (jammed) {
-                    spindexerServo.updateSetPower(-0.2);
+                    spindexerServo.updateSetPower(-0.3);
                     unjamTimer.reset();
-                } else if (unjamTimer.seconds() > 0.3) {
+                } else if (unjamTimer.seconds() > 0.2) {
                     spindexerServo.updateSetPower(1);
                 }
             }
@@ -260,19 +260,19 @@ public class Spindexer {
     public class PDF {
         public double calculate() {
             error = HelperFunctions.normalizeAngle(getError());
-             robotContainer.telemetry.addData("Spin Calc Error:", error);
+            robotContainer.telemetry.addData("Spin Calc Error:", error);
 
             p = Constants.Spindexer.KP * error;
             d = (Constants.Spindexer.KD * (lastError - error) * robotContainer.DELTA_TIME_MS);
             ff = Math.signum(error) * Constants.Spindexer.KF;
 
-             robotContainer.telemetry.addData("p", p);
-             robotContainer.telemetry.addData("d", d);
-             robotContainer.telemetry.addData("ff", ff);
+            robotContainer.telemetry.addData("p", p);
+            robotContainer.telemetry.addData("d", d);
+            robotContainer.telemetry.addData("ff", ff);
 
             lastError = error;
             double f = (p - d) + ff;
-             robotContainer.telemetry.addData("f", f);
+            robotContainer.telemetry.addData("f", f);
             return f;
         }
     }
