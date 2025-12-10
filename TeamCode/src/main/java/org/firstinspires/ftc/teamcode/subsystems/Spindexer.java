@@ -62,14 +62,10 @@ public class Spindexer {
             }
 
             if (robotContainer.gamepadEx1.dpadUp.wasJustPressed()) {
+                this.pause = true;
                 spindexerServo.updateSetPower(0);
-            }
-
-
-                if (robotContainer.gamepadEx1.dpadUp.isHeld()) {
                 Status.intakeToggle = false;
                 Status.turretToggle = true;
-                this.pause = true;
             }
 
             if (robotContainer.gamepadEx1.rightBumper.isHeld()) {
