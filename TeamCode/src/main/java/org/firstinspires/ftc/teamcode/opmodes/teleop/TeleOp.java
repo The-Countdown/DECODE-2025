@@ -136,7 +136,7 @@ public class TeleOp extends OpMode {
         if (Status.intakeToggle) {
             double power = robotContainer.gamepadEx1.rightTriggerRaw() - (robotContainer.gamepadEx1.leftTriggerRaw());
             if (Status.intakeToggle) {
-                if (Math.abs(robotContainer.spindexer.getError()) < 40) {
+                if (Math.abs(robotContainer.spindexer.getError()) < 80) {
                     robotContainer.intake.setPower(Math.signum(power) * Math.min(Math.abs(power), Constants.Intake.TOP_SPEED));
                 } else {
                     robotContainer.intake.setPower(Math.signum(power) * Math.min(Math.abs(power), Constants.Intake.SPIN_ERROR_SPEED));

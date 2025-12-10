@@ -27,6 +27,7 @@ public class Spindexer {
     private boolean direction;
     private ElapsedTime beamTimer = new ElapsedTime();
     private ElapsedTime jamTimer = new ElapsedTime();
+    private ElapsedTime unjamTimer = new ElapsedTime();
 
     public Spindexer (RobotContainer robotContainer, BetterCRServo spindexerServo, BetterAnalogInput spindexAnalog, BetterColorSensor colorSensor) {
         this.robotContainer = robotContainer;
@@ -62,19 +63,25 @@ public class Spindexer {
             }
 
             if (robotContainer.gamepadEx1.dpadUp.wasJustPressed()) {
-                this.pause = true;
-                spindexerServo.updateSetPower(0);
+                targetAngle = targetAngle + 45;
                 Status.intakeToggle = false;
                 Status.turretToggle = true;
             }
 
             if (robotContainer.gamepadEx1.rightBumper.isHeld()) {
-                spindexerServo.updateSetPower(1);
+                this.pause = true;
+                if (jammed) {
+                    spindexerServo.updateSetPower(-0.2);
+                    unjamTimer.reset();
+                } else if (unjamTimer.seconds() > 0.3) {
+                    spindexerServo.updateSetPower(1);
+                }
             }
 
             if (robotContainer.gamepadEx1.dpadUp.wasJustReleased()) {
                 Status.intakeToggle = true;
                 Status.turretToggle = false;
+                targetAngle = targetAngle - 45;
                 spindexerServo.updateSetPower(0);
                 this.pause = false;
             }
@@ -227,10 +234,10 @@ public class Spindexer {
         double speed = Math.abs((getAngle() - this.lastPosition) * robotContainer.DELTA_TIME_MS);
         robotContainer.telemetry.addData("jam error:", error);
         robotContainer.telemetry.addData("jam speed:", speed);
-        if (error < 15 && speed > 100) {
+        if (error < 15 && speed > 20) {
             jamTimer.reset();
         }
-        if (error > 15 && speed < 100 && jamTimer.seconds() > 0.8) {
+        if (error > 15 && speed < 20 && jamTimer.seconds() > 0.8) {
             return true;
         } else {
             return false;
