@@ -511,10 +511,10 @@ public class RobotContainer {
             return;
         }
         //TelemetryPacket packet = new TelemetryPacket();
-        telemetry.addData("Control Hub Voltage", controlHubVoltage + " V");
-        telemetry.addData("Expansion Hub Voltage", expansionHubVoltage + " V");
-        telemetry.addData("Control Hub Current", controlHubCurrent + " A");
-        telemetry.addData("Expansion Hub Current", expansionHubCurrent + " A");
+//        telemetry.addData("Control Hub Voltage", controlHubVoltage + " V");
+//        telemetry.addData("Expansion Hub Voltage", expansionHubVoltage + " V");
+//        telemetry.addData("Control Hub Current", controlHubCurrent + " A");
+//        telemetry.addData("Expansion Hub Current", expansionHubCurrent + " A");
         telemetry.addLine();
         telemetry.addData("Spindexer Angle", spindexer.getAngle());
         telemetry.addData("Spindexer Intake Slot", spindexer.getCurrentIntakeSlot());
@@ -588,10 +588,10 @@ public class RobotContainer {
         telemetry.addData("slave servo", HardwareDevices.turretServoSlave.getPosition());
         telemetry.addLine();
         telemetry.addData("beam break", HardwareDevices.beamBreak.isPressed());
-       telemetry.addData("red", HardwareDevices.colorSensor.updateRed());
-       telemetry.addData("blue", HardwareDevices.colorSensor.updateBlue());
-       telemetry.addData("green", HardwareDevices.colorSensor.updateGreen());
-       telemetry.addData("color sensor dist", HardwareDevices.colorSensor.getDistance());
+//       telemetry.addData("red", HardwareDevices.colorSensor.updateRed());
+//       telemetry.addData("blue", HardwareDevices.colorSensor.updateBlue());
+//       telemetry.addData("green", HardwareDevices.colorSensor.updateGreen());
+//       telemetry.addData("color sensor dist", HardwareDevices.colorSensor.getDistance());
 
 //        int selectedServo = -1;
 //        if (gamepadEx1.dpadUp.isPressed()) {

@@ -169,12 +169,7 @@ public class TeleOp extends OpMode {
         // No gamepad
 
         // Update the breamBreak state
-        robotContainer.beamBreakToggleButton.update(RobotContainer.HardwareDevices.beamBreak.isPressed() && Math.abs(RobotContainer.HardwareDevices.intakeMotor.getPower()) > 0.2);
-
-        if (robotContainer.beamBreakToggleButton.wasJustReleased() && robotContainer.intake.getPower() > 0 && spinTimer.milliseconds() > 300) {
-            robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.function(), Constants.Spindexer.COLOR_SENSE_TIME);
-            spinTimer.reset();
-        }
+        robotContainer.beamBreakToggleButton.update(RobotContainer.HardwareDevices.beamBreak.isPressed());
 
         if (robotContainer.limelightLogic.limelight.getLatestResult().isValid()) {
             robotContainer.telemetry.addData("robot pos on field", robotContainer.limelightLogic.limelightBotPose());

@@ -53,8 +53,8 @@ public class Spindexer {
         }
 
         if (teleop) {
-            if (robotContainer.beamBreakToggleButton.wasJustPressed() && beamTimer.seconds() > 0.8) {
-                robotContainer.delayedActionManager.schedule(()-> robotContainer.spindexer.moveIntakeSlotClockwise(), 500);
+            if (robotContainer.beamBreakToggleButton.wasJustReleased() && beamTimer.seconds() > Constants.Spindexer.BEAM_TIMER_TOLERANCE) {
+                robotContainer.delayedActionManager.schedule(() -> function2(), Constants.Spindexer.COLOR_SENSE_TIME);
                 beamTimer.reset();
             }
 
@@ -82,6 +82,13 @@ public class Spindexer {
                 Status.intakeToggle = true;
                 Status.turretToggle = false;
                 targetAngle = targetAngle - 45;
+                spindexerServo.updateSetPower(0);
+                this.pause = false;
+            }
+
+            if (robotContainer.gamepadEx1.rightBumper.wasJustReleased()) {
+                Status.intakeToggle = true;
+                Status.turretToggle = false;
                 spindexerServo.updateSetPower(0);
                 this.pause = false;
             }
@@ -142,6 +149,14 @@ public class Spindexer {
     public void function() {
         robotContainer.spindexer.updateSlot();
         robotContainer.spindexer.goToNextIntakeSlot(true);
+    }
+
+    public void function2() {
+        if (colorSensor.getDistance() < Constants.Spindexer.DIST_TOLERANCE) {
+            robotContainer.spindexer.moveIntakeSlotClockwise();
+        } else {
+            robotContainer.telemetry.addLine("No ball in distance");
+        }
     }
 
     public void autoFunction() {
@@ -273,7 +288,11 @@ public class Spindexer {
             lastError = error;
             double f = (p - d) + ff;
             robotContainer.telemetry.addData("f", f);
-            return f;
+            if (error > 80) {
+                return f * -1;
+            } else {
+                return f;
+            }
         }
     }
     public PDF pdf = new PDF();
