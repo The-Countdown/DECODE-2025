@@ -293,7 +293,7 @@ public class Constants {
         public static double FLYWHEEL_TOP_SPEED = 0.95;
         public static int FLYWHEEL_MAX_VELOCITY = 1720;
         public static double FLYWHEEL_CURVE = 4;
-        public static double[] FLYWHEEL_SPEED_TABLE = {0.50, 0.62, 0.71, 0.55, 0.61, 0.63, 0.64};
+        public static double[] FLYWHEEL_SPEED_TABLE = {0.57, 0.63, 0.69, 0.72, 0.73, 0.79, 0.80};
         public static double[] FLYWHEEL_SPEED_TABLE_DISTANCES = {40, 56, 90, 95, 103, 127, 152};
         public static int FLYWHEEL_SPINUP_MS = 800;
         public static double TRACK_GOAL_P = -0.2;
