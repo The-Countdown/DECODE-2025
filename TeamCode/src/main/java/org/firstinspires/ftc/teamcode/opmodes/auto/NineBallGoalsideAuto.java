@@ -115,7 +115,7 @@ public class NineBallGoalsideAuto extends OpMode {
         robotContainer.delayedActionManager.schedulePose(() -> Status.flywheelToggle = true);
         robotContainer.delayedActionManager.schedulePose(() -> Status.intakeToggle = false);
         robotContainer.delayedActionManager.schedulePose(() -> Status.turretToggle = true);
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.spindexer.shootAll(true));
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.shootAll(true), 800);
         robotContainer.delayedActionManager.schedulePose(() -> robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[1]));
 
         robotContainer.delayedActionManager.incrementPoseOffset();
@@ -138,7 +138,7 @@ public class NineBallGoalsideAuto extends OpMode {
         robotContainer.delayedActionManager.schedulePose(() -> Status.flywheelToggle = true);
         robotContainer.delayedActionManager.schedulePose(() -> Status.intakeToggle = false);
         robotContainer.delayedActionManager.schedulePose(() -> Status.turretToggle = true);
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.spindexer.shootAll(true));
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.shootAll(true), 800);
         robotContainer.delayedActionManager.schedulePose(() -> robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[0]));
 
         robotContainer.delayedActionManager.incrementPoseOffset();
@@ -159,6 +159,8 @@ public class NineBallGoalsideAuto extends OpMode {
 
     @Override
     public void loop() {
+        robotContainer.refreshData();
+        robotContainer.limelightLogic.update();
         robotContainer.delayedActionManager.update();
         robotContainer.pathPlanner.updatePathStatus();
         robotContainer.turret.pointAtGoal();
@@ -171,6 +173,9 @@ public class NineBallGoalsideAuto extends OpMode {
         robotContainer.telemetry.addData("Intake Velocity: ", robotContainer.intake.getVelocity());
         robotContainer.telemetry.addData("Flywheel Velocity: ", RobotContainer.HardwareDevices.flyWheelMotorMaster.getVelocity());
         robotContainer.telemetry.update();
+        robotContainer.turret.update(false);
+        robotContainer.spindexer.update(false);
+        robotContainer.positionProvider.update(false);
 
         if (robotContainer.beamBreakToggleButton.wasJustReleased() && robotContainer.intake.getPower() > 0 && spinTimer.milliseconds() > 200) {
             robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.autoFunction(), Constants.Spindexer.COLOR_SENSE_TIME);
@@ -181,6 +186,7 @@ public class NineBallGoalsideAuto extends OpMode {
 
     @Override
     public void stop() {
+        robotContainer.delayedActionManager.cancelAll();
         blackboard.put("pose", Status.currentPose);
         robotContainer.stop();
     }

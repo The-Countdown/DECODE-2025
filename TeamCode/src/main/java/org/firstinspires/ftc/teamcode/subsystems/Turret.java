@@ -67,6 +67,12 @@ public class Turret extends RobotContainer.HardwareDevices {
             //     // Automatic turret turning
             // }
             robotContainer.turret.pointAtGoal();
+        } else {
+            if (!Status.intakeToggle) {
+                flywheel.targetVelocity = Math.min(Status.turretToggleButton.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, robotContainer.turret.flywheel.interpolateByDistance(HelperFunctions.disToGoal()));
+            } else {
+                flywheel.targetVelocity = 0;
+            }
         }
 
         flywheel.targetVelocity = flywheel.targetVelocity * Constants.Turret.FLYWHEEL_MAX_VELOCITY;

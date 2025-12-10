@@ -96,6 +96,11 @@ public class Spindexer {
                 Status.intakeToggle = true;
                 Status.turretToggle = false;
             }
+        } else {
+            if (robotContainer.beamBreakToggleButton.wasJustPressed() && beamTimer.seconds() > 0.8) {
+                robotContainer.delayedActionManager.schedule(()-> robotContainer.spindexer.moveIntakeSlotClockwise(), 500);
+                beamTimer.reset();
+            }
         }
         this.lastPosition = getAngle();
     }
@@ -134,8 +139,7 @@ public class Spindexer {
 
     public void autoFunction() {
         robotContainer.spindexer.updateSlot();
-        if (robotContainer.spindexer.isFull()) { // If it is full after an intake
-        } else {
+        if (!robotContainer.spindexer.isFull()) { // If it is not full after an intake
             robotContainer.spindexer.goToNextIntakeSlot(true);
         }
     }
@@ -161,17 +165,27 @@ public class Spindexer {
     }
 
     public void shootNextBall(boolean matchMotif) {
-        Status.ballsToShoot -= 1;
         Status.turretToggle = true;
         Status.intakeToggle = false;
         Status.flywheelToggle = true;
 
-        robotContainer.delayedActionManager.schedule(()-> robotContainer.transfer.flapUp(), 1200);
-        robotContainer.delayedActionManager.schedule(()-> robotContainer.transfer.flapDown(), Constants.Transfer.FLIP_TIME + 1200);
-        robotContainer.delayedActionManager.schedule(()-> Status.slotColor[robotContainer.spindexer.getCurrentTransferSlot()] = Constants.Game.ARTIFACT_COLOR.NONE, Constants.Transfer.FLIP_TIME + 1200);
-
-        if (Status.ballsToShoot > 0) {
-            robotContainer.delayedActionManager.schedule(() -> shootNextBall(matchMotif), Constants.Transfer.FLIP_TIME + 1600);
+        this.pause = true;
+        if(!matchMotif) {
+            robotContainer.delayedActionManager.schedule(() -> spindexerServo.updateSetPower(1), 5);
+            robotContainer.delayedActionManager.schedule(() -> spindexerServo.updateSetPower(0), 1400);
+            robotContainer.delayedActionManager.schedule(() -> this.pause = false, 1400);
+            robotContainer.delayedActionManager.schedule(()-> Status.slotColor[robotContainer.spindexer.getCurrentTransferSlot()] = Constants.Game.ARTIFACT_COLOR.NONE, 1400);
+            Status.ballsToShoot = 0;
+        } else {
+            // This is just copy pasted from above (does not match motif)
+            Status.ballsToShoot--;
+            robotContainer.delayedActionManager.schedule(() -> spindexerServo.updateSetPower(1), 5);
+            robotContainer.delayedActionManager.schedule(() -> spindexerServo.updateSetPower(0), 1400);
+            robotContainer.delayedActionManager.schedule(() -> this.pause = false, 1400);
+            robotContainer.delayedActionManager.schedule(()-> Status.slotColor[robotContainer.spindexer.getCurrentTransferSlot()] = Constants.Game.ARTIFACT_COLOR.NONE, 1400);
+            if (Status.ballsToShoot > 0) {
+                robotContainer.delayedActionManager.schedule(() -> shootNextBall(true), 1400);
+            }
         }
     }
 

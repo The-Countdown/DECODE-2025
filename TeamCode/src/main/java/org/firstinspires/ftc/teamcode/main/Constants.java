@@ -295,6 +295,7 @@ public class Constants {
         public static double FLYWHEEL_CURVE = 4;
         public static double[] FLYWHEEL_SPEED_TABLE = {0.50, 0.62, 0.71, 0.55, 0.61, 0.63, 0.64};
         public static double[] FLYWHEEL_SPEED_TABLE_DISTANCES = {40, 56, 90, 95, 103, 127, 152};
+        public static int FLYWHEEL_SPINUP_MS = 800;
         public static double TRACK_GOAL_P = -0.2;
         public static double[] HOOD_PRESETS = {0.51, 0.13};
         public static double TURRET_LIMIT_MIN_ANGLE = -90;

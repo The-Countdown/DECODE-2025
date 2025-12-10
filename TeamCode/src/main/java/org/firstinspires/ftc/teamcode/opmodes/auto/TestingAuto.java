@@ -87,30 +87,30 @@ public class TestingAuto extends OpMode {
 
     @Override
     public void loop() {
-        robotContainer.turret.update(false);
-        robotContainer.positionProvider.update(false);
+        robotContainer.refreshData();
+        robotContainer.limelightLogic.update();
         robotContainer.delayedActionManager.update();
         robotContainer.pathPlanner.updatePathStatus();
+        robotContainer.turret.pointAtGoal();
         robotContainer.pathPlanner.driveThroughPath();
+        robotContainer.beamBreakToggleButton.update(RobotContainer.HardwareDevices.beamBreak.isPressed());
+        Status.turretToggleButton.update(Status.turretToggle);
         robotContainer.telemetry.addData("Flywheel Toggle: ", Status.flywheelToggle);
         robotContainer.telemetry.addData("Intake Toggle: ", Status.intakeToggle);
         robotContainer.telemetry.addData("Turret Toggle: ", Status.turretToggle);
         robotContainer.telemetry.addData("Intake Velocity: ", robotContainer.intake.getVelocity());
         robotContainer.telemetry.addData("Flywheel Velocity: ", RobotContainer.HardwareDevices.flyWheelMotorMaster.getVelocity());
-        robotContainer.telemetry.addData("Current Pose: ", Status.currentPose);
         robotContainer.telemetry.update();
-
-        if (!Status.intakeToggle) {
-            robotContainer.intake.setPower(Constants.Intake.REVERSE_TOP_SPEED);
-        } else {
-            robotContainer.intake.setPower(0);
-        }
+        robotContainer.turret.update(false);
+        robotContainer.spindexer.update(false);
+        robotContainer.positionProvider.update(false);
 
         blackboard.put("pose", Status.currentPose);
     }
 
     @Override
     public void stop() {
+        robotContainer.delayedActionManager.cancelAll();
         blackboard.put("pose", Status.currentPose);
         robotContainer.stop();
     }
