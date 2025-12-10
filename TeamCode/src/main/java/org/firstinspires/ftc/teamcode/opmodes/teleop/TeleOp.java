@@ -79,17 +79,17 @@ public class TeleOp extends OpMode {
         // Gamepad 1
         robotContainer.drivetrain.controlUpdate();
 
-//        if (robotContainer.gamepadEx1.dpadDown.wasJustReleased()) {
-//            robotContainer.turret.setTargetAngle(0);
-//        }
-//
-//        if (robotContainer.gamepadEx1.dpadLeft.wasJustReleased()) {
-//            robotContainer.turret.setTargetAngle(-90);
-//        }
-//
-//        if (robotContainer.gamepadEx1.dpadRight.wasJustReleased()) {
-//            robotContainer.turret.setTargetAngle(90);
-//        }
+       if (robotContainer.gamepadEx1.dpadDown.wasJustReleased()) {
+           robotContainer.turret.setTargetAngle(0);
+       }
+
+       if (robotContainer.gamepadEx1.dpadLeft.wasJustReleased()) {
+           robotContainer.turret.setTargetAngle(-90);
+       }
+
+       if (robotContainer.gamepadEx1.dpadRight.wasJustReleased()) {
+           robotContainer.turret.setTargetAngle(90);
+       }
 
         if (robotContainer.gamepadEx1.triangle.wasJustPressed()) {
             Status.manualControl = !Status.manualControl;

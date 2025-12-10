@@ -94,6 +94,8 @@ public class Turret extends RobotContainer.HardwareDevices {
             return;
         }
 
+        // turretServos.setPositionDegrees(angleInDegrees);
+
         // Legacy interpolate
         if (angleInDegrees < 0) { // If angle between -90 and 0
             turretServos.setPosition(HelperFunctions.interpolate(Constants.Turret.TURRET_MAX, Constants.Turret.TURRET_NEUTRAL, ((angleInDegrees + 90) / 90)));

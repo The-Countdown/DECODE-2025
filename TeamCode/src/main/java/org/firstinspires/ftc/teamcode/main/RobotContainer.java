@@ -588,9 +588,10 @@ public class RobotContainer {
         telemetry.addData("slave servo", HardwareDevices.turretServoSlave.getPosition());
         telemetry.addLine();
         telemetry.addData("beam break", HardwareDevices.beamBreak.isPressed());
-//        telemetry.addData("red", HardwareDevices.colorSensor.red());
-//        telemetry.addData("blue", HardwareDevices.colorSensor.blue());
-//        telemetry.addData("green", HardwareDevices.colorSensor.green());
+       telemetry.addData("red", HardwareDevices.colorSensor.updateRed());
+       telemetry.addData("blue", HardwareDevices.colorSensor.updateBlue());
+       telemetry.addData("green", HardwareDevices.colorSensor.updateGreen());
+       telemetry.addData("color sensor dist", HardwareDevices.colorSensor.getDistance());
 
 //        int selectedServo = -1;
 //        if (gamepadEx1.dpadUp.isPressed()) {
