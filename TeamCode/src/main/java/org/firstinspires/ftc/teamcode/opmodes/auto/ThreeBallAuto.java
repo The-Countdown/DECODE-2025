@@ -38,7 +38,7 @@ public class ThreeBallAuto extends OpMode {
         Status.flywheelToggle = false;
         Constants.Game.MOTIF motif = Constants.Game.MOTIF.Unknown;
         robotContainer.start(this, false);
-        // This is important do not remove it, we do not know why it is here. (Cole, Elliot)
+        RobotContainer.HardwareDevices.limelight.start();
 
         if (Status.wentBackToStart) {
             Status.startingPose = (Pose2D) blackboard.getOrDefault("pose", Status.startingPose);
@@ -77,6 +77,8 @@ public class ThreeBallAuto extends OpMode {
         robotContainer.turret.pointAtGoal();
         robotContainer.pathPlanner.driveThroughPath();
         robotContainer.turret.update(false);
+        robotContainer.limelightLogic.update();
+        robotContainer.telemetry.addData("Motif: ", Status.motif);
         robotContainer.telemetry.addData("Flywheel Toggle: ", Status.flywheelToggle);
         robotContainer.telemetry.addData("Intake Toggle: ", Status.intakeToggle);
         robotContainer.telemetry.addData("Turret Toggle: ", Status.turretToggle);

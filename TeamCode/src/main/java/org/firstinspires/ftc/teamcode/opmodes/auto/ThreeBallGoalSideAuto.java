@@ -60,7 +60,8 @@ public class ThreeBallGoalSideAuto extends OpMode {
         robotContainer.delayedActionManager.schedule(() -> Status.flywheelToggle = true, 0);
         robotContainer.delayedActionManager.schedule(() -> Status.intakeToggle = false, 0);
         robotContainer.delayedActionManager.schedule(() -> Status.turretToggle = true, 0);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.shootAll(true), 800);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[1]), 0);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.shootAll(false), Constants.Turret.FLYWHEEL_SPINUP_MS);
 
         robotContainer.delayedActionManager.incrementPoseOffset(2);
         robotContainer.delayedActionManager.schedulePose(() -> Status.flywheelToggle = false);
@@ -68,7 +69,6 @@ public class ThreeBallGoalSideAuto extends OpMode {
         robotContainer.delayedActionManager.schedulePose(() -> Status.turretToggle = false);
     }
 
-    @Override
     public void loop() {
         robotContainer.refreshData();
         robotContainer.limelightLogic.update();
@@ -78,16 +78,18 @@ public class ThreeBallGoalSideAuto extends OpMode {
         robotContainer.pathPlanner.driveThroughPath();
         robotContainer.beamBreakToggleButton.update(RobotContainer.HardwareDevices.beamBreak.isPressed());
         Status.turretToggleButton.update(Status.turretToggle);
+        robotContainer.CURRENT_LOOP_TIME_MS = robotContainer.updateLoopTime("teleOp");
+        robotContainer.DELTA_TIME_MS = robotContainer.CURRENT_LOOP_TIME_MS - robotContainer.PREV_LOOP_TIME_MS;
         robotContainer.telemetry.addData("Flywheel Toggle: ", Status.flywheelToggle);
         robotContainer.telemetry.addData("Intake Toggle: ", Status.intakeToggle);
         robotContainer.telemetry.addData("Turret Toggle: ", Status.turretToggle);
         robotContainer.telemetry.addData("Intake Velocity: ", robotContainer.intake.getVelocity());
         robotContainer.telemetry.addData("Flywheel Velocity: ", RobotContainer.HardwareDevices.flyWheelMotorMaster.getVelocity());
+        robotContainer.telemetry.addData("Pause", robotContainer.spindexer.pause);
         robotContainer.telemetry.update();
         robotContainer.turret.update(false);
         robotContainer.spindexer.update(false);
         robotContainer.positionProvider.update(false);
-
         blackboard.put("pose", Status.currentPose);
     }
 

@@ -320,11 +320,13 @@ public class RobotContainer {
             }
         }
 
-        this.drivetrainUpdater.stopThread();
-        try {
-            this.drivetrainUpdater.join();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        if (this.drivetrainUpdater != null) {
+            this.drivetrainUpdater.stopThread();
+            try {
+                this.drivetrainUpdater.join();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         if (this.pathingUpdater != null) {

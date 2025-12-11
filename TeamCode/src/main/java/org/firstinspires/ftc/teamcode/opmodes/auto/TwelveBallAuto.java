@@ -17,7 +17,6 @@ import org.firstinspires.ftc.teamcode.main.Status;
 @Config
 public class TwelveBallAuto extends OpMode {
     private RobotContainer robotContainer;
-    private final ElapsedTime spinTimer = new ElapsedTime();
 
     // 102.22
     // 91.44
@@ -29,6 +28,7 @@ public class TwelveBallAuto extends OpMode {
     public static double TAPE_HIGH = 26.5;
     public static double MIDPOINT = 18;
     public static double MIDDLE = 20;
+
     public static Pose2D
             RED_MIDDLE = new Pose2D(DistanceUnit.INCH, MIDDLE, -MIDDLE, AngleUnit.DEGREES, -135),
             RED_MIDPOINT = new Pose2D(DistanceUnit.INCH, 0, -MIDPOINT, AngleUnit.DEGREES, -112.5),
@@ -56,7 +56,6 @@ public class TwelveBallAuto extends OpMode {
         // This is important do not remove it, we do not know why it is here. (Cole, Elliot)
         robotContainer.localizationUpdater = new LocalizationUpdater(robotContainer);
         robotContainer.localizationUpdater.start();
-
         if (Status.wentBackToStart) {
             Status.startingPose = (Pose2D) blackboard.getOrDefault("pose", Status.startingPose);
         }
@@ -78,9 +77,6 @@ public class TwelveBallAuto extends OpMode {
             robotContainer.pathPlanner.addPose(6000);
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_HIGH, BEFORE_TAPE, AngleUnit.DEGREES, 90));
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_HIGH, AFTER_TAPE, AngleUnit.DEGREES, 90));
-            robotContainer.pathPlanner.addPose(BLUE_MIDDLE);
-            robotContainer.pathPlanner.addPose(6000);
-            robotContainer.pathPlanner.addPose(1000);
         } else {
             robotContainer.pathPlanner.addPose(Status.startingPose);
             robotContainer.pathPlanner.addPose(6000);
@@ -95,14 +91,13 @@ public class TwelveBallAuto extends OpMode {
             robotContainer.pathPlanner.addPose(6000);
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_HIGH, -BEFORE_TAPE, AngleUnit.DEGREES, -90));
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_HIGH, -AFTER_TAPE, AngleUnit.DEGREES, -90));
-            robotContainer.pathPlanner.addPose(RED_MIDDLE);
-            robotContainer.pathPlanner.addPose(6000);
-            robotContainer.pathPlanner.addPose(1000);
         }
         robotContainer.delayedActionManager.schedule(() -> Status.flywheelToggle = true, 0);
         robotContainer.delayedActionManager.schedule(() -> Status.intakeToggle = false, 0);
         robotContainer.delayedActionManager.schedule(() -> Status.turretToggle = true, 0);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.shootAll(true), 800);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.pause(), Constants.Turret.FLYWHEEL_SPINUP_MS);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.shootAll(false), Constants.Turret.FLYWHEEL_SPINUP_MS);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.unpause(), Constants.Turret.FLYWHEEL_SPINUP_MS + 1500);
         robotContainer.delayedActionManager.schedule(() -> robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[1]), 0);
 
         robotContainer.delayedActionManager.incrementPoseOffset(2);
@@ -111,20 +106,21 @@ public class TwelveBallAuto extends OpMode {
         robotContainer.delayedActionManager.schedulePose(() -> Status.turretToggle = false);
 
         robotContainer.delayedActionManager.incrementPoseOffset();
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.spindexer.goToNextIntakeSlot(true));
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0.6));
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(Constants.Intake.BEST_INTAKE_SPEED));
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP /= 2);
 
         robotContainer.delayedActionManager.incrementPoseOffset();
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(-0.6));
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0.0));
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP *= 2);
 
         robotContainer.delayedActionManager.incrementPoseOffset();
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0.6));
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(Constants.Intake.BEST_INTAKE_SPEED));
         robotContainer.delayedActionManager.schedulePose(() -> Status.flywheelToggle = true);
         robotContainer.delayedActionManager.schedulePose(() -> Status.intakeToggle = false);
         robotContainer.delayedActionManager.schedulePose(() -> Status.turretToggle = true);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.shootAll(true), 800);
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.pause(), Constants.Turret.FLYWHEEL_SPINUP_MS));
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.shootAll(false), Constants.Turret.FLYWHEEL_SPINUP_MS));
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.unpause(), Constants.Turret.FLYWHEEL_SPINUP_MS + Constants.Spindexer.FULL_EMPTY_SPINTIME));
         robotContainer.delayedActionManager.schedulePose(() -> robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[1]));
 
         robotContainer.delayedActionManager.incrementPoseOffset();
@@ -132,45 +128,23 @@ public class TwelveBallAuto extends OpMode {
         robotContainer.delayedActionManager.schedulePose(() -> Status.flywheelToggle = false);
         robotContainer.delayedActionManager.schedulePose(() -> Status.intakeToggle = true);
         robotContainer.delayedActionManager.schedulePose(() -> Status.turretToggle = false);
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.spindexer.goToNextIntakeSlot(true));
 
         robotContainer.delayedActionManager.incrementPoseOffset();
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0.6));
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(Constants.Intake.BEST_INTAKE_SPEED));
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP /= 2);
 
         robotContainer.delayedActionManager.incrementPoseOffset();
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(-0.6));
-        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP *= 2);robotContainer.delayedActionManager.incrementPoseOffset();
-
-        robotContainer.delayedActionManager.incrementPoseOffset(2);
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0.6));
-        robotContainer.delayedActionManager.schedulePose(() -> Status.flywheelToggle = true);
-        robotContainer.delayedActionManager.schedulePose(() -> Status.intakeToggle = false);
-        robotContainer.delayedActionManager.schedulePose(() -> Status.turretToggle = true);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.shootAll(true), 800);
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[0]));
-
-        robotContainer.delayedActionManager.incrementPoseOffset();
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0.0));
-        robotContainer.delayedActionManager.schedulePose(() -> Status.flywheelToggle = false);
-        robotContainer.delayedActionManager.schedulePose(() -> Status.intakeToggle = true);
-        robotContainer.delayedActionManager.schedulePose(() -> Status.turretToggle = false);
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.spindexer.goToNextIntakeSlot(true));
-
-        robotContainer.delayedActionManager.incrementPoseOffset();
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0.6));
-        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP /= 2);
-
-        robotContainer.delayedActionManager.incrementPoseOffset();
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(-0.6));
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(-Constants.Intake.BEST_INTAKE_SPEED));
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP *= 2);
 
         robotContainer.delayedActionManager.incrementPoseOffset();
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0.6));
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(Constants.Intake.BEST_INTAKE_SPEED));
         robotContainer.delayedActionManager.schedulePose(() -> Status.flywheelToggle = true);
         robotContainer.delayedActionManager.schedulePose(() -> Status.intakeToggle = false);
         robotContainer.delayedActionManager.schedulePose(() -> Status.turretToggle = true);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.shootAll(true), 800);
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.pause(), Constants.Turret.FLYWHEEL_SPINUP_MS));
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.shootAll(false), Constants.Turret.FLYWHEEL_SPINUP_MS));
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.unpause(), Constants.Turret.FLYWHEEL_SPINUP_MS + Constants.Spindexer.FULL_EMPTY_SPINTIME));
         robotContainer.delayedActionManager.schedulePose(() -> robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[0]));
 
         robotContainer.delayedActionManager.incrementPoseOffset();
@@ -178,7 +152,30 @@ public class TwelveBallAuto extends OpMode {
         robotContainer.delayedActionManager.schedulePose(() -> Status.flywheelToggle = false);
         robotContainer.delayedActionManager.schedulePose(() -> Status.intakeToggle = true);
         robotContainer.delayedActionManager.schedulePose(() -> Status.turretToggle = false);
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.spindexer.goToNextIntakeSlot(true));
+
+        robotContainer.delayedActionManager.incrementPoseOffset();
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(Constants.Intake.BEST_INTAKE_SPEED));
+        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP /= 2);
+
+        robotContainer.delayedActionManager.incrementPoseOffset();
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(-Constants.Intake.BEST_INTAKE_SPEED));
+        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP *= 2);
+
+        robotContainer.delayedActionManager.incrementPoseOffset();
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(Constants.Intake.BEST_INTAKE_SPEED));
+        robotContainer.delayedActionManager.schedulePose(() -> Status.flywheelToggle = true);
+        robotContainer.delayedActionManager.schedulePose(() -> Status.intakeToggle = false);
+        robotContainer.delayedActionManager.schedulePose(() -> Status.turretToggle = true);
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.pause(), Constants.Turret.FLYWHEEL_SPINUP_MS));
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.shootAll(false), Constants.Turret.FLYWHEEL_SPINUP_MS));
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.unpause(), Constants.Turret.FLYWHEEL_SPINUP_MS + Constants.Spindexer.FULL_EMPTY_SPINTIME));
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[0]));
+
+        robotContainer.delayedActionManager.incrementPoseOffset();
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0.0));
+        robotContainer.delayedActionManager.schedulePose(() -> Status.flywheelToggle = false);
+        robotContainer.delayedActionManager.schedulePose(() -> Status.intakeToggle = true);
+        robotContainer.delayedActionManager.schedulePose(() -> Status.turretToggle = false);
     }
 
     @Override
@@ -191,20 +188,18 @@ public class TwelveBallAuto extends OpMode {
         robotContainer.pathPlanner.driveThroughPath();
         robotContainer.beamBreakToggleButton.update(RobotContainer.HardwareDevices.beamBreak.isPressed());
         Status.turretToggleButton.update(Status.turretToggle);
+        robotContainer.CURRENT_LOOP_TIME_MS = robotContainer.updateLoopTime("teleOp");
+        robotContainer.DELTA_TIME_MS = robotContainer.CURRENT_LOOP_TIME_MS - robotContainer.PREV_LOOP_TIME_MS;
         robotContainer.telemetry.addData("Flywheel Toggle: ", Status.flywheelToggle);
         robotContainer.telemetry.addData("Intake Toggle: ", Status.intakeToggle);
         robotContainer.telemetry.addData("Turret Toggle: ", Status.turretToggle);
         robotContainer.telemetry.addData("Intake Velocity: ", robotContainer.intake.getVelocity());
         robotContainer.telemetry.addData("Flywheel Velocity: ", RobotContainer.HardwareDevices.flyWheelMotorMaster.getVelocity());
+        robotContainer.telemetry.addData("Pause", robotContainer.spindexer.pause);
         robotContainer.telemetry.update();
         robotContainer.turret.update(false);
         robotContainer.spindexer.update(false);
         robotContainer.positionProvider.update(false);
-
-        if (robotContainer.beamBreakToggleButton.wasJustReleased() && robotContainer.intake.getPower() > 0 && spinTimer.milliseconds() > 200) {
-            robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.autoFunction(), Constants.Spindexer.COLOR_SENSE_TIME);
-            spinTimer.reset();
-        }
         blackboard.put("pose", Status.currentPose);
     }
 

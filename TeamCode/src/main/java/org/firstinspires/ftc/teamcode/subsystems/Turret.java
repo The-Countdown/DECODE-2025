@@ -54,7 +54,6 @@ public class Turret extends RobotContainer.HardwareDevices {
                 Status.turretToggle = true;
             } else if (robotContainer.gamepadEx2.circle.wasJustReleased() && Status.intakeToggle) {
                 Status.turretToggle = false;
-                robotContainer.spindexer.goToNextIntakeSlot(true);
             }
 
             // Turret turn - Right stick X

@@ -23,7 +23,7 @@ public class Spindexer {
     private double p;
     private double d;
     private double ff;
-    private boolean pause;
+    public boolean pause;
     private boolean direction;
     private ElapsedTime beamTimer = new ElapsedTime();
     private ElapsedTime jamTimer = new ElapsedTime();
@@ -52,12 +52,21 @@ public class Spindexer {
             spindexerServo.updateSetPower(0);
         }
 
-        if (teleop) {
-            if (robotContainer.beamBreakToggleButton.wasJustReleased() && beamTimer.seconds() > Constants.Spindexer.BEAM_TIMER_TOLERANCE) {
-                robotContainer.delayedActionManager.schedule(() -> function2(), Constants.Spindexer.COLOR_SENSE_TIME);
-                beamTimer.reset();
-            }
+        if (robotContainer.beamBreakToggleButton.wasJustReleased() && beamTimer.seconds() > Constants.Spindexer.BEAM_TIMER_TOLERANCE) {
+            robotContainer.delayedActionManager.schedule(() -> function2(), Constants.Spindexer.COLOR_SENSE_TIME);
+            beamTimer.reset();
+        }
 
+        if (this.pause) {
+            if (jammed) {
+                spindexerServo.updateSetPower(-0.3);
+                unjamTimer.reset();
+            } else if (unjamTimer.seconds() > 0.2) {
+                spindexerServo.updateSetPower(1);
+            }
+        }
+
+        if (teleop) {
             if (robotContainer.gamepadEx1.leftBumper.wasJustPressed()) {
                 robotContainer.spindexer.moveIntakeSlotClockwise();
             }
@@ -70,12 +79,6 @@ public class Spindexer {
 
             if (robotContainer.gamepadEx1.rightBumper.isHeld()) {
                 this.pause = true;
-                if (jammed) {
-                    spindexerServo.updateSetPower(-0.3);
-                    unjamTimer.reset();
-                } else if (unjamTimer.seconds() > 0.2) {
-                    spindexerServo.updateSetPower(1);
-                }
             }
 
             if (robotContainer.gamepadEx1.dpadUp.wasJustReleased()) {
@@ -87,39 +90,11 @@ public class Spindexer {
             }
 
             if (robotContainer.gamepadEx1.rightBumper.wasJustReleased()) {
-                Status.intakeToggle = true;
-                Status.turretToggle = false;
                 spindexerServo.updateSetPower(0);
                 this.pause = false;
             }
-
-            // Start up turret
-            if (robotContainer.gamepadEx2.square.wasJustPressed()) {
-                Status.slotColor[0] = Constants.Game.ARTIFACT_COLOR.PURPLE;
-                Status.slotColor[1] = Constants.Game.ARTIFACT_COLOR.PURPLE;
-                Status.slotColor[2] = Constants.Game.ARTIFACT_COLOR.PURPLE;
-                Status.intakeToggle = false;
-                Status.turretToggle = true;
-            }
-
-            // Stop turret
-            if (robotContainer.gamepadEx2.triangle.wasJustPressed()) {
-                Status.slotColor[0] = Constants.Game.ARTIFACT_COLOR.NONE;
-                Status.slotColor[1] = Constants.Game.ARTIFACT_COLOR.NONE;
-                Status.slotColor[2] = Constants.Game.ARTIFACT_COLOR.NONE;
-                Status.intakeToggle = true;
-                Status.turretToggle = false;
-            }
-        } else {
-            if (robotContainer.beamBreakToggleButton.wasJustPressed() && beamTimer.seconds() > 0.8) {
-                robotContainer.delayedActionManager.schedule(()-> robotContainer.spindexer.moveIntakeSlotClockwise(), 500);
-                beamTimer.reset();
-            }
         }
         this.lastPosition = getAngle();
-    }
-
-    public void goToNextIntakeSlot(boolean nothing) {
     }
 
     public double getAngle() {
@@ -146,23 +121,11 @@ public class Spindexer {
         return Constants.Game.ARTIFACT_COLOR.UNKNOWN;
     }
 
-    public void function() {
-        robotContainer.spindexer.updateSlot();
-        robotContainer.spindexer.goToNextIntakeSlot(true);
-    }
-
     public void function2() {
         if (colorSensor.getDistance() < Constants.Spindexer.DIST_TOLERANCE) {
             robotContainer.spindexer.moveIntakeSlotClockwise();
         } else {
             robotContainer.telemetry.addLine("No ball in distance");
-        }
-    }
-
-    public void autoFunction() {
-        robotContainer.spindexer.updateSlot();
-        if (!robotContainer.spindexer.isFull()) { // If it is not full after an intake
-            robotContainer.spindexer.goToNextIntakeSlot(true);
         }
     }
 
@@ -190,30 +153,32 @@ public class Spindexer {
         Status.turretToggle = true;
         Status.intakeToggle = false;
         Status.flywheelToggle = true;
-
         this.pause = true;
-        if(!matchMotif) {
-            robotContainer.delayedActionManager.schedule(() -> spindexerServo.updateSetPower(1), 5);
-            robotContainer.delayedActionManager.schedule(() -> spindexerServo.updateSetPower(0), 1400);
-            robotContainer.delayedActionManager.schedule(() -> this.pause = false, 1400);
-            robotContainer.delayedActionManager.schedule(()-> Status.slotColor[robotContainer.spindexer.getCurrentTransferSlot()] = Constants.Game.ARTIFACT_COLOR.NONE, 1400);
-            Status.ballsToShoot = 0;
-        } else {
-            // This is just copy pasted from above (does not match motif)
-            Status.ballsToShoot--;
-            robotContainer.delayedActionManager.schedule(() -> spindexerServo.updateSetPower(1), 5);
-            robotContainer.delayedActionManager.schedule(() -> spindexerServo.updateSetPower(0), 1400);
-            robotContainer.delayedActionManager.schedule(() -> this.pause = false, 1400);
-            robotContainer.delayedActionManager.schedule(()-> Status.slotColor[robotContainer.spindexer.getCurrentTransferSlot()] = Constants.Game.ARTIFACT_COLOR.NONE, 1400);
-            if (Status.ballsToShoot > 0) {
-                robotContainer.delayedActionManager.schedule(() -> shootNextBall(true), 1400);
-            }
+        robotContainer.delayedActionManager.schedule(() -> spindexerServo.updateSetPower(1), 5);
+        robotContainer.delayedActionManager.schedule(() -> spindexerServo.updateSetPower(0), 1500);
+        robotContainer.delayedActionManager.schedule(() -> this.pause = false, 1500);
+        robotContainer.delayedActionManager.schedule(()-> Status.slotColor[robotContainer.spindexer.getCurrentTransferSlot()] = Constants.Game.ARTIFACT_COLOR.NONE, 1500);
+        Status.ballsToShoot--;
+        if (Status.ballsToShoot > 0){
+            robotContainer.delayedActionManager.schedule(() -> shootNextBall(matchMotif), 1500);
         }
     }
 
+
+
     public void shootAll(boolean matchMotif) {
-        Status.ballsToShoot = 3;
-        shootNextBall(matchMotif);
+        Status.turretToggle = true;
+        Status.intakeToggle = false;
+        Status.flywheelToggle = true;
+        robotContainer.delayedActionManager.schedule(() -> spindexerServo.updateSetPower(1), 0);
+    }
+
+    public void pause() {
+        this.pause = true;
+    }
+
+    public void unpause() {
+        this.pause = false;
     }
 
     public boolean isFull() {
