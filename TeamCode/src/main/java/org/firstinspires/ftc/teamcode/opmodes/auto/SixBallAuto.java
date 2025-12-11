@@ -23,7 +23,7 @@ public class SixBallAuto extends OpMode {
     // 91.44
     // 30.48
     public static double BEFORE_TAPE = 84;
-    public static double AFTER_TAPE = 160;
+    public static double AFTER_TAPE = 150;
     public static double TAPE_LOW = -91.5;
     public static double TAPE_MID = -34.5;
 
@@ -87,11 +87,14 @@ public class SixBallAuto extends OpMode {
 
         robotContainer.delayedActionManager.incrementPoseOffset();
         robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(Constants.Intake.BEST_INTAKE_SPEED));
-        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP /= 2);
+        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP /= 3);
+        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.HEADING_KD /= 10);
 
         robotContainer.delayedActionManager.incrementPoseOffset();
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0.0));
-        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP *= 2);
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(-Constants.Intake.BEST_INTAKE_SPEED));
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setPower(0.0), 100));
+        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP *= 3);
+        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.HEADING_KD *= 10);
 
         robotContainer.delayedActionManager.incrementPoseOffset();
         robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(Constants.Intake.BEST_INTAKE_SPEED));
@@ -111,11 +114,14 @@ public class SixBallAuto extends OpMode {
 
         robotContainer.delayedActionManager.incrementPoseOffset();
         robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(Constants.Intake.BEST_INTAKE_SPEED));
-        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP /= 2);
+        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP /= 3);
+        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.HEADING_KD /= 10);
 
         robotContainer.delayedActionManager.incrementPoseOffset();
         robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(-Constants.Intake.BEST_INTAKE_SPEED));
-        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP *= 2);
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setPower(0.0), 100));
+        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP *= 3);
+        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.HEADING_KD *= 10);
     }
 
     @Override

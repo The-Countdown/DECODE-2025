@@ -60,7 +60,9 @@ public class DoNotChangeAuto extends OpMode {
         robotContainer.delayedActionManager.schedule(() -> Status.intakeToggle = false, 0);
         robotContainer.delayedActionManager.schedule(() -> Status.turretToggle = true, 0);
         robotContainer.delayedActionManager.schedule(() -> robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[1]), 0);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.pause(), Constants.Turret.FLYWHEEL_SPINUP_MS);
         robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.shootAll(false), Constants.Turret.FLYWHEEL_SPINUP_MS);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.unpause(), Constants.Turret.FLYWHEEL_SPINUP_MS + 5000);
 
         robotContainer.delayedActionManager.incrementPoseOffset(2);
         robotContainer.delayedActionManager.schedulePose(() -> Status.flywheelToggle = false);
@@ -70,31 +72,32 @@ public class DoNotChangeAuto extends OpMode {
 
     @Override
     public void loop() {
+        robotContainer.refreshData();
+        robotContainer.limelightLogic.update();
         robotContainer.delayedActionManager.update();
         robotContainer.pathPlanner.updatePathStatus();
         robotContainer.turret.pointAtGoal();
         robotContainer.pathPlanner.driveThroughPath();
-        robotContainer.turret.update(false);
+        robotContainer.beamBreakToggleButton.update(RobotContainer.HardwareDevices.beamBreak.isPressed());
+        Status.turretToggleButton.update(Status.turretToggle);
+        robotContainer.CURRENT_LOOP_TIME_MS = robotContainer.updateLoopTime("teleOp");
+        robotContainer.DELTA_TIME_MS = robotContainer.CURRENT_LOOP_TIME_MS - robotContainer.PREV_LOOP_TIME_MS;
         robotContainer.telemetry.addData("Flywheel Toggle: ", Status.flywheelToggle);
         robotContainer.telemetry.addData("Intake Toggle: ", Status.intakeToggle);
         robotContainer.telemetry.addData("Turret Toggle: ", Status.turretToggle);
         robotContainer.telemetry.addData("Intake Velocity: ", robotContainer.intake.getVelocity());
         robotContainer.telemetry.addData("Flywheel Velocity: ", RobotContainer.HardwareDevices.flyWheelMotorMaster.getVelocity());
+        robotContainer.telemetry.addData("Pause", robotContainer.spindexer.pause);
         robotContainer.telemetry.update();
         robotContainer.turret.update(false);
         robotContainer.spindexer.update(false);
         robotContainer.positionProvider.update(false);
-
-        if (!Status.intakeToggle) {
-            robotContainer.intake.setPower(Constants.Intake.REVERSE_TOP_SPEED);
-        } else {
-            robotContainer.intake.setPower(0);
-        }
         blackboard.put("pose", Status.currentPose);
     }
 
     @Override
     public void stop() {
+        robotContainer.delayedActionManager.cancelAll();
         blackboard.put("pose", Status.currentPose);
         robotContainer.stop();
     }

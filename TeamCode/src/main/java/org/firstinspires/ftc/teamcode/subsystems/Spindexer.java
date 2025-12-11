@@ -214,10 +214,10 @@ public class Spindexer {
         double speed = Math.abs((getAngle() - this.lastPosition) * robotContainer.DELTA_TIME_MS);
         robotContainer.telemetry.addData("jam error:", error);
         robotContainer.telemetry.addData("jam speed:", speed);
-        if (error < 15 && speed > 20) {
+        if (error < 15 && speed > 10) {
             jamTimer.reset();
         }
-        if (error > 15 && speed < 20 && jamTimer.seconds() > 0.8) {
+        if (error > 15 && speed < 10 && jamTimer.seconds() > 1.0) {
             return true;
         } else {
             return false;

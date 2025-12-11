@@ -49,11 +49,11 @@ public class ThreeBallGoalSideAuto extends OpMode {
         RobotContainer.HardwareDevices.pinpoint.setPosition(Status.goalsideStartingPose);
         if (Status.alliance == Constants.Game.ALLIANCE.BLUE) {
             robotContainer.pathPlanner.addPose(Status.goalsideStartingPose);
-            robotContainer.pathPlanner.addPose(6000);
+            robotContainer.pathPlanner.addPose(7000);
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.INCH, Status.goalsideStartingPose.getX(DistanceUnit.INCH)-20, Status.goalsideStartingPose.getY(DistanceUnit.INCH), AngleUnit.DEGREES, Status.goalsideStartingPose.getHeading(AngleUnit.DEGREES)));
         } else {
             robotContainer.pathPlanner.addPose(Status.goalsideStartingPose);
-            robotContainer.pathPlanner.addPose(6000);
+            robotContainer.pathPlanner.addPose(7000);
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.INCH, Status.goalsideStartingPose.getX(DistanceUnit.INCH)-20, Status.goalsideStartingPose.getY(DistanceUnit.INCH), AngleUnit.DEGREES, Status.goalsideStartingPose.getHeading(AngleUnit.DEGREES)));
         }
 
@@ -61,7 +61,9 @@ public class ThreeBallGoalSideAuto extends OpMode {
         robotContainer.delayedActionManager.schedule(() -> Status.intakeToggle = false, 0);
         robotContainer.delayedActionManager.schedule(() -> Status.turretToggle = true, 0);
         robotContainer.delayedActionManager.schedule(() -> robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[1]), 0);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.pause(), Constants.Turret.FLYWHEEL_SPINUP_MS);
         robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.shootAll(false), Constants.Turret.FLYWHEEL_SPINUP_MS);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.unpause(), Constants.Turret.FLYWHEEL_SPINUP_MS + Constants.Spindexer.FULL_EMPTY_SPINTIME);
 
         robotContainer.delayedActionManager.incrementPoseOffset(2);
         robotContainer.delayedActionManager.schedulePose(() -> Status.flywheelToggle = false);

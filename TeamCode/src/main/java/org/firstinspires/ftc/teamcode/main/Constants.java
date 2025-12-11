@@ -296,7 +296,7 @@ public class Constants {
         public static double FLYWHEEL_CURVE = 4;
         public static double[] FLYWHEEL_SPEED_TABLE = {0.57, 0.63, 0.71, 0.715, 0.73, 0.80, 0.82};
         public static double[] FLYWHEEL_SPEED_TABLE_DISTANCES = {40, 56, 90, 95, 103, 127, 152};
-        public static int FLYWHEEL_SPINUP_MS = 1200;
+        public static int FLYWHEEL_SPINUP_MS = 1000;
         public static double TRACK_GOAL_P = -0.2;
         public static double[] HOOD_PRESETS = {0.51, 0.13};
         public static double TURRET_LIMIT_MIN_ANGLE = -90;
@@ -329,14 +329,14 @@ public class Constants {
         public static double axonTestAngle = 0;
         public static double[] TRANSFER_SLOT_ANGLES = {60, 180, 300};
         public static double[] INTAKE_SLOT_ANGLES = {120, 240, 360};
-        public static int COLOR_SENSE_TIME = 250;
+        public static int COLOR_SENSE_TIME = 50;
         public static double KP = 0.0017;
         public static double KI = 0;
         public static double KD = 0.00012;
         public static double KF = 0.08;
         public static double DIST_TOLERANCE = 6.67;
-        public static double BEAM_TIMER_TOLERANCE = 0.5;
-        public static int FULL_EMPTY_SPINTIME = 1500;
+        public static double BEAM_TIMER_TOLERANCE = 0.15;
+        public static int FULL_EMPTY_SPINTIME = 2500;
     }
 
     @Config
