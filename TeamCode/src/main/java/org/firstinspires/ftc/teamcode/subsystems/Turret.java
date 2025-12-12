@@ -45,6 +45,8 @@ public class Turret extends RobotContainer.HardwareDevices {
             // Manual turret hood
             if (robotContainer.gamepadEx1.circle.isPressed() || Status.currentPose.getX(DistanceUnit.CM) < -75) {
                 robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[1]);
+            } else if (Status.currentPose.getX(DistanceUnit.CM) < 20 || Status.currentPose.getY(DistanceUnit.CM) < 20) {
+                robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[2]);
             } else {
                 robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[0]);
             }
@@ -57,15 +59,16 @@ public class Turret extends RobotContainer.HardwareDevices {
             }
 
             // Turret turn - Right stick X
-            // if (Status.manualControl) {
-            //     // Manual turret turning
-            //     manualTurretPos -= robotContainer.gamepadEx2.rightStickX() != 0 ? (Constants.Turret.TURRET_SPEED_FACTOR * CURRENT_LOOP_TIME_MS) * Math.pow(robotContainer.gamepadEx2.rightStickX(), 3) : 0;
-            //     manualTurretPos = HelperFunctions.clamp(manualTurretPos, Constants.Turret.TURRET_LIMIT_MIN, Constants.Turret.TURRET_LIMIT_MAX);
-            //     robotContainer.turret.setTargetPosition(manualTurretPos);
-            // } else {
-            //     // Automatic turret turning
-            // }
-            robotContainer.turret.pointAtGoal();
+             if (Status.manualControl && robotContainer.gamepadEx2.rightStickX() != 0) {
+                 // Manual turret turning
+                 manualTurretPos -= robotContainer.gamepadEx2.rightStickX() != 0 ? (Constants.Turret.TURRET_SPEED_FACTOR * robotContainer.CURRENT_LOOP_TIME_MS) * Math.pow(robotContainer.gamepadEx2.rightStickX(), 3) : 0;
+                 manualTurretPos = HelperFunctions.clamp(manualTurretPos, Constants.Turret.TURRET_MIN, Constants.Turret.TURRET_MAX);
+                 robotContainer.turret.setTargetPosition(manualTurretPos);
+             } else if (Status.manualControl) {
+             } else {
+                 robotContainer.turret.pointAtGoal();
+             }
+
         } else {
             if (!Status.intakeToggle) {
                 flywheel.targetVelocity = Math.min(Status.turretToggleButton.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, robotContainer.turret.flywheel.interpolateByDistance(HelperFunctions.disToGoal()));
@@ -85,7 +88,7 @@ public class Turret extends RobotContainer.HardwareDevices {
     // This is for manual control
     public void setTargetPosition(double position) {
         targetPosition = position;
-        turretServos.setPosition(HelperFunctions.clamp(((position + 1) / 2), Constants.Turret.TURRET_LIMIT_MIN_SERVO, Constants.Turret.TURRET_LIMIT_MAX_SERVO));
+        turretServos.setPosition(HelperFunctions.clamp(position, Constants.Turret.TURRET_MIN, Constants.Turret.TURRET_MAX));
     }
 
     public void setTargetAngle(double angleInDegrees) { // angleInDegrees should be between -180 and 180

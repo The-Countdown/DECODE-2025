@@ -79,19 +79,19 @@ public class TeleOp extends OpMode {
         // Gamepad 1
         robotContainer.drivetrain.controlUpdate();
 
-       if (robotContainer.gamepadEx1.dpadDown.wasJustReleased()) {
+       if (robotContainer.gamepadEx2.dpadDown.wasJustReleased()) {
            robotContainer.turret.setTargetAngle(0);
        }
 
-       if (robotContainer.gamepadEx1.dpadLeft.wasJustReleased()) {
+       if (robotContainer.gamepadEx2.dpadLeft.wasJustReleased()) {
            robotContainer.turret.setTargetAngle(-90);
        }
 
-       if (robotContainer.gamepadEx1.dpadRight.wasJustReleased()) {
+       if (robotContainer.gamepadEx2.dpadRight.wasJustReleased()) {
            robotContainer.turret.setTargetAngle(90);
        }
 
-        if (robotContainer.gamepadEx1.triangle.wasJustPressed()) {
+        if (robotContainer.gamepadEx2.triangle.wasJustPressed()) {
             Status.manualControl = !Status.manualControl;
         }
 
@@ -136,11 +136,11 @@ public class TeleOp extends OpMode {
         if (Status.intakeToggle) {
             double power = robotContainer.gamepadEx1.rightTriggerRaw() - (robotContainer.gamepadEx1.leftTriggerRaw());
             if (Status.intakeToggle) {
-                if (Math.abs(robotContainer.spindexer.getError()) < 80) {
+//                if (Math.abs(robotContainer.spindexer.getError()) < 80) {
                     robotContainer.intake.setPower(Math.signum(power) * Math.min(Math.abs(power), Constants.Intake.TOP_SPEED));
-                } else {
-                    robotContainer.intake.setPower(Math.signum(power) * Math.min(Math.abs(power), Constants.Intake.SPIN_ERROR_SPEED));
-                }
+//                } else {
+//                    robotContainer.intake.setPower(Math.signum(power) * Math.min(Math.abs(power), Constants.Intake.SPIN_ERROR_SPEED));
+//                }
             } else {
                 robotContainer.intake.setPower(0);
             }
@@ -149,21 +149,21 @@ public class TeleOp extends OpMode {
         }
 
         // Rotate transfer slot
-        if (robotContainer.gamepadEx2.cross.wasJustPressed()) {
-            Status.slotColor[robotContainer.spindexer.getCurrentTransferSlot()] = Constants.Game.ARTIFACT_COLOR.NONE;
-            if (!robotContainer.spindexer.isEmpty()) {
-            } else {
-                Status.intakeToggle = true;
-                Status.turretToggle = false;
-            }
-        }
+//        if (robotContainer.gamepadEx2.cross.wasJustPressed()) {
+//            Status.slotColor[robotContainer.spindexer.getCurrentTransferSlot()] = Constants.Game.ARTIFACT_COLOR.NONE;
+//            if (!robotContainer.spindexer.isEmpty()) {
+//            } else {
+//                Status.intakeToggle = true;
+//                Status.turretToggle = false;
+//            }
+//        }
 
         // Kick ball into turret (This will be removed when transfer is removed)
-        if (robotContainer.gamepadEx2.leftBumper.wasJustPressed()) {
-            robotContainer.transfer.flapUp();
-        } else if (robotContainer.gamepadEx2.leftBumper.wasJustReleased()) {
-            robotContainer.transfer.flapDown();
-        }
+//        if (robotContainer.gamepadEx2.leftBumper.wasJustPressed()) {
+//            robotContainer.transfer.flapUp();
+//        } else if (robotContainer.gamepadEx2.leftBumper.wasJustReleased()) {
+//            robotContainer.transfer.flapDown();
+//        }
 
         // No gamepad
 

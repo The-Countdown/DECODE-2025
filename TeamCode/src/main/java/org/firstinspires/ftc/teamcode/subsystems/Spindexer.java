@@ -61,6 +61,7 @@ public class Spindexer {
             if (jammed) {
                 spindexerServo.updateSetPower(-0.3);
                 unjamTimer.reset();
+                jamTimer.reset();
             } else if (unjamTimer.seconds() > 0.2) {
                 spindexerServo.updateSetPower(1);
             }
@@ -71,20 +72,47 @@ public class Spindexer {
                 robotContainer.spindexer.moveIntakeSlotClockwise();
             }
 
+            if (robotContainer.gamepadEx2.leftBumper.wasJustPressed()) {
+                robotContainer.spindexer.moveIntakeSlotClockwise();
+            }
+
+            if (robotContainer.gamepadEx2.dpadUp.wasJustPressed()) {
+                targetAngle = targetAngle + 45;
+                Status.intakeToggle = false;
+                Status.turretToggle = true;
+            }
+
             if (robotContainer.gamepadEx1.dpadUp.wasJustPressed()) {
                 targetAngle = targetAngle + 45;
                 Status.intakeToggle = false;
                 Status.turretToggle = true;
             }
 
+            if (robotContainer.gamepadEx2.rightBumper.isHeld()) {
+                this.pause = true;
+            }
+
             if (robotContainer.gamepadEx1.rightBumper.isHeld()) {
                 this.pause = true;
+            }
+
+            if (robotContainer.gamepadEx2.dpadUp.wasJustReleased()) {
+                Status.intakeToggle = true;
+                Status.turretToggle = false;
+                targetAngle = targetAngle - 45;
+                spindexerServo.updateSetPower(0);
+                this.pause = false;
             }
 
             if (robotContainer.gamepadEx1.dpadUp.wasJustReleased()) {
                 Status.intakeToggle = true;
                 Status.turretToggle = false;
                 targetAngle = targetAngle - 45;
+                spindexerServo.updateSetPower(0);
+                this.pause = false;
+            }
+
+            if (robotContainer.gamepadEx2.rightBumper.wasJustReleased()) {
                 spindexerServo.updateSetPower(0);
                 this.pause = false;
             }
@@ -217,7 +245,7 @@ public class Spindexer {
         if (error < 15 && speed > 10) {
             jamTimer.reset();
         }
-        if (error > 15 && speed < 10 && jamTimer.seconds() > 1.0) {
+        if (error > 15 && speed < 10 && jamTimer.seconds() > Constants.Spindexer.JAM_TIME_THRESHOLD) {
             return true;
         } else {
             return false;

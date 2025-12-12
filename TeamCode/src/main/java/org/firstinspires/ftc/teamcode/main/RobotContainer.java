@@ -286,9 +286,9 @@ public class RobotContainer {
         gamepadEx2 = new GamepadWrapper(opmode.gamepad2);
         Status.isDrivingActive = false;
         Status.GOAL_POSE = Status.alliance == Constants.Game.ALLIANCE.RED ?
-                        new Pose2D(DistanceUnit.INCH, 64, 64, AngleUnit.DEGREES, -45) :
+                        new Pose2D(DistanceUnit.INCH, 70, 70, AngleUnit.DEGREES, -45) :
                         Status.alliance == Constants.Game.ALLIANCE.BLUE ?
-                                new Pose2D(DistanceUnit.INCH, -64, 64, AngleUnit.DEGREES, 45) :
+                                new Pose2D(DistanceUnit.INCH, -70, 70, AngleUnit.DEGREES, 45) :
                                 new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
         Status.goalsideStartingPose = Status.alliance == Constants.Game.ALLIANCE.RED ? new Pose2D(DistanceUnit.INCH, Constants.Robot.GoalsideStartingX, Constants.Robot.GoalsideStartingY, AngleUnit.DEGREES, Constants.Robot.GoalsideStartingHeading) :
                 Status.alliance == Constants.Game.ALLIANCE.BLUE ? new Pose2D(DistanceUnit.INCH, Constants.Robot.GoalsideStartingX, -Constants.Robot.GoalsideStartingY, AngleUnit.DEGREES, Constants.Robot.GoalsideStartingHeading) :
