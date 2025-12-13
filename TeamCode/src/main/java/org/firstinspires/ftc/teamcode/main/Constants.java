@@ -215,6 +215,8 @@ public class Constants {
         public static final double
                 PINPOINT_X_OFFSET_MM = 177;
         public static final double PINPOINT_Y_OFFSET_MM = 7;
+
+        public static final float PINPOINT_RESOLUTION = 19.68619876f;
         public static final GoBildaPinpointDriver.GoBildaOdometryPods
                 PINPOINT_ODOM_POD = GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD;
         public static final GoBildaPinpointDriver.EncoderDirection
@@ -294,7 +296,7 @@ public class Constants {
         public static int FLYWHEEL_MAX_VELOCITY = 1720;
         public static int FLYWHEEL_MAX_POWER_ERROR = 300;
         public static double FLYWHEEL_CURVE = 4;
-        public static double[] FLYWHEEL_SPEED_TABLE = {0.57, 0.63, 0.71, 0.715, 0.73, 0.80, 0.82};
+        public static double[] FLYWHEEL_SPEED_TABLE = {0.57, 0.595, 0.7, 0.715, 0.73, 0.815, 0.85};
         public static double[] FLYWHEEL_SPEED_TABLE_DISTANCES = {40, 56, 90, 95, 103, 127, 152};
         public static int FLYWHEEL_SPINUP_MS = 1000;
         public static double TRACK_GOAL_P = -0.2;
@@ -308,9 +310,9 @@ public class Constants {
         public static double FLYWHEEL_POWER_AUTO_FAR = 0.605;
         public static double FLYWHEEL_POWER_AUTO_MIDDLE = 0.49;
         public static double FLYWHEEL_POWER_AUTO_NEAR = 0.48;
-        public static double FLYWHEEL_P = 0.00019;
+        public static double FLYWHEEL_P = 0.0001625;
         public static double FLYWHEEL_I = 0.0;
-        public static double FLYWHEEL_D = 0.002;
+        public static double FLYWHEEL_D = 0.003;
         public static double FLYWHEEL_F = 0.0;
     }
 

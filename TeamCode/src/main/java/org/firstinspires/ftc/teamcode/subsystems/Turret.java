@@ -2,11 +2,14 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.util.FlywheelPDF;
+import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 import org.firstinspires.ftc.teamcode.util.LinkedMotors;
 import org.firstinspires.ftc.teamcode.util.LinkedServos;
@@ -21,6 +24,7 @@ public class Turret extends RobotContainer.HardwareDevices {
     private FlywheelPDF flywheelPDF;
     private double targetPosition;
     private double manualTurretPos;
+    private GamepadWrapper.ButtonReader backFieldButton = new GamepadWrapper.ButtonReader();
 
     public Turret(RobotContainer robotContainer, LinkedMotors flyWheelMotors, BetterServo hoodServo, LinkedServos turretServos) {
         this.robotContainer = robotContainer;
@@ -45,10 +49,28 @@ public class Turret extends RobotContainer.HardwareDevices {
             // Manual turret hood
             if (robotContainer.gamepadEx1.circle.isPressed() || Status.currentPose.getX(DistanceUnit.CM) < -75) {
                 robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[1]);
-            } else if (Status.currentPose.getX(DistanceUnit.CM) < 20 || Status.currentPose.getY(DistanceUnit.CM) < 20) {
+            } else if ((Status.currentPose.getX(DistanceUnit.CM) < 15 || Status.currentPose.getY(DistanceUnit.CM) < 15) && Status.alliance == Constants.Game.ALLIANCE.BLUE) {
+                robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[2]);
+            } else if ((Status.currentPose.getX(DistanceUnit.CM) < 15 || Status.currentPose.getY(DistanceUnit.CM) > -15) && Status.alliance == Constants.Game.ALLIANCE.RED) {
                 robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[2]);
             } else {
                 robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[0]);
+            }
+
+            backFieldButton.update(Status.currentPose.getX(DistanceUnit.CM) < -20);
+
+            if (backFieldButton.wasJustPressed()) {
+                if (Status.alliance == Constants.Game.ALLIANCE.RED) {
+                    Status.GOAL_POSE = new Pose2D(DistanceUnit.INCH, 90, 70, AngleUnit.DEGREES, -45);
+                } else {
+                    Status.GOAL_POSE = new Pose2D(DistanceUnit.INCH, -90, 70, AngleUnit.DEGREES, 45);
+                }
+            } else if (backFieldButton.wasJustReleased()) {
+                if (Status.alliance == Constants.Game.ALLIANCE.RED) {
+                    Status.GOAL_POSE = new Pose2D(DistanceUnit.INCH, 70, 68, AngleUnit.DEGREES, -45);
+                } else {
+                    Status.GOAL_POSE = new Pose2D(DistanceUnit.INCH, -70, 68, AngleUnit.DEGREES, 45);
+                }
             }
 
             // Automated flywheel

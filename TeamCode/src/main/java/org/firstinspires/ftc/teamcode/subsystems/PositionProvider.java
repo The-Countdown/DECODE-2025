@@ -33,8 +33,8 @@ public class PositionProvider {
 
     public Pose2D getRobotPose() {
         Pose2D odPose = pinpoint.getPosition();
-        double rx = odPose.getX(DistanceUnit.CM) + visionOffsetPose.getX(DistanceUnit.CM);
-        double ry = odPose.getY(DistanceUnit.CM) + visionOffsetPose.getY(DistanceUnit.CM);
+        double rx = (odPose.getX(DistanceUnit.CM) + visionOffsetPose.getX(DistanceUnit.CM)) * 0.9914129;
+        double ry = (odPose.getY(DistanceUnit.CM) + visionOffsetPose.getY(DistanceUnit.CM)) * 0.998610856289;
         double rHeading = odPose.getHeading(AngleUnit.DEGREES);
         return new Pose2D(DistanceUnit.CM, rx, ry, AngleUnit.DEGREES, rHeading);
     }

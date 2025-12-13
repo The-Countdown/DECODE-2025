@@ -553,6 +553,9 @@ public class RobotContainer {
 //        telemetry.addData("Pinpoint Y", Status.currentPose.getY(DistanceUnit.CM) + " cm");
 //        telemetry.addData("Pinpoint Heading", Status.currentHeading + "°");
         telemetry.addData("PINPOINT STATUS", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
+        telemetry.addData("odo x", RobotContainer.HardwareDevices.pinpoint.getEncoderX());
+        telemetry.addData("odo y", RobotContainer.HardwareDevices.pinpoint.getEncoderY());
+        telemetry.addData("PINPOINT STATUS", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
         telemetry.addData("Dist to goal", HelperFunctions.disToGoal());
         telemetry.addLine();
         telemetry.addData("OpMode Avg Loop Time", (int) getRollingAverageLoopTime(opMode) + " ms");
@@ -588,6 +591,7 @@ public class RobotContainer {
         // telemetry.addData("upper flywheel current mA", HardwareDevices.flyWheelMotorSlave.getCurrent(CurrentUnit.MILLIAMPS));
         telemetry.addData("turret pos", turret.getPosition());
         telemetry.addData("slave servo", HardwareDevices.turretServoSlave.getPosition());
+        telemetry.addData("hood", HardwareDevices.hoodServo.getPosition());
         telemetry.addLine();
         telemetry.addData("beam break", HardwareDevices.beamBreak.isPressed());
 //       telemetry.addData("red", HardwareDevices.colorSensor.updateRed());
