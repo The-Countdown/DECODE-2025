@@ -78,13 +78,11 @@ public class Spindexer {
             }
 
             if (robotContainer.gamepadEx2.dpadUp.wasJustPressed()) {
-                targetAngle = targetAngle + 45;
                 Status.intakeToggle = false;
                 Status.turretToggle = true;
             }
 
             if (robotContainer.gamepadEx1.dpadUp.wasJustPressed()) {
-                targetAngle = targetAngle + 45;
                 Status.intakeToggle = false;
                 Status.turretToggle = true;
             }
@@ -100,7 +98,6 @@ public class Spindexer {
             if (robotContainer.gamepadEx2.dpadUp.wasJustReleased()) {
                 Status.intakeToggle = true;
                 Status.turretToggle = false;
-                targetAngle = targetAngle - 45;
                 spindexerServo.setPower(0);
                 this.pause = false;
             }
@@ -108,7 +105,6 @@ public class Spindexer {
             if (robotContainer.gamepadEx1.dpadUp.wasJustReleased()) {
                 Status.intakeToggle = true;
                 Status.turretToggle = false;
-                targetAngle = targetAngle - 45;
                 spindexerServo.setPower(0);
                 this.pause = false;
             }

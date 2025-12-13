@@ -331,14 +331,14 @@ public class Constants {
         public static double axonTestAngle = 0;
         public static double[] TRANSFER_SLOT_ANGLES = {60, 180, 300};
         public static double[] INTAKE_SLOT_ANGLES = {120, 240, 360};
-        public static int COLOR_SENSE_TIME = 50;
+        public static int COLOR_SENSE_TIME = 100;
         public static double KP = 0.0017;
         public static double KI = 0;
         public static double KD = 0.00012;
         public static double KF = 0.08;
         public static double DIST_TOLERANCE = 6;
-        public static double BEAM_TIMER_TOLERANCE = 0.15;
-        public static int FULL_EMPTY_SPINTIME = 2500;
+        public static double BEAM_TIMER_TOLERANCE = 0.1;
+        public static int FULL_EMPTY_SPINTIME = 1500;
     }
 
     @Config
