@@ -61,9 +61,9 @@ public class Turret extends RobotContainer.HardwareDevices {
 
             if (backFieldButton.wasJustPressed()) {
                 if (Status.alliance == Constants.Game.ALLIANCE.RED) {
-                    Status.GOAL_POSE = new Pose2D(DistanceUnit.INCH, 90, 70, AngleUnit.DEGREES, -45);
+                    Status.GOAL_POSE = new Pose2D(DistanceUnit.INCH, 87, 70, AngleUnit.DEGREES, -45);
                 } else {
-                    Status.GOAL_POSE = new Pose2D(DistanceUnit.INCH, -90, 70, AngleUnit.DEGREES, 45);
+                    Status.GOAL_POSE = new Pose2D(DistanceUnit.INCH, -87, 70, AngleUnit.DEGREES, 45);
                 }
             } else if (backFieldButton.wasJustReleased()) {
                 if (Status.alliance == Constants.Game.ALLIANCE.RED) {
