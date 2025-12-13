@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
+import static java.lang.Thread.sleep;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -21,13 +23,23 @@ public class TeleOp extends OpMode {
     private final GamepadWrapper.ButtonReader transferConditionButton = new GamepadWrapper.ButtonReader();
     private final ElapsedTime spinTimer = new ElapsedTime();
 
-
     @Override
     public void init() {
         robotContainer = new RobotContainer(this);
         robotContainer.init();
         // Get the blackboard pose that was set during auto or if it was not set set the starting pose to 0.
+        RobotContainer.HardwareDevices.pinpoint.recalibrateIMU();
+        try {
+            sleep(500);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         RobotContainer.HardwareDevices.pinpoint.setPosition((Pose2D) blackboard.getOrDefault("pose", new Pose2D(DistanceUnit.CM, 0, 0, AngleUnit.DEGREES, 0)));
+        try {
+            sleep(500);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         robotContainer.telemetry.addData("Alliance Color", Status.alliance == Constants.Game.ALLIANCE.BLUE ? "BLUE" : "RED");
         robotContainer.telemetry.update();
     }
@@ -51,6 +63,7 @@ public class TeleOp extends OpMode {
         robotContainer.start(this, true);
         Status.isDrivingActive = true;
         robotContainer.spindexer.goToFirstIntakeSlot();
+        robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[0]);
     }
 
     @Override
@@ -98,7 +111,11 @@ public class TeleOp extends OpMode {
         if (robotContainer.gamepadEx1.square.wasJustPressed()) {
             Status.isDrivingActive = false;
             robotContainer.pathPlanner.clearPoses();
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.INCH, -39, -31, AngleUnit.DEGREES, 0));
+            if (Status.alliance == Constants.Game.ALLIANCE.BLUE) {
+                robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, -97, -84, AngleUnit.DEGREES, 180));
+            } else {
+                robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, -97, 84, AngleUnit.DEGREES, 180));
+            }
             robotContainer.pathingUpdater.start();
         }
 
