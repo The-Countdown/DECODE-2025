@@ -18,9 +18,6 @@ public class PathingUpdater extends Thread {
 
     @Override
     public void run() {
-        if (!enabled) {
-            return;
-        }
         while (Status.opModeIsActive) {
             if (!enabled) {
                 return;
@@ -28,11 +25,12 @@ public class PathingUpdater extends Thread {
             if (Status.isDrivingActive) {
                 Thread.yield();
             }
+            double max = 0.8;
             if (robotContainer.latitudePID.calculate() > Constants.Control.ZERO_POWER_TOLERANCE || robotContainer.longitudePID.calculate() > Constants.Control.ZERO_POWER_TOLERANCE || robotContainer.headingPID.calculate() < Constants.Control.ZERO_POWER_TOLERANCE) {
                 robotContainer.drivetrain.powerInput(
-                        HelperFunctions.clamp(robotContainer.latitudePID.calculate(), -0.4, 0.4),
-                        HelperFunctions.clamp(robotContainer.longitudePID.calculate(), -0.4, 0.4),
-                        HelperFunctions.clamp(robotContainer.headingPID.calculate(), -0.4, 0.4)
+                        HelperFunctions.clamp(robotContainer.latitudePID.calculate(), -max, max),
+                        HelperFunctions.clamp(robotContainer.longitudePID.calculate(), -max, max),
+                        HelperFunctions.clamp(robotContainer.headingPID.calculate(), -max, max)
                 );
             }
             Thread.yield();

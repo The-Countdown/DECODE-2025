@@ -35,6 +35,11 @@ public class FlywheelPDF {
         }
         double error = targetSpeed - flywheelMotors.getVelocity();
 
+        if (error > Constants.Turret.FLYWHEEL_MAX_POWER_ERROR) {
+            lastTargetPower = 1;
+            return 1;
+        }
+
         robotContainer.telemetry.addData("Flywheel Error", error);
 
         p = Constants.Turret.FLYWHEEL_P * error;

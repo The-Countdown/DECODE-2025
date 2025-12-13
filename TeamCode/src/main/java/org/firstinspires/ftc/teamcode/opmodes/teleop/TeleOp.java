@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
+import static java.lang.Thread.sleep;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -8,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.LocalizationUpdater;
+import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.PathingUpdater;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
@@ -20,13 +23,23 @@ public class TeleOp extends OpMode {
     private final GamepadWrapper.ButtonReader transferConditionButton = new GamepadWrapper.ButtonReader();
     private final ElapsedTime spinTimer = new ElapsedTime();
 
-
     @Override
     public void init() {
         robotContainer = new RobotContainer(this);
         robotContainer.init();
         // Get the blackboard pose that was set during auto or if it was not set set the starting pose to 0.
+        RobotContainer.HardwareDevices.pinpoint.recalibrateIMU();
+        try {
+            sleep(500);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         RobotContainer.HardwareDevices.pinpoint.setPosition((Pose2D) blackboard.getOrDefault("pose", new Pose2D(DistanceUnit.CM, 0, 0, AngleUnit.DEGREES, 0)));
+        try {
+            sleep(500);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         robotContainer.telemetry.addData("Alliance Color", Status.alliance == Constants.Game.ALLIANCE.BLUE ? "BLUE" : "RED");
         robotContainer.telemetry.update();
     }
@@ -50,6 +63,7 @@ public class TeleOp extends OpMode {
         robotContainer.start(this, true);
         Status.isDrivingActive = true;
         robotContainer.spindexer.goToFirstIntakeSlot();
+        robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[0]);
     }
 
     @Override
@@ -78,48 +92,58 @@ public class TeleOp extends OpMode {
         // Gamepad 1
         robotContainer.drivetrain.controlUpdate();
 
-//        if (robotContainer.gamepadEx1.dpadDown.wasJustReleased()) {
-//            robotContainer.turret.setTargetAngle(0);
-//        }
-//
-//        if (robotContainer.gamepadEx1.dpadLeft.wasJustReleased()) {
-//            robotContainer.turret.setTargetAngle(-90);
-//        }
-//
-//        if (robotContainer.gamepadEx1.dpadRight.wasJustReleased()) {
-//            robotContainer.turret.setTargetAngle(90);
-//        }
+       if (robotContainer.gamepadEx2.dpadDown.wasJustReleased()) {
+           robotContainer.turret.setTargetAngle(0);
+       }
 
-        if (robotContainer.gamepadEx1.triangle.wasJustPressed()) {
+       if (robotContainer.gamepadEx2.dpadLeft.wasJustReleased()) {
+           robotContainer.turret.setTargetAngle(-90);
+       }
+
+       if (robotContainer.gamepadEx2.dpadRight.wasJustReleased()) {
+           robotContainer.turret.setTargetAngle(90);
+       }
+
+        if (robotContainer.gamepadEx2.triangle.wasJustPressed()) {
             Status.manualControl = !Status.manualControl;
         }
 
-        if (robotContainer.gamepadEx1.cross.wasJustPressed()) {
+        if (robotContainer.gamepadEx1.square.wasJustPressed()) {
             Status.isDrivingActive = false;
             robotContainer.pathPlanner.clearPoses();
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, 0, 10, AngleUnit.DEGREES, 0));
+            if (Status.alliance == Constants.Game.ALLIANCE.BLUE) {
+                robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, -97, -84, AngleUnit.DEGREES, 180));
+            } else {
+                robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, -97, 84, AngleUnit.DEGREES, 180));
+            }
             robotContainer.pathingUpdater.start();
         }
 
-        while (robotContainer.gamepadEx1.cross.isHeld()) {
+        if (robotContainer.gamepadEx1.square.isHeld()) {
             if (robotContainer.pathPlanner.driveUsingPID(0)) {
                 Status.isDrivingActive = true;
-            } else{
-                robotContainer.pathPlanner.updatePathStatus();
-                robotContainer.refreshData();
+                if (robotContainer.pathingUpdater != null) {
+                    robotContainer.pathingUpdater.stopThread();
+                    try {
+                        robotContainer.pathingUpdater.join();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
             }
         }
 
-        if (robotContainer.gamepadEx1.cross.wasJustReleased()) {
-            Status.isDrivingActive = true;
-            if (robotContainer.pathingUpdater != null) {
-                robotContainer.pathingUpdater.stopThread();
-                try {
-                    robotContainer.pathingUpdater.join();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+        if (robotContainer.gamepadEx1.square.wasJustReleased()) {
+                if (robotContainer.pathingUpdater != null) {
+                    robotContainer.pathingUpdater.stopThread();
+                    try {
+                        robotContainer.pathingUpdater.join();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
-            }
+            robotContainer.pathingUpdater = new PathingUpdater(robotContainer);
+            Status.isDrivingActive = true;
         }
 
         // Gamepad 2
@@ -129,11 +153,11 @@ public class TeleOp extends OpMode {
         if (Status.intakeToggle) {
             double power = robotContainer.gamepadEx1.rightTriggerRaw() - (robotContainer.gamepadEx1.leftTriggerRaw());
             if (Status.intakeToggle) {
-                if (Math.abs(robotContainer.spindexer.getError()) < 20) {
+//                if (Math.abs(robotContainer.spindexer.getError()) < 80) {
                     robotContainer.intake.setPower(Math.signum(power) * Math.min(Math.abs(power), Constants.Intake.TOP_SPEED));
-                } else {
-                    robotContainer.intake.setPower(Math.signum(power) * Math.min(Math.abs(power), Constants.Intake.SPIN_ERROR_SPEED));
-                }
+//                } else {
+//                    robotContainer.intake.setPower(Math.signum(power) * Math.min(Math.abs(power), Constants.Intake.SPIN_ERROR_SPEED));
+//                }
             } else {
                 robotContainer.intake.setPower(0);
             }
@@ -142,32 +166,26 @@ public class TeleOp extends OpMode {
         }
 
         // Rotate transfer slot
-        if (robotContainer.gamepadEx2.cross.wasJustPressed()) {
-            Status.slotColor[robotContainer.spindexer.getCurrentTransferSlot()] = Constants.Game.ARTIFACT_COLOR.NONE;
-            if (!robotContainer.spindexer.isEmpty()) {
-            } else {
-                Status.intakeToggle = true;
-                Status.turretToggle = false;
-                robotContainer.spindexer.goToNextIntakeSlot(false);
-            }
-        }
+//        if (robotContainer.gamepadEx2.cross.wasJustPressed()) {
+//            Status.slotColor[robotContainer.spindexer.getCurrentTransferSlot()] = Constants.Game.ARTIFACT_COLOR.NONE;
+//            if (!robotContainer.spindexer.isEmpty()) {
+//            } else {
+//                Status.intakeToggle = true;
+//                Status.turretToggle = false;
+//            }
+//        }
 
         // Kick ball into turret (This will be removed when transfer is removed)
-        if (robotContainer.gamepadEx2.leftBumper.wasJustPressed()) {
-            robotContainer.transfer.flapUp();
-        } else if (robotContainer.gamepadEx2.leftBumper.wasJustReleased()) {
-            robotContainer.transfer.flapDown();
-        }
+//        if (robotContainer.gamepadEx2.leftBumper.wasJustPressed()) {
+//            robotContainer.transfer.flapUp();
+//        } else if (robotContainer.gamepadEx2.leftBumper.wasJustReleased()) {
+//            robotContainer.transfer.flapDown();
+//        }
 
         // No gamepad
 
         // Update the breamBreak state
         robotContainer.beamBreakToggleButton.update(RobotContainer.HardwareDevices.beamBreak.isPressed());
-
-        if (robotContainer.beamBreakToggleButton.wasJustReleased() && robotContainer.intake.getPower() > 0 && spinTimer.milliseconds() > 300) {
-            robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.function(), Constants.Spindexer.COLOR_SENSE_TIME);
-            spinTimer.reset();
-        }
 
         if (robotContainer.limelightLogic.limelight.getLatestResult().isValid()) {
             robotContainer.telemetry.addData("robot pos on field", robotContainer.limelightLogic.limelightBotPose());

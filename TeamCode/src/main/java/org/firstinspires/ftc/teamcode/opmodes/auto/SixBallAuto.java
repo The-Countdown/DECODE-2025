@@ -55,27 +55,29 @@ public class SixBallAuto extends OpMode {
         RobotContainer.HardwareDevices.pinpoint.setPosition(Status.startingPose);
         if (Status.alliance == Constants.Game.ALLIANCE.BLUE) {
             robotContainer.pathPlanner.addPose(Status.startingPose);
-            robotContainer.pathPlanner.addPose(6000);
+            robotContainer.pathPlanner.addPose(4000);
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_LOW, BEFORE_TAPE, AngleUnit.DEGREES, 90));
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_LOW, AFTER_TAPE, AngleUnit.DEGREES, 90));
             robotContainer.pathPlanner.addPose(Status.startingPose);
-            robotContainer.pathPlanner.addPose(6000);
+            robotContainer.pathPlanner.addPose(2000);
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_MID, BEFORE_TAPE, AngleUnit.DEGREES, 90));
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_MID, AFTER_TAPE, AngleUnit.DEGREES, 90));
         } else {
             robotContainer.pathPlanner.addPose(Status.startingPose);
-            robotContainer.pathPlanner.addPose(6000);
+            robotContainer.pathPlanner.addPose(4000);
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_LOW, -BEFORE_TAPE, AngleUnit.DEGREES, -90));
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_LOW, -AFTER_TAPE, AngleUnit.DEGREES, -90));
             robotContainer.pathPlanner.addPose(Status.startingPose);
-            robotContainer.pathPlanner.addPose(6000);
+            robotContainer.pathPlanner.addPose(2000);
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_MID, -BEFORE_TAPE, AngleUnit.DEGREES, -90));
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_MID, -AFTER_TAPE, AngleUnit.DEGREES, -90));
         }
         robotContainer.delayedActionManager.schedule(() -> Status.flywheelToggle = true, 0);
         robotContainer.delayedActionManager.schedule(() -> Status.intakeToggle = false, 0);
         robotContainer.delayedActionManager.schedule(() -> Status.turretToggle = true, 0);
-        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.shootAll(true), 800);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.pause(), Constants.Turret.FLYWHEEL_SPINUP_MS);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.shootAll(false), Constants.Turret.FLYWHEEL_SPINUP_MS);
+        robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.unpause(), Constants.Turret.FLYWHEEL_SPINUP_MS + Constants.Spindexer.FULL_EMPTY_SPINTIME);
         robotContainer.delayedActionManager.schedule(() -> robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[1]), 0);
 
         robotContainer.delayedActionManager.incrementPoseOffset(2);
@@ -84,20 +86,24 @@ public class SixBallAuto extends OpMode {
         robotContainer.delayedActionManager.schedulePose(() -> Status.turretToggle = false);
 
         robotContainer.delayedActionManager.incrementPoseOffset();
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.spindexer.goToNextIntakeSlot(true));
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0.6));
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(Constants.Intake.BEST_INTAKE_SPEED));
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP /= 2);
+        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.HEADING_KD /= 10);
 
         robotContainer.delayedActionManager.incrementPoseOffset();
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(-0.6));
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(-Constants.Intake.BEST_INTAKE_SPEED));
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setPower(0.0), 100));
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP *= 2);
-
-        robotContainer.delayedActionManager.incrementPoseOffset();
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0.6));
+        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.HEADING_KD *= 10);
         robotContainer.delayedActionManager.schedulePose(() -> Status.flywheelToggle = true);
         robotContainer.delayedActionManager.schedulePose(() -> Status.intakeToggle = false);
         robotContainer.delayedActionManager.schedulePose(() -> Status.turretToggle = true);
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.spindexer.shootAll(true));
+
+        robotContainer.delayedActionManager.incrementPoseOffset();
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(Constants.Intake.BEST_INTAKE_SPEED));
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.spindexer.pause());
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.spindexer.shootAll(false));
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.unpause(),  Constants.Spindexer.FULL_EMPTY_SPINTIME));
         robotContainer.delayedActionManager.schedulePose(() -> robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[1]));
 
         robotContainer.delayedActionManager.incrementPoseOffset();
@@ -105,15 +111,17 @@ public class SixBallAuto extends OpMode {
         robotContainer.delayedActionManager.schedulePose(() -> Status.flywheelToggle = false);
         robotContainer.delayedActionManager.schedulePose(() -> Status.intakeToggle = true);
         robotContainer.delayedActionManager.schedulePose(() -> Status.turretToggle = false);
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.spindexer.goToNextIntakeSlot(true));
 
         robotContainer.delayedActionManager.incrementPoseOffset();
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0.6));
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(Constants.Intake.BEST_INTAKE_SPEED));
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP /= 2);
+        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.HEADING_KD /= 10);
 
         robotContainer.delayedActionManager.incrementPoseOffset();
-        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(-0.6));
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(-Constants.Intake.BEST_INTAKE_SPEED));
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setPower(0.0), 100));
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP *= 2);
+        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.HEADING_KD *= 10);
     }
 
     @Override
@@ -126,20 +134,18 @@ public class SixBallAuto extends OpMode {
         robotContainer.pathPlanner.driveThroughPath();
         robotContainer.beamBreakToggleButton.update(RobotContainer.HardwareDevices.beamBreak.isPressed());
         Status.turretToggleButton.update(Status.turretToggle);
+        robotContainer.CURRENT_LOOP_TIME_MS = robotContainer.updateLoopTime("teleOp");
+        robotContainer.DELTA_TIME_MS = robotContainer.CURRENT_LOOP_TIME_MS - robotContainer.PREV_LOOP_TIME_MS;
         robotContainer.telemetry.addData("Flywheel Toggle: ", Status.flywheelToggle);
         robotContainer.telemetry.addData("Intake Toggle: ", Status.intakeToggle);
         robotContainer.telemetry.addData("Turret Toggle: ", Status.turretToggle);
         robotContainer.telemetry.addData("Intake Velocity: ", robotContainer.intake.getVelocity());
         robotContainer.telemetry.addData("Flywheel Velocity: ", RobotContainer.HardwareDevices.flyWheelMotorMaster.getVelocity());
+        robotContainer.telemetry.addData("Pause", robotContainer.spindexer.pause);
         robotContainer.telemetry.update();
         robotContainer.turret.update(false);
         robotContainer.spindexer.update(false);
         robotContainer.positionProvider.update(false);
-
-        if (robotContainer.beamBreakToggleButton.wasJustReleased() && robotContainer.intake.getPower() > 0 && spinTimer.milliseconds() > 200) {
-            robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.autoFunction(), Constants.Spindexer.COLOR_SENSE_TIME);
-            spinTimer.reset();
-        }
         blackboard.put("pose", Status.currentPose);
     }
 

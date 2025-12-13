@@ -215,6 +215,8 @@ public class Constants {
         public static final double
                 PINPOINT_X_OFFSET_MM = 177;
         public static final double PINPOINT_Y_OFFSET_MM = 7;
+
+        public static final float PINPOINT_RESOLUTION = 19.68619876f;
         public static final GoBildaPinpointDriver.GoBildaOdometryPods
                 PINPOINT_ODOM_POD = GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD;
         public static final GoBildaPinpointDriver.EncoderDirection
@@ -286,29 +288,31 @@ public class Constants {
 
     @Config
     public static class Turret {
-        public static double TURRET_MAX = 0.765;
-        public static double TURRET_NEUTRAL = 0.48;
-        public static double TURRET_MIN = 0.21;
+        public static double TURRET_MAX = 0.78;
+        public static double TURRET_NEUTRAL = 0.495;
+        public static double TURRET_MIN = 0.215;
         public static double TURRET_SPEED_FACTOR = 0.001;
         public static double FLYWHEEL_TOP_SPEED = 0.95;
         public static int FLYWHEEL_MAX_VELOCITY = 1720;
+        public static int FLYWHEEL_MAX_POWER_ERROR = 300;
         public static double FLYWHEEL_CURVE = 4;
-        public static double[] FLYWHEEL_SPEED_TABLE = {0.50, 0.52, 0.71, 0.55, 0.61, 0.63, 0.64};
+        public static double[] FLYWHEEL_SPEED_TABLE = {0.57, 0.595, 0.7, 0.715, 0.73, 0.815, 0.85};
         public static double[] FLYWHEEL_SPEED_TABLE_DISTANCES = {40, 56, 90, 95, 103, 127, 152};
+        public static int FLYWHEEL_SPINUP_MS = 1000;
         public static double TRACK_GOAL_P = -0.2;
-        public static double[] HOOD_PRESETS = {0.51, 0.13};
+        public static double[] HOOD_PRESETS = {0.45, 0, 0};
         public static double TURRET_LIMIT_MIN_ANGLE = -90;
         public static double TURRET_LIMIT_MAX_ANGLE = 125;
-        public static double TURRET_LIMIT_MIN_SERVO = TURRET_LIMIT_MIN_ANGLE / 355;
-        public static double TURRET_LIMIT_MAX_SERVO = TURRET_LIMIT_MAX_ANGLE / 355;
-        public static double TURRET_LIMIT_MIN = (TURRET_LIMIT_MIN_SERVO * 2) - 1;
-        public static double TURRET_LIMIT_MAX = (TURRET_LIMIT_MAX_SERVO * 2) - 1;
+        public static double TURRET_LIMIT_MIN_SERVO = TURRET_LIMIT_MIN_ANGLE / 355; //-0.253521127
+        public static double TURRET_LIMIT_MAX_SERVO = TURRET_LIMIT_MAX_ANGLE / 355; //0.352112676
+        public static double TURRET_LIMIT_MIN = (TURRET_LIMIT_MIN_SERVO * 2) - 1; //-1.507042254
+        public static double TURRET_LIMIT_MAX = (TURRET_LIMIT_MAX_SERVO * 2) - 1; //-0.295774648
         public static double FLYWHEEL_POWER_AUTO_FAR = 0.605;
         public static double FLYWHEEL_POWER_AUTO_MIDDLE = 0.49;
         public static double FLYWHEEL_POWER_AUTO_NEAR = 0.48;
-        public static double FLYWHEEL_P = 0.0003;
+        public static double FLYWHEEL_P = 0.00017;
         public static double FLYWHEEL_I = 0.0;
-        public static double FLYWHEEL_D = 0.002;
+        public static double FLYWHEEL_D = 0.0031f;
         public static double FLYWHEEL_F = 0.0;
     }
 
@@ -323,20 +327,24 @@ public class Constants {
     public static class Spindexer {
         public static int NUM_SLOTS = 3;
         public static double ANGLE_OFFSET = 45;
-        public static double JAM_ANGLE = 30;
+        public static double JAM_TIME_THRESHOLD = 1;
         public static double axonTestAngle = 0;
         public static double[] TRANSFER_SLOT_ANGLES = {60, 180, 300};
         public static double[] INTAKE_SLOT_ANGLES = {120, 240, 360};
-        public static int COLOR_SENSE_TIME = 250;
-        public static double KP = 0.001;
+        public static int COLOR_SENSE_TIME = 40;
+        public static double KP = 0.0018;
         public static double KI = 0;
         public static double KD = 0.00015;
-        public static double KF = 0.12;
+        public static double KF = 0.015;
+        public static double DIST_TOLERANCE = 6;
+        public static double BEAM_TIMER_TOLERANCE = 0.05;
+        public static int FULL_EMPTY_SPINTIME = 1500;
     }
 
     @Config
     public static class Intake {
-        public static double TOP_SPEED = 0.9;
+        public static double TOP_SPEED = 0.67;
+        public static double BEST_INTAKE_SPEED = 0.67;
         public static double SPIN_ERROR_SPEED = 0.4;
         public static double REVERSE_TOP_SPEED = 0.5;
         public static int RUNTIME_MS = 800;

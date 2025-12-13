@@ -43,7 +43,6 @@ import org.firstinspires.ftc.teamcode.other.IndicatorLighting;
 import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.LocalizationUpdater;
 import org.firstinspires.ftc.teamcode.subsystems.PositionProvider;
 import org.firstinspires.ftc.teamcode.subsystems.Spindexer;
-import org.firstinspires.ftc.teamcode.subsystems.Transfer;
 import org.firstinspires.ftc.teamcode.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.util.DelayedActionManager;
 import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
@@ -110,8 +109,6 @@ public class RobotContainer {
     public Turret turret;
     public Intake intake;
     public Spindexer spindexer;
-    public Transfer transfer;
-
     public double controlHubVoltage;
     public double expansionHubVoltage;
     public double controlHubCurrent;
@@ -155,12 +152,11 @@ public class RobotContainer {
         public static BetterServo hoodServo;
 
         // Spindexer
-        public static BetterServo transferServoLeft;
-        public static BetterServo transferServoRight;
         public static BetterDcMotor spindexerEncoder;
-
-        public static BetterCRServo spindexServo;
-        public static BetterAnalogInput spindexAnalog;
+        public static BetterCRServo spindexerServoMaster;
+        public static BetterCRServo spindexerServoSlave;
+        public static LinkedServos spindexerServos;
+        public static BetterAnalogInput spindexerAnalog;
 
         // Intake
         public static BetterDcMotor intakeMotor;
@@ -218,11 +214,10 @@ public class RobotContainer {
         HardwareDevices.turretServoMaster = new BetterServo(getHardwareDevice(ServoImplEx.class, "turretServoMaster"), Constants.Robot.SERVO_UPDATE_TIME);
         HardwareDevices.turretServoSlave = new BetterServo(getHardwareDevice(ServoImplEx.class, "turretServoSlave"), Constants.Robot.SERVO_UPDATE_TIME);
         HardwareDevices.hoodServo = new BetterServo(getHardwareDevice(ServoImplEx.class, "hoodServo"), Constants.Robot.SERVO_UPDATE_TIME);
-        HardwareDevices.transferServoLeft = new BetterServo(getHardwareDevice(ServoImplEx.class, "transferServoLeft"), Constants.Robot.SERVO_UPDATE_TIME);
-        HardwareDevices.transferServoRight = new BetterServo(getHardwareDevice(ServoImplEx.class, "transferServoRight"), Constants.Robot.SERVO_UPDATE_TIME);
         HardwareDevices.spindexerEncoder = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "spindexEncoder"), Constants.Robot.MOTOR_UPDATE_TIME);
-        HardwareDevices.spindexServo = new BetterCRServo(getHardwareDevice(CRServoImplEx.class, "spindexServo"), Constants.Robot.SERVO_UPDATE_TIME);
-        HardwareDevices.spindexAnalog = new BetterAnalogInput(getHardwareDevice(AnalogInput.class, "spindexAnalog"), Constants.Robot.ANALOG_UPDATE_TIME);
+        HardwareDevices.spindexerServoMaster = new BetterCRServo(getHardwareDevice(CRServoImplEx.class, "spindexerServoMaster"), Constants.Robot.SERVO_UPDATE_TIME);
+        HardwareDevices.spindexerServoSlave = new BetterCRServo(getHardwareDevice(CRServoImplEx.class, "spindexerServoSlave"), Constants.Robot.SERVO_UPDATE_TIME);
+        HardwareDevices.spindexerAnalog = new BetterAnalogInput(getHardwareDevice(AnalogInput.class, "spindexerAnalog"), Constants.Robot.ANALOG_UPDATE_TIME);
         HardwareDevices.intakeMotor = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "intakeMotor"), Constants.Robot.MOTOR_UPDATE_TIME);
         HardwareDevices.flyWheelMotorMaster = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "flyWheelMotorMaster"), Constants.Robot.MOTOR_UPDATE_TIME);
         HardwareDevices.flyWheelMotorSlave = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "flyWheelMotorSlave"), Constants.Robot.MOTOR_UPDATE_TIME);
@@ -247,8 +242,8 @@ public class RobotContainer {
         turret = new Turret(this, flyWheelMotors, HardwareDevices.hoodServo, turretServos);
         HardwareDevices.intakeMotor.setDirection(DcMotor.Direction.REVERSE);
         intake = new Intake(this, HardwareDevices.intakeMotor);
-        spindexer = new Spindexer(this, HardwareDevices.spindexServo, HardwareDevices.spindexAnalog, HardwareDevices.colorSensor);
-        transfer = new Transfer(this, HardwareDevices.transferServoLeft, HardwareDevices.transferServoRight);
+        HardwareDevices.spindexerServos = new LinkedServos(HardwareDevices.spindexerServoMaster, HardwareDevices.spindexerServoSlave);
+        spindexer = new Spindexer(this, HardwareDevices.spindexerServos, HardwareDevices.spindexerAnalog, HardwareDevices.colorSensor);
 
         indicatorLightFront = new IndicatorLighting.Light(this, HardwareDevices.indicatorLightFront);
         indicatorLightBack = new IndicatorLighting.Light(this, HardwareDevices.indicatorLightBack);
@@ -278,7 +273,6 @@ public class RobotContainer {
         }
         telemetry.setMsTransmissionInterval(Constants.System.TELEMETRY_UPDATE_INTERVAL_MS);
         this.drivetrain.setTargets(Constants.Swerve.STOP_FORMATION, Constants.Swerve.NO_POWER);
-        transfer.flapDown();
     }
 
     public void start(OpMode opmode, boolean teleop) {
@@ -286,9 +280,9 @@ public class RobotContainer {
         gamepadEx2 = new GamepadWrapper(opmode.gamepad2);
         Status.isDrivingActive = false;
         Status.GOAL_POSE = Status.alliance == Constants.Game.ALLIANCE.RED ?
-                        new Pose2D(DistanceUnit.INCH, 64, 64, AngleUnit.DEGREES, -45) :
+                        new Pose2D(DistanceUnit.INCH, 70, 70, AngleUnit.DEGREES, -45) :
                         Status.alliance == Constants.Game.ALLIANCE.BLUE ?
-                                new Pose2D(DistanceUnit.INCH, -64, 64, AngleUnit.DEGREES, 45) :
+                                new Pose2D(DistanceUnit.INCH, -70, 70, AngleUnit.DEGREES, 45) :
                                 new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
         Status.goalsideStartingPose = Status.alliance == Constants.Game.ALLIANCE.RED ? new Pose2D(DistanceUnit.INCH, Constants.Robot.GoalsideStartingX, Constants.Robot.GoalsideStartingY, AngleUnit.DEGREES, Constants.Robot.GoalsideStartingHeading) :
                 Status.alliance == Constants.Game.ALLIANCE.BLUE ? new Pose2D(DistanceUnit.INCH, Constants.Robot.GoalsideStartingX, -Constants.Robot.GoalsideStartingY, AngleUnit.DEGREES, Constants.Robot.GoalsideStartingHeading) :
@@ -320,11 +314,13 @@ public class RobotContainer {
             }
         }
 
-        this.drivetrainUpdater.stopThread();
-        try {
-            this.drivetrainUpdater.join();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        if (this.drivetrainUpdater != null) {
+            this.drivetrainUpdater.stopThread();
+            try {
+                this.drivetrainUpdater.join();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         if (this.pathingUpdater != null) {
@@ -511,10 +507,10 @@ public class RobotContainer {
             return;
         }
         //TelemetryPacket packet = new TelemetryPacket();
-        telemetry.addData("Control Hub Voltage", controlHubVoltage + " V");
-        telemetry.addData("Expansion Hub Voltage", expansionHubVoltage + " V");
-        telemetry.addData("Control Hub Current", controlHubCurrent + " A");
-        telemetry.addData("Expansion Hub Current", expansionHubCurrent + " A");
+//        telemetry.addData("Control Hub Voltage", controlHubVoltage + " V");
+//        telemetry.addData("Expansion Hub Voltage", expansionHubVoltage + " V");
+//        telemetry.addData("Control Hub Current", controlHubCurrent + " A");
+//        telemetry.addData("Expansion Hub Current", expansionHubCurrent + " A");
         telemetry.addLine();
         telemetry.addData("Spindexer Angle", spindexer.getAngle());
         telemetry.addData("Spindexer Intake Slot", spindexer.getCurrentIntakeSlot());
@@ -551,6 +547,9 @@ public class RobotContainer {
 //        telemetry.addData("Pinpoint Y", Status.currentPose.getY(DistanceUnit.CM) + " cm");
 //        telemetry.addData("Pinpoint Heading", Status.currentHeading + "°");
         telemetry.addData("PINPOINT STATUS", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
+        telemetry.addData("odo x", RobotContainer.HardwareDevices.pinpoint.getEncoderX());
+        telemetry.addData("odo y", RobotContainer.HardwareDevices.pinpoint.getEncoderY());
+        telemetry.addData("PINPOINT STATUS", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
         telemetry.addData("Dist to goal", HelperFunctions.disToGoal());
         telemetry.addLine();
         telemetry.addData("OpMode Avg Loop Time", (int) getRollingAverageLoopTime(opMode) + " ms");
@@ -581,16 +580,17 @@ public class RobotContainer {
         telemetry.addData("Field Oriented", Status.fieldOriented);
         telemetry.addData("Intake Enabled", Status.intakeToggle);
         telemetry.addLine();
-        telemetry.addData("lower servo pos", HardwareDevices.transferServoLeft.getPosition());
         // telemetry.addData("flywheel current mA", HardwareDevices.flyWheelMotorMaster.getCurrent(CurrentUnit.MILLIAMPS));
         // telemetry.addData("upper flywheel current mA", HardwareDevices.flyWheelMotorSlave.getCurrent(CurrentUnit.MILLIAMPS));
         telemetry.addData("turret pos", turret.getPosition());
         telemetry.addData("slave servo", HardwareDevices.turretServoSlave.getPosition());
+        telemetry.addData("hood", HardwareDevices.hoodServo.getPosition());
         telemetry.addLine();
         telemetry.addData("beam break", HardwareDevices.beamBreak.isPressed());
-//        telemetry.addData("red", HardwareDevices.colorSensor.red());
-//        telemetry.addData("blue", HardwareDevices.colorSensor.blue());
-//        telemetry.addData("green", HardwareDevices.colorSensor.green());
+//       telemetry.addData("red", HardwareDevices.colorSensor.updateRed());
+//       telemetry.addData("blue", HardwareDevices.colorSensor.updateBlue());
+//       telemetry.addData("green", HardwareDevices.colorSensor.updateGreen());
+//       telemetry.addData("color sensor dist", HardwareDevices.colorSensor.getDistance());
 
 //        int selectedServo = -1;
 //        if (gamepadEx1.dpadUp.isPressed()) {

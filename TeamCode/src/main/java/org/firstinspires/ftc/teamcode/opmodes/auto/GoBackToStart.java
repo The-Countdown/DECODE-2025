@@ -30,6 +30,8 @@ public class GoBackToStart extends OpMode {
     public void init() {
         robotContainer = new RobotContainer(this);
         robotContainer.init();
+        RobotContainer.HardwareDevices.pinpoint.resetPosAndIMU();
+        blackboard.put("pose", Status.currentPose);
         robotContainer.telemetry.addData("Alliance Color", Status.alliance == Constants.Game.ALLIANCE.BLUE ? "BLUE" : "RED");
         robotContainer.telemetry.update();
     }
@@ -38,10 +40,11 @@ public class GoBackToStart extends OpMode {
     public void start() {
         Status.opModeIsActive = true;
         Status.lightsOn = true;
-        Status.isDrivingActive = false;
         robotContainer.start(this, false);
-        robotContainer.localizationUpdater = new LocalizationUpdater(robotContainer);
-        robotContainer.localizationUpdater.start();
+        Status.isDrivingActive = false;
+        Status.intakeToggle = true;
+        Status.turretToggle = false;
+
         RobotContainer.HardwareDevices.pinpoint.setPosition((Pose2D) blackboard.getOrDefault("pose", new Pose2D(DistanceUnit.CM, 0, 0, AngleUnit.DEGREES, 0)));
 
         robotContainer.pathPlanner.addPose(Status.startingPose);
@@ -49,9 +52,11 @@ public class GoBackToStart extends OpMode {
 
     @Override
     public void loop() {
-        robotContainer.delayedActionManager.update();
+        robotContainer.refreshData();
+        robotContainer.limelightLogic.update();
         robotContainer.pathPlanner.updatePathStatus();
         robotContainer.pathPlanner.driveThroughPath();
+        robotContainer.positionProvider.update(false);
     }
 
     @Override

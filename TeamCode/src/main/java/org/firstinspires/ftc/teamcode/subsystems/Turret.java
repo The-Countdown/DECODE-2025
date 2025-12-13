@@ -2,11 +2,14 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.util.FlywheelPDF;
+import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 import org.firstinspires.ftc.teamcode.util.LinkedMotors;
 import org.firstinspires.ftc.teamcode.util.LinkedServos;
@@ -21,6 +24,7 @@ public class Turret extends RobotContainer.HardwareDevices {
     private FlywheelPDF flywheelPDF;
     private double targetPosition;
     private double manualTurretPos;
+    private GamepadWrapper.ButtonReader backFieldButton = new GamepadWrapper.ButtonReader();
 
     public Turret(RobotContainer robotContainer, LinkedMotors flyWheelMotors, BetterServo hoodServo, LinkedServos turretServos) {
         this.robotContainer = robotContainer;
@@ -45,8 +49,28 @@ public class Turret extends RobotContainer.HardwareDevices {
             // Manual turret hood
             if (robotContainer.gamepadEx1.circle.isPressed() || Status.currentPose.getX(DistanceUnit.CM) < -75) {
                 robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[1]);
+            } else if ((Status.currentPose.getX(DistanceUnit.CM) < 15 || Status.currentPose.getY(DistanceUnit.CM) < 15) && Status.alliance == Constants.Game.ALLIANCE.BLUE) {
+                robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[2]);
+            } else if ((Status.currentPose.getX(DistanceUnit.CM) < 15 || Status.currentPose.getY(DistanceUnit.CM) > -15) && Status.alliance == Constants.Game.ALLIANCE.RED) {
+                robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[2]);
             } else {
                 robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[0]);
+            }
+
+            backFieldButton.update(Status.currentPose.getX(DistanceUnit.CM) < -20);
+
+            if (backFieldButton.wasJustPressed()) {
+                if (Status.alliance == Constants.Game.ALLIANCE.RED) {
+                    Status.GOAL_POSE = new Pose2D(DistanceUnit.INCH, 87, 70, AngleUnit.DEGREES, -45);
+                } else {
+                    Status.GOAL_POSE = new Pose2D(DistanceUnit.INCH, -87, 70, AngleUnit.DEGREES, 45);
+                }
+            } else if (backFieldButton.wasJustReleased()) {
+                if (Status.alliance == Constants.Game.ALLIANCE.RED) {
+                    Status.GOAL_POSE = new Pose2D(DistanceUnit.INCH, 70, 68, AngleUnit.DEGREES, -45);
+                } else {
+                    Status.GOAL_POSE = new Pose2D(DistanceUnit.INCH, -70, 68, AngleUnit.DEGREES, 45);
+                }
             }
 
             // Automated flywheel
@@ -54,19 +78,25 @@ public class Turret extends RobotContainer.HardwareDevices {
                 Status.turretToggle = true;
             } else if (robotContainer.gamepadEx2.circle.wasJustReleased() && Status.intakeToggle) {
                 Status.turretToggle = false;
-                robotContainer.spindexer.goToNextIntakeSlot(true);
             }
 
             // Turret turn - Right stick X
-            // if (Status.manualControl) {
-            //     // Manual turret turning
-            //     manualTurretPos -= robotContainer.gamepadEx2.rightStickX() != 0 ? (Constants.Turret.TURRET_SPEED_FACTOR * CURRENT_LOOP_TIME_MS) * Math.pow(robotContainer.gamepadEx2.rightStickX(), 3) : 0;
-            //     manualTurretPos = HelperFunctions.clamp(manualTurretPos, Constants.Turret.TURRET_LIMIT_MIN, Constants.Turret.TURRET_LIMIT_MAX);
-            //     robotContainer.turret.setTargetPosition(manualTurretPos);
-            // } else {
-            //     // Automatic turret turning
-            // }
-            robotContainer.turret.pointAtGoal();
+             if (Status.manualControl && robotContainer.gamepadEx2.rightStickX() != 0) {
+                 // Manual turret turning
+                 manualTurretPos -= robotContainer.gamepadEx2.rightStickX() != 0 ? (Constants.Turret.TURRET_SPEED_FACTOR * robotContainer.CURRENT_LOOP_TIME_MS) * Math.pow(robotContainer.gamepadEx2.rightStickX(), 3) : 0;
+                 manualTurretPos = HelperFunctions.clamp(manualTurretPos, Constants.Turret.TURRET_MIN, Constants.Turret.TURRET_MAX);
+                 robotContainer.turret.setTargetPosition(manualTurretPos);
+             } else if (Status.manualControl) {
+             } else {
+                 robotContainer.turret.pointAtGoal();
+             }
+
+        } else {
+            if (!Status.intakeToggle) {
+                flywheel.targetVelocity = Math.min(Status.turretToggleButton.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, robotContainer.turret.flywheel.interpolateByDistance(HelperFunctions.disToGoal()));
+            } else {
+                flywheel.targetVelocity = 0;
+            }
         }
 
         flywheel.targetVelocity = flywheel.targetVelocity * Constants.Turret.FLYWHEEL_MAX_VELOCITY;
@@ -80,13 +110,15 @@ public class Turret extends RobotContainer.HardwareDevices {
     // This is for manual control
     public void setTargetPosition(double position) {
         targetPosition = position;
-        turretServos.setPosition(HelperFunctions.clamp(((position + 1) / 2), Constants.Turret.TURRET_LIMIT_MIN_SERVO, Constants.Turret.TURRET_LIMIT_MAX_SERVO));
+        turretServos.setPosition(HelperFunctions.clamp(position, Constants.Turret.TURRET_MIN, Constants.Turret.TURRET_MAX));
     }
 
     public void setTargetAngle(double angleInDegrees) { // angleInDegrees should be between -180 and 180
         if (angleInDegrees < Constants.Turret.TURRET_LIMIT_MIN_ANGLE || angleInDegrees > Constants.Turret.TURRET_LIMIT_MAX_ANGLE) {
             return;
         }
+
+        // turretServos.setPositionDegrees(angleInDegrees);
 
         // Legacy interpolate
         if (angleInDegrees < 0) { // If angle between -90 and 0

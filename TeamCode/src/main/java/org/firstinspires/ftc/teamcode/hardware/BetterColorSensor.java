@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.hardware;
 
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
 public class BetterColorSensor {
@@ -47,5 +48,9 @@ public class BetterColorSensor {
             lastTimeGreen = System.currentTimeMillis();
         }
         return green;
+    }
+
+    public double getDistance() {
+        return sensor.getDistance(DistanceUnit.CM);
     }
 }
