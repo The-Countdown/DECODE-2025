@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.util.LinkedServos;
 public class Spindexer {
     private final RobotContainer robotContainer;
     private final LinkedServos spindexerServo;
-    private final BetterAnalogInput spindexAnalog;
+    private final BetterAnalogInput spindexerAnalog;
     private final BetterColorSensor colorSensor;
     public double targetAngle;
     public double lastPosition;
@@ -30,10 +30,10 @@ public class Spindexer {
     private ElapsedTime jamTimer = new ElapsedTime();
     private ElapsedTime unjamTimer = new ElapsedTime();
 
-    public Spindexer (RobotContainer robotContainer, LinkedServos spindexerServo, BetterAnalogInput spindexAnalog, BetterColorSensor colorSensor) {
+    public Spindexer (RobotContainer robotContainer, LinkedServos spindexerServos, BetterAnalogInput spindexerAnalog, BetterColorSensor colorSensor) {
         this.robotContainer = robotContainer;
-        this.spindexerServo = spindexerServo;
-        this.spindexAnalog = spindexAnalog;
+        this.spindexerServo = spindexerServos;
+        this.spindexerAnalog = spindexerAnalog;
         this.colorSensor = colorSensor;
         this.lastPosition = getRawAngle();
         this.targetAngle = 0;
@@ -127,14 +127,14 @@ public class Spindexer {
     }
 
     public double getAngle() {
-        double angle = (spindexAnalog.updateGetVoltage() / Constants.System.ANALOG_MAX_VOLTAGE) * 360;
+        double angle = (spindexerAnalog.updateGetVoltage() / Constants.System.ANALOG_MAX_VOLTAGE) * 360;
         angle += Constants.Spindexer.ANGLE_OFFSET;
         angle = angle % 360;
         return angle;
     }
 
     public double getRawAngle() {
-        return (spindexAnalog.updateGetVoltage() / Constants.System.ANALOG_MAX_VOLTAGE) * 360;
+        return (spindexerAnalog.updateGetVoltage() / Constants.System.ANALOG_MAX_VOLTAGE) * 360;
     }
 
     public Constants.Game.ARTIFACT_COLOR getArtifactColor(double blue, double green) {
