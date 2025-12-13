@@ -158,8 +158,8 @@ public class RobotContainer {
         public static BetterServo transferServoLeft;
         public static BetterServo transferServoRight;
         public static BetterDcMotor spindexerEncoder;
-
-        public static BetterCRServo spindexServo;
+        public static BetterCRServo spindexServoMaster;
+        public static BetterCRServo spindexServoSlave;
         public static BetterAnalogInput spindexAnalog;
 
         // Intake
@@ -221,7 +221,8 @@ public class RobotContainer {
         HardwareDevices.transferServoLeft = new BetterServo(getHardwareDevice(ServoImplEx.class, "transferServoLeft"), Constants.Robot.SERVO_UPDATE_TIME);
         HardwareDevices.transferServoRight = new BetterServo(getHardwareDevice(ServoImplEx.class, "transferServoRight"), Constants.Robot.SERVO_UPDATE_TIME);
         HardwareDevices.spindexerEncoder = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "spindexEncoder"), Constants.Robot.MOTOR_UPDATE_TIME);
-        HardwareDevices.spindexServo = new BetterCRServo(getHardwareDevice(CRServoImplEx.class, "spindexServo"), Constants.Robot.SERVO_UPDATE_TIME);
+        HardwareDevices.spindexServoMaster = new BetterCRServo(getHardwareDevice(CRServoImplEx.class, "spindexServoMaster"), Constants.Robot.SERVO_UPDATE_TIME);
+        HardwareDevices.spindexServoSlave = new BetterCRServo(getHardwareDevice(CRServoImplEx.class, "spindexServoSlave"), Constants.Robot.SERVO_UPDATE_TIME);
         HardwareDevices.spindexAnalog = new BetterAnalogInput(getHardwareDevice(AnalogInput.class, "spindexAnalog"), Constants.Robot.ANALOG_UPDATE_TIME);
         HardwareDevices.intakeMotor = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "intakeMotor"), Constants.Robot.MOTOR_UPDATE_TIME);
         HardwareDevices.flyWheelMotorMaster = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "flyWheelMotorMaster"), Constants.Robot.MOTOR_UPDATE_TIME);
@@ -247,7 +248,8 @@ public class RobotContainer {
         turret = new Turret(this, flyWheelMotors, HardwareDevices.hoodServo, turretServos);
         HardwareDevices.intakeMotor.setDirection(DcMotor.Direction.REVERSE);
         intake = new Intake(this, HardwareDevices.intakeMotor);
-        spindexer = new Spindexer(this, HardwareDevices.spindexServo, HardwareDevices.spindexAnalog, HardwareDevices.colorSensor);
+        LinkedServos spindexerServos = new LinkedServos(HardwareDevices.spindexServoMaster, HardwareDevices.spindexServoSlave);
+        spindexer = new Spindexer(this, spindexerServos, HardwareDevices.spindexAnalog, HardwareDevices.colorSensor);
         transfer = new Transfer(this, HardwareDevices.transferServoLeft, HardwareDevices.transferServoRight);
 
         indicatorLightFront = new IndicatorLighting.Light(this, HardwareDevices.indicatorLightFront);

@@ -10,10 +10,11 @@ import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 import org.firstinspires.ftc.teamcode.hardware.BetterCRServo;
 import org.firstinspires.ftc.teamcode.hardware.BetterAnalogInput;
 import org.firstinspires.ftc.teamcode.hardware.BetterColorSensor;
+import org.firstinspires.ftc.teamcode.util.LinkedServos;
 
 public class Spindexer {
     private final RobotContainer robotContainer;
-    private final BetterCRServo spindexerServo;
+    private final LinkedServos spindexerServo;
     private final BetterAnalogInput spindexAnalog;
     private final BetterColorSensor colorSensor;
     public double targetAngle;
@@ -29,7 +30,7 @@ public class Spindexer {
     private ElapsedTime jamTimer = new ElapsedTime();
     private ElapsedTime unjamTimer = new ElapsedTime();
 
-    public Spindexer (RobotContainer robotContainer, BetterCRServo spindexerServo, BetterAnalogInput spindexAnalog, BetterColorSensor colorSensor) {
+    public Spindexer (RobotContainer robotContainer, LinkedServos spindexerServo, BetterAnalogInput spindexAnalog, BetterColorSensor colorSensor) {
         this.robotContainer = robotContainer;
         this.spindexerServo = spindexerServo;
         this.spindexAnalog = spindexAnalog;
@@ -47,9 +48,9 @@ public class Spindexer {
         robotContainer.telemetry.addData("jammed:", jammed);
 
         if (spindexerError > 5 && !this.pause) {
-            spindexerServo.updateSetPower(robotContainer.spindexer.pdf.calculate());
+            spindexerServo.setPower(robotContainer.spindexer.pdf.calculate());
         } else if (!this.pause) {
-            spindexerServo.updateSetPower(0);
+            spindexerServo.setPower(0);
         }
 
         if (robotContainer.beamBreakToggleButton.wasJustReleased() && beamTimer.seconds() > Constants.Spindexer.BEAM_TIMER_TOLERANCE) {
@@ -59,11 +60,11 @@ public class Spindexer {
 
         if (this.pause) {
             if (jammed) {
-                spindexerServo.updateSetPower(-0.3);
+                spindexerServo.setPower(-0.3);
                 unjamTimer.reset();
                 jamTimer.reset();
             } else if (unjamTimer.seconds() > 0.2) {
-                spindexerServo.updateSetPower(1);
+                spindexerServo.setPower(1);
             }
         }
 
@@ -100,7 +101,7 @@ public class Spindexer {
                 Status.intakeToggle = true;
                 Status.turretToggle = false;
                 targetAngle = targetAngle - 45;
-                spindexerServo.updateSetPower(0);
+                spindexerServo.setPower(0);
                 this.pause = false;
             }
 
@@ -108,17 +109,17 @@ public class Spindexer {
                 Status.intakeToggle = true;
                 Status.turretToggle = false;
                 targetAngle = targetAngle - 45;
-                spindexerServo.updateSetPower(0);
+                spindexerServo.setPower(0);
                 this.pause = false;
             }
 
             if (robotContainer.gamepadEx2.rightBumper.wasJustReleased()) {
-                spindexerServo.updateSetPower(0);
+                spindexerServo.setPower(0);
                 this.pause = false;
             }
 
             if (robotContainer.gamepadEx1.rightBumper.wasJustReleased()) {
-                spindexerServo.updateSetPower(0);
+                spindexerServo.setPower(0);
                 this.pause = false;
             }
         }
@@ -182,8 +183,8 @@ public class Spindexer {
         Status.intakeToggle = false;
         Status.flywheelToggle = true;
         this.pause = true;
-        robotContainer.delayedActionManager.schedule(() -> spindexerServo.updateSetPower(1), 5);
-        robotContainer.delayedActionManager.schedule(() -> spindexerServo.updateSetPower(0), 1500);
+        robotContainer.delayedActionManager.schedule(() -> spindexerServo.setPower(1), 5);
+        robotContainer.delayedActionManager.schedule(() -> spindexerServo.setPower(0), 1500);
         robotContainer.delayedActionManager.schedule(() -> this.pause = false, 1500);
         robotContainer.delayedActionManager.schedule(()-> Status.slotColor[robotContainer.spindexer.getCurrentTransferSlot()] = Constants.Game.ARTIFACT_COLOR.NONE, 1500);
         Status.ballsToShoot--;
@@ -198,7 +199,7 @@ public class Spindexer {
         Status.turretToggle = true;
         Status.intakeToggle = false;
         Status.flywheelToggle = true;
-        robotContainer.delayedActionManager.schedule(() -> spindexerServo.updateSetPower(1), 0);
+        robotContainer.delayedActionManager.schedule(() -> spindexerServo.setPower(1), 0);
     }
 
     public void pause() {
