@@ -223,20 +223,38 @@ public class Constants {
                 PINPOINT_X_ENCODER_DIRECTION = GoBildaPinpointDriver.EncoderDirection.FORWARD;
         public static final GoBildaPinpointDriver.EncoderDirection PINPOINT_Y_ENCODER_DIRECTION = GoBildaPinpointDriver.EncoderDirection.REVERSED;
         public static double turningRate = 0.20;
+//        public static double
+//                HEADING_KP = 0.0055,
+//                HEADING_KI = 0,
+//                HEADING_I_MAX = 0,
+//                HEADING_KD = 0,
+//                HEADING_KF = 0.03;
+//        public static double
+//                LATITUDE_KP = 0.007,
+//                LATITUDE_KI = 0,
+//                LATITUDE_I_MAX = 0,
+//                LATITUDE_KD = 0,
+//                LATITUDE_KF = 0.03;
+//        public static double
+//                LONGITUDE_KP = 0.007,
+//                LONGITUDE_KI = 0,
+//                LONGITUDE_I_MAX = 0,
+//                LONGITUDE_KD = 0,
+//                LONGITUDE_KF = 0.03;
         public static double
-                HEADING_KP = 0.0055,
+                HEADING_KP = 0.011,
                 HEADING_KI = 0,
                 HEADING_I_MAX = 0,
                 HEADING_KD = 0,
                 HEADING_KF = 0.03;
         public static double
-                LATITUDE_KP = 0.007,
+                LATITUDE_KP = 0.011,
                 LATITUDE_KI = 0,
                 LATITUDE_I_MAX = 0,
                 LATITUDE_KD = 0,
                 LATITUDE_KF = 0.03;
         public static double
-                LONGITUDE_KP = 0.007,
+                LONGITUDE_KP = 0.011,
                 LONGITUDE_KI = 0,
                 LONGITUDE_I_MAX = 0,
                 LONGITUDE_KD = 0,
@@ -294,9 +312,9 @@ public class Constants {
         public static double TURRET_SPEED_FACTOR = 0.001;
         public static double FLYWHEEL_TOP_SPEED = 0.95;
         public static int FLYWHEEL_MAX_VELOCITY = 1720;
-        public static int FLYWHEEL_MAX_POWER_ERROR = 300;
+        public static int FLYWHEEL_MAX_POWER_ERROR = 200;
         public static double FLYWHEEL_CURVE = 4;
-        public static double[] FLYWHEEL_SPEED_TABLE = {0.57, 0.595, 0.7, 0.715, 0.73, 0.815, 0.85};
+        public static double[] FLYWHEEL_SPEED_TABLE = {0.57, 0.595, 0.7, 0.715, 0.73, 0.813, 0.84};
         public static double[] FLYWHEEL_SPEED_TABLE_DISTANCES = {40, 56, 90, 95, 103, 127, 152};
         public static int FLYWHEEL_SPINUP_MS = 1000;
         public static double TRACK_GOAL_P = -0.2;
@@ -310,9 +328,9 @@ public class Constants {
         public static double FLYWHEEL_POWER_AUTO_FAR = 0.605;
         public static double FLYWHEEL_POWER_AUTO_MIDDLE = 0.49;
         public static double FLYWHEEL_POWER_AUTO_NEAR = 0.48;
-        public static double FLYWHEEL_P = 0.00017;
+        public static double FLYWHEEL_P = 0.00019;
         public static double FLYWHEEL_I = 0.0;
-        public static double FLYWHEEL_D = 0.0031f;
+        public static double FLYWHEEL_D = 0.0033;
         public static double FLYWHEEL_F = 0.0;
     }
 
@@ -331,14 +349,14 @@ public class Constants {
         public static double axonTestAngle = 0;
         public static double[] TRANSFER_SLOT_ANGLES = {60, 180, 300};
         public static double[] INTAKE_SLOT_ANGLES = {120, 240, 360};
-        public static int COLOR_SENSE_TIME = 40;
+        public static int COLOR_SENSE_TIME = 50;
         public static double KP = 0.0018;
         public static double KI = 0;
         public static double KD = 0.00015;
         public static double KF = 0.015;
         public static double DIST_TOLERANCE = 6;
-        public static double BEAM_TIMER_TOLERANCE = 0.05;
-        public static int FULL_EMPTY_SPINTIME = 1500;
+        public static double BEAM_TIMER_TOLERANCE = 0.15;
+        public static int FULL_EMPTY_SPINTIME = 2000;
     }
 
     @Config

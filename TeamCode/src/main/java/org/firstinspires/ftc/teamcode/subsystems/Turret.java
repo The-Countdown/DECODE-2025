@@ -92,6 +92,16 @@ public class Turret extends RobotContainer.HardwareDevices {
              }
 
         } else {
+            if (Status.currentPose.getX(DistanceUnit.CM) < -75) {
+                robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[1]);
+            } else if ((Status.currentPose.getX(DistanceUnit.CM) < 15 || Status.currentPose.getY(DistanceUnit.CM) < 15) && Status.alliance == Constants.Game.ALLIANCE.BLUE) {
+                robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[2]);
+            } else if ((Status.currentPose.getX(DistanceUnit.CM) < 15 || Status.currentPose.getY(DistanceUnit.CM) > -15) && Status.alliance == Constants.Game.ALLIANCE.RED) {
+                robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[2]);
+            } else {
+                robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[0]);
+            }
+
             if (!Status.intakeToggle) {
                 flywheel.targetVelocity = Math.min(Status.turretToggleButton.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, robotContainer.turret.flywheel.interpolateByDistance(HelperFunctions.disToGoal()));
             } else {
