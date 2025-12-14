@@ -85,9 +85,9 @@ public class Constants {
 
         public static final double WHEEL_DIAMETER_MM = 62;
 
-        public static final double WHEEL_CALCULATED_MAX_RPM = Swerve.MOTOR_RPM_TESTED_MAX / Swerve.MOTOR_TO_WHEEL_GEAR_RATIO;
+        public static final double WHEEL_CALCULATED_MAX_RPM = Swerve.MOTOR_RPM_TESTED_MAX * Swerve.MOTOR_TO_WHEEL_GEAR_RATIO;
 
-        public static final double ROBOT_CALCULATED_MAX_SPEED_METERS_PER_SECOND = (Math.PI * (WHEEL_DIAMETER_MM / 1000)) * (WHEEL_CALCULATED_MAX_RPM / 60);
+        public static final double ROBOT_CALCULATED_MAX_SPEED_METERS_PER_SECOND = (2*Math.PI * (WHEEL_DIAMETER_MM / 1000)) * (WHEEL_CALCULATED_MAX_RPM / 60);
     }
 
     @Config
@@ -188,7 +188,7 @@ public class Constants {
 
         public static final int MOTOR_TICKS_PER_REVOLUTION = 28;
 
-        public static final double MOTOR_TO_WHEEL_GEAR_RATIO = 6.74;
+        public static final double MOTOR_TO_WHEEL_GEAR_RATIO = 0.0967;
 
         public static final int MOTOR_MAX_VELOCITY_TICKS_PER_SECOND = ((MOTOR_RPM_TESTED_MAX / 60) * MOTOR_TICKS_PER_REVOLUTION) - 328;
     }
@@ -264,6 +264,13 @@ public class Constants {
         public static double LONGITUDE_PID_TOLERANCE_CM = 1;
         public static int PINPOINT_UPDATE_DELAY_MS = 50;
         public static int LIMELIGHT_UPDATE_AVERAGING_MS = 500;
+        public static double SWERVE_MAX_SPEED_METERS_PER_SECOND = 2.6907292279;
+        public static double MAX_AUTO_SWERVE_VELOCITY = ((2000 / Swerve.MOTOR_TICKS_PER_REVOLUTION)/1000) * Swerve.MOTOR_TO_WHEEL_GEAR_RATIO * 2 * Math.PI * (Robot.WHEEL_DIAMETER_MM/10);
+        //Needs to be Tested
+        public static double MIN_DISTANCE_FOR_MAX_SPEED_CM = 40;
+        //Needs to be Tested
+        public static double MAX_SLOWING_CURVE_TIME_MS = 20;
+        public static int PATH_TIMEOUT_MS = 500;
     }
 
     @Config
@@ -349,7 +356,7 @@ public class Constants {
         public static double axonTestAngle = 0;
         public static double[] TRANSFER_SLOT_ANGLES = {60, 180, 300};
         public static double[] INTAKE_SLOT_ANGLES = {120, 240, 360};
-        public static int COLOR_SENSE_TIME = 50;
+        public static int COLOR_SENSE_TIME = 30;
         public static double KP = 0.0018;
         public static double KI = 0;
         public static double KD = 0.00015;

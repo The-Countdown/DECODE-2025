@@ -53,7 +53,7 @@ public class Spindexer {
             spindexerServo.setPower(0);
         }
 
-        if (robotContainer.beamBreakToggleButton.wasJustReleased() && beamTimer.seconds() > Constants.Spindexer.BEAM_TIMER_TOLERANCE) {
+        if (robotContainer.beamBreakToggleButton.wasJustReleased()) {
             robotContainer.delayedActionManager.schedule(() -> function2(), Constants.Spindexer.COLOR_SENSE_TIME);
             beamTimer.reset();
         }
@@ -147,7 +147,7 @@ public class Spindexer {
     }
 
     public void function2() {
-        if (colorSensor.getDistance() < Constants.Spindexer.DIST_TOLERANCE) {
+        if (colorSensor.getDistance() < Constants.Spindexer.DIST_TOLERANCE && robotContainer.spindexer.error < 20) {
             robotContainer.spindexer.moveIntakeSlotClockwise();
         } else {
             robotContainer.telemetry.addLine("No ball in distance");

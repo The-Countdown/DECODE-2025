@@ -7,7 +7,6 @@ import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BooleanSupplier;
-import java.lang.Thread;
 
 public class DelayedActionManager {
     RobotContainer robotContainer;
@@ -213,9 +212,9 @@ public class DelayedActionManager {
             double currentTime = timer.milliseconds() - accumulatedPausedTime;
 
             if (condition != null) {
-                return condition.getAsBoolean() || (timer != null && robotContainer.pathPlanner.currentPose == poseDelay);
+                return condition.getAsBoolean() || (timer != null && robotContainer.pathPlanner.currentPath == poseDelay);
             } else {
-                return timer != null && robotContainer.pathPlanner.currentPose >= poseDelay;
+                return timer != null && robotContainer.pathPlanner.currentPath >= poseDelay;
             }
         }
 

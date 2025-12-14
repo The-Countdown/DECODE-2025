@@ -9,8 +9,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
-import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
-import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "PathPlannerTuner", group = "TeleOp")
 public class PathPlannerTuner extends OpMode {
@@ -62,7 +60,7 @@ public class PathPlannerTuner extends OpMode {
 //        }
         if (robotContainer.pathPlanner.pathCompleted) {
             robotContainer.pathPlanner.pathCompleted = false;
-            robotContainer.pathPlanner.currentPose = 0;
+            robotContainer.pathPlanner.currentPath = 0;
         }
         robotContainer.pathPlanner.driveThroughPath();
 

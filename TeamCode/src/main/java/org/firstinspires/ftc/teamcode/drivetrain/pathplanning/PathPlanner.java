@@ -5,8 +5,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.main.Constants;
-import org.firstinspires.ftc.teamcode.main.RobotContainer;
-import org.firstinspires.ftc.teamcode.util.DelayedActionManager;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.main.Status;
@@ -36,11 +34,11 @@ public class PathPlanner {
     private Telemetry telemetry;
     ArrayList<GeneralPose> poses = new ArrayList<>();
     public boolean pathCompleted = false;
-    public int currentPose;
+    public int currentPath;
 
     public PathPlanner(Telemetry telemetry) {
         this.telemetry = telemetry;
-        this.currentPose = 0;
+        this.currentPath = 0;
     }
 
     public void addPose(Pose2D pose) {
@@ -70,13 +68,23 @@ public class PathPlanner {
 
     public void driveThroughPath () {
         if (!this.pathCompleted) {
-            if (driveUsingPID(this.currentPose)) {
-                this.currentPose += 1;
-                if (this.currentPose == this.poses.size()) {
+            //if (driveUsingPID(this.currentPath) || pathTimeOut(poses.get(this.currentPath-1).getPose(), poses.get(this.currentPath).getPose(), pathTimer)) {
+            if (driveUsingPID(this.currentPath)) {
+                this.currentPath += 1;
+                if (this.currentPath == this.poses.size()) {
                     this.pathCompleted = true;
                 }
             }
         }
+    }
+
+    public boolean pathTimeOut(Pose2D pose1, Pose2D pose2, ElapsedTime pathTimer){
+        double distance = Math.sqrt(Math.pow(pose1.getX(DistanceUnit.CM) - pose2.getX(DistanceUnit.CM), 2) + Math.pow(pose1.getY(DistanceUnit.CM) - pose2.getY(DistanceUnit.CM), 2));
+        double timeToComplete = distance-Constants.Pathing.MIN_DISTANCE_FOR_MAX_SPEED_CM/Constants.Pathing.MAX_AUTO_SWERVE_VELOCITY + distance/Constants.Pathing.MAX_SLOWING_CURVE_TIME_MS + Constants.Pathing.PATH_TIMEOUT_MS;
+        if (pathTimer.milliseconds() < timeToComplete){
+            return true;
+        }
+        return false;
     }
 
     public void waitForTarget() {
