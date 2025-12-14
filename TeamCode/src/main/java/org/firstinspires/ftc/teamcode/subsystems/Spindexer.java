@@ -67,6 +67,7 @@ public class Spindexer {
                 spindexerServo.setPower(1);
             }
         }
+        //Should this stop running when right bumper is held???? -Elliot
 
         if (teleop) {
             if (robotContainer.gamepadEx1.leftBumper.wasJustPressed()) {
