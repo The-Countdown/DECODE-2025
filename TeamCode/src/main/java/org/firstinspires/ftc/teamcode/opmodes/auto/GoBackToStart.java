@@ -44,6 +44,8 @@ public class GoBackToStart extends OpMode {
         Status.isDrivingActive = false;
         Status.intakeToggle = true;
         Status.turretToggle = false;
+        Constants.Pathing.LATITUDE_PID_TOLERANCE_CM = 0.4;
+        Constants.Pathing.LONGITUDE_PID_TOLERANCE_CM = 0.4;
 
         RobotContainer.HardwareDevices.pinpoint.setPosition((Pose2D) blackboard.getOrDefault("pose", new Pose2D(DistanceUnit.CM, 0, 0, AngleUnit.DEGREES, 0)));
 
@@ -61,6 +63,8 @@ public class GoBackToStart extends OpMode {
 
     @Override
     public void stop() {
+        Constants.Pathing.LATITUDE_PID_TOLERANCE_CM = 1;
+        Constants.Pathing.LONGITUDE_PID_TOLERANCE_CM = 1;
         Status.wentBackToStart = true;
         blackboard.put("pose", Status.currentPose);
         robotContainer.stop();
