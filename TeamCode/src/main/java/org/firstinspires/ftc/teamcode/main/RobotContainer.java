@@ -232,7 +232,7 @@ public class RobotContainer {
         flyWheelMotors.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         LinkedServos turretServos = new LinkedServos(HardwareDevices.turretServoMaster, HardwareDevices.turretServoSlave);
 
-        pathPlanner = new PathPlanner(telemetry);
+        pathPlanner = new PathPlanner(telemetry, this);
         Arrays.fill(Status.pathCompleted, false);
 
         limelightLogic = new LimelightLogic(this, telemetry, HardwareDevices.limelight);
@@ -264,7 +264,7 @@ public class RobotContainer {
     public void init() {
         this.isRunning = true;
         RobotContainer.HardwareDevices.imu.resetYaw();
-        this.pathPlanner = new PathPlanner(this.telemetry);
+        this.pathPlanner = new PathPlanner(this.telemetry, this);
         HardwareDevices.allHubs = hardwareMap.getAll(LynxModule.class);
         HardwareDevices.controlHub = hardwareMap.get(LynxModule.class, "Control Hub");
         HardwareDevices.expansionHub = hardwareMap.get(LynxModule.class, "Expansion Hub 2");

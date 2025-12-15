@@ -61,4 +61,20 @@ public class LatitudePID {
 
         return p + i + d + (Constants.Pathing.LATITUDE_KF  * Math.signum(error));
     }
+    public double fakeCalculate(double error, double currentTime, double lastError) {
+        if (currentTime < 1e-6) currentTime = 1e-6;
+
+        if (Math.abs(error) < Constants.Pathing.LATITUDE_PID_TOLERANCE_CM) {
+            return 0;
+        }
+
+        p = Constants.Pathing.LATITUDE_KP * error;
+
+        i += Constants.Pathing.LATITUDE_KI * error * currentTime;
+        i = Math.max(-Constants.Pathing.LATITUDE_I_MAX, Math.min(Constants.Pathing.LATITUDE_I_MAX, i));
+
+        d = -Constants.Pathing.LATITUDE_KD * (error - lastError) / currentTime;
+
+        return p + i + d + (Constants.Pathing.LATITUDE_KF  * Math.signum(error));
+    }
 }

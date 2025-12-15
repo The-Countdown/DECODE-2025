@@ -61,4 +61,21 @@ public class HeadingPID {
 
         return p + i + d + (Constants.Pathing.HEADING_KF  * Math.signum(error));
     }
+
+    public double fakeCalculate(double error, double currentTime, double lastError) {
+        if (currentTime < 1e-6) currentTime = 1e-6;
+
+        if (Math.abs(error) < Constants.Pathing.HEADING_PID_TOLERANCE_DEGREES) {
+            return 0;
+        }
+
+        p = Constants.Pathing.HEADING_KP * error;
+
+        i += Constants.Pathing.HEADING_KI * error * currentTime;
+        i = Math.max(-Constants.Pathing.HEADING_I_MAX, Math.min(Constants.Pathing.HEADING_I_MAX, i));
+
+        d = -Constants.Pathing.HEADING_KD * (error - lastError) / currentTime;
+
+        return p + i + d + (Constants.Pathing.HEADING_KF  * Math.signum(error));
+    }
 }

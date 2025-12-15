@@ -2,12 +2,15 @@ package org.firstinspires.ftc.teamcode.drivetrain.pathplanning;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.main.Constants;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
+import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
 import java.util.ArrayList;
 import java.lang.Thread;
@@ -33,12 +36,14 @@ import java.lang.Thread;
 public class PathPlanner {
     private Telemetry telemetry;
     ArrayList<GeneralPose> poses = new ArrayList<>();
+    private final RobotContainer robotContainer;
     public boolean pathCompleted = false;
     public int currentPath;
 
-    public PathPlanner(Telemetry telemetry) {
+    public PathPlanner(Telemetry telemetry, RobotContainer robotContainer) {
         this.telemetry = telemetry;
         this.currentPath = 0;
+        this.robotContainer = robotContainer;
     }
 
     public void addPose(Pose2D pose) {
@@ -78,13 +83,62 @@ public class PathPlanner {
         }
     }
 
-    public boolean pathTimeOut(Pose2D pose1, Pose2D pose2, ElapsedTime pathTimer){
-        double distance = Math.sqrt(Math.pow(pose1.getX(DistanceUnit.CM) - pose2.getX(DistanceUnit.CM), 2) + Math.pow(pose1.getY(DistanceUnit.CM) - pose2.getY(DistanceUnit.CM), 2));
-        double timeToComplete = distance-Constants.Pathing.MIN_DISTANCE_FOR_MAX_SPEED_CM/Constants.Pathing.MAX_AUTO_SWERVE_VELOCITY + distance/Constants.Pathing.MAX_SLOWING_CURVE_TIME_MS + Constants.Pathing.PATH_TIMEOUT_MS;
-        if (pathTimer.milliseconds() < timeToComplete){
+    public boolean pathTimeOut(ElapsedTime pathTimer){
+        if (pathTimer.milliseconds() < getEstimatedPathTime()){
             return true;
         }
         return false;
+    }
+
+    public double getEstimatedPathTime() {
+        ArrayList<Double> powers = new ArrayList<>();
+        ArrayList<Double> speeds = new ArrayList<>();
+        ArrayList<Double> times = new ArrayList<>();
+        double max = 0.8;
+
+        double xDiff = poses.get(currentPath).getPose().getX(DistanceUnit.CM) - poses.get(currentPath-1).getPose().getX(DistanceUnit.CM);
+        double yDiff = poses.get(currentPath).getPose().getY(DistanceUnit.CM) - poses.get(currentPath-1).getPose().getY(DistanceUnit.CM);
+        double hDiff = HelperFunctions.normalizeAngle(poses.get(currentPath).getPose().getHeading(AngleUnit.DEGREES) - poses.get(currentPath-1).getPose().getHeading(AngleUnit.DEGREES));
+        double totalDiff = Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
+
+        double xSplit = xDiff / Constants.Pathing.PATH_NUM_OF_SPLITS_FOR_ESTIMATED_TIME;
+        double ySplit = yDiff / Constants.Pathing.PATH_NUM_OF_SPLITS_FOR_ESTIMATED_TIME;
+        double hSplit = hDiff / Constants.Pathing.PATH_NUM_OF_SPLITS_FOR_ESTIMATED_TIME;
+        double splitDist = totalDiff / Constants.Pathing.PATH_NUM_OF_SPLITS_FOR_ESTIMATED_TIME;
+        double lastXError = 0;
+        double lastYError = 0;
+        double lastHError = 0;
+        double currentTime = 0;
+
+        for (int i = Constants.Pathing.PATH_NUM_OF_SPLITS_FOR_ESTIMATED_TIME; i > 0; i--){
+            powers.add(robotContainer.drivetrain.fakePowerInput(
+                        HelperFunctions.clamp(robotContainer.latitudePID.fakeCalculate(xDiff, currentTime, lastXError), -max, max),
+                        HelperFunctions.clamp(robotContainer.longitudePID.fakeCalculate(yDiff, currentTime, lastYError), -max, max),
+                        HelperFunctions.clamp(robotContainer.headingPID.fakeCalculate(hDiff, currentTime, lastHError), -max, max)
+            )[1]);
+
+            speeds.add((ticksPerSecondOfMotor(powers.get(i)) / Constants.Swerve.MOTOR_TICKS_PER_REVOLUTION) * Constants.Swerve.MOTOR_TO_WHEEL_GEAR_RATIO * 2 * Math.PI * (Constants.Robot.WHEEL_DIAMETER_MM / 10));
+            times.add(speeds.get(i)/splitDist);
+
+            currentTime += times.get(i);
+            xDiff -= i*xSplit;
+            yDiff -= i*ySplit;
+            hDiff -= i*hSplit;
+
+            lastXError = robotContainer.latitudePID.fakeCalculate(xDiff, currentTime, lastXError);
+            lastYError = robotContainer.longitudePID.fakeCalculate(yDiff, currentTime, lastYError);
+            lastHError = robotContainer.headingPID.fakeCalculate(hDiff, currentTime, lastHError);
+
+            if (xDiff < 0) xDiff = 0;
+            if (yDiff < 0) yDiff = 0;
+            if (hDiff < 0) hDiff = 0;
+        }
+        //The total time to complete the path = currentTime;
+        return currentTime;
+    }
+
+    public double ticksPerSecondOfMotor(double power){
+        return Constants.Pathing.MAX_SWERVE_VELOCITY * power / 0.8;
     }
 
     public void waitForTarget() {

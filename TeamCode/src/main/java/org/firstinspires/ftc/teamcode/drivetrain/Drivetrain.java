@@ -200,6 +200,63 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
         setTargets(calculatedAngles, calculatedPowers);
     }
 
+    public double[] fakePowerInput(double x, double y, double rX) {
+        xButton.update(x != 0);
+        yButton.update(y != 0);
+        rXButton.update(rX != 0);
+
+        if (x == 0 && y == 0 && rX == 0) {
+            return new double[] {0.0, 0.0};
+        }
+
+        double rotationalMagnitude = Math.abs(rX);
+        // Determine the rotational direction based on the sign of rX.
+        int rotationalDirection = rX >= 0 ? 1 : -1;
+
+        // Calculate the magnitude of translational movement.
+        double translationalMagnitude = Math.sqrt(x * x + y * y);
+        // Calculate the angle of translational movement.
+        double translationalAngle = Math.atan2(y, x);
+
+        double currentHeading = HelperFunctions.normalizeAngle(Status.currentHeading);
+        translationalAngle += Math.toRadians(currentHeading);
+
+        // Calculate the x and y components of translational movement.
+        double translationalX = translationalMagnitude * Math.cos(translationalAngle);
+        double translationalY = translationalMagnitude * Math.sin(translationalAngle);
+
+        // Iterate through each swerve module to calculate its target angle and power.
+        for (int i = 0; i < robotContainer.swerveModules.length; i++) {
+            // Calculate the x and y components of rotational movement.
+            double rotationalX = rotationalMagnitude * Constants.Swerve.ROTATION_FORMATION_COSINES_RADIANS[i] * rotationalDirection;
+            double rotationalY = rotationalMagnitude * Constants.Swerve.ROTATION_FORMATION_SINES_RADIANS[i] * rotationalDirection;
+
+            // Combine the translational and rotational components into a single vector.
+            double vectorX = translationalX + rotationalX;
+            double vectorY = translationalY + rotationalY;
+
+            // Calculate the magnitude and angle of the combined vector.
+            double vectorMagnitude = Math.sqrt(vectorX * vectorX + vectorY * vectorY);
+            double vectorAngle = Math.atan2(vectorY, vectorX);
+
+            calculatedAngles[i] = Math.toDegrees(vectorAngle);
+            calculatedPowers[i] = vectorMagnitude;
+        }
+
+        boolean anyNonZero = false;
+        for (double v : calculatedAngles) {
+            if (Math.abs(v) > 0.01) {
+                anyNonZero = true;
+                break;
+            }
+        }
+        if (anyNonZero) {
+            lastAngles = calculatedAngles;
+        }
+
+        return new double[] {calculatedAngles[0], calculatedPowers[0]};
+    }
+
     /**
      * This method sets the target angles and powers for each swerve module, handling motor inversion if necessary.
      * @param targetAngles An array of target angles for each swerve module.

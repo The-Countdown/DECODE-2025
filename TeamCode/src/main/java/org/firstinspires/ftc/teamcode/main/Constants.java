@@ -264,13 +264,10 @@ public class Constants {
         public static double LONGITUDE_PID_TOLERANCE_CM = 1;
         public static int PINPOINT_UPDATE_DELAY_MS = 50;
         public static int LIMELIGHT_UPDATE_AVERAGING_MS = 500;
-        public static double SWERVE_MAX_SPEED_METERS_PER_SECOND = 2.6907292279;
-        public static double MAX_AUTO_SWERVE_VELOCITY = ((2000 / Swerve.MOTOR_TICKS_PER_REVOLUTION)/1000) * Swerve.MOTOR_TO_WHEEL_GEAR_RATIO * 2 * Math.PI * (Robot.WHEEL_DIAMETER_MM/10);
-        //Needs to be Tested
-        public static double MIN_DISTANCE_FOR_MAX_SPEED_CM = 40;
-        //Needs to be Tested
-        public static double MAX_SLOWING_CURVE_TIME_MS = 20;
-        public static int PATH_TIMEOUT_MS = 500;
+        public static double MAX_SWERVE_VELOCITY = 2000;
+        public static double SWERVE_MAX_SPEED_METERS_PER_SECOND = (Constants.Pathing.MAX_SWERVE_VELOCITY / Constants.Swerve.MOTOR_TICKS_PER_REVOLUTION) * Constants.Swerve.MOTOR_TO_WHEEL_GEAR_RATIO * 2 * Math.PI * (Constants.Robot.WHEEL_DIAMETER_MM/1000);
+        public static int PATH_TIMEOUT_ERROR_MS = 500;
+        public static int PATH_NUM_OF_SPLITS_FOR_ESTIMATED_TIME = 15;
     }
 
     @Config
