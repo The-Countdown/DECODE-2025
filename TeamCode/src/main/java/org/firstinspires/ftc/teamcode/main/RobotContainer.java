@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.main;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.hardware.dfrobot.HuskyLens;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -16,17 +15,20 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorImplEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import com.qualcomm.robotcore.util.ReadWriteFile;
+import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
+import java.io.File;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
+import org.firstinspires.ftc.robotserver.internal.webserver.RobotControllerWebHandlers;
 import org.firstinspires.ftc.teamcode.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.drivetrain.DrivetrainUpdater;
 import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.PathingUpdater;
@@ -51,7 +53,6 @@ import org.firstinspires.ftc.teamcode.util.LimeLightInfo;
 import org.firstinspires.ftc.teamcode.util.LinkedMotors;
 import org.firstinspires.ftc.teamcode.util.LinkedServos;
 
-import org.firstinspires.ftc.teamcode.hardware.BetterTouchSensor;
 import org.firstinspires.ftc.teamcode.hardware.BetterDcMotor;
 import org.firstinspires.ftc.teamcode.hardware.BetterCRServo;
 import org.firstinspires.ftc.teamcode.hardware.BetterAnalogInput;
@@ -496,6 +497,32 @@ public class RobotContainer {
         LinkedList<Double> times = loopTimesMap.get(name);
         if (times == null || times.isEmpty()) return 0;
         return times.getLast();
+    }
+
+    public void writeToFile (String fileName, String data) {
+        // Using the properties of the specified "to" file name,
+        // declare a filename to be used in this method.
+        File myFileName = AppUtil.getInstance().getSettingsFile(fileName);
+
+        // Write the provided number to the newly declared filename.
+        ReadWriteFile.writeFile(myFileName, data);
+
+        telemetry.addData("Filename", fileName);
+        telemetry.addData("Data being written", data);
+    }
+
+    public String arraysToCSV(String[] array, String[] array2) {
+        StringBuilder csv = new StringBuilder();
+        csv.append("time,position\n"); // header
+
+        for (int i = 0; i < array.length; i++) {
+            csv.append(array[i])
+                    .append(',')
+                    .append(array2[i])
+                    .append('\n');
+        }
+
+        return csv.toString();
     }
 
     public void telemetry (String opMode) {

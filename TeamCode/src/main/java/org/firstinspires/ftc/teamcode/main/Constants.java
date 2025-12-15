@@ -12,6 +12,8 @@ import org.firstinspires.ftc.teamcode.drivetrain.SwerveModule;
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
 import java.util.HashMap;
+import java.util.NavigableMap;
+import java.util.TreeMap;
 
 /**
  * The `Constants` class provides a centralized location for all the fixed values and
@@ -264,10 +266,15 @@ public class Constants {
         public static double LONGITUDE_PID_TOLERANCE_CM = 1;
         public static int PINPOINT_UPDATE_DELAY_MS = 50;
         public static int LIMELIGHT_UPDATE_AVERAGING_MS = 500;
-        public static double MAX_SWERVE_VELOCITY = 2000;
-        public static double SWERVE_MAX_SPEED_METERS_PER_SECOND = (Constants.Pathing.MAX_SWERVE_VELOCITY / Constants.Swerve.MOTOR_TICKS_PER_REVOLUTION) * Constants.Swerve.MOTOR_TO_WHEEL_GEAR_RATIO * 2 * Math.PI * (Constants.Robot.WHEEL_DIAMETER_MM/1000);
+        public static double SWERVE_MAX_VELOCITY = 2000;
+        public static double SWERVE_MAX_POWER = 1;
+        public static double SWERVE_MAX_SPEED_CM_PER_SECOND = (Constants.Pathing.SWERVE_MAX_VELOCITY / Constants.Swerve.MOTOR_TICKS_PER_REVOLUTION) * Constants.Swerve.MOTOR_TO_WHEEL_GEAR_RATIO * 2 * Math.PI * (Constants.Robot.WHEEL_DIAMETER_MM/10);
+        public static double SWERVE_MAX_LINEAR_SPEED_CM_PER_SECOND_WHILE_ROTATING_MULTIPLIER = 0.67;
         public static int PATH_TIMEOUT_ERROR_MS = 500;
         public static int PATH_NUM_OF_SPLITS_FOR_ESTIMATED_TIME = 15;
+
+        //distance in cm, time in seconds
+        public static final NavigableMap<Double, Double> ACCELERATION_TABLE = new TreeMap<>();
     }
 
     @Config
