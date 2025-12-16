@@ -34,7 +34,6 @@ public class LongitudePID {
     public double calculate() {
         double error = Status.targetPose.getX(DistanceUnit.CM) - Status.currentPose.getX(DistanceUnit.CM);
         currentTime = timer.seconds();
-        double dt = currentTime - lastTime;
         lastTime = currentTime;
 
         timer.reset();
@@ -47,8 +46,6 @@ public class LongitudePID {
         } else {
             Status.robotLongitudeTargetReached = false;
         }
-
-        if (dt < 1e-4) dt = 1e-4;  // safety clamp
 
         p = Constants.Pathing.LONGITUDE_KP * error;
 

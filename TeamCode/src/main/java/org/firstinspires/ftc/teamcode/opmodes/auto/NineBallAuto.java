@@ -68,6 +68,10 @@ public class NineBallAuto extends OpMode {
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.INCH, Status.startingPose.getX(DistanceUnit.INCH) + 20, Status.startingPose.getY(DistanceUnit.INCH), AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)));
         }
         robotContainer.pathPlanner.updatePathTimesAmount();
+        robotContainer.pathPlanner.updatePathTimes();
+
+        robotContainer.telemetry.addLine(robotContainer.pathPlanner.estimatedPathTimes.toString());
+        robotContainer.telemetry.update();
     }
 
     @Override
@@ -218,9 +222,6 @@ public class NineBallAuto extends OpMode {
 
     @Override
     public void loop() {
-        if (Status.pathsToCalculate > 0) {
-            robotContainer.pathPlanner.updatePathTimes(Status.pathsToCalculate);
-        }
         robotContainer.refreshData();
         robotContainer.limelightLogic.update();
         robotContainer.delayedActionManager.update();

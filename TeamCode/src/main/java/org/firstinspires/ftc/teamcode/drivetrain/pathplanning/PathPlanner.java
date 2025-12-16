@@ -98,9 +98,10 @@ public class PathPlanner {
         Status.pathsToCalculate = pointAmount;
     }
 
-    public void updatePathTimes(int pathNum) {
-        estimatedPathTimes.add(calculateEstimatedPathTime(pathNum));
-        Status.pathsToCalculate--;
+    public void updatePathTimes() {
+        for (int i = Status.pathsToCalculate; i > 0; i--) {
+            estimatedPathTimes.add(calculateEstimatedPathTime(i));
+            Status.pathsToCalculate--;        }
     }
 
     public boolean pathTimeOut(ElapsedTime pathTimer){
@@ -114,7 +115,7 @@ public class PathPlanner {
     public double calculateEstimatedPathTime(int path) {
         maxAccelerationDistance = Constants.Pathing.ACCELERATION_TABLE.lastKey();
         if (Status.pathsToCalculate < 1) return 0;
-        if (Status.splitsToCalculate < 1) Status.splitsToCalculate = Constants.Pathing.PATH_NUM_OF_SPLITS_FOR_ESTIMATED_TIME;
+        Status.splitsToCalculate = Constants.Pathing.PATH_NUM_OF_SPLITS_FOR_ESTIMATED_TIME;
         Pose2D startingPathPose;
         if (poses.get(path) instanceof SleepPose) {
              startingPathPose = poses.get(path-1).getPose();
@@ -145,7 +146,7 @@ public class PathPlanner {
         int iOffset = 0;
         int splitNum = Constants.Pathing.PATH_NUM_OF_SPLITS_FOR_ESTIMATED_TIME;
 
-        while (Status.splitsToCalculate > 0){
+        while (Status.splitsToCalculate > 0 && Status.opModeIsActive) {
             powers.add(robotContainer.drivetrain.fakePowerInput(
                         HelperFunctions.clamp(robotContainer.latitudePID.fakeCalculate(xDiff, currentTime, lastXError), -Constants.Pathing.SWERVE_MAX_POWER, Constants.Pathing.SWERVE_MAX_POWER),
                         HelperFunctions.clamp(robotContainer.longitudePID.fakeCalculate(yDiff, currentTime, lastYError), -Constants.Pathing.SWERVE_MAX_POWER, Constants.Pathing.SWERVE_MAX_POWER),
@@ -158,7 +159,7 @@ public class PathPlanner {
             } else {
                 //cm per second
                 speeds.add((ticksPerSecondOfMotor(powers.get(Math.abs(Status.splitsToCalculate-splitNum)-iOffset)) / Constants.Swerve.MOTOR_TICKS_PER_REVOLUTION) * Constants.Swerve.MOTOR_TO_WHEEL_GEAR_RATIO * 2 * Math.PI * (Constants.Robot.WHEEL_DIAMETER_MM / 10));
-                times.add(speeds.get(Math.abs(Status.splitsToCalculate-splitNum)-iOffset)/splitDist);
+                times.add(splitDist/speeds.get(Math.abs(Status.splitsToCalculate-splitNum)-iOffset));
                 currentTime += times.get(Math.abs(Status.splitsToCalculate-splitNum)-iOffset);
             }
 
@@ -166,16 +167,13 @@ public class PathPlanner {
             lastYError = yDiff;
             lastHError = hDiff;
 
-            xDiff -= xSplit;
-            yDiff -= ySplit;
-            hDiff -= hSplit;
+            xDiff += Math.signum(xDiff) == 1 ? -xSplit : xSplit;
+            yDiff += Math.signum(yDiff) == 1 ? -ySplit : ySplit;
+            hDiff += Math.signum(hDiff) == 1 ? -hSplit : hSplit;
 
             remainingAccelerationDistance -= splitDist;
 
-            if (xDiff < 0) xDiff = 0;
-            if (yDiff < 0) yDiff = 0;
-            if (hDiff < 0) hDiff = 0;
-            if (hDiff < 0.1 && yDiff < 0.1 && xDiff < 0.1) break;
+            if (Math.abs(hDiff) < 0.1 && Math.abs(yDiff) < 0.1 && Math.abs(xDiff) < 0.1) break;
             Status.splitsToCalculate--;
         }
         //The total time to complete the path = currentTime;

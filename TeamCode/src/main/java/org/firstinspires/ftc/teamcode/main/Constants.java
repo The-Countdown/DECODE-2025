@@ -271,7 +271,7 @@ public class Constants {
         public static double SWERVE_MAX_SPEED_CM_PER_SECOND = (Constants.Pathing.SWERVE_MAX_VELOCITY / Constants.Swerve.MOTOR_TICKS_PER_REVOLUTION) * Constants.Swerve.MOTOR_TO_WHEEL_GEAR_RATIO * 2 * Math.PI * (Constants.Robot.WHEEL_DIAMETER_MM/10);
         public static double SWERVE_MAX_LINEAR_SPEED_CM_PER_SECOND_WHILE_ROTATING_MULTIPLIER = 0.67;
         public static int PATH_TIMEOUT_ERROR_MS = 500;
-        public static int PATH_NUM_OF_SPLITS_FOR_ESTIMATED_TIME = 2;
+        public static int PATH_NUM_OF_SPLITS_FOR_ESTIMATED_TIME = 20;
 
         //distance in cm, time in seconds
         public static NavigableMap<Double, Double> ACCELERATION_TABLE = new TreeMap<>();

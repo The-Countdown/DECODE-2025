@@ -196,7 +196,7 @@ public class TeleOp extends OpMode {
         }
 
         robotContainer.PREV_LOOP_TIME_MS = robotContainer.CURRENT_LOOP_TIME_MS;
-        robotContainer.telemetry.addData("accel table 200", robotContainer.pathPlanner.accelerationTableInterpolation(200));
+        robotContainer.telemetry.addData("accel table -3", robotContainer.pathPlanner.accelerationTableInterpolation(-3));
         robotContainer.telemetry("teleOp");
         Thread.yield();
     }
