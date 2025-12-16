@@ -35,6 +35,7 @@ public class Status {
     }
 
     public static int pathsToCalculate;
+    public static int splitsToCalculate = 0;
 
     public static Pose2D GOAL_POSE;
     public static Pose2D startingPose;

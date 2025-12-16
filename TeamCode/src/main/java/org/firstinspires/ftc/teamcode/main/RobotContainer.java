@@ -274,6 +274,7 @@ public class RobotContainer {
         }
         telemetry.setMsTransmissionInterval(Constants.System.TELEMETRY_UPDATE_INTERVAL_MS);
         this.drivetrain.setTargets(Constants.Swerve.STOP_FORMATION, Constants.Swerve.NO_POWER);
+        pathPlanner.accelTableInit();
     }
 
     public void start(OpMode opmode, boolean teleop) {
