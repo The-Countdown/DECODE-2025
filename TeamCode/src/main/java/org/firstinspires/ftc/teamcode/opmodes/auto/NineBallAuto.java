@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.LocalizationUpdater;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
@@ -34,25 +33,11 @@ public class NineBallAuto extends OpMode {
         blackboard.put("pose", Status.currentPose);
         robotContainer.telemetry.addData("Alliance Color", Status.alliance == Constants.Game.ALLIANCE.BLUE ? "BLUE" : "RED");
         robotContainer.telemetry.update();
-    }
 
-    @Override
-    public void start() {
-        Status.opModeIsActive = true;
-        Status.lightsOn = true;
-        robotContainer.start(this, false);
-        Status.isDrivingActive = false;
-        Status.intakeToggle = true;
-        Status.turretToggle = false;
-        robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[0]);
+        Status.startingPose = Status.alliance == Constants.Game.ALLIANCE.RED ? new Pose2D(DistanceUnit.CM, Constants.Robot.startingX, Constants.Robot.startingY, AngleUnit.DEGREES, Constants.Robot.startingHeading) :
+                Status.alliance == Constants.Game.ALLIANCE.BLUE ? new Pose2D(DistanceUnit.CM, Constants.Robot.startingX, -Constants.Robot.startingY, AngleUnit.DEGREES, Constants.Robot.startingHeading) :
+                        new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
 
-        if (Status.wentBackToStart) {
-            Status.startingPose = (Pose2D) blackboard.getOrDefault("pose", Status.startingPose);
-        }
-        Status.slotColor[0] = Constants.Game.ARTIFACT_COLOR.PURPLE;
-        Status.slotColor[1] = Constants.Game.ARTIFACT_COLOR.PURPLE;
-        Status.slotColor[2] = Constants.Game.ARTIFACT_COLOR.PURPLE;
-        RobotContainer.HardwareDevices.pinpoint.setPosition(Status.startingPose);
         if (Status.alliance == Constants.Game.ALLIANCE.BLUE) {
             robotContainer.pathPlanner.addPose(Status.startingPose);
             robotContainer.pathPlanner.addPose(3400);
@@ -82,6 +67,27 @@ public class NineBallAuto extends OpMode {
             robotContainer.pathPlanner.addPose(1800);
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.INCH, Status.startingPose.getX(DistanceUnit.INCH) + 20, Status.startingPose.getY(DistanceUnit.INCH), AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)));
         }
+        robotContainer.pathPlanner.updatePathTimesAmount();
+    }
+
+    @Override
+    public void start() {
+        Status.opModeIsActive = true;
+        Status.lightsOn = true;
+        robotContainer.start(this, false);
+        Status.isDrivingActive = false;
+        Status.intakeToggle = true;
+        Status.turretToggle = false;
+        robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[0]);
+
+        if (Status.wentBackToStart) {
+            Status.startingPose = (Pose2D) blackboard.getOrDefault("pose", Status.startingPose);
+        }
+        Status.slotColor[0] = Constants.Game.ARTIFACT_COLOR.PURPLE;
+        Status.slotColor[1] = Constants.Game.ARTIFACT_COLOR.PURPLE;
+        Status.slotColor[2] = Constants.Game.ARTIFACT_COLOR.PURPLE;
+        RobotContainer.HardwareDevices.pinpoint.setPosition(Status.startingPose);
+
         //Start
         robotContainer.delayedActionManager.schedule(() -> pathTimer.reset(), 0);
         robotContainer.delayedActionManager.schedule(() -> Status.flywheelToggle = true, 0);
@@ -212,10 +218,13 @@ public class NineBallAuto extends OpMode {
 
     @Override
     public void loop() {
+        if (Status.pathsToCalculate > 0) {
+            robotContainer.pathPlanner.updatePathTimes(Status.pathsToCalculate);
+        }
         robotContainer.refreshData();
         robotContainer.limelightLogic.update();
         robotContainer.delayedActionManager.update();
-        robotContainer.pathPlanner.updatePathStatus();
+        robotContainer.pathPlanner.updatePathStatus(pathTimer);
         robotContainer.turret.pointAtGoal();
         robotContainer.pathPlanner.driveThroughPath();
         robotContainer.beamBreakToggleButton.update(RobotContainer.HardwareDevices.beamBreak.isPressed());

@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.LocalizationUpdater;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
@@ -15,6 +14,7 @@ import org.firstinspires.ftc.teamcode.main.Status;
 @Autonomous(name="GoBackToStart", group="Robot")
 public class GoBackToStart extends OpMode {
     private RobotContainer robotContainer;
+    private final ElapsedTime pathTimer = new ElapsedTime();
 
     Pose2D
             RED_MIDDLE = new Pose2D(DistanceUnit.INCH, 12, -12, AngleUnit.DEGREES, -45),
@@ -48,15 +48,16 @@ public class GoBackToStart extends OpMode {
         Constants.Pathing.LONGITUDE_PID_TOLERANCE_CM = 0.4;
 
         RobotContainer.HardwareDevices.pinpoint.setPosition((Pose2D) blackboard.getOrDefault("pose", new Pose2D(DistanceUnit.CM, 0, 0, AngleUnit.DEGREES, 0)));
-
         robotContainer.pathPlanner.addPose(Status.startingPose);
+        pathTimer.reset();
+        robotContainer.pathPlanner.updatePathTimesAmount();
     }
 
     @Override
     public void loop() {
         robotContainer.refreshData();
         robotContainer.limelightLogic.update();
-        robotContainer.pathPlanner.updatePathStatus();
+        robotContainer.pathPlanner.updatePathStatus(pathTimer);
         robotContainer.pathPlanner.driveThroughPath();
         robotContainer.positionProvider.update(false);
     }

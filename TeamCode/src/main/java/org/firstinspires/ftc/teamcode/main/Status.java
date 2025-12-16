@@ -34,6 +34,8 @@ public class Status {
         MOVING
     }
 
+    public static int pathsToCalculate;
+
     public static Pose2D GOAL_POSE;
     public static Pose2D startingPose;
     public static Pose2D goalsideStartingPose;

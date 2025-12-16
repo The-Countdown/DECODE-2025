@@ -36,7 +36,7 @@ import java.lang.Thread;
 public class PathPlanner {
     private Telemetry telemetry;
     ArrayList<GeneralPose> poses = new ArrayList<>();
-    public double pointAmount = 0;
+    public int pointAmount = 0;
     private final RobotContainer robotContainer;
     public boolean pathCompleted = false;
     public int currentPath;
@@ -73,11 +73,14 @@ public class PathPlanner {
         return PoseMath.isAtPos();
     }
 
-    public void updatePathStatus() {
+    public void updatePathStatus(ElapsedTime pathTimer) {
         if (Status.currentPath == -1) {
             return;
         } else {
             Status.pathCompleted[Status.currentPath] = PoseMath.isAtPos();
+            if (pathTimeOut(pathTimer)) {
+                Status.pathCompleted[Status.currentPath] = true;
+            }
         }
     }
 
@@ -93,19 +96,35 @@ public class PathPlanner {
         }
     }
 
-    public void updatePathTimes() {
-        for (int i = 0; i < pointAmount - 1; i++) {
-            estimatedPathTimes.set(i, calculateEstimatedPathTime(i));
-        }
+    public void updatePathTimesAmount( ) {
+        estimatedPathTimes.clear();
+        Status.pathsToCalculate = pointAmount;
+    }
+
+    public void updatePathTimes(int pathNum) {
+        estimatedPathTimes.add(calculateEstimatedPathTime(pathNum));
+        Status.pathsToCalculate--;
     }
 
     public boolean pathTimeOut(ElapsedTime pathTimer){
-        return pathTimer.milliseconds() < estimatedPathTimes.get(currentPath);
+        return pathTimer.milliseconds() > estimatedPathTimes.get(currentPath) + Constants.Pathing.PATH_TIMEOUT_ERROR_MS;
+    }
+
+    public double getCurrentPathTime() {
+        return estimatedPathTimes.get(currentPath) + Constants.Pathing.PATH_TIMEOUT_ERROR_MS;
     }
 
     public double calculateEstimatedPathTime(int path) {
-        Pose2D endingPathPose = poses.get(path).getPose();
-        Pose2D startingPathPose = poses.get(path - 1).getPose();
+        Pose2D startingPathPose;
+        if (poses.get(path) instanceof SleepPose) {
+             startingPathPose = poses.get(path-1).getPose();
+        } else {
+         startingPathPose = poses.get(path).getPose();
+        }
+        if (poses.get(path+1) instanceof SleepPose) {
+            return (poses.get(path+1).getSleepTime());
+        }
+        Pose2D endingPathPose = poses.get(path+1).getPose();
 
         double xDiff = endingPathPose.getX(DistanceUnit.CM) - startingPathPose.getX(DistanceUnit.CM);
         double yDiff = endingPathPose.getY(DistanceUnit.CM) - startingPathPose.getY(DistanceUnit.CM);
@@ -123,8 +142,9 @@ public class PathPlanner {
         double lastYError = 0;
         double lastHError = 0;
         double currentTime = 0;
+        int iOffset=0;
 
-        for (int i = Constants.Pathing.PATH_NUM_OF_SPLITS_FOR_ESTIMATED_TIME; i > 0; i--){
+        for (int i = 0; i < Constants.Pathing.PATH_NUM_OF_SPLITS_FOR_ESTIMATED_TIME; i++){
             powers.add(robotContainer.drivetrain.fakePowerInput(
                         HelperFunctions.clamp(robotContainer.latitudePID.fakeCalculate(xDiff, currentTime, lastXError), -Constants.Pathing.SWERVE_MAX_POWER, Constants.Pathing.SWERVE_MAX_POWER),
                         HelperFunctions.clamp(robotContainer.longitudePID.fakeCalculate(yDiff, currentTime, lastYError), -Constants.Pathing.SWERVE_MAX_POWER, Constants.Pathing.SWERVE_MAX_POWER),
@@ -132,12 +152,13 @@ public class PathPlanner {
             )[1]);
 
             if (remainingAccelerationDistance > maxAccelerationDistance - (maxAccelerationDistance * powers.get(i))) {
-                currentTime += accelerationTableInterpolation(splitDist);
+                currentTime += accelerationTableInterpolation(remainingAccelerationDistance);
+                iOffset++;
             } else {
                 //cm per second
-                speeds.add((ticksPerSecondOfMotor(powers.get(i)) / Constants.Swerve.MOTOR_TICKS_PER_REVOLUTION) * Constants.Swerve.MOTOR_TO_WHEEL_GEAR_RATIO * 2 * Math.PI * (Constants.Robot.WHEEL_DIAMETER_MM / 10));
-                times.add(speeds.get(i)/splitDist);
-                currentTime += times.get(i);
+                speeds.add((ticksPerSecondOfMotor(powers.get(i-iOffset)) / Constants.Swerve.MOTOR_TICKS_PER_REVOLUTION) * Constants.Swerve.MOTOR_TO_WHEEL_GEAR_RATIO * 2 * Math.PI * (Constants.Robot.WHEEL_DIAMETER_MM / 10));
+                times.add(speeds.get(i-iOffset)/splitDist);
+                currentTime += times.get(i-iOffset);
             }
 
             lastXError = xDiff;
@@ -150,18 +171,17 @@ public class PathPlanner {
 
             remainingAccelerationDistance -= Math.sqrt(Math.pow(xSplit, 2) + Math.pow(ySplit, 2));
 
-            if (xDiff <= 0.1) break;
-            if (yDiff <= 0.1) break;
-            if (hDiff <= 0.1) break;
+            if (xDiff < 0) xDiff = 0;
+            if (yDiff < 0) yDiff = 0;
+            if (hDiff < 0) hDiff = 0;
+            if (xDiff <= 0.1 && yDiff <= 0.1 && hDiff <= 0.1) break;
         }
         //The total time to complete the path = currentTime;
         return currentTime;
     }
 
     public double ticksPerSecondOfMotor(double power){
-        //Should be clamped between -0.8 and 0.8, not division, like this? You seem to not even need to clamp it as it is already done on line 116
-        return Constants.Pathing.SWERVE_MAX_VELOCITY * HelperFunctions.clamp(power, -Constants.Pathing.SWERVE_MAX_POWER, Constants.Pathing.SWERVE_MAX_POWER);
-//        return Constants.Pathing.MAX_SWERVE_VELOCITY * power / 0.8;
+        return Constants.Pathing.SWERVE_MAX_VELOCITY * power / 0.8;
     }
 
     public double accelerationTableInterpolation(double distance) {
@@ -216,6 +236,10 @@ public class PathPlanner {
         public boolean getDone() {
             return false;
         }
+
+        public double getSleepTime() {
+            return 0;
+        }
     }
 
     public class PositionPose extends GeneralPose {
@@ -238,6 +262,10 @@ public class PathPlanner {
             this.sleepTime = time;
         }
 
+        @Override
+        public double getSleepTime() {
+            return this.sleepTime;
+        }
         @Override
         public boolean getDone() {
             if (this.sleepTimer == null) {

@@ -3,20 +3,20 @@ package org.firstinspires.ftc.teamcode.opmodes.auto;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.LocalizationUpdater;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
-import org.firstinspires.ftc.teamcode.subsystems.LimelightLogic;
 
 @Autonomous(name="BasicThreeBallAuto", group="Robot")
 @Config
 public class DoNotChangeAuto extends OpMode {
     private RobotContainer robotContainer;
+    private final ElapsedTime pathTimer = new ElapsedTime();
 
     @Override
     public void init() {
@@ -54,8 +54,11 @@ public class DoNotChangeAuto extends OpMode {
             robotContainer.pathPlanner.addPose(Status.startingPose);
             robotContainer.pathPlanner.addPose(6000);
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.INCH, Status.startingPose.getX(DistanceUnit.INCH)+20, Status.startingPose.getY(DistanceUnit.INCH), AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)));
+            robotContainer.pathPlanner.updatePathTimesAmount();
         }
+        robotContainer.pathPlanner.updatePathTimesAmount();
 
+        robotContainer.delayedActionManager.schedule(() -> pathTimer.reset(), 0);
         robotContainer.delayedActionManager.schedule(() -> Status.flywheelToggle = true, 0);
         robotContainer.delayedActionManager.schedule(() -> Status.intakeToggle = false, 0);
         robotContainer.delayedActionManager.schedule(() -> Status.turretToggle = true, 0);
@@ -64,7 +67,11 @@ public class DoNotChangeAuto extends OpMode {
         robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.shootAll(false), Constants.Turret.FLYWHEEL_SPINUP_MS);
         robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.unpause(), Constants.Turret.FLYWHEEL_SPINUP_MS + 5000);
 
-        robotContainer.delayedActionManager.incrementPoseOffset(2);
+        robotContainer.delayedActionManager.incrementPoseOffset();
+        robotContainer.delayedActionManager.schedulePose(() -> pathTimer.reset());
+
+        robotContainer.delayedActionManager.incrementPoseOffset();
+        robotContainer.delayedActionManager.schedulePose(() -> pathTimer.reset());
         robotContainer.delayedActionManager.schedulePose(() -> Status.flywheelToggle = false);
         robotContainer.delayedActionManager.schedulePose(() -> Status.intakeToggle = true);
         robotContainer.delayedActionManager.schedulePose(() -> Status.turretToggle = false);
@@ -75,7 +82,7 @@ public class DoNotChangeAuto extends OpMode {
         robotContainer.refreshData();
         robotContainer.limelightLogic.update();
         robotContainer.delayedActionManager.update();
-        robotContainer.pathPlanner.updatePathStatus();
+        robotContainer.pathPlanner.updatePathStatus(pathTimer);
         robotContainer.turret.pointAtGoal();
         robotContainer.pathPlanner.driveThroughPath();
         robotContainer.beamBreakToggleButton.update(RobotContainer.HardwareDevices.beamBreak.isPressed());

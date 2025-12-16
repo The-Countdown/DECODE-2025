@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes.auto;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -16,6 +17,7 @@ import org.firstinspires.ftc.teamcode.main.Status;
 @Config
 public class ThreeBallGoalSideAuto extends OpMode {
     private RobotContainer robotContainer;
+    private final ElapsedTime pathTimer = new ElapsedTime();
 
     @Override
     public void init() {
@@ -56,7 +58,9 @@ public class ThreeBallGoalSideAuto extends OpMode {
             robotContainer.pathPlanner.addPose(7000);
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.INCH, Status.goalsideStartingPose.getX(DistanceUnit.INCH)-20, Status.goalsideStartingPose.getY(DistanceUnit.INCH), AngleUnit.DEGREES, Status.goalsideStartingPose.getHeading(AngleUnit.DEGREES)));
         }
+        robotContainer.pathPlanner.updatePathTimesAmount();
 
+        robotContainer.delayedActionManager.schedule(() -> pathTimer.reset(), 0);
         robotContainer.delayedActionManager.schedule(() -> Status.flywheelToggle = true, 0);
         robotContainer.delayedActionManager.schedule(() -> Status.intakeToggle = false, 0);
         robotContainer.delayedActionManager.schedule(() -> Status.turretToggle = true, 0);
@@ -65,7 +69,11 @@ public class ThreeBallGoalSideAuto extends OpMode {
         robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.shootAll(false), Constants.Turret.FLYWHEEL_SPINUP_MS);
         robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.unpause(), Constants.Turret.FLYWHEEL_SPINUP_MS + Constants.Spindexer.FULL_EMPTY_SPINTIME);
 
-        robotContainer.delayedActionManager.incrementPoseOffset(2);
+        robotContainer.delayedActionManager.incrementPoseOffset();
+        robotContainer.delayedActionManager.schedulePose(() -> pathTimer.reset());
+
+        robotContainer.delayedActionManager.incrementPoseOffset();
+        robotContainer.delayedActionManager.schedulePose(() -> pathTimer.reset());
         robotContainer.delayedActionManager.schedulePose(() -> Status.flywheelToggle = false);
         robotContainer.delayedActionManager.schedulePose(() -> Status.intakeToggle = true);
         robotContainer.delayedActionManager.schedulePose(() -> Status.turretToggle = false);
@@ -75,7 +83,7 @@ public class ThreeBallGoalSideAuto extends OpMode {
         robotContainer.refreshData();
         robotContainer.limelightLogic.update();
         robotContainer.delayedActionManager.update();
-        robotContainer.pathPlanner.updatePathStatus();
+        robotContainer.pathPlanner.updatePathStatus(pathTimer);
         robotContainer.turret.pointAtGoal();
         robotContainer.pathPlanner.driveThroughPath();
         robotContainer.beamBreakToggleButton.update(RobotContainer.HardwareDevices.beamBreak.isPressed());

@@ -3,25 +3,22 @@ package org.firstinspires.ftc.teamcode.opmodes.teleop;
 import static java.lang.Thread.sleep;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.LocalizationUpdater;
 import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.PathingUpdater;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
-import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "TeleOp")
 public class TeleOp extends OpMode {
     private RobotContainer robotContainer;
     private final GamepadWrapper.ButtonReader transferConditionButton = new GamepadWrapper.ButtonReader();
-    private final ElapsedTime spinTimer = new ElapsedTime();
+    private final ElapsedTime pathTimer = new ElapsedTime();
 
     @Override
     public void init() {
@@ -75,7 +72,7 @@ public class TeleOp extends OpMode {
         robotContainer.gamepadEx2.update();
         robotContainer.limelightLogic.update();
         robotContainer.delayedActionManager.update();
-        robotContainer.pathPlanner.updatePathStatus();
+        robotContainer.pathPlanner.updatePathStatus(pathTimer);
 
         robotContainer.allIndicatorLights.lightsUpdate();
 
@@ -112,10 +109,14 @@ public class TeleOp extends OpMode {
             Status.isDrivingActive = false;
             robotContainer.pathPlanner.clearPoses();
             if (Status.alliance == Constants.Game.ALLIANCE.BLUE) {
+                robotContainer.pathPlanner.addPose(Status.currentPose);
                 robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, -97, -84, AngleUnit.DEGREES, 180));
             } else {
+                robotContainer.pathPlanner.addPose(Status.currentPose);
                 robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, -97, 84, AngleUnit.DEGREES, 180));
             }
+            robotContainer.pathPlanner.updatePathTimesAmount();
+            pathTimer.reset();
             robotContainer.pathingUpdater.start();
         }
 

@@ -513,7 +513,7 @@ public class RobotContainer {
 
     public String arraysToCSV(String[] array, String[] array2) {
         StringBuilder csv = new StringBuilder();
-        csv.append("time,position\n"); // header
+        csv.append("distance, time\n"); // header
 
         for (int i = 0; i < array.length; i++) {
             csv.append(array[i])

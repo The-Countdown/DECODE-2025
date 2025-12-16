@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.main.Status;
 @Config
 public class SixBallGoalsideAuto extends OpMode {
     private RobotContainer robotContainer;
-    private final ElapsedTime spinTimer = new ElapsedTime();
+    private final ElapsedTime pathTimer = new ElapsedTime();
 
     // 102.22
     // 91.44
@@ -79,6 +79,9 @@ public class SixBallGoalsideAuto extends OpMode {
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_MID, -BEFORE_TAPE, AngleUnit.DEGREES, -90));
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_MID, -AFTER_TAPE, AngleUnit.DEGREES, -90));
         }
+        robotContainer.pathPlanner.updatePathTimesAmount();
+        
+        robotContainer.delayedActionManager.schedule(() -> pathTimer.reset(), 0);
         robotContainer.delayedActionManager.schedule(() -> Status.flywheelToggle = true, 0);
         robotContainer.delayedActionManager.schedule(() -> Status.intakeToggle = false, 0);
         robotContainer.delayedActionManager.schedule(() -> Status.turretToggle = true, 0);
@@ -87,20 +90,27 @@ public class SixBallGoalsideAuto extends OpMode {
         robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.unpause(), Constants.Turret.FLYWHEEL_SPINUP_MS + Constants.Spindexer.FULL_EMPTY_SPINTIME);
         robotContainer.delayedActionManager.schedule(() -> robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[1]), 0);
 
-        robotContainer.delayedActionManager.incrementPoseOffset(2);
+        robotContainer.delayedActionManager.incrementPoseOffset();
+        robotContainer.delayedActionManager.schedulePose(() -> pathTimer.reset());
+        
+        robotContainer.delayedActionManager.incrementPoseOffset();
+        robotContainer.delayedActionManager.schedulePose(() -> pathTimer.reset());
         robotContainer.delayedActionManager.schedulePose(() -> Status.flywheelToggle = false);
         robotContainer.delayedActionManager.schedulePose(() -> Status.intakeToggle = true);
         robotContainer.delayedActionManager.schedulePose(() -> Status.turretToggle = false);
 
         robotContainer.delayedActionManager.incrementPoseOffset();
+        robotContainer.delayedActionManager.schedulePose(() -> pathTimer.reset());
         robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(Constants.Intake.BEST_INTAKE_SPEED));
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP /= 2);
 
         robotContainer.delayedActionManager.incrementPoseOffset();
+        robotContainer.delayedActionManager.schedulePose(() -> pathTimer.reset());
         robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0.0));
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP *= 2);
 
         robotContainer.delayedActionManager.incrementPoseOffset();
+        robotContainer.delayedActionManager.schedulePose(() -> pathTimer.reset());
         robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(Constants.Intake.BEST_INTAKE_SPEED));
         robotContainer.delayedActionManager.schedulePose(() -> Status.flywheelToggle = true);
         robotContainer.delayedActionManager.schedulePose(() -> Status.intakeToggle = false);
@@ -111,16 +121,19 @@ public class SixBallGoalsideAuto extends OpMode {
         robotContainer.delayedActionManager.schedulePose(() -> robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[1]));
 
         robotContainer.delayedActionManager.incrementPoseOffset();
+        robotContainer.delayedActionManager.schedulePose(() -> pathTimer.reset());
         robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(0.0));
         robotContainer.delayedActionManager.schedulePose(() -> Status.flywheelToggle = false);
         robotContainer.delayedActionManager.schedulePose(() -> Status.intakeToggle = true);
         robotContainer.delayedActionManager.schedulePose(() -> Status.turretToggle = false);
 
         robotContainer.delayedActionManager.incrementPoseOffset();
+        robotContainer.delayedActionManager.schedulePose(() -> pathTimer.reset());
         robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(Constants.Intake.BEST_INTAKE_SPEED));
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP /= 2);
 
         robotContainer.delayedActionManager.incrementPoseOffset();
+        robotContainer.delayedActionManager.schedulePose(() -> pathTimer.reset());
         robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(-Constants.Intake.BEST_INTAKE_SPEED));
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP *= 2);
     }
@@ -130,7 +143,7 @@ public class SixBallGoalsideAuto extends OpMode {
         robotContainer.refreshData();
         robotContainer.limelightLogic.update();
         robotContainer.delayedActionManager.update();
-        robotContainer.pathPlanner.updatePathStatus();
+        robotContainer.pathPlanner.updatePathStatus(pathTimer);
         robotContainer.turret.pointAtGoal();
         robotContainer.pathPlanner.driveThroughPath();
         robotContainer.beamBreakToggleButton.update(RobotContainer.HardwareDevices.beamBreak.isPressed());

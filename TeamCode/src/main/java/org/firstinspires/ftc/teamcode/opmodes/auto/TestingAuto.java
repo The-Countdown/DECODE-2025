@@ -14,10 +14,13 @@ import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
+import dalvik.system.DelegateLastClassLoader;
+
 @Autonomous(name="TestingAuto", group="Robot")
 @Config
 public class TestingAuto extends OpMode {
     private RobotContainer robotContainer;
+    private final ElapsedTime pathTimer = new ElapsedTime();
     // 102.22
     // 91.44
     // 30.48
@@ -90,7 +93,7 @@ public class TestingAuto extends OpMode {
         robotContainer.refreshData();
         robotContainer.limelightLogic.update();
         robotContainer.delayedActionManager.update();
-        robotContainer.pathPlanner.updatePathStatus();
+        robotContainer.pathPlanner.updatePathStatus(pathTimer);
         robotContainer.turret.pointAtGoal();
         robotContainer.pathPlanner.driveThroughPath();
         robotContainer.beamBreakToggleButton.update(RobotContainer.HardwareDevices.beamBreak.isPressed());

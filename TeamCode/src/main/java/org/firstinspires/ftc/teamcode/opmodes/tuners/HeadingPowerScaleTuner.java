@@ -11,14 +11,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
-import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
 
 import java.util.ArrayList;
 
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "HeadingPowerScaleTuner", group = "Auto")
 public class HeadingPowerScaleTuner extends OpMode {
     private RobotContainer robotContainer;
-    private final ElapsedTime timer = new ElapsedTime();
+    private final ElapsedTime pathTimer = new ElapsedTime();
     ArrayList<String> distance = new ArrayList<>();
     ArrayList<String> time = new ArrayList<>();
     private final Pose2D start = new Pose2D(DistanceUnit.CM, 0, 0, AngleUnit.DEGREES, 0);
@@ -54,26 +53,26 @@ public class HeadingPowerScaleTuner extends OpMode {
     @Override
     public void start() {
         robotContainer.start(this, false);
-        timer.reset();
+        pathTimer.reset();
     }
 
     @Override
     public void loop() {
         robotContainer.refreshData();
         robotContainer.delayedActionManager.update();
-        robotContainer.pathPlanner.updatePathStatus();
+        robotContainer.pathPlanner.updatePathStatus(pathTimer);
         robotContainer.pathPlanner.driveThroughPath();
         robotContainer.positionProvider.update(false);
 
         distance.add(String.valueOf(Math.sqrt(Math.pow(Status.currentPose.getX(DistanceUnit.CM), 2) + Math.pow(Status.currentPose.getY(DistanceUnit.CM), 2))));
-        time.add(String.valueOf(timer.seconds()));
+        time.add(String.valueOf(pathTimer.seconds()));
     }
 
     @Override
     public void stop() {
         robotContainer.drivetrain.setTargets(Constants.Swerve.STOP_FORMATION, Constants.Swerve.NO_POWER);
         String csv = robotContainer.arraysToCSV(distance.toArray(new String[0]), time.toArray(new String[0]));
-        robotContainer.writeToFile("Acceleration_Heading Data Log", csv);
+        robotContainer.writeToFile("Acceleration_Heading Data Log.txt", csv);
 
         Status.isDrivingActive = false;
         Status.opModeIsActive = false;
