@@ -59,6 +59,7 @@ public class PathPlanner {
 
     public void addPose(double time) {
         poses.add(new SleepPose(time));
+        pointAmount += 1;
     }
 
     public boolean driveUsingPID(int index) {
@@ -101,8 +102,14 @@ public class PathPlanner {
 
     public void updatePathTimes() {
         for (int i = Status.pathsToCalculate; i > 0; i--) {
+<<<<<<< Updated upstream
             estimatedPathTimes[i] = (calculateEstimatedPathTime(i));
             Status.pathsToCalculate--;        }
+=======
+            estimatedPathTimes.add(calculateEstimatedPathTime(i-1));
+            Status.pathsToCalculate--;
+        }
+>>>>>>> Stashed changes
     }
 
     public boolean pathTimeOut(ElapsedTime pathTimer){
@@ -114,15 +121,20 @@ public class PathPlanner {
     }
 
     public double calculateEstimatedPathTime(int path) {
-        maxAccelerationDistance = Constants.Pathing.ACCELERATION_TABLE.lastKey();
         if (Status.pathsToCalculate < 1) return 0;
+        if (path+1 == poses.size()) return 0;
+
+        maxAccelerationDistance = Constants.Pathing.ACCELERATION_TABLE.lastKey();
+        double remainingAccelerationDistance = maxAccelerationDistance;
         Status.splitsToCalculate = Constants.Pathing.PATH_NUM_OF_SPLITS_FOR_ESTIMATED_TIME;
+
         Pose2D startingPathPose;
         if (poses.get(path) instanceof SleepPose) {
              startingPathPose = poses.get(path-1).getPose();
         } else {
-         startingPathPose = poses.get(path).getPose();
+            startingPathPose = poses.get(path).getPose();
         }
+
         if (poses.get(path+1) instanceof SleepPose) {
             return (poses.get(path+1).getSleepTime());
         }
@@ -137,22 +149,21 @@ public class PathPlanner {
         double ySplit = yDiff / Constants.Pathing.PATH_NUM_OF_SPLITS_FOR_ESTIMATED_TIME;
         double hSplit = hDiff / Constants.Pathing.PATH_NUM_OF_SPLITS_FOR_ESTIMATED_TIME;
         double splitDist = totalDiff / Constants.Pathing.PATH_NUM_OF_SPLITS_FOR_ESTIMATED_TIME;
-
-        double remainingAccelerationDistance = maxAccelerationDistance;
+        int splitNum = Constants.Pathing.PATH_NUM_OF_SPLITS_FOR_ESTIMATED_TIME;
 
         double lastXError = 0;
         double lastYError = 0;
         double lastHError = 0;
         double currentTime = 0;
         int iOffset = 0;
-        int splitNum = Constants.Pathing.PATH_NUM_OF_SPLITS_FOR_ESTIMATED_TIME;
 
-        while (Status.splitsToCalculate > 0 && Status.opModeIsActive) {
+        while (Status.splitsToCalculate > 0) {
             powers.add(robotContainer.drivetrain.fakePowerInput(
                         HelperFunctions.clamp(robotContainer.latitudePID.fakeCalculate(xDiff, currentTime, lastXError), -Constants.Pathing.SWERVE_MAX_POWER, Constants.Pathing.SWERVE_MAX_POWER),
                         HelperFunctions.clamp(robotContainer.longitudePID.fakeCalculate(yDiff, currentTime, lastYError), -Constants.Pathing.SWERVE_MAX_POWER, Constants.Pathing.SWERVE_MAX_POWER),
                         HelperFunctions.clamp(robotContainer.headingPID.fakeCalculate(hDiff, currentTime, lastHError), -Constants.Pathing.SWERVE_MAX_POWER, Constants.Pathing.SWERVE_MAX_POWER)
             )[1]);
+            robotContainer.addRetainedTelemetry("power", powers.get(Math.abs(Status.splitsToCalculate-splitNum)-iOffset));
 
             if (remainingAccelerationDistance > maxAccelerationDistance - (maxAccelerationDistance * powers.get(Math.abs(Status.splitsToCalculate-splitNum)))) {
                 currentTime += accelerationTableInterpolation(Math.abs(Status.splitsToCalculate-splitNum)*splitDist)-accelerationTableInterpolation(Math.abs(Status.splitsToCalculate-splitNum-1)*splitDist);
@@ -178,6 +189,8 @@ public class PathPlanner {
             Status.splitsToCalculate--;
         }
         //The total time to complete the path = currentTime;
+        robotContainer.telemetry.addData("powers", powers.toString());
+        robotContainer.displayRetainedTelemetry();
         return currentTime;
     }
 

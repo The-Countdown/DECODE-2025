@@ -201,9 +201,6 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
     }
 
     public double[] fakePowerInput(double x, double y, double rX) {
-        xButton.update(x != 0);
-        yButton.update(y != 0);
-        rXButton.update(rX != 0);
 
         if (x == 0 && y == 0 && rX == 0) {
             return new double[] {0.0, 0.0};
