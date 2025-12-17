@@ -96,20 +96,13 @@ public class PathPlanner {
     }
 
     public void updatePathTimesAmount( ) {
-//        estimatedPathTimes.clear();
         Status.pathsToCalculate = pointAmount;
     }
 
     public void updatePathTimes() {
         for (int i = Status.pathsToCalculate; i > 0; i--) {
-<<<<<<< Updated upstream
             estimatedPathTimes[i] = (calculateEstimatedPathTime(i));
             Status.pathsToCalculate--;        }
-=======
-            estimatedPathTimes.add(calculateEstimatedPathTime(i-1));
-            Status.pathsToCalculate--;
-        }
->>>>>>> Stashed changes
     }
 
     public boolean pathTimeOut(ElapsedTime pathTimer){
@@ -125,7 +118,7 @@ public class PathPlanner {
         if (path+1 == poses.size()) return 0;
 
         maxAccelerationDistance = Constants.Pathing.ACCELERATION_TABLE.lastKey();
-        double remainingAccelerationDistance = maxAccelerationDistance;
+        if (Status.pathsToCalculate < 1) return 0;
         Status.splitsToCalculate = Constants.Pathing.PATH_NUM_OF_SPLITS_FOR_ESTIMATED_TIME;
 
         Pose2D startingPathPose;
@@ -149,13 +142,15 @@ public class PathPlanner {
         double ySplit = yDiff / Constants.Pathing.PATH_NUM_OF_SPLITS_FOR_ESTIMATED_TIME;
         double hSplit = hDiff / Constants.Pathing.PATH_NUM_OF_SPLITS_FOR_ESTIMATED_TIME;
         double splitDist = totalDiff / Constants.Pathing.PATH_NUM_OF_SPLITS_FOR_ESTIMATED_TIME;
-        int splitNum = Constants.Pathing.PATH_NUM_OF_SPLITS_FOR_ESTIMATED_TIME;
+
+        double remainingAccelerationDistance = maxAccelerationDistance;
 
         double lastXError = 0;
         double lastYError = 0;
         double lastHError = 0;
         double currentTime = 0;
         int iOffset = 0;
+        int splitNum = Constants.Pathing.PATH_NUM_OF_SPLITS_FOR_ESTIMATED_TIME;
 
         while (Status.splitsToCalculate > 0) {
             powers.add(robotContainer.drivetrain.fakePowerInput(
