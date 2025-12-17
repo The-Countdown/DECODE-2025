@@ -68,7 +68,7 @@ public class NineBallAuto extends OpMode {
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.INCH, Status.startingPose.getX(DistanceUnit.INCH) + 20, Status.startingPose.getY(DistanceUnit.INCH), AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)));
         }
         robotContainer.pathPlanner.updatePathTimesAmount();
-        robotContainer.pathPlanner.updatePathTimes();
+//        robotContainer.pathPlanner.updatePathTimes();
 
         robotContainer.telemetry.addLine(robotContainer.pathPlanner.estimatedPathTimes.toString());
         robotContainer.telemetry.update();

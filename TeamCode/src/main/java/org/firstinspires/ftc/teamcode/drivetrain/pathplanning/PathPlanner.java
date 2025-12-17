@@ -40,7 +40,7 @@ public class PathPlanner {
     private final RobotContainer robotContainer;
     public boolean pathCompleted = false;
     public int currentPath;
-    public ArrayList<Double> estimatedPathTimes = new ArrayList<>();
+    public double[] estimatedPathTimes = {100000,100000,100000,100000,6000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000};
     ArrayList<Double> powers = new ArrayList<>();
     ArrayList<Double> speeds = new ArrayList<>();
     ArrayList<Double> times = new ArrayList<>();
@@ -64,6 +64,7 @@ public class PathPlanner {
     public boolean driveUsingPID(int index) {
         if (poses.get(index) instanceof PositionPose) {
             Status.targetPose = poses.get(index).getPose();
+            estimatedPathTimes[80] = 9;
         } else if (poses.get(index) instanceof SleepPose) {
             return poses.get(index).getDone();
         }
@@ -94,22 +95,22 @@ public class PathPlanner {
     }
 
     public void updatePathTimesAmount( ) {
-        estimatedPathTimes.clear();
+//        estimatedPathTimes.clear();
         Status.pathsToCalculate = pointAmount;
     }
 
     public void updatePathTimes() {
         for (int i = Status.pathsToCalculate; i > 0; i--) {
-            estimatedPathTimes.add(calculateEstimatedPathTime(i));
+            estimatedPathTimes[i] = (calculateEstimatedPathTime(i));
             Status.pathsToCalculate--;        }
     }
 
     public boolean pathTimeOut(ElapsedTime pathTimer){
-        return pathTimer.milliseconds() > estimatedPathTimes.get(currentPath) + Constants.Pathing.PATH_TIMEOUT_ERROR_MS;
+        return pathTimer.milliseconds() > estimatedPathTimes[currentPath] + Constants.Pathing.PATH_TIMEOUT_ERROR_MS;
     }
 
     public double getCurrentPathTime() {
-        return estimatedPathTimes.get(currentPath) + Constants.Pathing.PATH_TIMEOUT_ERROR_MS;
+        return estimatedPathTimes[currentPath] + Constants.Pathing.PATH_TIMEOUT_ERROR_MS;
     }
 
     public double calculateEstimatedPathTime(int path) {
