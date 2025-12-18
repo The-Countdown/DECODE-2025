@@ -72,26 +72,22 @@ public class PathPlanner {
     }
 
     public void updatePathStatus(ElapsedTime pathTimer) {
-        if (Status.currentPath == -1) {
-            return;
-        } else {
-            Status.pathCompleted[Status.currentPath] = PoseMath.isAtPos();
 //            if (pathTimeOut(pathTimer)) {
 //                Status.pathCompleted[Status.currentPath] = true;
 //            }
 //            if (Status.pathCompleted[Status.currentPath]){
 //                this.currentPath += 1;
 //            }
-        }
     }
 
     public void driveThroughPath () {
-        if (!this.pathCompleted) {
-            if (driveUsingPID(this.currentPath)) {
-                this.currentPath += 1;
-                if (this.currentPath == this.poses.size()) {
-                    this.pathCompleted = true;
-                }
+        if (Status.currentPath == -1) {
+            return;
+        } else if (!this.pathCompleted && driveUsingPID(this.currentPath) && !Status.pathCompleted[Status.currentPath]) {
+            this.currentPath += 1;
+            Status.pathCompleted[Status.currentPath] = PoseMath.isAtPos();
+            if (this.currentPath == this.poses.size()) {
+                this.pathCompleted = true;
             }
         }
     }
