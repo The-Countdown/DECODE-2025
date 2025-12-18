@@ -254,7 +254,11 @@ public class NineBallAuto extends OpMode {
         robotContainer.turret.update(false);
         robotContainer.spindexer.update(false);
         robotContainer.positionProvider.update(false);
-        blackboard.put("pose", new Pose2D(DistanceUnit.CM, Status.currentPose.getX(DistanceUnit.CM), Status.currentPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, Status.currentPose.getHeading(AngleUnit.DEGREES)));
+        if(Status.alliance == Constants.Game.ALLIANCE.RED) {
+            blackboard.put("pose", new Pose2D(DistanceUnit.CM, Status.currentPose.getX(DistanceUnit.CM), Status.currentPose.getY(DistanceUnit.CM)+9, AngleUnit.DEGREES, Status.currentPose.getHeading(AngleUnit.DEGREES)));
+        } else {
+            blackboard.put("pose", new Pose2D(DistanceUnit.CM, Status.currentPose.getX(DistanceUnit.CM), Status.currentPose.getY(DistanceUnit.CM)-9, AngleUnit.DEGREES, Status.currentPose.getHeading(AngleUnit.DEGREES)));
+        }
     }
     //3.4 -6.8
 
@@ -265,7 +269,11 @@ public class NineBallAuto extends OpMode {
         Constants.Pathing.LATITUDE_PID_TOLERANCE_CM = 1;
         Constants.Pathing.LONGITUDE_PID_TOLERANCE_CM = 1;
         robotContainer.delayedActionManager.cancelAll();
-        blackboard.put("pose", new Pose2D(DistanceUnit.CM, Status.currentPose.getX(DistanceUnit.CM), Status.currentPose.getY(DistanceUnit.CM)+9, AngleUnit.DEGREES, Status.currentPose.getHeading(AngleUnit.DEGREES)));
+        if(Status.alliance == Constants.Game.ALLIANCE.RED) {
+            blackboard.put("pose", new Pose2D(DistanceUnit.CM, Status.currentPose.getX(DistanceUnit.CM), Status.currentPose.getY(DistanceUnit.CM)+9, AngleUnit.DEGREES, Status.currentPose.getHeading(AngleUnit.DEGREES)));
+        } else {
+            blackboard.put("pose", new Pose2D(DistanceUnit.CM, Status.currentPose.getX(DistanceUnit.CM), Status.currentPose.getY(DistanceUnit.CM)-9, AngleUnit.DEGREES, Status.currentPose.getHeading(AngleUnit.DEGREES)));
+        }
         robotContainer.stop();
     }
 }
