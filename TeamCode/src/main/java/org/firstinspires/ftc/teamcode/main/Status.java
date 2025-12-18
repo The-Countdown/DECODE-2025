@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
  */
 public class Status {
     public static boolean competitionMode = false;
-    public static int currentPath = -1;
+    public static int currentPath = 0;
     public static boolean[] pathCompleted = new boolean[99];
     public static Pose2D targetPose = new Pose2D(DistanceUnit.CM,0,0, AngleUnit.DEGREES,0);
     public static Pose2D currentPose = new Pose2D(DistanceUnit.CM,0,0, AngleUnit.DEGREES,0);

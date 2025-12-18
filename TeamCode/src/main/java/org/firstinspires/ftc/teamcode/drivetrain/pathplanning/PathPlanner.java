@@ -40,7 +40,7 @@ public class PathPlanner {
     private final RobotContainer robotContainer;
     public boolean pathCompleted = false;
     public int currentPath;
-    public double[] estimatedPathTimes = {100000,100000,100000,100000,6000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000,100000};
+    public double[] estimatedPathTimes;
     ArrayList<Double> powers = new ArrayList<>();
     ArrayList<Double> speeds = new ArrayList<>();
     ArrayList<Double> times = new ArrayList<>();
@@ -65,7 +65,6 @@ public class PathPlanner {
     public boolean driveUsingPID(int index) {
         if (poses.get(index) instanceof PositionPose) {
             Status.targetPose = poses.get(index).getPose();
-            estimatedPathTimes[80] = 9;
         } else if (poses.get(index) instanceof SleepPose) {
             return poses.get(index).getDone();
         }
@@ -77,15 +76,17 @@ public class PathPlanner {
             return;
         } else {
             Status.pathCompleted[Status.currentPath] = PoseMath.isAtPos();
-            if (pathTimeOut(pathTimer)) {
-                Status.pathCompleted[Status.currentPath] = true;
+//            if (pathTimeOut(pathTimer)) {
+//                Status.pathCompleted[Status.currentPath] = true;
+//            }
+            if (Status.pathCompleted[Status.currentPath]){
+                this.currentPath += 1;
             }
         }
     }
 
     public void driveThroughPath () {
         if (!this.pathCompleted) {
-            //if (driveUsingPID(this.currentPath) || pathTimeOut(poses.get(this.currentPath-1).getPose(), poses.get(this.currentPath).getPose(), pathTimer)) {
             if (driveUsingPID(this.currentPath)) {
                 this.currentPath += 1;
                 if (this.currentPath == this.poses.size()) {
@@ -96,13 +97,18 @@ public class PathPlanner {
     }
 
     public void updatePathTimesAmount( ) {
+        estimatedPathTimes = new double[pointAmount];
+        for (int i = 0; i < pointAmount - 1; i++){
+            estimatedPathTimes[i] = 5000;
+        }
         Status.pathsToCalculate = pointAmount;
     }
 
     public void updatePathTimes() {
         for (int i = Status.pathsToCalculate; i > 0; i--) {
             estimatedPathTimes[i] = (calculateEstimatedPathTime(i));
-            Status.pathsToCalculate--;        }
+            Status.pathsToCalculate--;
+        }
     }
 
     public boolean pathTimeOut(ElapsedTime pathTimer){
@@ -118,7 +124,6 @@ public class PathPlanner {
         if (path+1 == poses.size()) return 0;
 
         maxAccelerationDistance = Constants.Pathing.ACCELERATION_TABLE.lastKey();
-        if (Status.pathsToCalculate < 1) return 0;
         Status.splitsToCalculate = Constants.Pathing.PATH_NUM_OF_SPLITS_FOR_ESTIMATED_TIME;
 
         Pose2D startingPathPose;

@@ -25,18 +25,7 @@ public class TeleOp extends OpMode {
         robotContainer = new RobotContainer(this);
         robotContainer.init();
         // Get the blackboard pose that was set during auto or if it was not set set the starting pose to 0.
-        RobotContainer.HardwareDevices.pinpoint.recalibrateIMU();
-        try {
-            sleep(500);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
         RobotContainer.HardwareDevices.pinpoint.setPosition((Pose2D) blackboard.getOrDefault("pose", new Pose2D(DistanceUnit.CM, 0, 0, AngleUnit.DEGREES, 0)));
-        try {
-            sleep(500);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
         robotContainer.telemetry.addData("Alliance Color", Status.alliance == Constants.Game.ALLIANCE.BLUE ? "BLUE" : "RED");
         robotContainer.telemetry.update();
     }

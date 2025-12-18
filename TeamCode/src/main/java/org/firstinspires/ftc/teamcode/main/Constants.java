@@ -68,7 +68,7 @@ public class Constants {
                 )
         );
 
-        //public static double startingX = -142.5575, startingY = -18.415, startingHeading = -180;
+        //public static double startingX = -156.21, startingY = -38.78, startingHeading = -180;
         public static double startingX = -160.9725, startingY = -43.02125, startingHeading = -180; // Do NOT NOT ever change this heading unless you really know what you are doing.
         public static double GoalsideStartingX = 142.5575, GoalsideStartingY = -18.415, GoalsideStartingHeading = 0;
 
@@ -325,7 +325,7 @@ public class Constants {
         public static int FLYWHEEL_MAX_VELOCITY = 1720;
         public static int FLYWHEEL_MAX_POWER_ERROR = 200;
         public static double FLYWHEEL_CURVE = 4;
-        public static double[] FLYWHEEL_SPEED_TABLE = {0.57, 0.595, 0.7, 0.715, 0.73, 0.813, 0.84};
+        public static double[] FLYWHEEL_SPEED_TABLE = {0.57, 0.595, 0.69, 0.715, 0.73, 0.813, 0.84};
         public static double[] FLYWHEEL_SPEED_TABLE_DISTANCES = {40, 56, 90, 95, 103, 127, 152};
         public static int FLYWHEEL_SPINUP_MS = 1000;
         public static double TRACK_GOAL_P = -0.2;
@@ -367,7 +367,7 @@ public class Constants {
         public static double KF = 0.015;
         public static double DIST_TOLERANCE = 6;
         public static double BEAM_TIMER_TOLERANCE = 0.15;
-        public static int FULL_EMPTY_SPINTIME = 2000;
+        public static int FULL_EMPTY_SPINTIME = 2200;
     }
 
     @Config
