@@ -79,9 +79,9 @@ public class PathPlanner {
 //            if (pathTimeOut(pathTimer)) {
 //                Status.pathCompleted[Status.currentPath] = true;
 //            }
-            if (Status.pathCompleted[Status.currentPath]){
-                this.currentPath += 1;
-            }
+//            if (Status.pathCompleted[Status.currentPath]){
+//                this.currentPath += 1;
+//            }
         }
     }
 

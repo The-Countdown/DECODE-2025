@@ -45,12 +45,12 @@ public class NineBallAuto extends OpMode {
             robotContainer.pathPlanner.addPose(3600);
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_LOW, BEFORE_TAPE, AngleUnit.DEGREES, 90));
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_LOW, AFTER_TAPE, AngleUnit.DEGREES, 90));
-            robotContainer.pathPlanner.addPose(400);
+            robotContainer.pathPlanner.addPose(800);
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 10, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)));
             robotContainer.pathPlanner.addPose(2000);
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_MID, BEFORE_TAPE, AngleUnit.DEGREES, 90));
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_MID, AFTER_TAPE, AngleUnit.DEGREES, 90));
-            robotContainer.pathPlanner.addPose(400);
+            robotContainer.pathPlanner.addPose(800);
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 10, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)));
             robotContainer.pathPlanner.addPose(2000);
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.INCH, Status.startingPose.getX(DistanceUnit.INCH) + 20, Status.startingPose.getY(DistanceUnit.INCH), AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)));
@@ -59,12 +59,12 @@ public class NineBallAuto extends OpMode {
             robotContainer.pathPlanner.addPose(3600);
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_LOW, -BEFORE_TAPE, AngleUnit.DEGREES, -90));
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_LOW, -AFTER_TAPE, AngleUnit.DEGREES, -90));
-            robotContainer.pathPlanner.addPose(400);
+            robotContainer.pathPlanner.addPose(800);
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 10, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)));
             robotContainer.pathPlanner.addPose(2000);
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_MID, -BEFORE_TAPE, AngleUnit.DEGREES, -90));
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, TAPE_MID, -AFTER_TAPE, AngleUnit.DEGREES, -90));
-            robotContainer.pathPlanner.addPose(400);
+            robotContainer.pathPlanner.addPose(800);
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 10, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)));
             robotContainer.pathPlanner.addPose(2000);
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.INCH, Status.startingPose.getX(DistanceUnit.INCH) + 20, Status.startingPose.getY(DistanceUnit.INCH), AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)));
@@ -122,10 +122,14 @@ public class NineBallAuto extends OpMode {
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LONGITUDE_KP /= 2);
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP /= 2);
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.HEADING_KP /= 2);
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.delayedActionManager.schedule(() -> Constants.Pathing.LATITUDE_KP /= 2, 2000));
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.delayedActionManager.schedule(() -> Constants.Pathing.LATITUDE_KP /= 2, 2000));
         robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(Constants.Intake.BEST_INTAKE_SPEED));
 
         //Start of sleepPose
         robotContainer.delayedActionManager.incrementPoseOffset();
+        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LONGITUDE_KP *= 2);
+        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP *= 2);
         robotContainer.delayedActionManager.schedulePose(() -> pathTimer.reset());
 
         //End of intake
@@ -166,10 +170,14 @@ public class NineBallAuto extends OpMode {
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LONGITUDE_KP /= 2);
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP /= 2);
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.HEADING_KP /= 2);
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.delayedActionManager.schedule(() -> Constants.Pathing.LATITUDE_KP /= 2, 3250));
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.delayedActionManager.schedule(() -> Constants.Pathing.LATITUDE_KP /= 2, 3250));
         robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(Constants.Intake.BEST_INTAKE_SPEED));
 
         //Start of sleepPose
         robotContainer.delayedActionManager.incrementPoseOffset();
+        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LONGITUDE_KP *= 2);
+        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP *= 2);
         robotContainer.delayedActionManager.schedulePose(() -> pathTimer.reset());
 
         //End of Intake
@@ -210,10 +218,14 @@ public class NineBallAuto extends OpMode {
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LONGITUDE_KP /= 2);
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP /= 2);
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.HEADING_KP /= 2);
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.delayedActionManager.schedule(() -> Constants.Pathing.LATITUDE_KP /= 2, 2000));
+        robotContainer.delayedActionManager.schedulePose(() -> robotContainer.delayedActionManager.schedule(() -> Constants.Pathing.LATITUDE_KP /= 2, 2000));
         robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(Constants.Intake.BEST_INTAKE_SPEED));
 
         //Start of sleepPose
         robotContainer.delayedActionManager.incrementPoseOffset();
+        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LONGITUDE_KP *= 2);
+        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP *= 2);
         robotContainer.delayedActionManager.schedulePose(() -> pathTimer.reset());
 
         //End of Intake
@@ -233,7 +245,7 @@ public class NineBallAuto extends OpMode {
         robotContainer.refreshData();
         robotContainer.limelightLogic.update();
         robotContainer.delayedActionManager.update();
-//        robotContainer.pathPlanner.updatePathStatus(pathTimer);
+        robotContainer.pathPlanner.updatePathStatus(pathTimer);
         robotContainer.turret.pointAtGoal();
         robotContainer.pathPlanner.driveThroughPath();
         robotContainer.beamBreakToggleButton.update(RobotContainer.HardwareDevices.beamBreak.isPressed());
@@ -254,11 +266,7 @@ public class NineBallAuto extends OpMode {
         robotContainer.turret.update(false);
         robotContainer.spindexer.update(false);
         robotContainer.positionProvider.update(false);
-        if(Status.alliance == Constants.Game.ALLIANCE.RED) {
-            blackboard.put("pose", new Pose2D(DistanceUnit.CM, Status.currentPose.getX(DistanceUnit.CM), Status.currentPose.getY(DistanceUnit.CM)+9, AngleUnit.DEGREES, Status.currentPose.getHeading(AngleUnit.DEGREES)));
-        } else {
-            blackboard.put("pose", new Pose2D(DistanceUnit.CM, Status.currentPose.getX(DistanceUnit.CM), Status.currentPose.getY(DistanceUnit.CM)-9, AngleUnit.DEGREES, Status.currentPose.getHeading(AngleUnit.DEGREES)));
-        }
+        blackboard.put("pose", Status.currentPose);
     }
     //3.4 -6.8
 

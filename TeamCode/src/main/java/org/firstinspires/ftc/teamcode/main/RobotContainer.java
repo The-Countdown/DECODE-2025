@@ -290,7 +290,7 @@ public class RobotContainer {
                 Status.alliance == Constants.Game.ALLIANCE.BLUE ? new Pose2D(DistanceUnit.INCH, Constants.Robot.GoalsideStartingX, -Constants.Robot.GoalsideStartingY, AngleUnit.DEGREES, Constants.Robot.GoalsideStartingHeading) :
                         new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
         Status.startingPose = Status.alliance == Constants.Game.ALLIANCE.RED ? new Pose2D(DistanceUnit.CM, Constants.Robot.startingX, Constants.Robot.startingY, AngleUnit.DEGREES, Constants.Robot.startingHeading) :
-                Status.alliance == Constants.Game.ALLIANCE.BLUE ? new Pose2D(DistanceUnit.CM, Constants.Robot.startingX, -Constants.Robot.startingY, AngleUnit.DEGREES, Constants.Robot.startingHeading) :
+                Status.alliance == Constants.Game.ALLIANCE.BLUE ? new Pose2D(DistanceUnit.CM, Constants.Robot.startingX, -Constants.Robot.startingY, AngleUnit.DEGREES, -Constants.Robot.startingHeading) :
                         new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
 
         // Start the required treads
