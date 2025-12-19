@@ -248,19 +248,19 @@ public class Constants {
 //                LONGITUDE_KD = 0,
 //                LONGITUDE_KF = 0.03;
         public static double
-                HEADING_KP = 0.011,
+                HEADING_KP = 0.01,
                 HEADING_KI = 0,
                 HEADING_I_MAX = 0,
-                HEADING_KD = 0,
-                HEADING_KF = 0.03;
+                HEADING_KD = 0.00003,
+                HEADING_KF = 0.02;
         public static double
-                LATITUDE_KP = 0.011,
+                LATITUDE_KP = 0.009,
                 LATITUDE_KI = 0,
                 LATITUDE_I_MAX = 0,
                 LATITUDE_KD = 0,
                 LATITUDE_KF = 0.03;
         public static double
-                LONGITUDE_KP = 0.011,
+                LONGITUDE_KP = 0.009,
                 LONGITUDE_KI = 0,
                 LONGITUDE_I_MAX = 0,
                 LONGITUDE_KD = 0,

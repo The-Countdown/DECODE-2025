@@ -71,8 +71,8 @@ public class PathPlannerTuner extends OpMode {
         robotContainer.telemetry.addData("Robot Heading Target", Status.targetPose.getHeading(AngleUnit.DEGREES));
 
         robotContainer.telemetry.addData("LatitudePID", robotContainer.latitudePID.calculate());
-        robotContainer.telemetry.addData("LongitudePID", robotContainer.latitudePID.calculate());
-        robotContainer.telemetry.addData("HeadingPID", robotContainer.latitudePID.calculate());
+        robotContainer.telemetry.addData("LongitudePID", robotContainer.longitudePID.calculate());
+        robotContainer.telemetry.addData("HeadingPID", robotContainer.headingPID.calculate());
 
         robotContainer.telemetry.update();
     }
