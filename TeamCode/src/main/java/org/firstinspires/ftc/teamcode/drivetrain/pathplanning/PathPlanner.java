@@ -72,7 +72,7 @@ public class PathPlanner {
     }
 
     public void updatePathStatus(ElapsedTime pathTimer) {
-                   if (Status.currentPath == -1) {
+        if (Status.currentPath == -1) {
             return;
         } else {
             Status.pathCompleted[Status.currentPath] = PoseMath.isAtPos();

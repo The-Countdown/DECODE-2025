@@ -73,7 +73,7 @@ public class TeleOp extends OpMode {
 
         robotContainer.turret.update(true);
         robotContainer.spindexer.update(true);
-        robotContainer.positionProvider.update(true);
+        robotContainer.positionProvider.update(false);
 
         // Gamepad 1
         robotContainer.drivetrain.controlUpdate();
@@ -98,14 +98,10 @@ public class TeleOp extends OpMode {
             Status.isDrivingActive = false;
             robotContainer.pathPlanner.clearPoses();
             if (Status.alliance == Constants.Game.ALLIANCE.BLUE) {
-                robotContainer.pathPlanner.addPose(Status.currentPose);
                 robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, -97, -84, AngleUnit.DEGREES, 180));
             } else {
-                robotContainer.pathPlanner.addPose(Status.currentPose);
                 robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, -97, 84, AngleUnit.DEGREES, 180));
             }
-            robotContainer.pathPlanner.updatePathTimesAmount();
-            pathTimer.reset();
             robotContainer.pathingUpdater.start();
         }
 
@@ -116,7 +112,7 @@ public class TeleOp extends OpMode {
             robotContainer.gamepadEx1.rumble(300);
         }
 
-        if (pinpointTimer.milliseconds() > 300) {
+        if (pinpointTimer.milliseconds() > 300 && !robotContainer.gamepadEx1.square.isPressed()) {
             Status.isDrivingActive = true;
         }
 
@@ -135,14 +131,15 @@ public class TeleOp extends OpMode {
         }
 
         if (robotContainer.gamepadEx1.square.wasJustReleased()) {
-                if (robotContainer.pathingUpdater != null) {
-                    robotContainer.pathingUpdater.stopThread();
-                    try {
-                        robotContainer.pathingUpdater.join();
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
+            Status.isDrivingActive = true;
+            if (robotContainer.pathingUpdater != null) {
+                robotContainer.pathingUpdater.stopThread();
+                try {
+                    robotContainer.pathingUpdater.join();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
                 }
+            }
             robotContainer.pathingUpdater = new PathingUpdater(robotContainer);
             Status.isDrivingActive = true;
         }

@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.drivetrain.pathplanning;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.ConceptAprilTag;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
