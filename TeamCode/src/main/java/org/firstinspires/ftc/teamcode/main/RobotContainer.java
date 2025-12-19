@@ -301,11 +301,12 @@ public class RobotContainer {
         pathingUpdater = new PathingUpdater(this);
         if (!teleop) {
             pathingUpdater.start();
-        }
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        }else{
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
         telemetryLoopTimer.reset();
     }
