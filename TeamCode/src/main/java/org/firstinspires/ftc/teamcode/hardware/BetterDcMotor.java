@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotorImplEx;
 import com.qualcomm.robotcore.hardware.PIDCoefficients;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
 public class BetterDcMotor extends Thread {
@@ -92,5 +93,9 @@ public class BetterDcMotor extends Thread {
 //    }
     public double getVelocity() {
         return motor.getVelocity();
+    }
+
+    public double getCurrent(CurrentUnit currentUnit) {
+        return motor.getCurrent(currentUnit);
     }
 }

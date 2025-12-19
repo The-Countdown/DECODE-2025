@@ -17,8 +17,8 @@ import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "TeleOp")
 public class TeleOp extends OpMode {
     private RobotContainer robotContainer;
-    private final GamepadWrapper.ButtonReader transferConditionButton = new GamepadWrapper.ButtonReader();
     private final ElapsedTime pathTimer = new ElapsedTime();
+    private final ElapsedTime pinpointTimer = new ElapsedTime();
 
     @Override
     public void init() {
@@ -109,6 +109,17 @@ public class TeleOp extends OpMode {
             robotContainer.pathingUpdater.start();
         }
 
+        if (robotContainer.gamepadEx1.triangle.wasJustPressed()) {
+            Status.isDrivingActive = false;
+            RobotContainer.HardwareDevices.pinpoint.setPosition(Status.cornerResetPose);
+            pinpointTimer.reset();
+            robotContainer.gamepadEx1.rumble(300);
+        }
+
+        if (pinpointTimer.milliseconds() > 300) {
+            Status.isDrivingActive = true;
+        }
+
         if (robotContainer.gamepadEx1.square.isHeld()) {
             if (robotContainer.pathPlanner.driveUsingPID(0)) {
                 Status.isDrivingActive = true;
@@ -136,56 +147,17 @@ public class TeleOp extends OpMode {
             Status.isDrivingActive = true;
         }
 
-        // Gamepad 2
-
-        // Intake - Circle
-        Status.intakeToggle = robotContainer.gamepadEx2.circle.wasJustPressed() != Status.intakeToggle;
         if (Status.intakeToggle) {
             double power = robotContainer.gamepadEx1.rightTriggerRaw() - (robotContainer.gamepadEx1.leftTriggerRaw());
-            if (Status.intakeToggle) {
-//                if (Math.abs(robotContainer.spindexer.getError()) < 80) {
-                    robotContainer.intake.setPower(Math.signum(power) * Math.min(Math.abs(power), Constants.Intake.TOP_SPEED));
-//                } else {
-//                    robotContainer.intake.setPower(Math.signum(power) * Math.min(Math.abs(power), Constants.Intake.SPIN_ERROR_SPEED));
-//                }
-            } else {
-                robotContainer.intake.setPower(0);
-            }
+            robotContainer.intake.setPower(Math.signum(power) * Math.min(Math.abs(power), Constants.Intake.TOP_SPEED));
         } else {
             robotContainer.intake.setPower(Constants.Intake.REVERSE_TOP_SPEED);
         }
 
-        // Rotate transfer slot
-//        if (robotContainer.gamepadEx2.cross.wasJustPressed()) {
-//            Status.slotColor[robotContainer.spindexer.getCurrentTransferSlot()] = Constants.Game.ARTIFACT_COLOR.NONE;
-//            if (!robotContainer.spindexer.isEmpty()) {
-//            } else {
-//                Status.intakeToggle = true;
-//                Status.turretToggle = false;
-//            }
-//        }
-
-        // Kick ball into turret (This will be removed when transfer is removed)
-//        if (robotContainer.gamepadEx2.leftBumper.wasJustPressed()) {
-//            robotContainer.transfer.flapUp();
-//        } else if (robotContainer.gamepadEx2.leftBumper.wasJustReleased()) {
-//            robotContainer.transfer.flapDown();
-//        }
-
-        // No gamepad
-
         // Update the breamBreak state
         robotContainer.beamBreakToggleButton.update(RobotContainer.HardwareDevices.beamBreak.isPressed());
 
-        if (robotContainer.limelightLogic.limelight.getLatestResult().isValid()) {
-            robotContainer.telemetry.addData("robot pos on field", robotContainer.limelightLogic.limelightBotPose());
-            robotContainer.telemetry.addData("distance to goal", robotContainer.limelightLogic.disToGoal());
-        } else if (robotContainer.limelightLogic.limelight.getLatestResult() == null){
-            robotContainer.telemetry.addLine("robot pos on field no see");
-        }
-
         robotContainer.PREV_LOOP_TIME_MS = robotContainer.CURRENT_LOOP_TIME_MS;
-        robotContainer.telemetry.addData("accel table -3", robotContainer.pathPlanner.accelerationTableInterpolation(-3));
         robotContainer.telemetry("teleOp");
         Thread.yield();
     }

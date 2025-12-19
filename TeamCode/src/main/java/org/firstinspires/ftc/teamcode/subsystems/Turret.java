@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.qualcomm.robotcore.hardware.ServoImplEx;
-
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
@@ -61,15 +59,15 @@ public class Turret extends RobotContainer.HardwareDevices {
 
             if (backFieldButton.wasJustPressed()) {
                 if (Status.alliance == Constants.Game.ALLIANCE.RED) {
-                    Status.GOAL_POSE = new Pose2D(DistanceUnit.INCH, 87, 70, AngleUnit.DEGREES, -45);
+                    Status.goalPose = new Pose2D(DistanceUnit.INCH, 87, 70, AngleUnit.DEGREES, -45);
                 } else {
-                    Status.GOAL_POSE = new Pose2D(DistanceUnit.INCH, -87, 70, AngleUnit.DEGREES, 45);
+                    Status.goalPose = new Pose2D(DistanceUnit.INCH, -87, 70, AngleUnit.DEGREES, 45);
                 }
             } else if (backFieldButton.wasJustReleased()) {
                 if (Status.alliance == Constants.Game.ALLIANCE.RED) {
-                    Status.GOAL_POSE = new Pose2D(DistanceUnit.INCH, 70, 68, AngleUnit.DEGREES, -45);
+                    Status.goalPose = new Pose2D(DistanceUnit.INCH, 70, 68, AngleUnit.DEGREES, -45);
                 } else {
-                    Status.GOAL_POSE = new Pose2D(DistanceUnit.INCH, -70, 68, AngleUnit.DEGREES, 45);
+                    Status.goalPose = new Pose2D(DistanceUnit.INCH, -70, 68, AngleUnit.DEGREES, 45);
                 }
             }
 
@@ -147,14 +145,14 @@ public class Turret extends RobotContainer.HardwareDevices {
         double xDiff;
         double yDiff;
         if (Status.alliance == Constants.Game.ALLIANCE.RED) {
-            xDiff = Status.GOAL_POSE.getX(DistanceUnit.CM) - Status.currentPose.getX(DistanceUnit.CM);
-            yDiff = Status.GOAL_POSE.getY(DistanceUnit.CM) + Status.currentPose.getY(DistanceUnit.CM);
+            xDiff = Status.goalPose.getX(DistanceUnit.CM) - Status.currentPose.getX(DistanceUnit.CM);
+            yDiff = Status.goalPose.getY(DistanceUnit.CM) + Status.currentPose.getY(DistanceUnit.CM);
         } else {
-            xDiff = Status.GOAL_POSE.getX(DistanceUnit.CM) + Status.currentPose.getX(DistanceUnit.CM);
-            yDiff = Status.GOAL_POSE.getY(DistanceUnit.CM) - Status.currentPose.getY(DistanceUnit.CM);
+            xDiff = Status.goalPose.getX(DistanceUnit.CM) + Status.currentPose.getX(DistanceUnit.CM);
+            yDiff = Status.goalPose.getY(DistanceUnit.CM) - Status.currentPose.getY(DistanceUnit.CM);
         }
-        robotContainer.telemetry.addData("Goal x cm", Status.GOAL_POSE.getX(DistanceUnit.CM));
-        robotContainer.telemetry.addData("Goal y cm", Status.GOAL_POSE.getY(DistanceUnit.CM));
+        robotContainer.telemetry.addData("Goal x cm", Status.goalPose.getX(DistanceUnit.CM));
+        robotContainer.telemetry.addData("Goal y cm", Status.goalPose.getY(DistanceUnit.CM));
         robotContainer.telemetry.addData("Robot x cm", Status.currentPose.getX(DistanceUnit.CM));
         robotContainer.telemetry.addData("Robot y cm", Status.currentPose.getY(DistanceUnit.CM));
         robotContainer.telemetry.addData("x Diff", xDiff);

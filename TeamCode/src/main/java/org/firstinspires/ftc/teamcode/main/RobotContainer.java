@@ -28,7 +28,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
-import org.firstinspires.ftc.robotserver.internal.webserver.RobotControllerWebHandlers;
 import org.firstinspires.ftc.teamcode.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.drivetrain.DrivetrainUpdater;
 import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.PathingUpdater;
@@ -173,7 +172,7 @@ public class RobotContainer {
         this.telemetry = new MultipleTelemetry(opMode.telemetry, FtcDashboard.getInstance().getTelemetry());
 
         HardwareDevices.imu = getHardwareDevice(IMU.class, "imu");
-        HardwareDevices.imu.initialize(Constants.Robot.imuParameters);
+        HardwareDevices.imu.initialize(Constants.Robot.IMU_PARAMETERS);
 
         HardwareDevices.pinpoint = getHardwareDevice(GoBildaPinpointDriver.class, "pinpoint");
         HardwareDevices.pinpoint.setOffsets(Constants.Pathing.PINPOINT_X_OFFSET_MM, Constants.Pathing.PINPOINT_Y_OFFSET_MM, DistanceUnit.MM);
@@ -187,30 +186,30 @@ public class RobotContainer {
         HardwareDevices.indicatorLightFront = getHardwareDevice(ServoImplEx.class, "indicatorLightFront");
         HardwareDevices.indicatorLightBack = getHardwareDevice(ServoImplEx.class, "indicatorLightBack");
 
-        for (int i = 0; i < swerveModules.length; i++) {
-            HardwareDevices.motorNames[i] = "swerveMotor" + (i);
-            HardwareDevices.swerveMotors[i] = new BetterDcMotor(hardwareMap.get(DcMotorImplEx.class, HardwareDevices.motorNames[i]), Constants.Robot.SWERVE_MOTOR_UPDATE_TIME);
-            HardwareDevices.servoNames[i] = "swerveServo" + (i);
-            HardwareDevices.swerveServos[i] = new BetterCRServo(hardwareMap.get(CRServoImplEx.class, HardwareDevices.servoNames[i]), Constants.Robot.SWERVE_SERVO_UPDATE_TIME);
-            HardwareDevices.analogNames[i] = "swerveAnalog" + (i);
-            HardwareDevices.swerveAnalogs[i] = new BetterAnalogInput(hardwareMap.get(AnalogInput.class, HardwareDevices.analogNames[i]), Constants.Robot.SWERVE_ANALOG_UPDATE_TIME);
-
-            if (i == 0 || i == 2) {
-                HardwareDevices.swerveMotors[i].setDirection(DcMotorImplEx.Direction.REVERSE);
-            }
-            HardwareDevices.swerveMotors[i].setZeroPowerBehavior(DcMotorImplEx.ZeroPowerBehavior.BRAKE);
-            HardwareDevices.swerveMotors[i].setMode(DcMotorImplEx.RunMode.RUN_USING_ENCODER);
-
-            swerveServosPDF[i] = new SwervePDF(this, i);
-            swerveModules[i] = new SwerveModule(this, HardwareDevices.swerveMotors[i], HardwareDevices.swerveServos[i], swerveServosPDF[i], HardwareDevices.swerveAnalogs[i], Constants.Swerve.POWER_MULTIPLIER[i], i);  //is it best to pass in a constant?
-
-            if (Constants.Swerve.SERVO_ANALOG_ACTIVE) {
-                int analogPortNumber = Character.getNumericValue(HardwareDevices.swerveAnalogs[i].getConnectionInfo().charAt(HardwareDevices.swerveAnalogs[i].getConnectionInfo().length() - 1));
-                if (analogPortNumber != i) {
-                    addRetainedTelemetry("WARNING: Swerve Analog Encoder " + i + " is connected to port " + analogPortNumber + ", should be port " + i, null);
-                }
-            }
-        }
+//        for (int i = 0; i < swerveModules.length; i++) {
+//            HardwareDevices.motorNames[i] = "swerveMotor" + (i);
+//            HardwareDevices.swerveMotors[i] = new BetterDcMotor(hardwareMap.get(DcMotorImplEx.class, HardwareDevices.motorNames[i]), Constants.Robot.SWERVE_MOTOR_UPDATE_TIME);
+//            HardwareDevices.servoNames[i] = "swerveServo" + (i);
+//            HardwareDevices.swerveServos[i] = new BetterCRServo(hardwareMap.get(CRServoImplEx.class, HardwareDevices.servoNames[i]), Constants.Robot.SWERVE_SERVO_UPDATE_TIME);
+//            HardwareDevices.analogNames[i] = "swerveAnalog" + (i);
+//            HardwareDevices.swerveAnalogs[i] = new BetterAnalogInput(hardwareMap.get(AnalogInput.class, HardwareDevices.analogNames[i]), Constants.Robot.SWERVE_ANALOG_UPDATE_TIME);
+//
+//            if (i == 0 || i == 2) {
+//                HardwareDevices.swerveMotors[i].setDirection(DcMotorImplEx.Direction.REVERSE);
+//            }
+//            HardwareDevices.swerveMotors[i].setZeroPowerBehavior(DcMotorImplEx.ZeroPowerBehavior.BRAKE);
+//            HardwareDevices.swerveMotors[i].setMode(DcMotorImplEx.RunMode.RUN_USING_ENCODER);
+//
+//            swerveServosPDF[i] = new SwervePDF(this, i);
+//            swerveModules[i] = new SwerveModule(this, HardwareDevices.swerveMotors[i], HardwareDevices.swerveServos[i], swerveServosPDF[i], HardwareDevices.swerveAnalogs[i], Constants.Swerve.POWER_MULTIPLIER[i], i);  //is it best to pass in a constant?
+//
+//            if (Constants.Swerve.SERVO_ANALOG_ACTIVE) {
+//                int analogPortNumber = Character.getNumericValue(HardwareDevices.swerveAnalogs[i].getConnectionInfo().charAt(HardwareDevices.swerveAnalogs[i].getConnectionInfo().length() - 1));
+//                if (analogPortNumber != i) {
+//                    addRetainedTelemetry("WARNING: Swerve Analog Encoder " + i + " is connected to port " + analogPortNumber + ", should be port " + i, null);
+//                }
+//            }
+//        }
 
         HardwareDevices.turretServoMaster = new BetterServo(getHardwareDevice(ServoImplEx.class, "turretServoMaster"), Constants.Robot.SERVO_UPDATE_TIME);
         HardwareDevices.turretServoSlave = new BetterServo(getHardwareDevice(ServoImplEx.class, "turretServoSlave"), Constants.Robot.SERVO_UPDATE_TIME);
@@ -272,7 +271,11 @@ public class RobotContainer {
         for (LynxModule hub : HardwareDevices.allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }
-        telemetry.setMsTransmissionInterval(Constants.System.TELEMETRY_UPDATE_INTERVAL_MS);
+        if (Status.competitionMode) {
+            telemetry.setMsTransmissionInterval(Constants.System.TELEMETRY_COMP_UPDATE_INTERVAL_MS);
+        } else {
+            telemetry.setMsTransmissionInterval(Constants.System.TELEMETRY_UPDATE_INTERVAL_MS);
+        }
         this.drivetrain.setTargets(Constants.Swerve.STOP_FORMATION, Constants.Swerve.NO_POWER);
         pathPlanner.accelTableInit();
     }
@@ -281,19 +284,22 @@ public class RobotContainer {
         gamepadEx1 = new GamepadWrapper(opmode.gamepad1);
         gamepadEx2 = new GamepadWrapper(opmode.gamepad2);
         Status.isDrivingActive = false;
-        Status.GOAL_POSE = Status.alliance == Constants.Game.ALLIANCE.RED ?
+        Status.goalPose = Status.alliance == Constants.Game.ALLIANCE.RED ?
                         new Pose2D(DistanceUnit.INCH, 70, 70, AngleUnit.DEGREES, -45) :
                         Status.alliance == Constants.Game.ALLIANCE.BLUE ?
                                 new Pose2D(DistanceUnit.INCH, -70, 70, AngleUnit.DEGREES, 45) :
                                 new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
-        Status.goalsideStartingPose = Status.alliance == Constants.Game.ALLIANCE.RED ? new Pose2D(DistanceUnit.INCH, Constants.Robot.GoalsideStartingX, Constants.Robot.GoalsideStartingY, AngleUnit.DEGREES, Constants.Robot.GoalsideStartingHeading) :
-                Status.alliance == Constants.Game.ALLIANCE.BLUE ? new Pose2D(DistanceUnit.INCH, Constants.Robot.GoalsideStartingX, -Constants.Robot.GoalsideStartingY, AngleUnit.DEGREES, Constants.Robot.GoalsideStartingHeading) :
+        Status.goalsideStartingPose = Status.alliance == Constants.Game.ALLIANCE.RED ? new Pose2D(DistanceUnit.INCH, Constants.Robot.GOALSIDE_STARTING_X, Constants.Robot.GOALSIDE_STARTING_Y, AngleUnit.DEGREES, Constants.Robot.GOALSIDE_STARTING_HEADING) :
+                Status.alliance == Constants.Game.ALLIANCE.BLUE ? new Pose2D(DistanceUnit.INCH, Constants.Robot.GOALSIDE_STARTING_X, -Constants.Robot.GOALSIDE_STARTING_Y, AngleUnit.DEGREES, Constants.Robot.GOALSIDE_STARTING_HEADING) :
                         new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
-        Status.startingPose = Status.alliance == Constants.Game.ALLIANCE.RED ? new Pose2D(DistanceUnit.CM, Constants.Robot.startingX, Constants.Robot.startingY, AngleUnit.DEGREES, Constants.Robot.startingHeading) :
-                Status.alliance == Constants.Game.ALLIANCE.BLUE ? new Pose2D(DistanceUnit.CM, Constants.Robot.startingX, -Constants.Robot.startingY, AngleUnit.DEGREES, -Constants.Robot.startingHeading) :
+        Status.startingPose = Status.alliance == Constants.Game.ALLIANCE.RED ? new Pose2D(DistanceUnit.CM, Constants.Robot.STARTING_X, Constants.Robot.STARTING_Y, AngleUnit.DEGREES, Constants.Robot.STARTING_HEADING) :
+                Status.alliance == Constants.Game.ALLIANCE.BLUE ? new Pose2D(DistanceUnit.CM, Constants.Robot.STARTING_X, -Constants.Robot.STARTING_Y, AngleUnit.DEGREES, -Constants.Robot.STARTING_HEADING) :
+                        new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
+        Status.cornerResetPose = Status.alliance == Constants.Game.ALLIANCE.RED ? new Pose2D(DistanceUnit.CM, Constants.Robot.CORNER_X, Constants.Robot.CORNER_Y, AngleUnit.DEGREES, Constants.Robot.CORNER_ANGLE) :
+                Status.alliance == Constants.Game.ALLIANCE.BLUE ? new Pose2D(DistanceUnit.CM, Constants.Robot.CORNER_X, -Constants.Robot.CORNER_Y, AngleUnit.DEGREES, -Constants.Robot.CORNER_ANGLE) :
                         new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
 
-        // Start the required treads
+        // Start the required threads
         localizationUpdater = new LocalizationUpdater(this);
         localizationUpdater.start();
         drivetrainUpdater = new DrivetrainUpdater(this);
@@ -301,7 +307,7 @@ public class RobotContainer {
         pathingUpdater = new PathingUpdater(this);
         if (!teleop) {
             pathingUpdater.start();
-        }else{
+        } else {
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -533,18 +539,35 @@ public class RobotContainer {
     }
 
     public void telemetry (String opMode) {
-        if (telemetryLoopTimer.milliseconds() < Constants.System.TELEMETRY_UPDATE_INTERVAL_MS) {
+        if (telemetryLoopTimer.milliseconds() < Constants.System.TELEMETRY_UPDATE_INTERVAL_MS && !Status.competitionMode) {
+            return;
+        } else if (telemetryLoopTimer.milliseconds() < Constants.System.TELEMETRY_COMP_UPDATE_INTERVAL_MS && Status.competitionMode) {
             return;
         }
         if (Status.competitionMode) {
-            telemetry.addData("Spindexer Slot Colors", Arrays.toString(Status.slotColor));
+            telemetry.addData("Alliance", Status.alliance);
+            telemetry.addLine();
+//            telemetry.addData("Spindexer Slot Colors", Arrays.toString(Status.slotColor));
+//            telemetry.addLine();
+            telemetry.addData("flywheel atVelocity", turret.flywheel.atTargetVelocity());
+            telemetry.addLine();
+            telemetry.addData("OpMode Avg Loop Time", (int) getRollingAverageLoopTime(opMode) + " ms");
+            telemetry.addData("DriveTrain Avg Loop Time", (int) drivetrainUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms");
+            telemetry.addData("Pinpoint Avg Loop Time", (int) localizationUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms");
+            telemetry.addLine();
+            telemetry.addData("Pinpoint X", Status.currentPose.getX(DistanceUnit.CM) + " cm");
+            telemetry.addData("Pinpoint Y", Status.currentPose.getY(DistanceUnit.CM) + " cm");
+            telemetry.addData("Pinpoint Heading", Status.currentHeading + "°");
+            telemetry.addLine();
+            displayRetainedTelemetry();
+            telemetry.update();
             return;
         }
-        //TelemetryPacket packet = new TelemetryPacket();
-//        telemetry.addData("Control Hub Voltage", controlHubVoltage + " V");
-//        telemetry.addData("Expansion Hub Voltage", expansionHubVoltage + " V");
-//        telemetry.addData("Control Hub Current", controlHubCurrent + " A");
-//        telemetry.addData("Expansion Hub Current", expansionHubCurrent + " A");
+        telemetry.addData("Alliance", Status.alliance);
+        telemetry.addData("Control Hub Voltage", controlHubVoltage + " V");
+        telemetry.addData("Expansion Hub Voltage", expansionHubVoltage + " V");
+        telemetry.addData("Control Hub Current", controlHubCurrent + " A");
+        telemetry.addData("Expansion Hub Current", expansionHubCurrent + " A");
         telemetry.addLine();
         telemetry.addData("Spindexer Angle", spindexer.getAngle());
         telemetry.addData("Spindexer Intake Slot", spindexer.getCurrentIntakeSlot());
@@ -577,12 +600,12 @@ public class RobotContainer {
         telemetry.addData("Vision offset pose", positionProvider.getVisionOffsetPose());
         telemetry.addLine();
         telemetry.addData("Pinpoint position", HardwareDevices.pinpoint.getPosition());
-//        telemetry.addData("Pinpoint X", Status.currentPose.getX(DistanceUnit.CM) + " cm");
-//        telemetry.addData("Pinpoint Y", Status.currentPose.getY(DistanceUnit.CM) + " cm");
-//        telemetry.addData("Pinpoint Heading", Status.currentHeading + "°");
+        telemetry.addData("Pinpoint X", Status.currentPose.getX(DistanceUnit.CM) + " cm");
+        telemetry.addData("Pinpoint Y", Status.currentPose.getY(DistanceUnit.CM) + " cm");
+        telemetry.addData("Pinpoint Heading", Status.currentHeading + "°");
         telemetry.addData("PINPOINT STATUS", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
-        telemetry.addData("odo x", RobotContainer.HardwareDevices.pinpoint.getEncoderX());
-        telemetry.addData("odo y", RobotContainer.HardwareDevices.pinpoint.getEncoderY());
+        telemetry.addData("Pinpoint odo x", RobotContainer.HardwareDevices.pinpoint.getEncoderX());
+        telemetry.addData("Pinpoint odo y", RobotContainer.HardwareDevices.pinpoint.getEncoderY());
         telemetry.addData("PINPOINT STATUS", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
         telemetry.addData("Dist to goal", HelperFunctions.disToGoal());
         telemetry.addLine();
@@ -592,30 +615,22 @@ public class RobotContainer {
         telemetry.addLine();
         telemetry.addData("DriveTrain Avg Loop Time", (int) drivetrainUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms");
         telemetry.addData("DriveTrain Loop Time", (int) drivetrainUpdater.CURRENT_LOOP_TIME_MS + " ms");
-        telemetry.addData("Goal: ", Status.GOAL_POSE);
+        telemetry.addData("Goal: ", Status.goalPose);
         telemetry.addData("Start: ", Status.startingPose);
-//        telemetry.addLine();
-//        telemetry.addData("Pinpoint Avg Loop Time", (int) localizationUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms");
-//        telemetry.addData("Pinpoint Loop Time", (int) localizationUpdater.CURRENT_LOOP_TIME_MS + " ms");
-//        telemetry.addLine();
-//        telemetry.addData("Heading PID Target", headingPID.getTargetHeading());
-//        telemetry.addData("Heading PID Target Reached", Status.robotHeadingTargetReached);
-//        telemetry.addData("Heading PID Output", headingPID.calculate(Status.currentHeading));
-//        telemetry.addLine();
-//        telemetry.addData("Left Stick Y", gamepadEx1.leftStickY());
-//        telemetry.addData("Left Stick X", gamepadEx1.leftStickX());
-//        telemetry.addData("Right Stick Y", gamepadEx1.rightStickY());
-//        telemetry.addData("Right Stick X", gamepadEx1.rightStickX());
-//        telemetry.addLine();
-//        telemetry.addData("Motor 0 Current Velocity", swerveModules[0].motor.getVelocity());
-//        telemetry.addData("Motor 1 Current Velocity", swerveModules[1].motor.getVelocity());
-//        telemetry.addData("Motor 2 Current Velocity", swerveModules[2].motor.getVelocity());
-//        telemetry.addData("Motor 3 Current Velocity", swerveModules[3].motor.getVelocity());
+        telemetry.addLine();
+        telemetry.addData("Pinpoint Avg Loop Time", (int) localizationUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms");
+        telemetry.addData("Pinpoint Loop Time", (int) localizationUpdater.CURRENT_LOOP_TIME_MS + " ms");
+        telemetry.addLine();
+        telemetry.addData("Motor 0 Current Velocity", swerveModules[0].motor.getVelocity());
+        telemetry.addData("Motor 1 Current Velocity", swerveModules[1].motor.getVelocity());
+        telemetry.addData("Motor 2 Current Velocity", swerveModules[2].motor.getVelocity());
+        telemetry.addData("Motor 3 Current Velocity", swerveModules[3].motor.getVelocity());
+        telemetry.addLine();
         telemetry.addData("Field Oriented", Status.fieldOriented);
         telemetry.addData("Intake Enabled", Status.intakeToggle);
         telemetry.addLine();
-        // telemetry.addData("flywheel current mA", HardwareDevices.flyWheelMotorMaster.getCurrent(CurrentUnit.MILLIAMPS));
-        // telemetry.addData("upper flywheel current mA", HardwareDevices.flyWheelMotorSlave.getCurrent(CurrentUnit.MILLIAMPS));
+         telemetry.addData("flywheel current mA", HardwareDevices.flyWheelMotorMaster.getCurrent(CurrentUnit.MILLIAMPS));
+         telemetry.addData("upper flywheel current mA", HardwareDevices.flyWheelMotorSlave.getCurrent(CurrentUnit.MILLIAMPS));
         telemetry.addData("turret pos", turret.getPosition());
         telemetry.addData("slave servo", HardwareDevices.turretServoSlave.getPosition());
         telemetry.addData("hood", HardwareDevices.hoodServo.getPosition());
@@ -625,30 +640,17 @@ public class RobotContainer {
 //       telemetry.addData("blue", HardwareDevices.colorSensor.updateBlue());
 //       telemetry.addData("green", HardwareDevices.colorSensor.updateGreen());
 //       telemetry.addData("color sensor dist", HardwareDevices.colorSensor.getDistance());
-
-//        int selectedServo = -1;
-//        if (gamepadEx1.dpadUp.isPressed()) {
-//            selectedServo = 0;
-//        } else if (gamepadEx1.dpadRight.isPressed()) {
-//            selectedServo = 1;
-//        } else if (gamepadEx1.dpadDown.isPressed()) {
-//            selectedServo = 2;
-//        } else if (gamepadEx1.dpadLeft.isPressed()) {
-//            selectedServo = 3;
-//        }
-//        if (selectedServo >= 0) {
-//            telemetry.addLine();
-//            telemetry.addData("Selected Servo", selectedServo);
-//            telemetry.addData("Servo Angle", swerveModules[selectedServo].servo.getAngle());
-//            telemetry.addData("Servo Target", swerveServosPDF[selectedServo].getTargetAngle());
-//            telemetry.addData("Servo Set Power", swerveServosPDF[selectedServo].calculate());
-//            telemetry.addData("Servo Error", swerveServosPDF[selectedServo].getError());
-//            telemetry.addData("Motor Target Power", swerveModules[selectedServo].motor.targetPower);
-//            telemetry.addData("Motor Current Velocity", swerveModules[selectedServo].motor.getVelocity());
-//            telemetry.addData("Motor Current Power", RobotContainer.HardwareDevices.swerveMotors[selectedServo].getPower());
-//        }
-//        packet.fieldOverlay()
-//                .drawImage("teamcode/other/DECODE_FIELD.png", 24, 24, 48, 48);
+        for (int i = 0; i < swerveModules.length; i++) {
+            telemetry.addLine();
+            telemetry.addLine("Servo" + i);
+            telemetry.addData(i + "Servo Angle", swerveModules[i].servo.getAngle());
+            telemetry.addData(i + "Servo Target", swerveServosPDF[i].getTargetAngle());
+            telemetry.addData(i + "Servo Set Power", swerveServosPDF[i].calculate());
+            telemetry.addData(i + "Servo Error", swerveServosPDF[i].getError());
+            telemetry.addData(i + "Motor Target Power", swerveModules[i].motor.targetPower);
+            telemetry.addData(i + "Motor Current Velocity", swerveModules[i].motor.getVelocity());
+            telemetry.addData(i + "Motor Current Power", RobotContainer.HardwareDevices.swerveMotors[i].getPower());
+        }
         telemetry.addLine();
         displayRetainedTelemetry();
         telemetry.update();

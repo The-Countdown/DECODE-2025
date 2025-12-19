@@ -39,7 +39,7 @@ public class Constants {
             GPP,
             PGP,
             PPG,
-            Unknown
+            UNKNOWN
         }
 
         public enum ARTIFACT_COLOR{
@@ -61,7 +61,7 @@ public class Constants {
         public static int SWERVE_SERVO_UPDATE_TIME = 10;
         public static int SWERVE_ANALOG_UPDATE_TIME = 5;
 
-        public static final IMU.Parameters imuParameters = new IMU.Parameters(
+        public static final IMU.Parameters IMU_PARAMETERS = new IMU.Parameters(
                 new RevHubOrientationOnRobot(
                         RevHubOrientationOnRobot.LogoFacingDirection.UP,
                         RevHubOrientationOnRobot.UsbFacingDirection.LEFT
@@ -69,8 +69,8 @@ public class Constants {
         );
 
         //public static double startingX = -156.21, startingY = -38.78, startingHeading = -180;
-        public static double startingX = -160.9725, startingY = -43.02125, startingHeading = -180; // Do NOT NOT ever change this heading unless you really know what you are doing.
-        public static double GoalsideStartingX = 142.5575, GoalsideStartingY = -18.415, GoalsideStartingHeading = 0;
+        public static double STARTING_X = -160.9725, STARTING_Y = -43.02125, STARTING_HEADING = -180;
+        public static double GOALSIDE_STARTING_X = 142.5575, GOALSIDE_STARTING_Y = -18.415, GOALSIDE_STARTING_HEADING = 0;
 
         public static final int
                 CONTROL_HUB_INDEX = 0,
@@ -90,6 +90,10 @@ public class Constants {
         public static final double WHEEL_CALCULATED_MAX_RPM = Swerve.MOTOR_RPM_TESTED_MAX * Swerve.MOTOR_TO_WHEEL_GEAR_RATIO;
 
         public static final double ROBOT_CALCULATED_MAX_SPEED_METERS_PER_SECOND = (2*Math.PI * (WHEEL_DIAMETER_MM / 1000)) * (WHEEL_CALCULATED_MAX_RPM / 60);
+
+        public static double CORNER_X = 0;
+        public static double CORNER_Y = 0;
+        public static double CORNER_ANGLE = 0;
     }
 
     @Config
@@ -199,6 +203,7 @@ public class Constants {
     public static class System {
         public static final int LOOP_AVERAGE_WINDOW_SIZE = 30;
         public static int TELEMETRY_UPDATE_INTERVAL_MS = 750;
+        public static int TELEMETRY_COMP_UPDATE_INTERVAL_MS = 750;
         public static final double ANALOG_MAX_VOLTAGE = 3.3;
         public static final double GREEN_THRESHOLD = 70;
     }
@@ -224,7 +229,6 @@ public class Constants {
         public static final GoBildaPinpointDriver.EncoderDirection
                 PINPOINT_X_ENCODER_DIRECTION = GoBildaPinpointDriver.EncoderDirection.FORWARD;
         public static final GoBildaPinpointDriver.EncoderDirection PINPOINT_Y_ENCODER_DIRECTION = GoBildaPinpointDriver.EncoderDirection.REVERSED;
-        public static double turningRate = 0.20;
 //        public static double
 //                HEADING_KP = 0.0055,
 //                HEADING_KI = 0,
@@ -357,7 +361,6 @@ public class Constants {
         public static int NUM_SLOTS = 3;
         public static double ANGLE_OFFSET = 45;
         public static double JAM_TIME_THRESHOLD = 1;
-        public static double axonTestAngle = 0;
         public static double[] TRANSFER_SLOT_ANGLES = {60, 180, 300};
         public static double[] INTAKE_SLOT_ANGLES = {120, 240, 360};
         public static int COLOR_SENSE_TIME = 30;

@@ -113,11 +113,13 @@ public class Spindexer {
             if (robotContainer.gamepadEx2.rightBumper.wasJustReleased()) {
                 spindexerServo.setPower(0);
                 this.pause = false;
+                robotContainer.spindexer.goToFirstIntakeSlot();
             }
 
             if (robotContainer.gamepadEx1.rightBumper.wasJustReleased()) {
                 spindexerServo.setPower(0);
                 this.pause = false;
+                robotContainer.spindexer.goToFirstIntakeSlot();
             }
         }
         this.lastPosition = getAngle();

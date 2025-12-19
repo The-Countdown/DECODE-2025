@@ -156,8 +156,8 @@ public class GamepadWrapper {
 
     }
 
-    public void rumble() {
-        gamepad.rumble(250);
+    public void rumble(int durationMs) {
+        gamepad.rumble(durationMs);
     }
 
     public float leftStickX() {

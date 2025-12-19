@@ -4,7 +4,6 @@ import com.qualcomm.hardware.limelightvision.LLFieldMap;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -85,8 +84,8 @@ public class LimelightLogic {
     public double disToGoal() {
         if (result != null) {
             Pose2D botPose = limelightBotPose();
-            double xDiff = Status.GOAL_POSE.getX(DistanceUnit.INCH) - botPose.getX(DistanceUnit.INCH);
-            double yDiff = Status.GOAL_POSE.getY(DistanceUnit.INCH) - botPose.getY(DistanceUnit.INCH);
+            double xDiff = Status.goalPose.getX(DistanceUnit.INCH) - botPose.getX(DistanceUnit.INCH);
+            double yDiff = Status.goalPose.getY(DistanceUnit.INCH) - botPose.getY(DistanceUnit.INCH);
             return Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
         } else {
             return 0;
