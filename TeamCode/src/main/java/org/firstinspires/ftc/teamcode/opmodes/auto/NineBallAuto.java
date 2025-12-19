@@ -101,6 +101,8 @@ public class NineBallAuto extends OpMode {
         robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.pause(), Constants.Turret.FLYWHEEL_SPINUP_MS);
         robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.shootAll(false), Constants.Turret.FLYWHEEL_SPINUP_MS);
         robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.unpause(), Constants.Turret.FLYWHEEL_SPINUP_MS + Constants.Spindexer.FULL_EMPTY_SPINTIME);
+        robotContainer.delayedActionManager.schedule(()-> Constants.Pathing.LATITUDE_KP *= 1.5, 0);
+        robotContainer.delayedActionManager.schedule(()-> Constants.Pathing.LONGITUDE_KP *= 1.5, 0);
 
         //Start of sleepPose
         robotContainer.delayedActionManager.incrementPoseOffset();
