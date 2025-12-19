@@ -38,6 +38,7 @@ public class PathPlannerTuner extends OpMode {
     @Override
     public void start() {
         robotContainer.start(this, true);
+        robotContainer.pathingUpdater.start();
         Status.isDrivingActive = false;
         timer.reset();
     }
@@ -47,18 +48,31 @@ public class PathPlannerTuner extends OpMode {
         robotContainer.CURRENT_LOOP_TIME_MS = robotContainer.updateLoopTime("teleOp");
         robotContainer.DELTA_TIME_MS = robotContainer.CURRENT_LOOP_TIME_MS - robotContainer.PREV_LOOP_TIME_MS;
         robotContainer.refreshData();
+        robotContainer.positionProvider.update(false);
 
-        if (timer.seconds() < 1000) {
+        if (timer.seconds() < 5) {
             robotContainer.pathPlanner.driveUsingPID(1);
-        } else if (timer.seconds() < 2000) {
+        } else if (timer.seconds() < 10) {
             robotContainer.pathPlanner.driveUsingPID(2);
-        } else if (timer.seconds() < 3000) {
+        } else if (timer.seconds() < 15) {
             robotContainer.pathPlanner.driveUsingPID(3);
-        } else if (timer.seconds() < 4000) {
+        } else if (timer.seconds() < 20) {
             robotContainer.pathPlanner.driveUsingPID(0);
         } else {
             timer.reset();
         }
+
+        robotContainer.telemetry.addData("Robot X", Status.currentPose.getX(DistanceUnit.CM));
+        robotContainer.telemetry.addData("Robot Y", Status.currentPose.getY(DistanceUnit.CM));
+        robotContainer.telemetry.addData("Robot Heading", Status.currentPose.getHeading(AngleUnit.DEGREES));
+
+        robotContainer.telemetry.addData("Robot X Target", Status.targetPose.getX(DistanceUnit.CM));
+        robotContainer.telemetry.addData("Robot Y Target", Status.targetPose.getY(DistanceUnit.CM));
+        robotContainer.telemetry.addData("Robot Heading Target", Status.targetPose.getHeading(AngleUnit.DEGREES));
+
+        robotContainer.telemetry.addData("LatitudePID", robotContainer.latitudePID.calculate());
+        robotContainer.telemetry.addData("LongitudePID", robotContainer.latitudePID.calculate());
+        robotContainer.telemetry.addData("HeadingPID", robotContainer.latitudePID.calculate());
 
         robotContainer.telemetry.update();
     }
