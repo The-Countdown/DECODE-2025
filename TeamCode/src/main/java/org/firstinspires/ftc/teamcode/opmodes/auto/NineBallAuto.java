@@ -24,7 +24,7 @@ public class NineBallAuto extends OpMode {
     // 91.44
     // 30.48
     public static double BEFORE_TAPE = 84;
-    public static double AFTER_TAPE = 162;
+    public static double AFTER_TAPE = 159;
     public static double TAPE_LOW = -91.5;
     public static double TAPE_MID = -34.5;
     @Override

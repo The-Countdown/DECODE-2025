@@ -265,9 +265,9 @@ public class Constants {
                 LONGITUDE_I_MAX = 0,
                 LONGITUDE_KD = 0,
                 LONGITUDE_KF = 0.03;
-        public static double HEADING_PID_TOLERANCE_DEGREES = 1;
-        public static double LATITUDE_PID_TOLERANCE_CM = 1;
-        public static double LONGITUDE_PID_TOLERANCE_CM = 1;
+        public static double HEADING_PID_TOLERANCE_DEGREES = 10;
+        public static double LATITUDE_PID_TOLERANCE_CM = 2;
+        public static double LONGITUDE_PID_TOLERANCE_CM = 2;
         public static int PINPOINT_UPDATE_DELAY_MS = 50;
         public static int LIMELIGHT_UPDATE_AVERAGING_MS = 500;
         public static double SWERVE_MAX_VELOCITY = 2000;
