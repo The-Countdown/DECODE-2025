@@ -15,5 +15,5 @@ jobs:
           args: |
             **${{ github.actor }}** pushed to **${{ github.repository }}**
             Branch: `${{ github.ref_name }}`
-            Message: ${{ github.event.commits.*.message }}
-            Compare: ${{ github.event.compare }}
+            Commits:
+            - ${{ join(github.event.commits.*.message, '\n- ') }}
