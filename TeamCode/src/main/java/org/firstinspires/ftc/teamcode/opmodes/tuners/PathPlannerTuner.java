@@ -10,23 +10,24 @@ import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 
-@com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "PathPlannerTuner", group = "TeleOp")
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "PathPlannerTuner", group = "TeleOp")
 public class PathPlannerTuner extends OpMode {
     private RobotContainer robotContainer;
-    ElapsedTime timer = new ElapsedTime();
+    private final ElapsedTime timer = new ElapsedTime();
 
     @Override
     public void init() {
         robotContainer = new RobotContainer(this);
         robotContainer.init();
-        RobotContainer.HardwareDevices.pinpoint.setPosition((Pose2D) blackboard.getOrDefault("pose", new Pose2D(DistanceUnit.CM, 0, 0, AngleUnit.DEGREES, 0)));
-        robotContainer.telemetry.addData("Alliance Color", Status.alliance == Constants.Game.ALLIANCE.BLUE ? "BLUE" : "RED");
-        robotContainer.telemetry.update();
+        Status.opModeIsActive = true;
+        Status.startingPose = new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
 
-        robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.INCH, 12,12,AngleUnit.DEGREES, 90));
-        robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.INCH, -12,12,AngleUnit.DEGREES, 90));
-        robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.INCH, -12,-12,AngleUnit.DEGREES, 180));
-        robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.INCH, 12,-12,AngleUnit.DEGREES, 180));
+        robotContainer.pathPlanner.addPose(Status.startingPose);
+        robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, 100, 0, AngleUnit.DEGREES, 90));
+        robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, 100, 100, AngleUnit.DEGREES, 180));
+        robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, 0, 100, AngleUnit.DEGREES, -90));
+
+        RobotContainer.HardwareDevices.pinpoint.setPosition(Status.startingPose);
     }
 
     @Override
@@ -36,43 +37,37 @@ public class PathPlannerTuner extends OpMode {
 
     @Override
     public void start() {
-        Status.opModeIsActive = true;
-        Status.lightsOn = true;
-        Status.isDrivingActive = false;
-        Status.intakeToggle = false;
-        Status.turretToggle = false;
         robotContainer.start(this, true);
+        Status.isDrivingActive = false;
+        timer.reset();
     }
 
     @Override
     public void loop() {
+        robotContainer.CURRENT_LOOP_TIME_MS = robotContainer.updateLoopTime("teleOp");
+        robotContainer.DELTA_TIME_MS = robotContainer.CURRENT_LOOP_TIME_MS - robotContainer.PREV_LOOP_TIME_MS;
         robotContainer.refreshData();
-//        if (timer.seconds() > 15){
-//            timer.reset();
-//        } else if (timer.seconds() > 9 && timer.seconds() < 15) {
-//            robotContainer.pathPlanner.driveUsingPID(3);
-//        } else if (timer.seconds() > 6 && timer.seconds() < 9) {
-//            robotContainer.pathPlanner.driveUsingPID(2);
-//        } else if (timer.seconds() > 3 && timer.seconds() < 6) {
-//            robotContainer.pathPlanner.driveUsingPID(1);
-//        } else if (timer.seconds() > 0 && timer.seconds() < 3) {
-//            robotContainer.pathPlanner.driveUsingPID(0);
-//        }
-        if (robotContainer.pathPlanner.pathCompleted) {
-            robotContainer.pathPlanner.pathCompleted = false;
-            robotContainer.pathPlanner.currentPath = 0;
-        }
-        robotContainer.pathPlanner.driveThroughPath();
 
-        telemetry.addData("y", Status.currentPose.getY(DistanceUnit.CM));
-        telemetry.addData("x", Status.currentPose.getX(DistanceUnit.CM));
-        telemetry.addData("angle", Status.currentPose.getHeading(AngleUnit.DEGREES));
-        telemetry.addData("Target: ", Status.targetPose.toString());
-        Thread.yield();
+        if (timer.seconds() < 1000) {
+            robotContainer.pathPlanner.driveUsingPID(1);
+        } else if (timer.seconds() < 2000) {
+            robotContainer.pathPlanner.driveUsingPID(2);
+        } else if (timer.seconds() < 3000) {
+            robotContainer.pathPlanner.driveUsingPID(3);
+        } else if (timer.seconds() < 4000) {
+            robotContainer.pathPlanner.driveUsingPID(0);
+        } else {
+            timer.reset();
+        }
+
+        robotContainer.telemetry.update();
     }
 
     @Override
     public void stop() {
+        robotContainer.drivetrain.setTargets(Constants.Swerve.STOP_FORMATION, Constants.Swerve.NO_POWER);
+
+        Status.isDrivingActive = false;
         Status.opModeIsActive = false;
         robotContainer.isRunning = false;
     }
