@@ -108,6 +108,8 @@ public class NineBallAuto extends OpMode {
         //Start of sleepPose
         robotContainer.delayedActionManager.incrementPoseOffset();
         robotContainer.delayedActionManager.schedulePose(() -> pathTimer.reset());
+        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LONGITUDE_KP /= 1.3);
+        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP /= 1.3);
 
         //Going to intake
         robotContainer.delayedActionManager.incrementPoseOffset();
@@ -118,6 +120,8 @@ public class NineBallAuto extends OpMode {
 
         //At intake
         robotContainer.delayedActionManager.incrementPoseOffset();
+        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LONGITUDE_KP *= 1.3);
+        robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP *= 1.3);
         robotContainer.delayedActionManager.schedulePose(() -> pathTimer.reset());
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LONGITUDE_KP /= 2);
         robotContainer.delayedActionManager.schedulePose(() -> Constants.Pathing.LATITUDE_KP /= 2);
@@ -275,10 +279,15 @@ public class NineBallAuto extends OpMode {
         Constants.Pathing.LATITUDE_PID_TOLERANCE_CM = 1;
         Constants.Pathing.LONGITUDE_PID_TOLERANCE_CM = 1;
         robotContainer.delayedActionManager.cancelAll();
+        // if(Status.alliance == Constants.Game.ALLIANCE.RED) {
+        //     blackboard.put("pose", new Pose2D(DistanceUnit.CM, Status.currentPose.getX(DistanceUnit.CM), Status.currentPose.getY(DistanceUnit.CM)+9, AngleUnit.DEGREES, Status.currentPose.getHeading(AngleUnit.DEGREES)));
+        // } else {
+        //     blackboard.put("pose", new Pose2D(DistanceUnit.CM, Status.currentPose.getX(DistanceUnit.CM), Status.currentPose.getY(DistanceUnit.CM)-9, AngleUnit.DEGREES, Status.currentPose.getHeading(AngleUnit.DEGREES)));
+        // }
         if(Status.alliance == Constants.Game.ALLIANCE.RED) {
-            blackboard.put("pose", new Pose2D(DistanceUnit.CM, Status.currentPose.getX(DistanceUnit.CM), Status.currentPose.getY(DistanceUnit.CM)+9, AngleUnit.DEGREES, Status.currentPose.getHeading(AngleUnit.DEGREES)));
+            blackboard.put("pose", new Pose2D(DistanceUnit.CM, Status.currentPose.getX(DistanceUnit.CM), Status.currentPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, Status.currentPose.getHeading(AngleUnit.DEGREES)));
         } else {
-            blackboard.put("pose", new Pose2D(DistanceUnit.CM, Status.currentPose.getX(DistanceUnit.CM), Status.currentPose.getY(DistanceUnit.CM)-9, AngleUnit.DEGREES, Status.currentPose.getHeading(AngleUnit.DEGREES)));
+            blackboard.put("pose", new Pose2D(DistanceUnit.CM, Status.currentPose.getX(DistanceUnit.CM), Status.currentPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, Status.currentPose.getHeading(AngleUnit.DEGREES)));
         }
         robotContainer.stop();
     }

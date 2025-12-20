@@ -54,7 +54,7 @@ public class Constants {
     public static class Robot {
         public static int MOTOR_UPDATE_TIME = 50;
         public static int SERVO_UPDATE_TIME = 100;
-        public static int COLOR_UPDATE_TIME = 150;
+        public static int COLOR_UPDATE_TIME = 50;
         public static int ANALOG_UPDATE_TIME = 30;
 
         public static int SWERVE_MOTOR_UPDATE_TIME = 20;
@@ -274,7 +274,7 @@ public class Constants {
         public static double SWERVE_MAX_POWER = 1;
         public static double SWERVE_MAX_SPEED_CM_PER_SECOND = (Constants.Pathing.SWERVE_MAX_VELOCITY / Constants.Swerve.MOTOR_TICKS_PER_REVOLUTION) * Constants.Swerve.MOTOR_TO_WHEEL_GEAR_RATIO * 2 * Math.PI * (Constants.Robot.WHEEL_DIAMETER_MM/10);
         public static double SWERVE_MAX_LINEAR_SPEED_CM_PER_SECOND_WHILE_ROTATING_MULTIPLIER = 0.67;
-        public static int PATH_TIMEOUT_ERROR_MS = 500;
+        public static int PATH_TIMEOUT_ERROR_MS = 450;
         public static int PATH_NUM_OF_SPLITS_FOR_ESTIMATED_TIME = 20;
 
         //distance in cm, time in seconds
@@ -368,7 +368,7 @@ public class Constants {
         public static double KI = 0;
         public static double KD = 0.00015;
         public static double KF = 0.015;
-        public static double DIST_TOLERANCE = 6;
+        public static double DIST_TOLERANCE = 5;
         public static double BEAM_TIMER_TOLERANCE = 0.15;
         public static int FULL_EMPTY_SPINTIME = 2200;
     }

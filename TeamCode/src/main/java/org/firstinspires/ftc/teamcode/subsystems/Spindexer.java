@@ -29,6 +29,7 @@ public class Spindexer {
     private ElapsedTime beamTimer = new ElapsedTime();
     private ElapsedTime jamTimer = new ElapsedTime();
     private ElapsedTime unjamTimer = new ElapsedTime();
+    private ElapsedTime spinTimer = new ElapsedTime();
 
     public Spindexer (RobotContainer robotContainer, LinkedServos spindexerServos, BetterAnalogInput spindexerAnalog, BetterColorSensor colorSensor) {
         this.robotContainer = robotContainer;
@@ -40,6 +41,7 @@ public class Spindexer {
         this.lastPosition = 0;
         this.pause = false;
         this.beamTimer.reset();
+        this.spinTimer.reset();
     }
 
     public void update(boolean teleop) {
@@ -150,7 +152,7 @@ public class Spindexer {
     }
 
     public void function2() {
-        if (colorSensor.getDistance() < Constants.Spindexer.DIST_TOLERANCE && robotContainer.spindexer.error < 20) {
+        if (colorSensor.getDistance() < Constants.Spindexer.DIST_TOLERANCE && robotContainer.spindexer.error < 20 && spinTimer.seconds() > 0.2) {
             robotContainer.spindexer.moveIntakeSlotClockwise();
         } else {
             robotContainer.telemetry.addLine("No ball in distance");
