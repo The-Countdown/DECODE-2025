@@ -53,7 +53,7 @@ public class Spindexer {
             spindexerServo.setPower(0);
         }
 
-        if (robotContainer.beamBreakToggleButton.wasJustReleased()) {
+        if (robotContainer.beamBreakToggleButton.wasJustReleased() || robotContainer.beamBreakToggleButton.isHeld(0.15)) {
             robotContainer.delayedActionManager.schedule(() -> function2(), Constants.Spindexer.COLOR_SENSE_TIME);
             beamTimer.reset();
         }
