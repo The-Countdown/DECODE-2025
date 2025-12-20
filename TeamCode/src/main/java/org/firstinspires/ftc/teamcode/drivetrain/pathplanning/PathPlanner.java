@@ -94,7 +94,7 @@ public class PathPlanner {
                 }
             }
         }
-    } 
+    }
 
     public void updatePathTimesAmount( ) {
         estimatedPathTimes = new double[pointAmount];
