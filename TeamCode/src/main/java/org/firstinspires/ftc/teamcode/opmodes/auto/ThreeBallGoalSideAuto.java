@@ -85,7 +85,7 @@ public class ThreeBallGoalSideAuto extends OpMode {
         robotContainer.delayedActionManager.update();
         robotContainer.pathPlanner.updatePathStatus(pathTimer);
         robotContainer.turret.pointAtGoal();
-        robotContainer.pathPlanner.driveThroughPath();
+        robotContainer.pathPlanner.driveThroughPath(pathTimer);
         robotContainer.beamBreakToggleButton.update(RobotContainer.HardwareDevices.beamBreak.isPressed());
         Status.turretToggleButton.update(Status.turretToggle);
         robotContainer.CURRENT_LOOP_TIME_MS = robotContainer.updateLoopTime("teleOp");

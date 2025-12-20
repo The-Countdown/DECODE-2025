@@ -61,7 +61,7 @@ public class HeadingPowerScaleTuner extends OpMode {
         robotContainer.refreshData();
         robotContainer.delayedActionManager.update();
         robotContainer.pathPlanner.updatePathStatus(pathTimer);
-        robotContainer.pathPlanner.driveThroughPath();
+        robotContainer.pathPlanner.driveThroughPath(pathTimer);
         robotContainer.positionProvider.update(false);
 
         distance.add(String.valueOf(Math.sqrt(Math.pow(Status.currentPose.getX(DistanceUnit.CM), 2) + Math.pow(Status.currentPose.getY(DistanceUnit.CM), 2))));

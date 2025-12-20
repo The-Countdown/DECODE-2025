@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.drivetrain.pathplanning;
 
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
@@ -8,6 +10,7 @@ import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 public class PathingUpdater extends Thread {
     private final RobotContainer robotContainer;
     private boolean enabled = true;
+    public ElapsedTime timer = new ElapsedTime();
 
     public PathingUpdater(RobotContainer robotContainer) {
         this.robotContainer = robotContainer;
@@ -30,6 +33,8 @@ public class PathingUpdater extends Thread {
                         HelperFunctions.clamp(robotContainer.longitudePID.calculate(), -Constants.Pathing.SWERVE_MAX_POWER, Constants.Pathing.SWERVE_MAX_POWER),
                         HelperFunctions.clamp(robotContainer.headingPID.calculate(), -Constants.Pathing.SWERVE_MAX_POWER, Constants.Pathing.SWERVE_MAX_POWER)
                 );
+            } else {
+                robotContainer.drivetrain.powerInput(0,0,0);
             }
             Thread.yield();
         }

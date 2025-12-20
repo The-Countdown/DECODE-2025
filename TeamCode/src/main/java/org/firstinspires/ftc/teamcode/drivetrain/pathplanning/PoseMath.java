@@ -46,7 +46,8 @@ public class PoseMath {
     public static boolean isAtPos() {
         return (
                 Math.abs(Status.targetPose.getX(DistanceUnit.CM) - Status.currentPose.getX(DistanceUnit.CM)) <= Constants.Pathing.LONGITUDE_PID_TOLERANCE_CM &&
-                Math.abs(Status.targetPose.getY(DistanceUnit.CM) - Status.currentPose.getY(DistanceUnit.CM)) <= Constants.Pathing.LATITUDE_PID_TOLERANCE_CM
+                Math.abs(Status.targetPose.getY(DistanceUnit.CM) - Status.currentPose.getY(DistanceUnit.CM)) <= Constants.Pathing.LATITUDE_PID_TOLERANCE_CM &&
+                Math.abs(Status.targetPose.getHeading(AngleUnit.DEGREES) - Status.currentPose.getHeading(AngleUnit.DEGREES)) <= Constants.Pathing.HEADING_PID_TOLERANCE_DEGREES
         );
     }
 }

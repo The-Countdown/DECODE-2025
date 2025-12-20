@@ -31,7 +31,7 @@ import java.lang.Thread;
 //      |
 //     -y
 //
-//     There are a few more I need to write the rest.
+//There are a few more I need to write the rest.
 
 public class PathPlanner {
     private Telemetry telemetry;
@@ -85,9 +85,9 @@ public class PathPlanner {
         }
     }
 
-    public void driveThroughPath () {
+    public void driveThroughPath(ElapsedTime pathTimer) {
         if (!this.pathCompleted) {
-            if (driveUsingPID(this.currentPath)) {
+            if (driveUsingPID(this.currentPath) || pathTimeOut(pathTimer)) {
                 this.currentPath += 1;
                 if (this.currentPath == this.poses.size()) {
                     this.pathCompleted = true;
@@ -99,7 +99,7 @@ public class PathPlanner {
     public void updatePathTimesAmount( ) {
         estimatedPathTimes = new double[pointAmount];
         for (int i = 0; i < pointAmount - 1; i++){
-            estimatedPathTimes[i] = 5000;
+            estimatedPathTimes[i] = 3800;
         }
         Status.pathsToCalculate = pointAmount;
     }
