@@ -94,11 +94,11 @@ public class PathPlanner {
                 }
             }
         }
-    }
+    } 
 
     public void updatePathTimesAmount( ) {
         estimatedPathTimes = new double[pointAmount];
-        for (int i = 0; i < pointAmount - 1; i++){
+        for (int i = 1; i < pointAmount - 1; i++){
             estimatedPathTimes[i] = 3800;
         }
         Status.pathsToCalculate = pointAmount;

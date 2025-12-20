@@ -174,7 +174,7 @@ public class Spindexer {
 
     public void moveIntakeSlotClockwise() {
         int currentSlot = getCurrentIntakeSlot();
-        targetAngle = Constants.Spindexer.INTAKE_SLOT_ANGLES[(currentSlot + 1) % 3];
+        targetAngle = (targetAngle + 120) % 360;
     }
 
     public void shootNextBall(boolean matchMotif) {
