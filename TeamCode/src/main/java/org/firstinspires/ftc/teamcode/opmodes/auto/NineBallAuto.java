@@ -24,7 +24,7 @@ public class NineBallAuto extends OpMode {
     // 91.44
     // 30.48
     public static double BEFORE_TAPE = 84;
-    public static double AFTER_TAPE = 159;
+    public static double AFTER_TAPE = 165;
     public static double TAPE_LOW = -91.5;
     public static double TAPE_MID = -34.5;
     @Override
@@ -71,8 +71,8 @@ public class NineBallAuto extends OpMode {
             robotContainer.pathPlanner.addPose(2000);
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.INCH, Status.startingPose.getX(DistanceUnit.INCH) + 20, Status.startingPose.getY(DistanceUnit.INCH) - 5, AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)));
         }
-//        robotContainer.pathPlanner.updatePathTimesAmount();
-//        robotContainer.pathPlanner.updatePathTimes();
+        robotContainer.pathPlanner.updatePathTimesAmount();
+        //robotContainer.pathPlanner.updatePathTimes();
     }
 
     @Override
@@ -236,7 +236,6 @@ public class NineBallAuto extends OpMode {
         robotContainer.delayedActionManager.schedulePose(() -> robotContainer.intake.setPower(-Constants.Intake.BEST_INTAKE_SPEED));
         robotContainer.delayedActionManager.schedulePose(() -> robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setPower(0.0), 100));
 
-        robotContainer.pathPlanner.updatePathTimesAmount();
         robotContainer.pathingUpdater.timer.reset();
     }
 
@@ -246,7 +245,6 @@ public class NineBallAuto extends OpMode {
         robotContainer.positionProvider.update(false);
 //        robotContainer.limelightLogic.update();
         robotContainer.delayedActionManager.update();
-//        robotContainer.pathPlanner.updatePathStatus(pathTimer);
         robotContainer.turret.pointAtGoal();
         robotContainer.pathPlanner.driveThroughPath(pathTimer);
         robotContainer.beamBreakToggleButton.update(RobotContainer.HardwareDevices.beamBreak.isPressed());

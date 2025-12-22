@@ -375,8 +375,8 @@ public class Constants {
 
     @Config
     public static class Intake {
-        public static double TOP_SPEED = 0.67;
-        public static double BEST_INTAKE_SPEED = 0.67;
+        public static double TOP_SPEED = 1;
+        public static double BEST_INTAKE_SPEED = 1;
         public static double SPIN_ERROR_SPEED = 0.4;
         public static double REVERSE_TOP_SPEED = 0.5;
         public static int RUNTIME_MS = 800;

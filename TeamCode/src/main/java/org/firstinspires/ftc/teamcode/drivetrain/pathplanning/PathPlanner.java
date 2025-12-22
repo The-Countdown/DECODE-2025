@@ -106,7 +106,7 @@ public class PathPlanner {
 
     public void updatePathTimes() {
         for (int i = Status.pathsToCalculate; i > 0; i--) {
-            estimatedPathTimes[i] = (calculateEstimatedPathTime(i));
+            estimatedPathTimes[i-1] = (calculateEstimatedPathTime(i-1));
             Status.pathsToCalculate--;
         }
     }
