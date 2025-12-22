@@ -602,7 +602,8 @@ public class RobotContainer {
         telemetry.addData("Pinpoint position", HardwareDevices.pinpoint.getPosition());
         telemetry.addData("Pinpoint X", Status.currentPose.getX(DistanceUnit.CM) + " cm");
         telemetry.addData("Pinpoint Y", Status.currentPose.getY(DistanceUnit.CM) + " cm");
-        telemetry.addData("Pinpoint Heading", Status.currentHeading + "°");
+        telemetry.addData("Robot Heading", Status.currentHeading + "°");
+        telemetry.addData("Pinpoint Heading", RobotContainer.HardwareDevices.pinpoint.getPosition().getHeading(AngleUnit.DEGREES));
         telemetry.addData("PINPOINT STATUS", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
         telemetry.addData("Pinpoint odo x", RobotContainer.HardwareDevices.pinpoint.getEncoderX());
         telemetry.addData("Pinpoint odo y", RobotContainer.HardwareDevices.pinpoint.getEncoderY());

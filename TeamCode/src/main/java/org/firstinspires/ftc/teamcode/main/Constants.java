@@ -274,7 +274,7 @@ public class Constants {
         public static double SWERVE_MAX_POWER = 1;
         public static double SWERVE_MAX_SPEED_CM_PER_SECOND = (Constants.Pathing.SWERVE_MAX_VELOCITY / Constants.Swerve.MOTOR_TICKS_PER_REVOLUTION) * Constants.Swerve.MOTOR_TO_WHEEL_GEAR_RATIO * 2 * Math.PI * (Constants.Robot.WHEEL_DIAMETER_MM/10);
         public static double SWERVE_MAX_LINEAR_SPEED_CM_PER_SECOND_WHILE_ROTATING_MULTIPLIER = 0.67;
-        public static int PATH_TIMEOUT_ERROR_MS = 450;
+        public static int PATH_TIMEOUT_ERROR_MS = 500000000;
         public static int PATH_NUM_OF_SPLITS_FOR_ESTIMATED_TIME = 20;
 
         //distance in cm, time in seconds
@@ -324,7 +324,7 @@ public class Constants {
         public static double TURRET_MAX = 0.78;
         public static double TURRET_NEUTRAL = 0.495;
         public static double TURRET_MIN = 0.215;
-        public static double TURRET_SPEED_FACTOR = 0.001;
+        public static double TURRET_SPEED_FACTOR = 0.0003;
         public static double FLYWHEEL_TOP_SPEED = 0.95;
         public static int FLYWHEEL_MAX_VELOCITY = 1720;
         public static int FLYWHEEL_MAX_POWER_ERROR = 200;

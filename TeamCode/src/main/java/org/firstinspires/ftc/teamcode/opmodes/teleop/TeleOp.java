@@ -73,7 +73,7 @@ public class TeleOp extends OpMode {
 
         robotContainer.turret.update(true);
         robotContainer.spindexer.update(true);
-        robotContainer.positionProvider.update(false);
+        robotContainer.positionProvider.update(true);
 
         // Gamepad 1
         robotContainer.drivetrain.controlUpdate();

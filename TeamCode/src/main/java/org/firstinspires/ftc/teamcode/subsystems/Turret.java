@@ -22,6 +22,7 @@ public class Turret extends RobotContainer.HardwareDevices {
     private FlywheelPDF flywheelPDF;
     private double targetPosition;
     private double manualTurretPos;
+    private double turretAngleOffset;
     private GamepadWrapper.ButtonReader backFieldButton = new GamepadWrapper.ButtonReader();
 
     public Turret(RobotContainer robotContainer, LinkedMotors flyWheelMotors, BetterServo hoodServo, LinkedServos turretServos) {
@@ -32,12 +33,21 @@ public class Turret extends RobotContainer.HardwareDevices {
         this.flywheelPDF = new FlywheelPDF(robotContainer, flyWheelMotors);
         this.targetPosition = 0;
         this.manualTurretPos = 0;
+        this.turretAngleOffset = 0;
     }
 
     public void update(boolean teleop) {
         Status.turretToggleButton.update(Status.turretToggle);
 
         if (teleop) {
+            if (robotContainer.gamepadEx2.dpadLeft.wasJustReleased()) {
+                turretAngleOffset -= 3;
+            }
+
+            if (robotContainer.gamepadEx2.dpadRight.wasJustReleased()) {
+                turretAngleOffset += 3;
+            }
+
             if (!Status.intakeToggle) {
                 flywheel.targetVelocity = Math.min(Status.turretToggleButton.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, robotContainer.turret.flywheel.interpolateByDistance(HelperFunctions.disToGoal()));
             } else {
@@ -122,6 +132,7 @@ public class Turret extends RobotContainer.HardwareDevices {
     }
 
     public void setTargetAngle(double angleInDegrees) { // angleInDegrees should be between -180 and 180
+        angleInDegrees = HelperFunctions.normalizeAngle(angleInDegrees + turretAngleOffset);
         if (angleInDegrees < Constants.Turret.TURRET_LIMIT_MIN_ANGLE || angleInDegrees > Constants.Turret.TURRET_LIMIT_MAX_ANGLE) {
             return;
         }

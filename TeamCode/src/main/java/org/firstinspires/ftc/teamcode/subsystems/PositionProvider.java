@@ -86,7 +86,9 @@ public class PositionProvider {
             Status.currentPose = getRobotPose();
             lastODPose = odPose;
         } else {
-            Status.currentPose = RobotContainer.HardwareDevices.pinpoint.getPosition();
+            // Status.currentPose = new Pose2D(DistanceUnit.CM, RobotContainer.HardwareDevices.pinpoint.getPosX(DistanceUnit.CM), RobotContainer.HardwareDevices.pinpoint.getPosY(DistanceUnit.CM), AngleUnit.DEGREES, RobotContainer.HardwareDevices.imu.getRobotYawPitchRollAngles().getYaw());
+           Status.currentPose = new Pose2D(DistanceUnit.CM, RobotContainer.HardwareDevices.pinpoint.getPosX(DistanceUnit.CM), RobotContainer.HardwareDevices.pinpoint.getPosY(DistanceUnit.CM), AngleUnit.DEGREES, RobotContainer.HardwareDevices.pinpoint.getPosition().getHeading(AngleUnit.DEGREES));
+            // Status.currentPose = RobotContainer.HardwareDevices.pinpoint.getPosition();
         }
     }
 
