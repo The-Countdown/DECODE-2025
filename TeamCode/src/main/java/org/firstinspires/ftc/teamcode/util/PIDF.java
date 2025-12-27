@@ -1,9 +1,12 @@
 package org.firstinspires.ftc.teamcode.util;
 
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PIDF {
-	// PIDF coefficients
+    private static final Logger log = LoggerFactory.getLogger(PIDF.class);
+    // PIDF coefficients
     private double kP,kI,kD, kF;
 
     /** Limit bound of the output. */
@@ -42,8 +45,7 @@ public class PIDF {
      *
      * @return The PIDF controller output.
      */
-    public double update(final double target, final double currentTime, final double currentValue) {
-    	final double error = target - currentValue;
+    public double update(final double error, final double currentTime) {
     	final double dt = (previousTime != Double.NaN) ? (double)(currentTime - previousTime) : 0;
     	
     	// Compute Integral & Derivative error
@@ -59,7 +61,15 @@ public class PIDF {
         robotContainer.telemetry.addData("sk-d", (kD * derivativeError));
         robotContainer.telemetry.addData("sk-f", (kF * Math.signum(error)));
 
-        return checkLimits((kP * error) + (kI * integralError) + (kD * derivativeError) + (kF * Math.signum(error)));
+        double fi;
+
+        if (Double.isNaN(kI * integralError)) {
+            fi = 0;
+        } else {
+            fi = kI * integralError;
+        }
+
+        return checkLimits((kP * error) + fi + (kD * derivativeError) + (kF * Math.signum(error)));
     }
 
     public double getPIDFError(final double target, final double currentTime, final double currentValue) {
@@ -88,7 +98,6 @@ public class PIDF {
     	else if (!Double.isNaN(maxLimit) && output > maxLimit)
     		return 0;
     	else if (Double.isNaN(output)) {
-            robotContainer.telemetry.addData("NaN", true);
             return 0;
         } else {
     		return output;

@@ -27,6 +27,7 @@ public class Spindexer {
     private double d;
     private double ff;
     public boolean pause;
+    private double lastP;
     private boolean direction;
     private PIDF spindexerPIDF;
     private ElapsedTime beamTimer = new ElapsedTime();
@@ -48,6 +49,7 @@ public class Spindexer {
         for (int i = 0; i < this.slotColor.length; i++) {
             this.slotColor[i] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;
         }
+        spindexerPIDF = new PIDF(robotContainer, Constants.Spindexer.KP, Constants.Spindexer.KD, Constants.Spindexer.KI, Constants.Spindexer.KF);
     }
 
     public void update(boolean teleop) {
@@ -60,7 +62,14 @@ public class Spindexer {
             spindexerServo.setPower(calculate());
         } else if (!this.pause) {
             spindexerServo.setPower(0);
+            spindexerPIDF.reset();
         }
+
+        if (Constants.Spindexer.KP != lastP) {
+            spindexerPIDF = new PIDF(robotContainer, Constants.Spindexer.KP, Constants.Spindexer.KD, Constants.Spindexer.KI, Constants.Spindexer.KF);
+            lastP = Constants.Spindexer.KP;
+        }
+
 
         if (robotContainer.beamBreakToggleButton.wasJustReleased() || robotContainer.beamBreakToggleButton.isHeldFor(0.1)) {
             robotContainer.delayedActionManager.schedule(() -> function2(), Constants.Spindexer.COLOR_SENSE_TIME);
@@ -246,7 +255,7 @@ public class Spindexer {
     }
 
     public double getError() {
-        return getAngle() - (targetAngle);
+        return HelperFunctions.normalizeAngle(getAngle() - (targetAngle));
     }
 
     // For reset at the start of teleop or something
@@ -259,9 +268,8 @@ public class Spindexer {
     }
 
     public double calculate() {
-        spindexerPIDF = new PIDF(robotContainer, Constants.Spindexer.KP, Constants.Spindexer.KD, Constants.Spindexer.KI, Constants.Spindexer.KF);
         robotContainer.telemetry.addData("dfs", spindexerPIDF.getPIDFError(targetAngle, robotContainer.DELTA_TIME_MS, getAngle()));
-        return spindexerPIDF.update(targetAngle, robotContainer.DELTA_TIME_MS, getAngle());
+        return spindexerPIDF.update(getError(), robotContainer.DELTA_TIME_MS);
 //            error = HelperFunctions.normalizeAngle(getError());
 //            robotContainer.telemetry.addData("Spin Calc Error:", error);
 //

@@ -364,10 +364,10 @@ public class Constants {
         public static double[] TRANSFER_SLOT_ANGLES = {60, 180, 300};
         public static double[] INTAKE_SLOT_ANGLES = {120, 240, 360};
         public static int COLOR_SENSE_TIME = 30;
-        public static double KP = 0.0018;
+        public static double KP = 0.0025;
         public static double KI = 0;
-        public static double KD = 0.00015;
-        public static double KF = 0.015;
+        public static double KD = 0.000002;
+        public static double KF = 0;
         public static double DIST_TOLERANCE = 5;
         public static double BEAM_TIMER_TOLERANCE = 0.15;
         public static int FULL_EMPTY_SPINTIME = 2200;
