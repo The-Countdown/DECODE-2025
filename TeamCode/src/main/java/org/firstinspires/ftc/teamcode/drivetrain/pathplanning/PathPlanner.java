@@ -112,7 +112,7 @@ public class PathPlanner {
         if (path+1 == poses.size()) return 0;
 
         maxAccelerationDistance = Constants.Pathing.ACCELERATION_TABLE.lastKey();
-        Status.splitsToCalculate = Constants.Pathing.PATH_NUM_OF_SPLITS_FOR_ESTIMATED_TIME;
+        Status.splitsToCalculate = 3;
 
         Pose2D startingPathPose;
         if (poses.get(path) instanceof SleepPose) {
@@ -152,6 +152,9 @@ public class PathPlanner {
                         HelperFunctions.clamp(robotContainer.headingPID.fakeCalculate(hDiff, currentTime, lastHError), -Constants.Pathing.SWERVE_MAX_POWER, Constants.Pathing.SWERVE_MAX_POWER)
             )[1]);
             robotContainer.addRetainedTelemetry("power", powers.get(Math.abs(Status.splitsToCalculate-splitNum)-iOffset));
+            robotContainer.addRetainedTelemetry("LatPID", HelperFunctions.clamp(robotContainer.latitudePID.fakeCalculate(xDiff, currentTime, lastXError), -Constants.Pathing.SWERVE_MAX_POWER, Constants.Pathing.SWERVE_MAX_POWER));
+            robotContainer.addRetainedTelemetry("LonPID", HelperFunctions.clamp(robotContainer.latitudePID.fakeCalculate(yDiff, currentTime, lastYError), -Constants.Pathing.SWERVE_MAX_POWER, Constants.Pathing.SWERVE_MAX_POWER));
+            robotContainer.addRetainedTelemetry("Hed PID", HelperFunctions.clamp(robotContainer.latitudePID.fakeCalculate(hDiff, currentTime, lastHError), -Constants.Pathing.SWERVE_MAX_POWER, Constants.Pathing.SWERVE_MAX_POWER));
 
             if (remainingAccelerationDistance > maxAccelerationDistance - (maxAccelerationDistance * powers.get(Math.abs(Status.splitsToCalculate-splitNum)))) {
                 currentTime += accelerationTableInterpolation(Math.abs(Status.splitsToCalculate-splitNum)*splitDist)-accelerationTableInterpolation(Math.abs(Status.splitsToCalculate-splitNum-1)*splitDist);
