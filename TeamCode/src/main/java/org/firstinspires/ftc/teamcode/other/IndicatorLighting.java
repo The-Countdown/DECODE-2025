@@ -79,9 +79,9 @@ public class IndicatorLighting {
         public void lightsUpdate() {
             if (lightTimer.milliseconds() > 250) {
                 lightTimer.reset();
-                if (robotContainer.beamBreakToggleButton.getLetGoDuration() < 0.4 && Status.slotColor[robotContainer.spindexer.getCurrentIntakeSlot() % 3] == Constants.Game.ARTIFACT_COLOR.PURPLE) {
+                if (robotContainer.beamBreakToggleButton.getLetGoDuration() < 0.4 && robotContainer.spindexer.slotColor[robotContainer.spindexer.getCurrentIntakeSlot() % 3] == Constants.Game.ARTIFACT_COLOR.PURPLE) {
                     robotContainer.allIndicatorLights.flashing(Constants.LED.COLOR.VIOLET, Constants.LED.COLOR.OFF, 2, 1);
-                } else if (robotContainer.beamBreakToggleButton.getLetGoDuration() < 0.4 && Status.slotColor[robotContainer.spindexer.getCurrentIntakeSlot() % 3] == Constants.Game.ARTIFACT_COLOR.GREEN) {
+                } else if (robotContainer.beamBreakToggleButton.getLetGoDuration() < 0.4 && robotContainer.spindexer.slotColor[robotContainer.spindexer.getCurrentIntakeSlot() % 3] == Constants.Game.ARTIFACT_COLOR.GREEN) {
                     robotContainer.allIndicatorLights.flashing(Constants.LED.COLOR.GREEN, Constants.LED.COLOR.OFF, 2, 1);
                 } else if (robotContainer.turret.flywheel.atTargetVelocity() && Status.flywheelToggle) {
                     robotContainer.allIndicatorLights.setColor(Constants.LED.COLOR.AZURE);

@@ -57,7 +57,6 @@ public class GoBackToStart extends OpMode {
     public void loop() {
         robotContainer.refreshData();
         robotContainer.limelightLogic.update();
-        robotContainer.pathPlanner.updatePathStatus(pathTimer);
         robotContainer.pathPlanner.driveThroughPath(pathTimer);
         robotContainer.positionProvider.update(false);
     }

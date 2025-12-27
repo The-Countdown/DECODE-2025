@@ -60,7 +60,6 @@ public class HeadingPowerScaleTuner extends OpMode {
     public void loop() {
         robotContainer.refreshData();
         robotContainer.delayedActionManager.update();
-        robotContainer.pathPlanner.updatePathStatus(pathTimer);
         robotContainer.pathPlanner.driveThroughPath(pathTimer);
         robotContainer.positionProvider.update(false);
 

@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
+import org.firstinspires.ftc.teamcode.drivetrain.Drivetrain.ServoStatus;
 
 /**
  * The `ThreadedPIDF` class is responsible for managing the Proportional-Integral-Derivative-Feedforward (PIDF)
@@ -75,13 +76,13 @@ public class DrivetrainUpdater extends Thread {
                 double acceleratedMotorPower = currentPowers[i];
 
                 if (Math.abs(robotContainer.swerveServosPDF[i].getError()) <= Constants.Swerve.SERVO_PIDF_TOLERANCE_DEGREES) {
-                    Status.swerveServoStatus[i] = Status.ServoStatus.TARGET_REACHED;
+                    robotContainer.drivetrain.swerveServoStatus[i] = ServoStatus.TARGET_REACHED;
                     robotContainer.swerveModules[i].servo.setPower(0);
 
                     robotContainer.swerveModules[i].motor.setVelocity(acceleratedMotorPower);
                 } else {
                     robotContainer.swerveModules[i].servo.setPower(robotContainer.swerveServosPDF[i].calculate() * (1 - (Math.abs(acceleratedMotorPower) * Constants.Swerve.SERVO_PIDF_SCALER)));
-                    Status.swerveServoStatus[i] = Status.ServoStatus.MOVING;
+                    robotContainer.drivetrain.swerveServoStatus[i] = ServoStatus.MOVING;
 
                     robotContainer.swerveModules[i].motor.setVelocity(acceleratedMotorPower * Math.abs(Math.cos(Math.toRadians(robotContainer.swerveServosPDF[i].getError()))));
                 }

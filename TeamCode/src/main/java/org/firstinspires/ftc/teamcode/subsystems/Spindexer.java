@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.hardware.BetterCRServo;
 import org.firstinspires.ftc.teamcode.hardware.BetterAnalogInput;
 import org.firstinspires.ftc.teamcode.hardware.BetterColorSensor;
 import org.firstinspires.ftc.teamcode.util.LinkedServos;
+import org.firstinspires.ftc.teamcode.util.PIDF;
 
 public class Spindexer {
     private final RobotContainer robotContainer;
@@ -20,16 +21,18 @@ public class Spindexer {
     public double targetAngle;
     public double lastPosition;
     private double error;
+    private double spindexerError;
     private double lastError;
     private double p;
     private double d;
     private double ff;
     public boolean pause;
     private boolean direction;
+    private PIDF spindexerPIDF;
     private ElapsedTime beamTimer = new ElapsedTime();
     private ElapsedTime jamTimer = new ElapsedTime();
     private ElapsedTime unjamTimer = new ElapsedTime();
-    private ElapsedTime spinTimer = new ElapsedTime();
+    public Constants.Game.ARTIFACT_COLOR[] slotColor = {Constants.Game.ARTIFACT_COLOR.UNKNOWN, Constants.Game.ARTIFACT_COLOR.UNKNOWN, Constants.Game.ARTIFACT_COLOR.UNKNOWN};
 
     public Spindexer (RobotContainer robotContainer, LinkedServos spindexerServos, BetterAnalogInput spindexerAnalog, BetterColorSensor colorSensor) {
         this.robotContainer = robotContainer;
@@ -41,16 +44,20 @@ public class Spindexer {
         this.lastPosition = 0;
         this.pause = false;
         this.beamTimer.reset();
-        this.spinTimer.reset();
+        this.spindexerError = 0;
+        for (int i = 0; i < this.slotColor.length; i++) {
+            this.slotColor[i] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;
+        }
     }
 
     public void update(boolean teleop) {
-        double spindexerError = Math.abs(getError());
+        spindexerError = Math.abs(getError());
         boolean jammed = jammed();
         robotContainer.telemetry.addData("jammed:", jammed);
 
+        robotContainer.telemetry.addData("Spin Error:", calculate());
         if (spindexerError > 5 && !this.pause) {
-            spindexerServo.setPower(robotContainer.spindexer.pdf.calculate());
+            spindexerServo.setPower(calculate());
         } else if (!this.pause) {
             spindexerServo.setPower(0);
         }
@@ -152,9 +159,8 @@ public class Spindexer {
     }
 
     public void function2() {
-        if (colorSensor.getDistance() < Constants.Spindexer.DIST_TOLERANCE && robotContainer.spindexer.error < 20 && spinTimer.seconds() > 0.2) {
+        if (colorSensor.getDistance() < Constants.Spindexer.DIST_TOLERANCE && robotContainer.spindexer.spindexerError < 20) {
             robotContainer.spindexer.moveIntakeSlotClockwise();
-            spinTimer.reset();
         } else {
             robotContainer.telemetry.addLine("No ball in distance");
         }
@@ -180,23 +186,6 @@ public class Spindexer {
         targetAngle = (targetAngle + 120) % 360;
     }
 
-    public void shootNextBall(boolean matchMotif) {
-        Status.turretToggle = true;
-        Status.intakeToggle = false;
-        Status.flywheelToggle = true;
-        this.pause = true;
-        robotContainer.delayedActionManager.schedule(() -> spindexerServo.setPower(1), 5);
-        robotContainer.delayedActionManager.schedule(() -> spindexerServo.setPower(0), 1500);
-        robotContainer.delayedActionManager.schedule(() -> this.pause = false, 1500);
-        robotContainer.delayedActionManager.schedule(()-> Status.slotColor[robotContainer.spindexer.getCurrentTransferSlot()] = Constants.Game.ARTIFACT_COLOR.NONE, 1500);
-        Status.ballsToShoot--;
-        if (Status.ballsToShoot > 0){
-            robotContainer.delayedActionManager.schedule(() -> shootNextBall(matchMotif), 1500);
-        }
-    }
-
-
-
     public void shootAll(boolean matchMotif) {
         Status.turretToggle = true;
         Status.intakeToggle = false;
@@ -215,7 +204,7 @@ public class Spindexer {
     public boolean isFull() {
         int balls = 0;
         for (int i = 0; i < Constants.Spindexer.INTAKE_SLOT_ANGLES.length; i++) {
-            if (Status.slotColor[i] == Constants.Game.ARTIFACT_COLOR.PURPLE || Status.slotColor[i] == Constants.Game.ARTIFACT_COLOR.GREEN) {
+            if (robotContainer.spindexer.slotColor[i] == Constants.Game.ARTIFACT_COLOR.PURPLE || robotContainer.spindexer.slotColor[i] == Constants.Game.ARTIFACT_COLOR.GREEN) {
                 balls += 1;
             }
         }
@@ -229,7 +218,8 @@ public class Spindexer {
     public boolean isEmpty() {
         int balls = 0;
         for (int i = 0; i < Constants.Spindexer.INTAKE_SLOT_ANGLES.length; i++) {
-            if (Status.slotColor[i] == Constants.Game.ARTIFACT_COLOR.PURPLE || Status.slotColor[i] == Constants.Game.ARTIFACT_COLOR.GREEN) {
+            if (robotContainer.spindexer.slotColor[i] == Constants.Game.ARTIFACT_COLOR.PURPLE || robotContainer.spindexer.slotColor[i] == Constants.Game.ARTIFACT_COLOR.GREEN) {
+
                 balls += 1;
             }
         }
@@ -268,28 +258,28 @@ public class Spindexer {
         targetAngle = angle;
     }
 
-    public class PDF {
-        public double calculate() {
-            error = HelperFunctions.normalizeAngle(getError());
-            robotContainer.telemetry.addData("Spin Calc Error:", error);
-
-            p = Constants.Spindexer.KP * error;
-            d = (Constants.Spindexer.KD * (lastError - error) * robotContainer.DELTA_TIME_MS);
-            ff = Math.signum(error) * Constants.Spindexer.KF;
-
-            robotContainer.telemetry.addData("p", p);
-            robotContainer.telemetry.addData("d", d);
-            robotContainer.telemetry.addData("ff", ff);
-
-            lastError = error;
-            double f = (p - d) + ff;
-            robotContainer.telemetry.addData("f", f);
-            if (error > 80) {
-                return f * -1;
-            } else {
-                return f;
-            }
-        }
+    public double calculate() {
+        spindexerPIDF = new PIDF(robotContainer, Constants.Spindexer.KP, Constants.Spindexer.KD, Constants.Spindexer.KI, Constants.Spindexer.KF);
+        robotContainer.telemetry.addData("dfs", spindexerPIDF.getPIDFError(targetAngle, robotContainer.DELTA_TIME_MS, getAngle()));
+        return spindexerPIDF.update(targetAngle, robotContainer.DELTA_TIME_MS, getAngle());
+//            error = HelperFunctions.normalizeAngle(getError());
+//            robotContainer.telemetry.addData("Spin Calc Error:", error);
+//
+//            p = Constants.Spindexer.KP * error;
+//            d = (Constants.Spindexer.KD * (lastError - error) * robotContainer.DELTA_TIME_MS);
+//            ff = Math.signum(error) * Constants.Spindexer.KF;
+//
+//            robotContainer.telemetry.addData("p", p);
+//            robotContainer.telemetry.addData("d", d);
+//            robotContainer.telemetry.addData("ff", ff);
+//
+//            lastError = error;
+//            double f = (p - d) + ff;
+//            robotContainer.telemetry.addData("f", f);
+//            if (error > 80) {
+//                return f * -1;
+//            } else {
+//                return f;
+//            }
     }
-    public PDF pdf = new PDF();
 }

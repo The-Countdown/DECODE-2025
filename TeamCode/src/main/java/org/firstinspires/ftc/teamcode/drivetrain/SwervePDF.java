@@ -6,6 +6,7 @@ import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
+import org.firstinspires.ftc.teamcode.drivetrain.Drivetrain.ServoStatus;
 
 /**
  * A PDF controller for a swerve module's servo.
@@ -51,7 +52,7 @@ public class SwervePDF {
      * @return The calculated PDF output.
      */
     public double calculate() {
-        if (Status.swerveServoStatus[module] == Status.ServoStatus.TARGET_REACHED) {
+        if (robotContainer.drivetrain.swerveServoStatus[module] == ServoStatus.TARGET_REACHED) {
             iTimer.reset();
         }
 

@@ -56,9 +56,9 @@ public class SixBallGoalsideAuto extends OpMode {
         if (Status.wentBackToStart) {
             Status.goalsideStartingPose = (Pose2D) blackboard.getOrDefault("pose", Status.goalsideStartingPose);
         }
-        Status.slotColor[0] = Constants.Game.ARTIFACT_COLOR.PURPLE;
-        Status.slotColor[1] = Constants.Game.ARTIFACT_COLOR.PURPLE;
-        Status.slotColor[2] = Constants.Game.ARTIFACT_COLOR.PURPLE;
+        robotContainer.spindexer.slotColor[0] = Constants.Game.ARTIFACT_COLOR.PURPLE;
+        robotContainer.spindexer.slotColor[1] = Constants.Game.ARTIFACT_COLOR.PURPLE;
+        robotContainer.spindexer.slotColor[2] = Constants.Game.ARTIFACT_COLOR.PURPLE;
         RobotContainer.HardwareDevices.pinpoint.setPosition(Status.goalsideStartingPose);
         if (Status.alliance == Constants.Game.ALLIANCE.BLUE) {
             robotContainer.pathPlanner.addPose(Status.goalsideStartingPose);
@@ -143,7 +143,6 @@ public class SixBallGoalsideAuto extends OpMode {
         robotContainer.refreshData();
         robotContainer.limelightLogic.update();
         robotContainer.delayedActionManager.update();
-        robotContainer.pathPlanner.updatePathStatus(pathTimer);
         robotContainer.turret.pointAtGoal();
         robotContainer.pathPlanner.driveThroughPath(pathTimer);
         robotContainer.beamBreakToggleButton.update(RobotContainer.HardwareDevices.beamBreak.isPressed());

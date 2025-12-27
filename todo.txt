@@ -1,0 +1,9 @@
+Fix the spindexer code so that it will detect the color of the ball and only spin when needed
+Add proper reset function to the pathplanner and delayed action manager
+Add a generic time series log writer and viewer
+Robotcontainer update function that will run the update functions of all of the subclasses
+Use the general purpose pid
+Remove unused constants
+Vision will set the robot position on the field during init and then will keep it up to date during teleop
+Remove the intake spining while shooting
+Make the shooting be able to sort

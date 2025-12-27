@@ -88,9 +88,9 @@ public class NineBallAuto extends OpMode {
         if (Status.wentBackToStart) {
             Status.startingPose = (Pose2D) blackboard.getOrDefault("pose", Status.startingPose);
         }
-        Status.slotColor[0] = Constants.Game.ARTIFACT_COLOR.PURPLE;
-        Status.slotColor[1] = Constants.Game.ARTIFACT_COLOR.PURPLE;
-        Status.slotColor[2] = Constants.Game.ARTIFACT_COLOR.PURPLE;
+        robotContainer.spindexer.slotColor[0] = Constants.Game.ARTIFACT_COLOR.PURPLE;
+        robotContainer.spindexer.slotColor[1] = Constants.Game.ARTIFACT_COLOR.PURPLE;
+        robotContainer.spindexer.slotColor[2] = Constants.Game.ARTIFACT_COLOR.PURPLE;
 
         //Start
         robotContainer.delayedActionManager.schedule(() -> pathTimer.reset(), 0);

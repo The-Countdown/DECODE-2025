@@ -6,6 +6,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.main.Constants;
+import org.firstinspires.ftc.teamcode.util.DelayedActionManager.Action;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
@@ -14,6 +15,7 @@ import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
 import java.util.ArrayList;
 import java.lang.Thread;
+import java.util.List;
 
 // Coordinate graphs for reference. These all assume that you are looking at the zero heading orientation (Looking towards the goal assuming Teleop and Auto were started in the correct orientation).
 //
@@ -69,20 +71,6 @@ public class PathPlanner {
             return poses.get(index).getDone();
         }
         return PoseMath.isAtPos();
-    }
-
-    public void updatePathStatus(ElapsedTime pathTimer) {
-        if (Status.currentPath == -1) {
-            return;
-        } else {
-            Status.pathCompleted[Status.currentPath] = PoseMath.isAtPos();
-//            if (pathTimeOut(pathTimer)) {
-//                Status.pathCompleted[Status.currentPath] = true;
-//            }
-//            if (Status.pathCompleted[Status.currentPath]){
-//                this.currentPath += 1;
-//            }
-        }
     }
 
     public void driveThroughPath(ElapsedTime pathTimer) {
@@ -371,6 +359,9 @@ public class PathPlanner {
         public double getSleepTime() {
             return 0;
         }
+
+        public void runActions() {
+        }
     }
 
     public class PositionPose extends GeneralPose {
@@ -408,6 +399,21 @@ public class PathPlanner {
                 return true;
             }
             return false;
+        }
+    }
+
+    public class ActionPose extends GeneralPose {
+        private Action[] delayedActions;
+
+        public ActionPose(Action... actions) {
+            this.delayedActions = actions;
+        }
+
+        @Override
+        public void runActions() {
+            for (int i = 0; i < this.delayedActions.length; i++) {
+                this.delayedActions[i].execute();
+            }
         }
     }
 }

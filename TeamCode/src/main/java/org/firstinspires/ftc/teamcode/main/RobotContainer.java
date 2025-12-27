@@ -233,7 +233,6 @@ public class RobotContainer {
         LinkedServos turretServos = new LinkedServos(HardwareDevices.turretServoMaster, HardwareDevices.turretServoSlave);
 
         pathPlanner = new PathPlanner(telemetry, this);
-        Arrays.fill(Status.pathCompleted, false);
 
         limelightLogic = new LimelightLogic(this, telemetry, HardwareDevices.limelight);
         positionProvider = new PositionProvider(this, limelightLogic, HardwareDevices.pinpoint);
@@ -573,7 +572,7 @@ public class RobotContainer {
         telemetry.addData("Spindexer Intake Slot", spindexer.getCurrentIntakeSlot());
         telemetry.addData("Spindexer Target Angle", spindexer.targetAngle);
         telemetry.addData("Spindexer Error Angle", spindexer.getError());
-        telemetry.addData("Spindexer Slot Colors", Arrays.toString(Status.slotColor));
+        telemetry.addData("Spindexer Slot Colors", Arrays.toString(spindexer.slotColor));
         telemetry.addData("flywheel target max vel", turret.flywheel.targetVelocity);
         telemetry.addData("flywheel speed", HardwareDevices.flyWheelMotorMaster.getVelocity());
         telemetry.addData("flywheel atVelocity", turret.flywheel.atTargetVelocity());

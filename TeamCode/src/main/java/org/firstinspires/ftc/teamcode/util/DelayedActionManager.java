@@ -32,7 +32,7 @@ public class DelayedActionManager {
         }
     }
 
-    public void  schedule(Runnable action, BooleanSupplier condition) {
+    public void schedule(Runnable action, BooleanSupplier condition) {
         delayedActions.add(new DelayedAction(robotContainer, action, condition));
     }
 

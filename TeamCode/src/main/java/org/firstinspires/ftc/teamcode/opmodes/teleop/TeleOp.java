@@ -41,9 +41,9 @@ public class TeleOp extends OpMode {
         Status.lightsOn = true;
         Status.intakeToggle = true;
         Status.turretToggle = false;
-        Status.slotColor[0] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;
-        Status.slotColor[1] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;
-        Status.slotColor[2] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;
+        robotContainer.spindexer.slotColor[0] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;
+        robotContainer.spindexer.slotColor[1] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;
+        robotContainer.spindexer.slotColor[2] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;
         Status.currentSpindexerMode = Status.spindexerMode.INTAKE;
         RobotContainer.HardwareDevices.limelight.start();
         robotContainer.start(this, true);
@@ -61,7 +61,6 @@ public class TeleOp extends OpMode {
         robotContainer.gamepadEx2.update();
         robotContainer.limelightLogic.update();
         robotContainer.delayedActionManager.update();
-        robotContainer.pathPlanner.updatePathStatus(pathTimer);
 
         robotContainer.allIndicatorLights.lightsUpdate();
 

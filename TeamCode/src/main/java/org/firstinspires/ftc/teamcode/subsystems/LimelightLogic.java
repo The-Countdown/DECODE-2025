@@ -35,12 +35,12 @@ public class LimelightLogic {
     public void update() {
         if (limelight.getLatestResult().isValid()) {
             result = limelight.getLatestResult();
-            if (Status.motif == null) findMotif();
-            if (Status.alliance == null) findAlliance();
-            if (Status.motif != null) {
-                result.getFiducialResults().removeIf(tag -> tag.getFiducialId() == 21 || tag.getFiducialId() == 22 || tag.getFiducialId() == 23);
-//                RobotContainer.HardwareDevices.pinpoint.setPosition(HelperFunctions.to2D(result.getBotpose()));
-            }
+//             if (Status.motif == null) findMotif();
+//             if (Status.alliance == null) findAlliance();
+//             if (Status.motif != null) {
+//                 result.getFiducialResults().removeIf(tag -> tag.getFiducialId() == 21 || tag.getFiducialId() == 22 || tag.getFiducialId() == 23);
+// //                RobotContainer.HardwareDevices.pinpoint.setPosition(HelperFunctions.to2D(result.getBotpose()));
+//             }
         }
     }
 
@@ -103,34 +103,34 @@ public class LimelightLogic {
         return null;
     }
 
-    public void findMotif() {
-        for (LLResultTypes.FiducialResult tag : result.getFiducialResults()) {
-            if (checkMotif(tag) != null) {
-                Status.motif = checkMotif(tag);
-                switch(Status.motif){
-                    case PPG:
-                        Status.ballsToShootOrder[0] = 0;
-                        Status.ballsToShootOrder[1] = 0;
-                        Status.ballsToShootOrder[2] = 1;
-                        break;
-                    case PGP:
-                        Status.ballsToShootOrder[0] = 0;
-                        Status.ballsToShootOrder[1] = 1;
-                        Status.ballsToShootOrder[2] = 0;
-                        break;
-                    case GPP:
-                        Status.ballsToShootOrder[0] = 1;
-                        Status.ballsToShootOrder[1] = 0;
-                        Status.ballsToShootOrder[2] = 0;
-                        break;
-                    default:
-                        break;
-                }
-
-                robotContainer.addRetainedTelemetry("Motif Found", checkMotif(tag));
-            }
-        }
-    }
+    // public void findMotif() {
+    //     for (LLResultTypes.FiducialResult tag : result.getFiducialResults()) {
+    //         if (checkMotif(tag) != null) {
+    //             Status.motif = checkMotif(tag);
+    //             switch(Status.motif){
+    //                 case PPG:
+    //                     Status.ballsToShootOrder[0] = 0;
+    //                     Status.ballsToShootOrder[1] = 0;
+    //                     Status.ballsToShootOrder[2] = 1;
+    //                     break;
+    //                 case PGP:
+    //                     Status.ballsToShootOrder[0] = 0;
+    //                     Status.ballsToShootOrder[1] = 1;
+    //                     Status.ballsToShootOrder[2] = 0;
+    //                     break;
+    //                 case GPP:
+    //                     Status.ballsToShootOrder[0] = 1;
+    //                     Status.ballsToShootOrder[1] = 0;
+    //                     Status.ballsToShootOrder[2] = 0;
+    //                     break;
+    //                 default:
+    //                     break;
+    //             }
+    //
+    //             robotContainer.addRetainedTelemetry("Motif Found", checkMotif(tag));
+    //         }
+    //     }
+    // }
 
     public Constants.Game.ALLIANCE checkAlliance(LLResultTypes.FiducialResult aprilTag) {
         if (aprilTag.getFiducialId() == 20) {

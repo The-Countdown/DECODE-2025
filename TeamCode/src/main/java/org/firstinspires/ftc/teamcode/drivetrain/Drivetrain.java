@@ -22,6 +22,7 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
     GamepadWrapper.ButtonReader xButton = new GamepadWrapper.ButtonReader();
     GamepadWrapper.ButtonReader yButton = new GamepadWrapper.ButtonReader();
     GamepadWrapper.ButtonReader rXButton = new GamepadWrapper.ButtonReader();
+    public static ServoStatus[] swerveServoStatus = {ServoStatus.TARGET_REACHED, ServoStatus.TARGET_REACHED, ServoStatus.TARGET_REACHED, ServoStatus.TARGET_REACHED};
 
     /**
      * Constructor for the Drivetrain class.
@@ -318,5 +319,10 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
      */
     public double joystickScaler(double input) {
         return Math.pow(Math.abs(input), Constants.Control.JOYSTICK_SCALER_EXPONENT) * input;
+    }
+
+    public enum ServoStatus {
+        TARGET_REACHED,
+        MOVING
     }
 }
