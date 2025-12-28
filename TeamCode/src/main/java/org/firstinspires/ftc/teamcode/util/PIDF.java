@@ -35,29 +35,26 @@ public class PIDF {
         this.kF = kF;
     }
 
-    /**
-     * Updates the controller with the current time and value
-     * and outputs the PIDF controller output.
-     *
-     * @param currentTime The current time (in arbitrary time unit, such as seconds).
-     * If the PID is assumed to run at a constant frequency, you can simply put '1'.
-     * @param currentValue The current, measured value.
-     *
-     * @return The PIDF controller output.
-     */
     public double update(final double error, final double currentTime) {
-    	final double dt = (previousTime != Double.NaN) ? (double)(currentTime - previousTime) : 0;
+    	final double dt = (!Double.isNaN(previousTime)) ? (double)(currentTime - previousTime) : 0;
     	
     	// Compute Integral & Derivative error
         final double derivativeError = (dt != 0) ? ((error - lastError) / dt) : 0;
         integralError += error * dt;
-        
+
+        robotContainer.telemetry.addData("sk-error", error);
+        robotContainer.telemetry.addData("sk-lastError", error);
+
         // Save history
         previousTime = currentTime;
         lastError = error;
 
+        robotContainer.telemetry.addData("sk-dt", dt);
+        robotContainer.telemetry.addData("sk-de", derivativeError);
+
         robotContainer.telemetry.addData("sk-p", (kP * error));
         robotContainer.telemetry.addData("sk-i", (kI * integralError));
+        robotContainer.telemetry.addData("sk-kd", (kD));
         robotContainer.telemetry.addData("sk-d", (kD * derivativeError));
         robotContainer.telemetry.addData("sk-f", (kF * Math.signum(error)));
 
@@ -71,6 +68,9 @@ public class PIDF {
 
         return checkLimits((kP * error) + fi + (kD * derivativeError) + (kF * Math.signum(error)));
     }
+
+    // TODO: Add function updatePIDF that will recreate the PIDF if the current PIDF values are different than the given.
+    // But I don't always want to reset.
 
     public double getPIDFError(final double target, final double currentTime, final double currentValue) {
         return target - currentValue;

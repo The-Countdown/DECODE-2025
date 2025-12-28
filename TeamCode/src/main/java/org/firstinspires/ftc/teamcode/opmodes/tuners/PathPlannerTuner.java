@@ -46,7 +46,6 @@ public class PathPlannerTuner extends OpMode {
     @Override
     public void loop() {
         robotContainer.CURRENT_LOOP_TIME_MS = robotContainer.updateLoopTime("teleOp");
-        robotContainer.DELTA_TIME_MS = robotContainer.CURRENT_LOOP_TIME_MS - robotContainer.PREV_LOOP_TIME_MS;
         robotContainer.refreshData();
         robotContainer.positionProvider.update(false);
 

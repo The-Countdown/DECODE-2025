@@ -116,7 +116,6 @@ public class RobotContainer {
 
     public double CURRENT_LOOP_TIME_MS;
     public double PREV_LOOP_TIME_MS;
-    public double DELTA_TIME_MS;
 
     public static class HardwareDevices {
         public static List<LynxModule> allHubs;
@@ -202,13 +201,6 @@ public class RobotContainer {
 
             swerveServosPDF[i] = new SwervePDF(this, i);
             swerveModules[i] = new SwerveModule(this, HardwareDevices.swerveMotors[i], HardwareDevices.swerveServos[i], swerveServosPDF[i], HardwareDevices.swerveAnalogs[i], Constants.Swerve.POWER_MULTIPLIER[i], i);  //is it best to pass in a constant?
-
-//            if (Constants.Swerve.SERVO_ANALOG_ACTIVE) {
-//                int analogPortNumber = Character.getNumericValue(HardwareDevices.swerveAnalogs[i].getConnectionInfo().charAt(HardwareDevices.swerveAnalogs[i].getConnectionInfo().length() - 1));
-//                if (analogPortNumber != i) {
-//                    addRetainedTelemetry("WARNING: Swerve Analog Encoder " + i + " is connected to port " + analogPortNumber + ", should be port " + i, null);
-//                }
-//            }
         }
 
         HardwareDevices.turretServoMaster = new BetterServo(getHardwareDevice(ServoImplEx.class, "turretServoMaster"), Constants.Robot.SERVO_UPDATE_TIME);
@@ -276,7 +268,6 @@ public class RobotContainer {
             telemetry.setMsTransmissionInterval(Constants.System.TELEMETRY_UPDATE_INTERVAL_MS);
         }
         this.drivetrain.setTargets(Constants.Swerve.STOP_FORMATION, Constants.Swerve.NO_POWER);
-        pathPlanner.accelTableInit();
     }
 
     public void start(OpMode opmode, boolean teleop) {
@@ -297,6 +288,8 @@ public class RobotContainer {
         Status.cornerResetPose = Status.alliance == Constants.Game.ALLIANCE.RED ? new Pose2D(DistanceUnit.CM, Constants.Robot.CORNER_X, Constants.Robot.CORNER_Y, AngleUnit.DEGREES, Constants.Robot.CORNER_ANGLE) :
                 Status.alliance == Constants.Game.ALLIANCE.BLUE ? new Pose2D(DistanceUnit.CM, Constants.Robot.CORNER_X, -Constants.Robot.CORNER_Y, AngleUnit.DEGREES, -Constants.Robot.CORNER_ANGLE) :
                         new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
+
+        RobotContainer.HardwareDevices.limelight.start(); // IDK what this does
 
         // Start the required threads
         localizationUpdater = new LocalizationUpdater(this);
@@ -343,6 +336,36 @@ public class RobotContainer {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
+        }
+    }
+
+    public void update(boolean teleop) {
+        CURRENT_LOOP_TIME_MS = updateLoopTime("teleOp");
+        refreshData();
+        gamepadEx1.update();
+        gamepadEx2.update();
+        limelightLogic.update();
+        delayedActionManager.update();
+
+        allIndicatorLights.lightsUpdate();
+
+        // Get current and voltage for telemetry
+        controlHubVoltage = getVoltage(Constants.Robot.CONTROL_HUB_INDEX);
+        expansionHubVoltage = getVoltage(Constants.Robot.EXPANSION_HUB_INDEX);
+        controlHubCurrent = getCurrent(Constants.Robot.CONTROL_HUB_INDEX);
+        expansionHubCurrent = getCurrent(Constants.Robot.EXPANSION_HUB_INDEX);
+
+        turret.update(teleop);
+        spindexer.update(teleop);
+        positionProvider.update(teleop);
+
+        // Update the breamBreak state
+        beamBreakToggleButton.update(HardwareDevices.beamBreak.isPressed());
+
+        PREV_LOOP_TIME_MS = CURRENT_LOOP_TIME_MS;
+
+        if (teleop) {
+            telemetry("teleOp");
         }
     }
 
@@ -537,7 +560,7 @@ public class RobotContainer {
         return csv.toString();
     }
 
-    public void telemetry (String opMode) {
+    public void telemetry(String opMode) {
         if (telemetryLoopTimer.milliseconds() < Constants.System.TELEMETRY_UPDATE_INTERVAL_MS && !Status.competitionMode) {
             return;
         } else if (telemetryLoopTimer.milliseconds() < Constants.System.TELEMETRY_COMP_UPDATE_INTERVAL_MS && Status.competitionMode) {
@@ -546,8 +569,8 @@ public class RobotContainer {
         if (Status.competitionMode) {
             telemetry.addData("Alliance", Status.alliance);
             telemetry.addLine();
-//            telemetry.addData("Spindexer Slot Colors", Arrays.toString(Status.slotColor));
-//            telemetry.addLine();
+            telemetry.addData("Spindexer Slot Colors", Arrays.toString(Status.slotColor));
+            telemetry.addLine();
             telemetry.addData("flywheel atVelocity", turret.flywheel.atTargetVelocity());
             telemetry.addLine();
             telemetry.addData("OpMode Avg Loop Time", (int) getRollingAverageLoopTime(opMode) + " ms");
@@ -611,7 +634,6 @@ public class RobotContainer {
         telemetry.addLine();
         telemetry.addData("OpMode Avg Loop Time", (int) getRollingAverageLoopTime(opMode) + " ms");
         telemetry.addData("OpMode Loop Time", CURRENT_LOOP_TIME_MS + " ms");
-        telemetry.addData("OpMode Delta Time", DELTA_TIME_MS + " ms");
         telemetry.addLine();
         telemetry.addData("DriveTrain Avg Loop Time", (int) drivetrainUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms");
         telemetry.addData("DriveTrain Loop Time", (int) drivetrainUpdater.CURRENT_LOOP_TIME_MS + " ms");
@@ -629,8 +651,8 @@ public class RobotContainer {
         telemetry.addData("Field Oriented", Status.fieldOriented);
         telemetry.addData("Intake Enabled", Status.intakeToggle);
         telemetry.addLine();
-         telemetry.addData("flywheel current mA", HardwareDevices.flyWheelMotorMaster.getCurrent(CurrentUnit.MILLIAMPS));
-         telemetry.addData("upper flywheel current mA", HardwareDevices.flyWheelMotorSlave.getCurrent(CurrentUnit.MILLIAMPS));
+        telemetry.addData("flywheel current mA", HardwareDevices.flyWheelMotorMaster.getCurrent(CurrentUnit.MILLIAMPS));
+        telemetry.addData("upper flywheel current mA", HardwareDevices.flyWheelMotorSlave.getCurrent(CurrentUnit.MILLIAMPS));
         telemetry.addData("turret pos", turret.getPosition());
         telemetry.addData("slave servo", HardwareDevices.turretServoSlave.getPosition());
         telemetry.addData("hood", HardwareDevices.hoodServo.getPosition());

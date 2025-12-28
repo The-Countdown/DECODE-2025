@@ -17,13 +17,13 @@ import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "TeleOp")
 public class TeleOp extends OpMode {
     private RobotContainer robotContainer;
-    private final ElapsedTime pathTimer = new ElapsedTime();
     private final ElapsedTime pinpointTimer = new ElapsedTime();
 
     @Override
     public void init() {
         robotContainer = new RobotContainer(this);
         robotContainer.init();
+
         // Get the blackboard pose that was set during auto or if it was not set set the starting pose to 0.
         RobotContainer.HardwareDevices.pinpoint.setPosition((Pose2D) blackboard.getOrDefault("pose", new Pose2D(DistanceUnit.CM, 0, 0, AngleUnit.DEGREES, 0)));
         robotContainer.telemetry.addData("Alliance Color", Status.alliance == Constants.Game.ALLIANCE.BLUE ? "BLUE" : "RED");
@@ -45,54 +45,25 @@ public class TeleOp extends OpMode {
         robotContainer.spindexer.slotColor[1] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;
         robotContainer.spindexer.slotColor[2] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;
         Status.currentSpindexerMode = Status.spindexerMode.INTAKE;
-        RobotContainer.HardwareDevices.limelight.start();
-        robotContainer.start(this, true);
         Status.isDrivingActive = true;
-        robotContainer.spindexer.goToFirstIntakeSlot();
-        robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[0]);
+
+        robotContainer.start(this, true);
+        robotContainer.spindexer.goToFirstIntakeSlot(); // This should likely be in robotcontainer start
+        robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[0]); // This should likely be in the robotcontainer start
     }
 
     @Override
     public void loop() {
-        robotContainer.CURRENT_LOOP_TIME_MS = robotContainer.updateLoopTime("teleOp");
-        robotContainer.DELTA_TIME_MS = robotContainer.CURRENT_LOOP_TIME_MS - robotContainer.PREV_LOOP_TIME_MS;
-        robotContainer.refreshData();
-        robotContainer.gamepadEx1.update();
-        robotContainer.gamepadEx2.update();
-        robotContainer.limelightLogic.update();
-        robotContainer.delayedActionManager.update();
-
-        robotContainer.allIndicatorLights.lightsUpdate();
-
-        // Get current and voltage for telemetry
-        robotContainer.controlHubVoltage = robotContainer.getVoltage(Constants.Robot.CONTROL_HUB_INDEX);
-        robotContainer.expansionHubVoltage = robotContainer.getVoltage(Constants.Robot.EXPANSION_HUB_INDEX);
-        robotContainer.controlHubCurrent = robotContainer.getCurrent(Constants.Robot.CONTROL_HUB_INDEX);
-        robotContainer.expansionHubCurrent = robotContainer.getCurrent(Constants.Robot.EXPANSION_HUB_INDEX);
-
-        robotContainer.turret.update(true);
-        robotContainer.spindexer.update(true);
-        robotContainer.positionProvider.update(true);
+        robotContainer.update(true);
 
         // Gamepad 1
-        robotContainer.drivetrain.controlUpdate();
-
-       if (robotContainer.gamepadEx2.dpadDown.wasJustReleased()) {
-           robotContainer.turret.setTargetAngle(0);
-       }
-
-       if (robotContainer.gamepadEx2.dpadLeft.wasJustReleased()) {
-           robotContainer.turret.setTargetAngle(-90);
-       }
-
-       if (robotContainer.gamepadEx2.dpadRight.wasJustReleased()) {
-           robotContainer.turret.setTargetAngle(90);
-       }
+        robotContainer.drivetrain.controlUpdate(); // For controller driving
 
         if (robotContainer.gamepadEx2.triangle.wasJustPressed()) {
             Status.manualControl = !Status.manualControl;
         }
 
+        // Auto drive to baseing position
         if (robotContainer.gamepadEx1.square.wasJustPressed()) {
             Status.isDrivingActive = false;
             robotContainer.pathPlanner.clearPoses();
@@ -150,11 +121,6 @@ public class TeleOp extends OpMode {
             robotContainer.intake.setPower(Constants.Intake.REVERSE_TOP_SPEED);
         }
 
-        // Update the breamBreak state
-        robotContainer.beamBreakToggleButton.update(RobotContainer.HardwareDevices.beamBreak.isPressed());
-
-        robotContainer.PREV_LOOP_TIME_MS = robotContainer.CURRENT_LOOP_TIME_MS;
-        robotContainer.telemetry("teleOp");
         Thread.yield();
     }
 

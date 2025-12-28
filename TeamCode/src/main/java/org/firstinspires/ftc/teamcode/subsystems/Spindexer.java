@@ -23,12 +23,8 @@ public class Spindexer {
     private double error;
     private double spindexerError;
     private double lastError;
-    private double p;
-    private double d;
-    private double ff;
     public boolean pause;
-    private double lastP;
-    private boolean direction;
+    private double lastP; //Delete this
     private PIDF spindexerPIDF;
     private ElapsedTime beamTimer = new ElapsedTime();
     private ElapsedTime jamTimer = new ElapsedTime();
@@ -49,24 +45,26 @@ public class Spindexer {
         for (int i = 0; i < this.slotColor.length; i++) {
             this.slotColor[i] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;
         }
-        spindexerPIDF = new PIDF(robotContainer, Constants.Spindexer.KP, Constants.Spindexer.KD, Constants.Spindexer.KI, Constants.Spindexer.KF);
+        spindexerPIDF = new PIDF(robotContainer, Constants.Spindexer.KP, Constants.Spindexer.KI, Constants.Spindexer.KD, Constants.Spindexer.KF);
     }
 
+    // TODO: Change to -180 to 180 instead of 0 - 360
     public void update(boolean teleop) {
         spindexerError = Math.abs(getError());
         boolean jammed = jammed();
         robotContainer.telemetry.addData("jammed:", jammed);
 
-        robotContainer.telemetry.addData("Spin Error:", calculate());
+        double servoPower = calculate();
+        robotContainer.telemetry.addData("Spin Error:", servoPower);
         if (spindexerError > 5 && !this.pause) {
-            spindexerServo.setPower(calculate());
+            spindexerServo.setPower(servoPower);
         } else if (!this.pause) {
             spindexerServo.setPower(0);
-            spindexerPIDF.reset();
+            // spindexerPIDF.reset();
         }
 
         if (Constants.Spindexer.KP != lastP) {
-            spindexerPIDF = new PIDF(robotContainer, Constants.Spindexer.KP, Constants.Spindexer.KD, Constants.Spindexer.KI, Constants.Spindexer.KF);
+            spindexerPIDF = new PIDF(robotContainer, Constants.Spindexer.KP, Constants.Spindexer.KI, Constants.Spindexer.KD, Constants.Spindexer.KF);
             lastP = Constants.Spindexer.KP;
         }
 
@@ -241,7 +239,7 @@ public class Spindexer {
 
     public boolean jammed() {
         double error = Math.abs(getError());
-        double speed = Math.abs((getAngle() - this.lastPosition) * robotContainer.DELTA_TIME_MS);
+        double speed = Math.abs((getAngle() - this.lastPosition) * robotContainer.CURRENT_LOOP_TIME_MS);
         robotContainer.telemetry.addData("jam error:", error);
         robotContainer.telemetry.addData("jam speed:", speed);
         if (error < 15 && speed > 10) {
@@ -268,13 +266,11 @@ public class Spindexer {
     }
 
     public double calculate() {
-        robotContainer.telemetry.addData("dfs", spindexerPIDF.getPIDFError(targetAngle, robotContainer.DELTA_TIME_MS, getAngle()));
-        return spindexerPIDF.update(getError(), robotContainer.DELTA_TIME_MS);
+        return spindexerPIDF.update(getError(), robotContainer.CURRENT_LOOP_TIME_MS);
 //            error = HelperFunctions.normalizeAngle(getError());
 //            robotContainer.telemetry.addData("Spin Calc Error:", error);
 //
 //            p = Constants.Spindexer.KP * error;
-//            d = (Constants.Spindexer.KD * (lastError - error) * robotContainer.DELTA_TIME_MS);
 //            ff = Math.signum(error) * Constants.Spindexer.KF;
 //
 //            robotContainer.telemetry.addData("p", p);

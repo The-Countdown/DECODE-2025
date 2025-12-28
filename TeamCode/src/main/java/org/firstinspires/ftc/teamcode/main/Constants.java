@@ -88,7 +88,6 @@ public class Constants {
         public static final double WHEEL_DIAMETER_MM = 62;
 
         public static final double WHEEL_CALCULATED_MAX_RPM = Swerve.MOTOR_RPM_TESTED_MAX * Swerve.MOTOR_TO_WHEEL_GEAR_RATIO;
-
         public static final double ROBOT_CALCULATED_MAX_SPEED_METERS_PER_SECOND = (2*Math.PI * (WHEEL_DIAMETER_MM / 1000)) * (WHEEL_CALCULATED_MAX_RPM / 60);
 
         public static double CORNER_X = 0;
@@ -229,24 +228,6 @@ public class Constants {
         public static final GoBildaPinpointDriver.EncoderDirection
                 PINPOINT_X_ENCODER_DIRECTION = GoBildaPinpointDriver.EncoderDirection.FORWARD;
         public static final GoBildaPinpointDriver.EncoderDirection PINPOINT_Y_ENCODER_DIRECTION = GoBildaPinpointDriver.EncoderDirection.REVERSED;
-//        public static double
-//                HEADING_KP = 0.0055,
-//                HEADING_KI = 0,
-//                HEADING_I_MAX = 0,
-//                HEADING_KD = 0,
-//                HEADING_KF = 0.03;
-//        public static double
-//                LATITUDE_KP = 0.007,
-//                LATITUDE_KI = 0,
-//                LATITUDE_I_MAX = 0,
-//                LATITUDE_KD = 0,
-//                LATITUDE_KF = 0.03;
-//        public static double
-//                LONGITUDE_KP = 0.007,
-//                LONGITUDE_KI = 0,
-//                LONGITUDE_I_MAX = 0,
-//                LONGITUDE_KD = 0,
-//                LONGITUDE_KF = 0.03;
         public static double
                 HEADING_KP = 0.01,
                 HEADING_KI = 0,
@@ -269,16 +250,10 @@ public class Constants {
         public static double LATITUDE_PID_TOLERANCE_CM = 2;
         public static double LONGITUDE_PID_TOLERANCE_CM = 2;
         public static int PINPOINT_UPDATE_DELAY_MS = 50;
-        public static int LIMELIGHT_UPDATE_AVERAGING_MS = 500;
         public static double SWERVE_MAX_VELOCITY = 2000;
         public static double SWERVE_MAX_POWER = 1;
-        public static double SWERVE_MAX_SPEED_CM_PER_SECOND = (Constants.Pathing.SWERVE_MAX_VELOCITY / Constants.Swerve.MOTOR_TICKS_PER_REVOLUTION) * Constants.Swerve.MOTOR_TO_WHEEL_GEAR_RATIO * 2 * Math.PI * (Constants.Robot.WHEEL_DIAMETER_MM/10);
-        public static double SWERVE_MAX_LINEAR_SPEED_CM_PER_SECOND_WHILE_ROTATING_MULTIPLIER = 0.67;
-        public static int PATH_TIMEOUT_ERROR_MS = 500000000;
+        public static int PATH_TIMEOUT_ERROR_MS = 500;
         public static int PATH_NUM_OF_SPLITS_FOR_ESTIMATED_TIME = 20;
-
-        //distance in cm, time in seconds
-        public static NavigableMap<Double, Double> ACCELERATION_TABLE = new TreeMap<>();
     }
 
     @Config
@@ -325,7 +300,6 @@ public class Constants {
         public static double TURRET_NEUTRAL = 0.495;
         public static double TURRET_MIN = 0.215;
         public static double TURRET_SPEED_FACTOR = 0.0003;
-        public static double FLYWHEEL_TOP_SPEED = 0.95;
         public static int FLYWHEEL_MAX_VELOCITY = 1720;
         public static int FLYWHEEL_MAX_POWER_ERROR = 200;
         public static double FLYWHEEL_CURVE = 4;
@@ -336,22 +310,12 @@ public class Constants {
         public static double[] HOOD_PRESETS = {0.45, 0, 0};
         public static double TURRET_LIMIT_MIN_ANGLE = -90;
         public static double TURRET_LIMIT_MAX_ANGLE = 125;
-        public static double TURRET_LIMIT_MIN_SERVO = TURRET_LIMIT_MIN_ANGLE / 355; //-0.253521127
-        public static double TURRET_LIMIT_MAX_SERVO = TURRET_LIMIT_MAX_ANGLE / 355; //0.352112676
-        public static double TURRET_LIMIT_MIN = (TURRET_LIMIT_MIN_SERVO * 2) - 1; //-1.507042254
-        public static double TURRET_LIMIT_MAX = (TURRET_LIMIT_MAX_SERVO * 2) - 1; //-0.295774648
-        public static double FLYWHEEL_POWER_AUTO_FAR = 0.605;
-        public static double FLYWHEEL_POWER_AUTO_MIDDLE = 0.49;
-        public static double FLYWHEEL_POWER_AUTO_NEAR = 0.48;
         public static double FLYWHEEL_P = 0.00019;
-        public static double FLYWHEEL_I = 0.0;
         public static double FLYWHEEL_D = 0.0033;
-        public static double FLYWHEEL_F = 0.0;
     }
 
     @Config
     public static class Transfer {
-        public static int FLIP_TIME = 300;
         public static double DOWN = 0.295;
         public static double UP = 0.49;
     }
@@ -364,12 +328,11 @@ public class Constants {
         public static double[] TRANSFER_SLOT_ANGLES = {60, 180, 300};
         public static double[] INTAKE_SLOT_ANGLES = {120, 240, 360};
         public static int COLOR_SENSE_TIME = 30;
-        public static double KP = 0.0025;
+        public static double KP = 0.0043;
         public static double KI = 0;
-        public static double KD = 0.000002;
+        public static double KD = 0.001;
         public static double KF = 0;
         public static double DIST_TOLERANCE = 5;
-        public static double BEAM_TIMER_TOLERANCE = 0.15;
         public static int FULL_EMPTY_SPINTIME = 2200;
     }
 
@@ -377,9 +340,6 @@ public class Constants {
     public static class Intake {
         public static double TOP_SPEED = 1;
         public static double BEST_INTAKE_SPEED = 1;
-        public static double SPIN_ERROR_SPEED = 0.4;
         public static double REVERSE_TOP_SPEED = 0.5;
-        public static int RUNTIME_MS = 800;
-        public static double DELAY_SECONDS = 0.2;
     }
 }

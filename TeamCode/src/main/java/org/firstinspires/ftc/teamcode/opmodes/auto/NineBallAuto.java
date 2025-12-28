@@ -71,8 +71,6 @@ public class NineBallAuto extends OpMode {
             robotContainer.pathPlanner.addPose(2000);
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.INCH, Status.startingPose.getX(DistanceUnit.INCH) + 20, Status.startingPose.getY(DistanceUnit.INCH) - 5, AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)));
         }
-        robotContainer.pathPlanner.updatePathTimesAmount();
-        //robotContainer.pathPlanner.updatePathTimes();
     }
 
     @Override
@@ -241,16 +239,10 @@ public class NineBallAuto extends OpMode {
 
     @Override
     public void loop() {
-        robotContainer.refreshData();
-        robotContainer.positionProvider.update(false);
-//        robotContainer.limelightLogic.update();
-        robotContainer.delayedActionManager.update();
         robotContainer.turret.pointAtGoal();
         robotContainer.pathPlanner.driveThroughPath(pathTimer);
-        robotContainer.beamBreakToggleButton.update(RobotContainer.HardwareDevices.beamBreak.isPressed());
         Status.turretToggleButton.update(Status.turretToggle);
-        robotContainer.CURRENT_LOOP_TIME_MS = robotContainer.updateLoopTime("teleOp");
-        robotContainer.DELTA_TIME_MS = robotContainer.CURRENT_LOOP_TIME_MS - robotContainer.PREV_LOOP_TIME_MS;
+
         robotContainer.telemetry.addData("Flywheel Toggle: ", Status.flywheelToggle);
         robotContainer.telemetry.addData("Intake Toggle: ", Status.intakeToggle);
         robotContainer.telemetry.addData("Turret Toggle: ", Status.turretToggle);
@@ -262,8 +254,7 @@ public class NineBallAuto extends OpMode {
         robotContainer.telemetry.addData("latitude", robotContainer.latitudePID.calculate());
         robotContainer.telemetry.addData("drive target", Status.targetPose);
         robotContainer.telemetry.update();
-        robotContainer.turret.update(false);
-        robotContainer.spindexer.update(false);
+
         blackboard.put("pose", Status.currentPose);
     }
     //3.4 -6.8
