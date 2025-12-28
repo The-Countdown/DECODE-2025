@@ -5,9 +5,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
-import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
-import org.firstinspires.ftc.teamcode.hardware.BetterCRServo;
 import org.firstinspires.ftc.teamcode.hardware.BetterAnalogInput;
 import org.firstinspires.ftc.teamcode.hardware.BetterColorSensor;
 import org.firstinspires.ftc.teamcode.util.LinkedServos;
@@ -30,7 +28,7 @@ public class Spindexer {
     private ElapsedTime jamTimer = new ElapsedTime();
     private ElapsedTime unjamTimer = new ElapsedTime();
     public Constants.Game.ARTIFACT_COLOR[] slotColor = {Constants.Game.ARTIFACT_COLOR.UNKNOWN, Constants.Game.ARTIFACT_COLOR.UNKNOWN, Constants.Game.ARTIFACT_COLOR.UNKNOWN};
-
+    public int slotZeroAngle;
     public Spindexer (RobotContainer robotContainer, LinkedServos spindexerServos, BetterAnalogInput spindexerAnalog, BetterColorSensor colorSensor) {
         this.robotContainer = robotContainer;
         this.spindexerServo = spindexerServos;
@@ -42,6 +40,8 @@ public class Spindexer {
         this.pause = false;
         this.beamTimer.reset();
         this.spindexerError = 0;
+        this.slotZeroAngle = 0;
+
         for (int i = 0; i < this.slotColor.length; i++) {
             this.slotColor[i] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;
         }
@@ -197,7 +197,26 @@ public class Spindexer {
         Status.turretToggle = true;
         Status.intakeToggle = false;
         Status.flywheelToggle = true;
-        robotContainer.delayedActionManager.schedule(() -> spindexerServo.setPower(1), 0);
+        if (matchMotif) {
+            shootAll(Status.motif);
+        } else {
+            robotContainer.delayedActionManager.schedule(() -> spindexerServo.setPower(1), 0);
+        }
+    }
+    public void shootAll(Constants.Game.MOTIF motif){
+        if (motif == Constants.Game.MOTIF.PPG){
+            robotContainer.delayedActionManager.schedule( ()-> goToNextColorSlot(Constants.Game.ARTIFACT_COLOR.PURPLE), 0);
+            robotContainer.delayedActionManager.schedule( ()-> goToNextColorSlot(Constants.Game.ARTIFACT_COLOR.PURPLE), 750);
+            robotContainer.delayedActionManager.schedule( ()-> goToNextColorSlot(Constants.Game.ARTIFACT_COLOR.PURPLE), 1500);
+        } else if (motif == Constants.Game.MOTIF.PGP){
+            robotContainer.delayedActionManager.schedule( ()-> goToNextColorSlot(Constants.Game.ARTIFACT_COLOR.PURPLE), 0);
+            robotContainer.delayedActionManager.schedule( ()-> goToNextColorSlot(Constants.Game.ARTIFACT_COLOR.PURPLE), 750);
+            robotContainer.delayedActionManager.schedule( ()-> goToNextColorSlot(Constants.Game.ARTIFACT_COLOR.PURPLE), 1500);
+        } else if (motif == Constants.Game.MOTIF.GPP){
+            robotContainer.delayedActionManager.schedule( ()-> goToNextColorSlot(Constants.Game.ARTIFACT_COLOR.PURPLE), 0);
+            robotContainer.delayedActionManager.schedule( ()-> goToNextColorSlot(Constants.Game.ARTIFACT_COLOR.PURPLE), 750);
+            robotContainer.delayedActionManager.schedule( ()-> goToNextColorSlot(Constants.Game.ARTIFACT_COLOR.PURPLE), 1500);
+        }
     }
 
     public void pause() {
@@ -237,6 +256,21 @@ public class Spindexer {
         }
     }
 
+    public void goToNextColorSlot(Constants.Game.ARTIFACT_COLOR color){
+       for (int i = 0; i < Constants.Spindexer.INTAKE_SLOT_ANGLES.length; i++) {
+           if (slotColor[i] == color){
+               for (int j = ((i*120) + slotZeroAngle)/120;  j >0; j--){
+                   moveIntakeSlotClockwise();
+               }
+               moveIntakeCounterClockwise();
+           }
+       }
+    }
+
+    public void moveIntakeCounterClockwise(){
+        targetAngle = (targetAngle - 120) % 360;
+    }
+
     public boolean jammed() {
         double error = Math.abs(getError());
         double speed = Math.abs((getAngle() - this.lastPosition) * robotContainer.CURRENT_LOOP_TIME_MS);
@@ -259,6 +293,7 @@ public class Spindexer {
     // For reset at the start of teleop or something
     public void goToFirstIntakeSlot() {
         targetAngle = Constants.Spindexer.INTAKE_SLOT_ANGLES[0];
+        slotZeroAngle = (int) Math.round((getAngle() / 120.0) * 120);
     }
 
     public void setTargetAngle(double angle) {
