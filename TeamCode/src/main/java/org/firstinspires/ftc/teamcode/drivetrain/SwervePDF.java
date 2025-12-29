@@ -2,11 +2,10 @@ package org.firstinspires.ftc.teamcode.drivetrain;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.drivetrain.Drivetrain.ServoStatus;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
-import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
-import org.firstinspires.ftc.teamcode.drivetrain.Drivetrain.ServoStatus;
 
 /**
  * A PDF controller for a swerve module's servo.

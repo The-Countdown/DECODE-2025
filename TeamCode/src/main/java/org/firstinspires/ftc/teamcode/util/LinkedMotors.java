@@ -4,8 +4,6 @@ import com.qualcomm.robotcore.hardware.DcMotorImplEx;
 
 import org.firstinspires.ftc.teamcode.hardware.BetterDcMotor;
 
-import org.firstinspires.ftc.teamcode.main.Constants;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
