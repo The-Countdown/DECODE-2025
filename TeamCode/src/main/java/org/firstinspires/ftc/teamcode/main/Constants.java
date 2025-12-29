@@ -12,8 +12,6 @@ import org.firstinspires.ftc.teamcode.drivetrain.SwerveModule;
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
 import java.util.HashMap;
-import java.util.NavigableMap;
-import java.util.TreeMap;
 
 /**
  * The `Constants` class provides a centralized location for all the fixed values and
@@ -88,7 +86,7 @@ public class Constants {
         public static final double WHEEL_DIAMETER_MM = 62;
 
         public static final double WHEEL_CALCULATED_MAX_RPM = Swerve.MOTOR_RPM_TESTED_MAX * Swerve.MOTOR_TO_WHEEL_GEAR_RATIO;
-        public static final double ROBOT_CALCULATED_MAX_SPEED_METERS_PER_SECOND = (2*Math.PI * (WHEEL_DIAMETER_MM / 1000)) * (WHEEL_CALCULATED_MAX_RPM / 60);
+        public static final double ROBOT_CALCULATED_MAX_SPEED_METERS_PER_SECOND = (2 * Math.PI * (WHEEL_DIAMETER_MM / 1000)) * (WHEEL_CALCULATED_MAX_RPM / 60);
 
         public static double CORNER_X = 0;
         public static double CORNER_Y = 0;
@@ -253,7 +251,6 @@ public class Constants {
         public static double SWERVE_MAX_VELOCITY = 2000;
         public static double SWERVE_MAX_POWER = 1;
         public static int PATH_TIMEOUT_ERROR_MS = 500;
-        public static int PATH_NUM_OF_SPLITS_FOR_ESTIMATED_TIME = 20;
     }
 
     @Config
@@ -325,7 +322,6 @@ public class Constants {
         public static int NUM_SLOTS = 3;
         public static double ANGLE_OFFSET = 45;
         public static double JAM_TIME_THRESHOLD = 1;
-        public static double[] TRANSFER_SLOT_ANGLES = {60, 180, 300};
         public static double[] INTAKE_SLOT_ANGLES = {120, 240, 360};
         public static int COLOR_SENSE_TIME = 30;
         public static double KP = 0.0043;

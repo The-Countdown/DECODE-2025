@@ -17,10 +17,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
 import com.qualcomm.robotcore.util.ReadWriteFile;
-import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
-import java.io.File;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -28,20 +25,26 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.robotcore.external.navigation.VoltageUnit;
+import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.drivetrain.DrivetrainUpdater;
-import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.PathingUpdater;
-import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.HeadingPID;
 import org.firstinspires.ftc.teamcode.drivetrain.SwerveModule;
 import org.firstinspires.ftc.teamcode.drivetrain.SwervePDF;
+import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.HeadingPID;
 import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.LatitudePID;
+import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.LocalizationUpdater;
 import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.LongitudePID;
+import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.PathPlanner;
+import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.PathingUpdater;
+import org.firstinspires.ftc.teamcode.hardware.BetterAnalogInput;
+import org.firstinspires.ftc.teamcode.hardware.BetterCRServo;
+import org.firstinspires.ftc.teamcode.hardware.BetterColorSensor;
+import org.firstinspires.ftc.teamcode.hardware.BetterDcMotor;
+import org.firstinspires.ftc.teamcode.hardware.BetterServo;
+import org.firstinspires.ftc.teamcode.other.IndicatorLighting;
 import org.firstinspires.ftc.teamcode.subsystems.HuskyLensLogic;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.LimelightLogic;
-import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.PathPlanner;
-import org.firstinspires.ftc.teamcode.other.IndicatorLighting;
-import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.LocalizationUpdater;
 import org.firstinspires.ftc.teamcode.subsystems.PositionProvider;
 import org.firstinspires.ftc.teamcode.subsystems.Spindexer;
 import org.firstinspires.ftc.teamcode.subsystems.Turret;
@@ -52,13 +55,7 @@ import org.firstinspires.ftc.teamcode.util.LimeLightInfo;
 import org.firstinspires.ftc.teamcode.util.LinkedMotors;
 import org.firstinspires.ftc.teamcode.util.LinkedServos;
 
-import org.firstinspires.ftc.teamcode.hardware.BetterDcMotor;
-import org.firstinspires.ftc.teamcode.hardware.BetterCRServo;
-import org.firstinspires.ftc.teamcode.hardware.BetterAnalogInput;
-import org.firstinspires.ftc.teamcode.hardware.BetterServo;
-import org.firstinspires.ftc.teamcode.hardware.BetterColorSensor;
-
-import java.lang.Thread;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -569,7 +566,7 @@ public class RobotContainer {
         if (Status.competitionMode) {
             telemetry.addData("Alliance", Status.alliance);
             telemetry.addLine();
-            telemetry.addData("Spindexer Slot Colors", Arrays.toString(Status.slotColor));
+            telemetry.addData("Spindexer Slot Colors", Arrays.toString(Status));
             telemetry.addLine();
             telemetry.addData("flywheel atVelocity", turret.flywheel.atTargetVelocity());
             telemetry.addLine();

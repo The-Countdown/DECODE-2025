@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.other;
 
-import com.qualcomm.robotcore.robot.Robot;
-
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 
 public class ADGUpdater extends Thread {

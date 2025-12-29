@@ -11,9 +11,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
-import org.firstinspires.ftc.teamcode.subsystems.LimelightLogic;
-
-import java.util.Arrays;
 
 @Autonomous(name="NineBallAuto", group="Robot")
 @Config

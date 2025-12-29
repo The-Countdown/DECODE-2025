@@ -25,14 +25,10 @@ public class Status {
      * The key is the integer, and the value is the ServoStatus enum.
      */
 
-    public static int pathsToCalculate;
-    public static int splitsToCalculate = 0;
-
     public static Pose2D cornerResetPose;
     public static Pose2D goalPose;
     public static Pose2D startingPose;
     public static Pose2D goalsideStartingPose;
-    public static boolean robotTargetReached = false;
     public static boolean robotHeadingTargetReached = false;
     public static boolean robotLatitudeTargetReached = false;
     public static boolean robotLongitudeTargetReached = false;
@@ -41,7 +37,7 @@ public class Status {
     public static boolean wentBackToStart = false;
 
     public static boolean lightsOn = false;
-    public static boolean policeOn = false;
+    public static Constants.LED.COLOR currentLightColor;
 
     public static boolean isDrivingActive = false;
     public static boolean fieldOriented = false;
@@ -52,11 +48,4 @@ public class Status {
     public static boolean flywheelAtTargetSpeed = true;
     public static boolean flywheelToggle = false;
     public static boolean manualControl = false;
-    public enum spindexerMode {
-        INTAKE,
-        TRANSFER;
-    }
-    public static spindexerMode currentSpindexerMode;
-    public static int ballsToShoot = 0;
-    public static int[] ballsToShootOrder = {0,0,0};
 }
