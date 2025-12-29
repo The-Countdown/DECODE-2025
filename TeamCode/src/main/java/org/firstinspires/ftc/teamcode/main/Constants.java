@@ -250,6 +250,7 @@ public class Constants {
         public static int PINPOINT_UPDATE_DELAY_MS = 50;
         public static double SWERVE_MAX_VELOCITY = 2000;
         public static double SWERVE_MAX_POWER = 1;
+        public static int PATH_NUM_OF_SPLITS_FOR_ESTIMATED_TIME = 5;
         public static int PATH_TIMEOUT_ERROR_MS = 500;
     }
 

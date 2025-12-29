@@ -75,7 +75,7 @@ public class LimelightLogic {
     public Pose2D logicBotPoseCM() {
         if (result == null) return botPose;
 
-        final double r_cm = 6.819323;           // camera radial distance from turret center in cm (fix if wrong)
+        final double r_cm = 7.026882;           // camera radial distance from turret center in cm (fix if wrong)
         final double TURRET_TRAVEL_DEGREES = 180.0; // total servo travel degrees
         final double SERVO_CENTER = 0.5;        // servo value that corresponds to "turret = 0°"
 

@@ -566,7 +566,7 @@ public class RobotContainer {
         if (Status.competitionMode) {
             telemetry.addData("Alliance", Status.alliance);
             telemetry.addLine();
-            telemetry.addData("Spindexer Slot Colors", Arrays.toString(Status));
+            telemetry.addData("Spindexer Slot Colors", null);
             telemetry.addLine();
             telemetry.addData("flywheel atVelocity", turret.flywheel.atTargetVelocity());
             telemetry.addLine();
