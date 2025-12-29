@@ -74,14 +74,14 @@ public class GamepadWrapper {
             }
             return false;
         }
-        public double getHoldDuration() {
+        public double holdDuration() {
             if (isTiming) {
                 return holdDuration.seconds();
             } else {
                 return 0;
             }
         }
-        public double getLetGoDuration() {
+        public double releaseDuration() {
             if (isTiming2) {
                 return letGoDuration.seconds();
             } else {

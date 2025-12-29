@@ -1,9 +1,8 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import org.firstinspires.ftc.teamcode.hardware.BetterServo;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
-
-import org.firstinspires.ftc.teamcode.hardware.BetterServo;
 
 public class Transfer extends RobotContainer.HardwareDevices {
     private RobotContainer robotContainer;

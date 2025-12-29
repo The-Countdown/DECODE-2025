@@ -1,11 +1,7 @@
 package org.firstinspires.ftc.teamcode.util;
 
-import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.teamcode.hardware.BetterDcMotor;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
-import org.firstinspires.ftc.teamcode.main.Status;
 
 public class FlywheelPDF {
     private final RobotContainer robotContainer;

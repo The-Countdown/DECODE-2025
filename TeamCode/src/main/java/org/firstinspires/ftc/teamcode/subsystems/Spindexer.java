@@ -2,12 +2,12 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.hardware.BetterAnalogInput;
+import org.firstinspires.ftc.teamcode.hardware.BetterColorSensor;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
-
-import org.firstinspires.ftc.teamcode.hardware.BetterAnalogInput;
-import org.firstinspires.ftc.teamcode.hardware.BetterColorSensor;
+import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 import org.firstinspires.ftc.teamcode.util.LinkedServos;
 import org.firstinspires.ftc.teamcode.util.PIDF;
 

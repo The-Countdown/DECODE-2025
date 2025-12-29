@@ -1,16 +1,11 @@
 package org.firstinspires.ftc.teamcode.drivetrain;
 
-import com.qualcomm.robotcore.hardware.AnalogInput;
-import com.qualcomm.robotcore.hardware.CRServoImplEx;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-
+import org.firstinspires.ftc.teamcode.hardware.BetterAnalogInput;
+import org.firstinspires.ftc.teamcode.hardware.BetterCRServo;
+import org.firstinspires.ftc.teamcode.hardware.BetterDcMotor;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
-
-import org.firstinspires.ftc.teamcode.hardware.BetterDcMotor;
-import org.firstinspires.ftc.teamcode.hardware.BetterCRServo;
-import org.firstinspires.ftc.teamcode.hardware.BetterAnalogInput;
 
 /**
  * Represents a single Swerve Drive Module, encapsulating its motor and servo controls, as well as sensor data.

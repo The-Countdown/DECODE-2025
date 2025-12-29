@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.teamcode.hardware.BetterServo;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
@@ -11,8 +12,6 @@ import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 import org.firstinspires.ftc.teamcode.util.LinkedMotors;
 import org.firstinspires.ftc.teamcode.util.LinkedServos;
-
-import org.firstinspires.ftc.teamcode.hardware.BetterServo;
 
 public class Turret extends RobotContainer.HardwareDevices {
     private final RobotContainer robotContainer;
@@ -49,7 +48,7 @@ public class Turret extends RobotContainer.HardwareDevices {
             }
 
             if (!Status.intakeToggle) {
-                flywheel.targetVelocity = Math.min(Status.turretToggleButton.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, robotContainer.turret.flywheel.interpolateByDistance(HelperFunctions.disToGoal()));
+                flywheel.targetVelocity = Math.min(Status.turretToggleButton.holdDuration() * Constants.Turret.FLYWHEEL_CURVE, robotContainer.turret.flywheel.interpolateByDistance(HelperFunctions.disToGoal()));
             } else {
                 flywheel.targetVelocity = 0;
             }
@@ -111,7 +110,7 @@ public class Turret extends RobotContainer.HardwareDevices {
             }
 
             if (!Status.intakeToggle) {
-                flywheel.targetVelocity = Math.min(Status.turretToggleButton.getHoldDuration() * Constants.Turret.FLYWHEEL_CURVE, robotContainer.turret.flywheel.interpolateByDistance(HelperFunctions.disToGoal()));
+                flywheel.targetVelocity = Math.min(Status.turretToggleButton.holdDuration() * Constants.Turret.FLYWHEEL_CURVE, robotContainer.turret.flywheel.interpolateByDistance(HelperFunctions.disToGoal()));
             } else {
                 flywheel.targetVelocity = 0;
             }
