@@ -20,6 +20,7 @@ public class Turret extends RobotContainer.HardwareDevices {
     public final BetterServo hoodServo;
     private FlywheelPDF flywheelPDF;
     private double targetPosition;
+    private double targetPositionDegrees;
     private double manualTurretPos;
     private double turretAngleOffset;
     private GamepadWrapper.ButtonReader backFieldButton = new GamepadWrapper.ButtonReader();
@@ -131,6 +132,7 @@ public class Turret extends RobotContainer.HardwareDevices {
     }
 
     public void setTargetAngle(double angleInDegrees) { // angleInDegrees should be between -180 and 180
+        targetPositionDegrees = angleInDegrees;
         angleInDegrees = HelperFunctions.normalizeAngle(angleInDegrees + turretAngleOffset);
         if (angleInDegrees < Constants.Turret.TURRET_LIMIT_MIN_ANGLE || angleInDegrees > Constants.Turret.TURRET_LIMIT_MAX_ANGLE) {
             return;
@@ -150,6 +152,9 @@ public class Turret extends RobotContainer.HardwareDevices {
         return turretServos.getPosition();
     }
 
+    public double getPositionDegrees() {
+        return targetPositionDegrees;
+    }
 
     public void pointAtGoal() {
         double xDiff;

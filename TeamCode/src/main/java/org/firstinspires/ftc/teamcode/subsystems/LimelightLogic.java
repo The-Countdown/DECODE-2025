@@ -44,6 +44,14 @@ public class LimelightLogic {
         }
     }
 
+    public boolean hasResult() {
+        if (result == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     public void trackGoal() {
         if (limelight.getLatestResult() != null && Math.abs(limelight.getLatestResult().getTx()) > 1) {
             p += limelight.getLatestResult().getTx() * Constants.Turret.TRACK_GOAL_P;
@@ -62,37 +70,35 @@ public class LimelightLogic {
         return botPose;
     }
 
-    public LimeLightInfo limelightInfo() {
-        if (result != null) {
-            double a = Turret.turretServoMaster.getPosition() - 0.5;
-            double r = 6.819323 / 2.54; // This should in fact be a negative I think
-            botPose = new Pose2D(DistanceUnit.INCH, -((result.getBotpose().getPosition().x * 100) / 2.54) + (Math.cos(a) * r), (((result.getBotpose().getPosition().y * 100) / 2.54) + (Math.sin(a)) * r), AngleUnit.DEGREES, 0);
-            return new LimeLightInfo(botPose, result);
-        }
-        return null;
-    }
+//    public LimeLightInfo limelightInfo() {
+//        if (result != null) {
+//            double a = Turret.turretServoMaster.getPosition() - 0.5;
+//            double r = 6.819323 / 2.54; // This should in fact be a negative I think
+//            botPose = new Pose2D(DistanceUnit.INCH, -((result.getBotpose().getPosition().x * 100) / 2.54) + (Math.cos(a) * r), (((result.getBotpose().getPosition().y * 100) / 2.54) + (Math.sin(a)) * r), AngleUnit.DEGREES, 0);
+//            return new LimeLightInfo(botPose, result);
+//        }
+//        return null;
+//    }
 
-    public Pose2D logicBotPoseCM() {
-        if (result == null) return botPose;
+    public LimeLightInfo logicBotPoseCM() {
+        if (result == null) return null;
 
         final double r_cm = 7.026882;           // camera radial distance from turret center in cm (fix if wrong)
         final double TURRET_TRAVEL_DEGREES = 180.0; // total servo travel degrees
         final double SERVO_CENTER = 0.5;        // servo value that corresponds to "turret = 0°"
 
         // 1) map servo position -> turret angle in degrees (CW positive)
-        double servoAngle = Turret.turretServoMaster.getPositionDegrees(); // ONLY WORKS IF THIS ACCURATELY RETURNS -180 TO 180 WITH CENTER BEING 0 DEGREES
+        double servoAngle = robotContainer.turret.getPositionDegrees(); // ONLY WORKS IF THIS ACCURATELY RETURNS -180 TO 180 WITH CENTER BEING 0 DEGREES
 
-        // 2) convert to math radians (Math.cos/sin expect radians and use CCW positive),
-        //    so invert sign: mathAngle = -servoAngle (because CW is positive).
-        double turretRad = Math.toRadians(-servoAngle);
+        double turretRad = Math.toRadians(servoAngle);
 
         // 3) camera position in robot-frame assuming at start (turret=0) camera is at (r,0)
         //    and when turret rotates, camera robot-frame pos = rotate((r,0), turretRad)
-        double camX_robot = r_cm * Math.cos(turretRad);
-        double camY_robot = r_cm * Math.sin(turretRad);
+        double camX_robot = -r_cm * Math.cos(turretRad);
+        double camY_robot = -r_cm * Math.sin(turretRad);
 
         // 4) camera displacement from starting pose (start at (r,0)):
-        double dispX_robot = camX_robot - r_cm; // = r*(cos(theta)-1)
+        double dispX_robot = camX_robot + r_cm; // = r*(cos(theta)-1)
         double dispY_robot = camY_robot - 0.0;  // = r*sin(theta)
 
         // 5) get the pose reported by Limelight and convert to cm
@@ -101,7 +107,7 @@ public class LimelightLogic {
 
         // 6) rotate camera displacement (robot-frame) into field-frame using robot heading
         //    (assumes result.getBotpose().getOrientation().getYaw() returns robot heading in degrees, CCW positive)
-        double robotHeadingDeg = result.getBotpose().getOrientation().getYaw();
+        double robotHeadingDeg = Status.currentHeading;
         double headingRad = Math.toRadians(robotHeadingDeg);
 
         double dispX_field = dispX_robot * Math.cos(headingRad) - dispY_robot * Math.sin(headingRad);
@@ -112,8 +118,8 @@ public class LimelightLogic {
         double robotX_cm = reportedX_cm - dispX_field;
         double robotY_cm = reportedY_cm - dispY_field;
 
-        botPose = new Pose2D(DistanceUnit.CM, robotX_cm, robotY_cm, AngleUnit.DEGREES, robotHeadingDeg);
-        return botPose;
+        botPose = new Pose2D(DistanceUnit.CM, -robotX_cm, -robotY_cm, AngleUnit.DEGREES, robotHeadingDeg);
+        return new LimeLightInfo(botPose, result);
     }
 
 

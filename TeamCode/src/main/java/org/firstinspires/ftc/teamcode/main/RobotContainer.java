@@ -354,7 +354,7 @@ public class RobotContainer {
 
         turret.update(teleop);
         spindexer.update(teleop);
-        positionProvider.update(teleop);
+        positionProvider.update(true);
 
         // Update the breamBreak state
         beamBreakToggleButton.update(HardwareDevices.beamBreak.isPressed());
@@ -602,18 +602,20 @@ public class RobotContainer {
 
         if (limelightLogic.limelight.getLatestResult() != null) {
             telemetry.addData("LL SEE", "yay");
+            telemetry.addData("LL Result", limelightLogic.hasResult());
         } else {
             telemetry.addData("LL IS BLIND", "no yay");
         }
-        LimeLightInfo LLInfo = limelightLogic.limelightInfo();
+        LimeLightInfo LLInfo = limelightLogic.logicBotPoseCM();
         if (LLInfo != null) {
-            telemetry.addData("Vision tx", limelightLogic.limelightInfo().result.getTx());
-            telemetry.addData("Vision ty", limelightLogic.limelightInfo().result.getTy());
+            telemetry.addData("Vision tx", limelightLogic.logicBotPoseCM().result.getTx());
+            telemetry.addData("Vision ty", limelightLogic.logicBotPoseCM().result.getTy());
         } else {
             telemetry.addData("Vision tx", 0);
             telemetry.addData("Vision ty", 0);
         }
 
+        telemetry.addData("Turret rotation", turret.getPositionDegrees());
         telemetry.addData("robot pos on field CM", positionProvider.getRobotPose());
         telemetry.addLine();
         telemetry.addData("Vision offset pose", positionProvider.getVisionOffsetPose());

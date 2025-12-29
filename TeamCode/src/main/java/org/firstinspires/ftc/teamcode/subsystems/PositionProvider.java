@@ -66,7 +66,8 @@ public class PositionProvider {
                 visionTimer.reset();
                 visionPoseList = new ArrayList<>();
             }
-            if (visionTimer.seconds() > 5 && visionPoseList.size() > 100) {
+            // Add something about rejecting poses that are far from the current average
+            if (visionTimer.seconds() > 5 && visionPoseList.size() > 20) {
                 // Average all vision estimates over the time.
                 double llX = 0;
                 double llY = 0;
@@ -92,7 +93,7 @@ public class PositionProvider {
     }
 
     private Pose2D getGoodLimeLightPose() {
-        LimeLightInfo info = limelightLogic.limelightInfo();
+        LimeLightInfo info = limelightLogic.logicBotPoseCM();
         if (info == null) {
             return null;
         }

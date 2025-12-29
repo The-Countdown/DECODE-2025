@@ -22,13 +22,6 @@ import java.util.List;
 //      |
 //     -x
 //
-// Teleop Pinpoint
-//      y
-//      ^
-// x <-   -> -x
-//      |
-//     -y
-//
 //There are a few more I need to write the rest.
 
 public class PathPlanner {

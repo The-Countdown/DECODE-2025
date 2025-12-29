@@ -53,6 +53,6 @@ public class BetterServo {
     }
 
     public double getPositionDegrees() {
-        return (this.positionDegrees * 322);
+        return (this.position * 322);
     }
 }
