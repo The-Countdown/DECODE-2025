@@ -88,7 +88,7 @@ public class LimelightLogic {
         final double SERVO_CENTER = 0.5;        // servo value that corresponds to "turret = 0°"
 
         // 1) map servo position -> turret angle in degrees (CW positive)
-        double servoAngle = robotContainer.turret.getPositionDegrees(); // ONLY WORKS IF THIS ACCURATELY RETURNS -180 TO 180 WITH CENTER BEING 0 DEGREES
+        double servoAngle = HelperFunctions.clamp(robotContainer.turret.getPositionDegrees(),-90, 125); // ONLY WORKS IF THIS ACCURATELY RETURNS -180 TO 180 WITH CENTER BEING 0 DEGREES
 
         double turretRad = Math.toRadians(servoAngle);
 
@@ -107,7 +107,7 @@ public class LimelightLogic {
 
         // 6) rotate camera displacement (robot-frame) into field-frame using robot heading
         //    (assumes result.getBotpose().getOrientation().getYaw() returns robot heading in degrees, CCW positive)
-        double robotHeadingDeg = Status.currentHeading;
+        double robotHeadingDeg = result.getBotpose().getOrientation().getYaw(AngleUnit.DEGREES) + servoAngle;
         double headingRad = Math.toRadians(robotHeadingDeg);
 
         double dispX_field = dispX_robot * Math.cos(headingRad) - dispY_robot * Math.sin(headingRad);
