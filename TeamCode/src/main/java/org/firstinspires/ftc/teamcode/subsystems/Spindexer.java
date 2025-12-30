@@ -22,6 +22,7 @@ public class Spindexer {
     private double spindexerError;
     private double lastError;
     public boolean pause;
+    private boolean clockwise;
     private double lastP; //Delete this
     private PIDF spindexerPIDF;
     private ElapsedTime beamTimer = new ElapsedTime();
@@ -57,10 +58,14 @@ public class Spindexer {
         double servoPower = calculate();
         robotContainer.telemetry.addData("Spin Error:", servoPower);
         if (spindexerError > 5 && !this.pause) {
-            spindexerServo.setPower(servoPower);
+            if (clockwise) {
+                spindexerServo.setPower(-Math.abs(servoPower));
+            } else {
+                spindexerServo.setPower(servoPower);
+            }
         } else if (!this.pause) {
             spindexerServo.setPower(0);
-            // spindexerPIDF.reset();
+            clockwise = false;
         }
 
         if (Constants.Spindexer.KP != lastP) {
@@ -189,6 +194,7 @@ public class Spindexer {
     }
 
     public void moveIntakeSlotClockwise() {
+        clockwise = true; // Disable this to remove clockwise functionality
         int currentSlot = getCurrentIntakeSlot();
         targetAngle = (targetAngle + 120) % 360;
     }

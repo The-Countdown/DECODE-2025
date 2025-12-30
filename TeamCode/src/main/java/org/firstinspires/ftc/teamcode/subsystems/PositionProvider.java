@@ -30,6 +30,7 @@ public class PositionProvider {
         this.limelightLogic = limelightLogic;
         this.pinpoint = pinpoint;
         this.visionOffsetPose = new Pose2D(DistanceUnit.CM, 0, 0, AngleUnit.DEGREES, 0);
+        this.startODPose = new Pose2D(DistanceUnit.CM, 0, 0, AngleUnit.DEGREES, 0);
         this.visionPoseList = new ArrayList<>();
     }
 
@@ -60,6 +61,9 @@ public class PositionProvider {
             }
 
             if (visionPose != null) {
+                if (startODPose == null) {
+                    startODPose = odPose;
+                }
                 // If robot has not moved much
                 if (Math.abs(startODPose.getX(DistanceUnit.CM) - odPose.getX(DistanceUnit.CM)) < 2 && Math.abs(startODPose.getY(DistanceUnit.CM) - odPose.getY(DistanceUnit.CM)) < 2 && Math.abs(startODPose.getHeading(AngleUnit.DEGREES) - odPose.getHeading(AngleUnit.DEGREES)) < 4 && robotContainer.gamepadEx1.dpadDown.isHeld()) {
 //                if (robotContainer.gamepadEx1.rightStickX() == 0 && robotContainer.gamepadEx1.leftStickX() == 0 && robotContainer.gamepadEx1.leftStickY() == 0) {

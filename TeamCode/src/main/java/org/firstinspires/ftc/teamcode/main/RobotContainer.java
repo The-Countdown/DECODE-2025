@@ -111,6 +111,8 @@ public class RobotContainer {
     public double controlHubCurrent;
     public double expansionHubCurrent;
 
+    public ArrayList<String> telemetryCache;
+
     public double CURRENT_LOOP_TIME_MS;
     public double PREV_LOOP_TIME_MS;
 
@@ -166,6 +168,7 @@ public class RobotContainer {
         this.opMode = opMode;
         this.hardwareMap = opMode.hardwareMap;
         this.telemetry = new MultipleTelemetry(opMode.telemetry, FtcDashboard.getInstance().getTelemetry());
+        this.telemetryCache = new ArrayList<>();
 
         HardwareDevices.imu = getHardwareDevice(IMU.class, "imu");
         HardwareDevices.imu.initialize(Constants.Robot.IMU_PARAMETERS);
@@ -596,7 +599,7 @@ public class RobotContainer {
         telemetry.addData("flywheel target max vel", turret.flywheel.targetVelocity);
         telemetry.addData("flywheel speed", HardwareDevices.flyWheelMotorMaster.getVelocity());
         telemetry.addData("flywheel atVelocity", turret.flywheel.atTargetVelocity());
-         telemetry.addData("turret interpolation", turret.flywheel.interpolateByDistance(HelperFunctions.disToGoal()));
+        telemetry.addData("turret interpolation", turret.flywheel.interpolateByDistance(HelperFunctions.disToGoal()));
         telemetry.addLine();
         telemetry.addData("Vision Pose List Size", positionProvider.getVisionPoseList().size());
 
