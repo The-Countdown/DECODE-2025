@@ -33,6 +33,7 @@ public class IndicatorLighting {
             for (Light light : lights) {
                 light.setColor(color);
             }
+            Status.currentLightColor = color;
         }
 
         public void rainbow() {
@@ -77,16 +78,23 @@ public class IndicatorLighting {
         }
 
         public void lightsUpdate() {
-            if (robotContainer.beamBreakToggleButton.releaseDuration() < 0.4 && robotContainer.spindexer.slotColor[robotContainer.spindexer.getCurrentIntakeSlot() % 3] == Constants.Game.ARTIFACT_COLOR.PURPLE) {
-                robotContainer.allIndicatorLights.setColor(Constants.LED.COLOR.VIOLET);
-            } else if (robotContainer.beamBreakToggleButton.releaseDuration() < 0.4 && robotContainer.spindexer.slotColor[robotContainer.spindexer.getCurrentIntakeSlot() % 3] == Constants.Game.ARTIFACT_COLOR.GREEN) {
-                robotContainer.allIndicatorLights.setColor(Constants.LED.COLOR.GREEN);
-            } else if (robotContainer.turret.flywheel.atTargetVelocity() && Status.flywheelToggle) {
-                robotContainer.allIndicatorLights.setColor(Constants.LED.COLOR.AZURE);
-            } else if (Status.flywheelToggle) {
-                robotContainer.allIndicatorLights.setColor(Constants.LED.COLOR.RED);
-            } else if (Status.intakeToggle) {
-                robotContainer.allIndicatorLights.setColor(Constants.LED.COLOR.ORANGE);
+            if (lightTimer.milliseconds() > 0) { // I changed this to 0 as a test because I think the rule of 2hz is intended to limit constantly flashing lights
+                if (robotContainer.beamBreakToggleButton.releaseDuration() < 0.4 && robotContainer.spindexer.slotColor[robotContainer.spindexer.getCurrentIntakeSlot() % 3] == Constants.Game.ARTIFACT_COLOR.PURPLE && Status.currentLightColor != Constants.LED.COLOR.VIOLET) {
+                    robotContainer.allIndicatorLights.setColor(Constants.LED.COLOR.VIOLET);
+                    lightTimer.reset();
+                } else if (robotContainer.beamBreakToggleButton.releaseDuration() < 0.4 && robotContainer.spindexer.slotColor[robotContainer.spindexer.getCurrentIntakeSlot() % 3] == Constants.Game.ARTIFACT_COLOR.GREEN && Status.currentLightColor != Constants.LED.COLOR.GREEN) {
+                    robotContainer.allIndicatorLights.setColor(Constants.LED.COLOR.GREEN);
+                    lightTimer.reset();
+                } else if (robotContainer.turret.flywheel.atTargetVelocity() && Status.flywheelToggle && Status.currentLightColor != Constants.LED.COLOR.AZURE) {
+                    robotContainer.allIndicatorLights.setColor(Constants.LED.COLOR.AZURE);
+                    lightTimer.reset();
+                } else if (Status.flywheelToggle && Status.currentLightColor != Constants.LED.COLOR.RED) {
+                    robotContainer.allIndicatorLights.setColor(Constants.LED.COLOR.RED);
+                    lightTimer.reset();
+                } else if (Status.intakeToggle && Status.currentLightColor != Constants.LED.COLOR.ORANGE) {
+                    robotContainer.allIndicatorLights.setColor(Constants.LED.COLOR.ORANGE);
+                    lightTimer.reset();
+                }
             }
         }
 
