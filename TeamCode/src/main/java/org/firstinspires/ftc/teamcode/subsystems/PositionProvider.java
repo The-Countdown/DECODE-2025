@@ -58,6 +58,7 @@ public class PositionProvider {
             if (visionPose != null) {
                 // If robot has not moved much
                 if (Math.abs(lastODPose.getX(DistanceUnit.CM) - odPose.getX(DistanceUnit.CM)) < 0.1 && Math.abs(lastODPose.getY(DistanceUnit.CM) - odPose.getY(DistanceUnit.CM)) < 0.1) {
+//                if (robotContainer.gamepadEx1.rightStickX() == 0 && robotContainer.gamepadEx1.leftStickX() == 0 && robotContainer.gamepadEx1.leftStickY() == 0) {
                     visionPoseList.add(visionPose);
                 } else {
                     visionPoseList = new ArrayList<>();
@@ -67,7 +68,7 @@ public class PositionProvider {
                 visionPoseList = new ArrayList<>();
             }
             // Add something about rejecting poses that are far from the current average
-            if (visionTimer.seconds() > 5 && visionPoseList.size() > 20) {
+            if (visionTimer.seconds() > 1 && visionPoseList.size() > 20) {
                 // Average all vision estimates over the time.
                 double llX = 0;
                 double llY = 0;
@@ -112,12 +113,13 @@ public class PositionProvider {
             return null;
         }
         // If yaw is impossible
-        if (yaw > 360 || yaw < 0) {
-            robotContainer.telemetry.addData("Limelight Failed because", " yaw");
-            return null;
-        }
+//        if (yaw > 360 || yaw < 0) {
+//            robotContainer.telemetry.addData("Limelight Failed because", " yaw");
+//            return null;
+//        }
+        robotContainer.telemetry.addData("llyaw", yaw);
         // If the april tag is to far from the center x
-        if (Math.abs(info.result.getTx()) > 8) {
+        if (Math.abs(info.result.getTx()) > 12) {
             robotContainer.telemetry.addData("Limelight Failed because", " tx");
             return null;
         }
