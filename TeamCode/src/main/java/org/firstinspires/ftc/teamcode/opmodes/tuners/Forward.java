@@ -47,7 +47,7 @@ public class Forward extends OpMode {
         Status.opModeIsActive = true;
         Objects.requireNonNull(robotContainer.loopTimers.get("teleOp")).reset();
         if (RobotContainer.HardwareDevices.pinpoint.getDeviceStatus() != GoBildaPinpointDriver.DeviceStatus.READY) {
-            robotContainer.addRetainedTelemetry("WARNING, PINPOINT STATUS:", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
+            robotContainer.addEventTelemetry("WARNING, PINPOINT STATUS:", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
         }
         targetTimer.reset();
     }

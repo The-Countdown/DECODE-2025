@@ -187,7 +187,7 @@ public class LimelightLogic {
         for (LLResultTypes.FiducialResult tag : result.getFiducialResults()) {
             if (checkMotif(tag) != null) {
                 Status.alliance = checkAlliance(tag);
-                robotContainer.addRetainedTelemetry("Alliance Found", checkAlliance(tag));
+                robotContainer.addEventTelemetry("Alliance Found", checkAlliance(tag));
             }
         }
     }

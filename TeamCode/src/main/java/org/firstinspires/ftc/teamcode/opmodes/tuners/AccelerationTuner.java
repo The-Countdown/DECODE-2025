@@ -70,8 +70,17 @@ public class AccelerationTuner extends OpMode {
     @Override
     public void stop() {
         robotContainer.drivetrain.setTargets(Constants.Swerve.STOP_FORMATION, Constants.Swerve.NO_POWER);
-        String csv = robotContainer.arraysToCSV(distance.toArray(new String[0]), time.toArray(new String[0]));
-        robotContainer.writeToFile("Acceleration Data Log.txt", csv);
+        StringBuilder csv = new StringBuilder();
+        csv.append("distance, time\n"); // header
+
+        for (int i = 0; i < distance.toArray(new String[0]).length; i++) {
+            csv.append(distance.toArray(new String[0])[i])
+                    .append(',')
+                    .append(time.toArray(new String[0])[i])
+                    .append('\n');
+        }
+
+        robotContainer.writeToFile("Acceleration Data Log.txt", csv.toString());
 
         Status.isDrivingActive = false;
         Status.opModeIsActive = false;

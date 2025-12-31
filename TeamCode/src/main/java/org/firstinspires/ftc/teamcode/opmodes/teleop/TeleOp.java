@@ -122,6 +122,8 @@ public class TeleOp extends OpMode {
     @Override
     public void stop() {
         robotContainer.drivetrain.setTargets(Constants.Swerve.STOP_FORMATION, Constants.Swerve.NO_POWER);
+        robotContainer.writeDataLog();
+        robotContainer.writeEventLog();
 
         Status.isDrivingActive = false;
         Status.opModeIsActive = false;

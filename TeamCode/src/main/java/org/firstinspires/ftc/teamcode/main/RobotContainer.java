@@ -73,6 +73,7 @@ import java.util.Map;
  * approach to managing complex robotic systems.
  */
 public class RobotContainer {
+    public double startTimeMs = System.currentTimeMillis();
     public OpMode opMode;
     public HardwareMap hardwareMap;
     public Telemetry telemetry;
@@ -83,8 +84,9 @@ public class RobotContainer {
     public final Map<String, LinkedList<Double>> loopTimesMap = new HashMap<>();
     public final Map<String, ElapsedTime> loopTimers = new HashMap<>();
     private final ElapsedTime telemetryLoopTimer = new ElapsedTime();
-    private final ArrayList<String> retainedTelemetryCaptions = new ArrayList<>();
-    private final ArrayList<Object> retainedTelemetryValues = new ArrayList<>();
+    private final ArrayList<String> eventTelemetry = new ArrayList<>();
+    private final ArrayList<String> eventTelemetryCaptions = new ArrayList<>();
+    private final ArrayList<Object> eventTelemetryValues = new ArrayList<>();
     public final SwerveModule[] swerveModules = new SwerveModule[Constants.Swerve.NUM_MOTORS];
     public SwervePDF[] swerveServosPDF = new SwervePDF[Constants.Swerve.NUM_SERVOS];
     public LocalizationUpdater localizationUpdater;
@@ -111,7 +113,9 @@ public class RobotContainer {
     public double controlHubCurrent;
     public double expansionHubCurrent;
 
-    public ArrayList<String> telemetryCache;
+//    public ArrayList<ArrayList<String>> telemetryCache;
+    public ArrayList<String> telemetryHeaderList;
+    public Map<String, ArrayList<String>> telemetryCache;
 
     public double CURRENT_LOOP_TIME_MS;
     public double PREV_LOOP_TIME_MS;
@@ -168,7 +172,8 @@ public class RobotContainer {
         this.opMode = opMode;
         this.hardwareMap = opMode.hardwareMap;
         this.telemetry = new MultipleTelemetry(opMode.telemetry, FtcDashboard.getInstance().getTelemetry());
-        this.telemetryCache = new ArrayList<>();
+        this.telemetryCache = new HashMap<>();
+        this.telemetryHeaderList = new ArrayList<>();
 
         HardwareDevices.imu = getHardwareDevice(IMU.class, "imu");
         HardwareDevices.imu.initialize(Constants.Robot.IMU_PARAMETERS);
@@ -393,14 +398,15 @@ public class RobotContainer {
     /**
      * Add or update a retained line of telemetry.
      */
-    public void addRetainedTelemetry(String caption, Object value) {
-        retainedTelemetryCaptions.add(caption);
-        retainedTelemetryValues.add(value);
+    public void addEventTelemetry(String caption, Object value) {
+        eventTelemetryCaptions.add(caption);
+        eventTelemetryValues.add(value);
+        eventTelemetry.add("TIME OF EVENT" + ": " + (System.currentTimeMillis() - startTimeMs)+ "\n" + caption + ": " + value.toString());
     }
 
-    public void displayRetainedTelemetry() {
-        for (int i = 0; i < retainedTelemetryCaptions.size(); i++) {
-            telemetry.addData(retainedTelemetryCaptions.get(i), retainedTelemetryValues.get(i));
+    public void displayEventTelemetry() {
+        for (int i = 0; i < eventTelemetryCaptions.size(); i++) {
+            telemetry.addData(eventTelemetryCaptions.get(i), eventTelemetryValues.get(i));
         }
     }
 
@@ -483,12 +489,12 @@ public class RobotContainer {
                 break;
             default:
                 // Invalid index
-                addRetainedTelemetry("ERROR", "Invalid hub index");
+                addEventTelemetry("ERROR", "Invalid hub index");
                 return -1; // Or throw an exception
         }
 
         if (selectedHub == null) {
-            addRetainedTelemetry("ERROR", "Hub not found");
+            addEventTelemetry("ERROR", "Hub not found");
             return -1;
         }
 
@@ -535,29 +541,79 @@ public class RobotContainer {
     }
 
     public void writeToFile (String fileName, String data) {
-        // Using the properties of the specified "to" file name,
-        // declare a filename to be used in this method.
         File myFileName = AppUtil.getInstance().getSettingsFile(fileName);
-
-        // Write the provided number to the newly declared filename.
         ReadWriteFile.writeFile(myFileName, data);
-
-        telemetry.addData("Filename", fileName);
-        telemetry.addData("Data being written", data);
     }
 
-    public String arraysToCSV(String[] array, String[] array2) {
-        StringBuilder csv = new StringBuilder();
-        csv.append("distance, time\n"); // header
+    public void addDataLog(String caption, Object data, boolean driveStation) {
+        int currentRow = 0;
 
-        for (int i = 0; i < array.length; i++) {
-            csv.append(array[i])
-                    .append(',')
-                    .append(array2[i])
-                    .append('\n');
+        if (data == null) {
+            data = "null";
         }
 
-        return csv.toString();
+        if (!telemetryHeaderList.isEmpty()) {
+            currentRow = telemetryCache.get(telemetryHeaderList.get(0)).size();
+        }
+
+        if (!telemetryCache.containsKey(caption)) {
+            telemetryHeaderList.add(caption);
+            ArrayList<String> newColumn = new ArrayList<>();
+            for (int i = 0; i < currentRow; i++) newColumn.add("");
+            telemetryCache.put(caption, newColumn);
+        }
+
+        telemetryCache.get(caption).add(data.toString());
+
+        for (String header : telemetryHeaderList) {
+            if (!header.equals(caption)) {
+                ArrayList<String> column = telemetryCache.get(header);
+                while (column.size() < telemetryCache.get(caption).size()) {
+                    column.add("");
+                }
+            }
+        }
+
+        if (driveStation) {
+            telemetry.addData(caption, data);
+        }
+    }
+
+    public void writeDataLog() {
+        StringBuilder csvLog = new StringBuilder();
+
+        for (int i = 0; i < telemetryHeaderList.size(); i++) {
+            csvLog.append(telemetryHeaderList.get(i));
+            if (i < telemetryHeaderList.size() - 1) csvLog.append(',');
+        }
+        csvLog.append('\n');
+
+        int rowCount = 0;
+        if (!telemetryHeaderList.isEmpty()) {
+            rowCount = telemetryCache.get(telemetryHeaderList.get(0)).size();
+        }
+
+        for (int row = 0; row < rowCount; row++) {
+            for (int col = 0; col < telemetryHeaderList.size(); col++) {
+                String header = telemetryHeaderList.get(col);
+                ArrayList<String> columnData = telemetryCache.get(header);
+                csvLog.append(columnData.get(row));
+                if (col < telemetryHeaderList.size() - 1) csvLog.append(',');
+            }
+            csvLog.append('\n');
+        }
+
+        writeToFile("TelemetryLog", csvLog.toString());
+    }
+
+    public void writeEventLog() {
+        StringBuilder log = new StringBuilder();
+
+        for (int i = 0; i < eventTelemetry.size(); i++) {
+            log.append(eventTelemetry.get(i));
+            log.append('\n');
+            log.append('\n');
+        }
     }
 
     public void telemetry(String opMode) {
@@ -566,100 +622,101 @@ public class RobotContainer {
         } else if (telemetryLoopTimer.milliseconds() < Constants.System.TELEMETRY_COMP_UPDATE_INTERVAL_MS && Status.competitionMode) {
             return;
         }
+        addDataLog("Time Stamp", System.currentTimeMillis() - startTimeMs, true);
         if (Status.competitionMode) {
-            telemetry.addData("Alliance", Status.alliance);
+            addDataLog("Alliance", Status.alliance, true);
             telemetry.addLine();
-            telemetry.addData("Spindexer Slot Colors", null);
+            addDataLog("Spindexer Slot Colors", null, true);
             telemetry.addLine();
-            telemetry.addData("flywheel atVelocity", turret.flywheel.atTargetVelocity());
+            addDataLog("flywheel atVelocity", turret.flywheel.atTargetVelocity(), true);
             telemetry.addLine();
-            telemetry.addData("OpMode Avg Loop Time", (int) getRollingAverageLoopTime(opMode) + " ms");
-            telemetry.addData("DriveTrain Avg Loop Time", (int) drivetrainUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms");
-            telemetry.addData("Pinpoint Avg Loop Time", (int) localizationUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms");
+            addDataLog("OpMode Avg Loop Time", (int) getRollingAverageLoopTime(opMode) + " ms", true);
+            addDataLog("DriveTrain Avg Loop Time", (int) drivetrainUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms", true);
+            addDataLog("Pinpoint Avg Loop Time", (int) localizationUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms", true);
             telemetry.addLine();
-            telemetry.addData("Pinpoint X", Status.currentPose.getX(DistanceUnit.CM) + " cm");
-            telemetry.addData("Pinpoint Y", Status.currentPose.getY(DistanceUnit.CM) + " cm");
-            telemetry.addData("Pinpoint Heading", Status.currentHeading + "°");
+            addDataLog("Pinpoint X", Status.currentPose.getX(DistanceUnit.CM) + " cm", true);
+            addDataLog("Pinpoint Y", Status.currentPose.getY(DistanceUnit.CM) + " cm", true);
+            addDataLog("Pinpoint Heading", Status.currentHeading + "°", true);
             telemetry.addLine();
-            displayRetainedTelemetry();
+            displayEventTelemetry();
             telemetry.update();
             return;
         }
-        telemetry.addData("Alliance", Status.alliance);
-        telemetry.addData("Control Hub Voltage", controlHubVoltage + " V");
-        telemetry.addData("Expansion Hub Voltage", expansionHubVoltage + " V");
-        telemetry.addData("Control Hub Current", controlHubCurrent + " A");
-        telemetry.addData("Expansion Hub Current", expansionHubCurrent + " A");
+        addDataLog("Alliance", Status.alliance, true);
+        addDataLog("Control Hub Voltage", controlHubVoltage + " V", true);
+        addDataLog("Expansion Hub Voltage", expansionHubVoltage + " V", true);
+        addDataLog("Control Hub Current", controlHubCurrent + " A", true);
+        addDataLog("Expansion Hub Current", expansionHubCurrent + " A", true);
         telemetry.addLine();
-        telemetry.addData("Spindexer Angle", spindexer.getAngle());
-        telemetry.addData("Spindexer Intake Slot", spindexer.getCurrentIntakeSlot());
-        telemetry.addData("Spindexer Target Angle", spindexer.targetAngle);
-        telemetry.addData("Spindexer Error Angle", spindexer.getError());
-        telemetry.addData("Spindexer Slot Colors", Arrays.toString(spindexer.slotColor));
-        telemetry.addData("flywheel target max vel", turret.flywheel.targetVelocity);
-        telemetry.addData("flywheel speed", HardwareDevices.flyWheelMotorMaster.getVelocity());
-        telemetry.addData("flywheel atVelocity", turret.flywheel.atTargetVelocity());
-        telemetry.addData("turret interpolation", turret.flywheel.interpolateByDistance(HelperFunctions.disToGoal()));
+        addDataLog("Spindexer Angle", spindexer.getAngle(), true);
+        addDataLog("Spindexer Intake Slot", spindexer.getCurrentIntakeSlot(), true);
+        addDataLog("Spindexer Target Angle", spindexer.targetAngle, true);
+        addDataLog("Spindexer Error Angle", spindexer.getError(), true);
+        addDataLog("Spindexer Slot Colors", Arrays.toString(spindexer.slotColor), true);
+        addDataLog("flywheel target max vel", turret.flywheel.targetVelocity, true);
+        addDataLog("flywheel speed", HardwareDevices.flyWheelMotorMaster.getVelocity(), true);
+        addDataLog("flywheel atVelocity", turret.flywheel.atTargetVelocity(), true);
+        addDataLog("turret interpolation", turret.flywheel.interpolateByDistance(HelperFunctions.disToGoal()), true);
         telemetry.addLine();
-        telemetry.addData("Vision Pose List Size", positionProvider.getVisionPoseList().size());
+        addDataLog("Vision Pose List Size", positionProvider.getVisionPoseList().size(), true);
 
         if (limelightLogic.limelight.getLatestResult() != null) {
-            telemetry.addData("LL SEE", "yay");
-            telemetry.addData("LL Result", limelightLogic.hasResult());
+            addDataLog("LL SEE", "yay", true);
+            addDataLog("LL Result", limelightLogic.hasResult(), true);
         } else {
-            telemetry.addData("LL IS BLIND", "no yay");
+            addDataLog("LL IS BLIND", "no yay", true);
         }
         LimeLightInfo LLInfo = limelightLogic.logicBotPoseCM();
         if (LLInfo != null) {
-            telemetry.addData("Vision tx", limelightLogic.logicBotPoseCM().result.getTx());
-            telemetry.addData("Vision ty", limelightLogic.logicBotPoseCM().result.getTy());
+            addDataLog("Vision tx", limelightLogic.logicBotPoseCM().result.getTx(), true);
+            addDataLog("Vision ty", limelightLogic.logicBotPoseCM().result.getTy(), true);
         } else {
-            telemetry.addData("Vision tx", 0);
-            telemetry.addData("Vision ty", 0);
+            addDataLog("Vision tx", 0, true);
+            addDataLog("Vision ty", 0, true);
         }
 
-        telemetry.addData("Turret rotation", turret.getPositionDegrees());
-        telemetry.addData("robot pos on field CM", positionProvider.getRobotPose());
+        addDataLog("Turret rotation", turret.getPositionDegrees(), true);
+        addDataLog("robot pos on field CM", positionProvider.getRobotPose(), true);
         telemetry.addLine();
-        telemetry.addData("Vision offset pose", positionProvider.getVisionOffsetPose());
+        addDataLog("Vision offset pose", positionProvider.getVisionOffsetPose(), true);
         telemetry.addLine();
-        telemetry.addData("Pinpoint position", HardwareDevices.pinpoint.getPosition());
-        telemetry.addData("Pinpoint X", Status.currentPose.getX(DistanceUnit.CM) + " cm");
-        telemetry.addData("Pinpoint Y", Status.currentPose.getY(DistanceUnit.CM) + " cm");
-        telemetry.addData("Robot Heading", Status.currentHeading + "°");
-        telemetry.addData("Pinpoint Heading", RobotContainer.HardwareDevices.pinpoint.getPosition().getHeading(AngleUnit.DEGREES));
-        telemetry.addData("PINPOINT STATUS", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
-        telemetry.addData("Pinpoint odo x", RobotContainer.HardwareDevices.pinpoint.getEncoderX());
-        telemetry.addData("Pinpoint odo y", RobotContainer.HardwareDevices.pinpoint.getEncoderY());
-        telemetry.addData("PINPOINT STATUS", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus());
-        telemetry.addData("Dist to goal", HelperFunctions.disToGoal());
+        addDataLog("Pinpoint position", HardwareDevices.pinpoint.getPosition(), true);
+        addDataLog("Pinpoint X", Status.currentPose.getX(DistanceUnit.CM) + " cm", true);
+        addDataLog("Pinpoint Y", Status.currentPose.getY(DistanceUnit.CM) + " cm", true);
+        addDataLog("Robot Heading", Status.currentHeading + "°", true);
+        addDataLog("Pinpoint Heading", RobotContainer.HardwareDevices.pinpoint.getPosition().getHeading(AngleUnit.DEGREES), true);
+        addDataLog("PINPOINT STATUS", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus(), true);
+        addDataLog("Pinpoint odo x", RobotContainer.HardwareDevices.pinpoint.getEncoderX(), true);
+        addDataLog("Pinpoint odo y", RobotContainer.HardwareDevices.pinpoint.getEncoderY(), true);
+        addDataLog("PINPOINT STATUS", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus(), true);
+        addDataLog("Dist to goal", HelperFunctions.disToGoal(), true);
         telemetry.addLine();
-        telemetry.addData("OpMode Avg Loop Time", (int) getRollingAverageLoopTime(opMode) + " ms");
-        telemetry.addData("OpMode Loop Time", CURRENT_LOOP_TIME_MS + " ms");
+        addDataLog("OpMode Avg Loop Time", (int) getRollingAverageLoopTime(opMode) + " ms", true);
+        addDataLog("OpMode Loop Time", CURRENT_LOOP_TIME_MS + " ms", true);
         telemetry.addLine();
-        telemetry.addData("DriveTrain Avg Loop Time", (int) drivetrainUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms");
-        telemetry.addData("DriveTrain Loop Time", (int) drivetrainUpdater.CURRENT_LOOP_TIME_MS + " ms");
-        telemetry.addData("Goal: ", Status.goalPose);
-        telemetry.addData("Start: ", Status.startingPose);
+        addDataLog("DriveTrain Avg Loop Time", (int) drivetrainUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms", true);
+        addDataLog("DriveTrain Loop Time", (int) drivetrainUpdater.CURRENT_LOOP_TIME_MS + " ms", true);
+        addDataLog("Goal: ", Status.goalPose, true);
+        addDataLog("Start: ", Status.startingPose, true);
         telemetry.addLine();
-        telemetry.addData("Pinpoint Avg Loop Time", (int) localizationUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms");
-        telemetry.addData("Pinpoint Loop Time", (int) localizationUpdater.CURRENT_LOOP_TIME_MS + " ms");
+        addDataLog("Pinpoint Avg Loop Time", (int) localizationUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms", true);
+        addDataLog("Pinpoint Loop Time", (int) localizationUpdater.CURRENT_LOOP_TIME_MS + " ms", true);
         telemetry.addLine();
-        telemetry.addData("Motor 0 Current Velocity", swerveModules[0].motor.getVelocity());
-        telemetry.addData("Motor 1 Current Velocity", swerveModules[1].motor.getVelocity());
-        telemetry.addData("Motor 2 Current Velocity", swerveModules[2].motor.getVelocity());
-        telemetry.addData("Motor 3 Current Velocity", swerveModules[3].motor.getVelocity());
+        addDataLog("Motor 0 Current Velocity", swerveModules[0].motor.getVelocity(), true);
+        addDataLog("Motor 1 Current Velocity", swerveModules[1].motor.getVelocity(), true);
+        addDataLog("Motor 2 Current Velocity", swerveModules[2].motor.getVelocity(), true);
+        addDataLog("Motor 3 Current Velocity", swerveModules[3].motor.getVelocity(), true);
         telemetry.addLine();
-        telemetry.addData("Field Oriented", Status.fieldOriented);
-        telemetry.addData("Intake Enabled", Status.intakeToggle);
+        addDataLog("Field Oriented", Status.fieldOriented, true);
+        addDataLog("Intake Enabled", Status.intakeToggle, true);
         telemetry.addLine();
-        telemetry.addData("flywheel current mA", HardwareDevices.flyWheelMotorMaster.getCurrent(CurrentUnit.MILLIAMPS));
-        telemetry.addData("upper flywheel current mA", HardwareDevices.flyWheelMotorSlave.getCurrent(CurrentUnit.MILLIAMPS));
-        telemetry.addData("turret pos", turret.getPosition());
-        telemetry.addData("slave servo", HardwareDevices.turretServoSlave.getPosition());
-        telemetry.addData("hood", HardwareDevices.hoodServo.getPosition());
+        addDataLog("flywheel current mA", HardwareDevices.flyWheelMotorMaster.getCurrent(CurrentUnit.MILLIAMPS), true);
+        addDataLog("upper flywheel current mA", HardwareDevices.flyWheelMotorSlave.getCurrent(CurrentUnit.MILLIAMPS), true);
+        addDataLog("turret pos", turret.getPosition(), true);
+        addDataLog("slave servo", HardwareDevices.turretServoSlave.getPosition(), true);
+        addDataLog("hood", HardwareDevices.hoodServo.getPosition(), true);
         telemetry.addLine();
-        telemetry.addData("beam break", HardwareDevices.beamBreak.isPressed());
+        addDataLog("beam break", HardwareDevices.beamBreak.isPressed(), true);
 //       telemetry.addData("red", HardwareDevices.colorSensor.updateRed());
 //       telemetry.addData("blue", HardwareDevices.colorSensor.updateBlue());
 //       telemetry.addData("green", HardwareDevices.colorSensor.updateGreen());
@@ -667,16 +724,16 @@ public class RobotContainer {
         for (int i = 0; i < swerveModules.length; i++) {
             telemetry.addLine();
             telemetry.addLine("Servo" + i);
-            telemetry.addData(i + "Servo Angle", swerveModules[i].servo.getAngle());
-            telemetry.addData(i + "Servo Target", swerveServosPDF[i].getTargetAngle());
-            telemetry.addData(i + "Servo Set Power", swerveServosPDF[i].calculate());
-            telemetry.addData(i + "Servo Error", swerveServosPDF[i].getError());
-            telemetry.addData(i + "Motor Target Power", swerveModules[i].motor.targetPower);
-            telemetry.addData(i + "Motor Current Velocity", swerveModules[i].motor.getVelocity());
-            telemetry.addData(i + "Motor Current Power", RobotContainer.HardwareDevices.swerveMotors[i].getPower());
+            addDataLog(i + "Servo Angle", swerveModules[i].servo.getAngle(), true);
+            addDataLog(i + "Servo Target", swerveServosPDF[i].getTargetAngle(), true);
+            addDataLog(i + "Servo Set Power", swerveServosPDF[i].calculate(), true);
+            addDataLog(i + "Servo Error", swerveServosPDF[i].getError(), true);
+            addDataLog(i + "Motor Target Power", swerveModules[i].motor.targetPower, true);
+            addDataLog(i + "Motor Current Velocity", swerveModules[i].motor.getVelocity(), true);
+            addDataLog(i + "Motor Current Power", RobotContainer.HardwareDevices.swerveMotors[i].getPower(), true);
         }
         telemetry.addLine();
-        displayRetainedTelemetry();
+        displayEventTelemetry();
         telemetry.update();
     }
 }
