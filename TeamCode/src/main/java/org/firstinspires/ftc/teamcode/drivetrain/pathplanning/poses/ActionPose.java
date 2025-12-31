@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drivetrain.pathplanning;
+package org.firstinspires.ftc.teamcode.drivetrain.pathplanning.poses;
 
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.util.DelayedActionManager;

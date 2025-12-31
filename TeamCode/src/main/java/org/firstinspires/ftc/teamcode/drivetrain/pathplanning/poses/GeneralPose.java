@@ -1,7 +1,6 @@
-package org.firstinspires.ftc.teamcode.drivetrain.pathplanning;
+package org.firstinspires.ftc.teamcode.drivetrain.pathplanning.poses;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.teamcode.main.RobotContainer;
 
 public class GeneralPose {
     public GeneralPose() {

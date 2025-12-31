@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drivetrain.pathplanning;
+package org.firstinspires.ftc.teamcode.drivetrain.pathplanning.poses;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.drivetrain.pathplanning;
+package org.firstinspires.ftc.teamcode.drivetrain.pathplanning.poses;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
