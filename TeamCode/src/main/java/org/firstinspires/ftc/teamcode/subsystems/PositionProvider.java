@@ -55,6 +55,12 @@ public class PositionProvider {
         if (LimeLight) {
             Pose2D odPose = RobotContainer.HardwareDevices.pinpoint.getPosition();
 
+            // Unrotate the pinpoint to zero degrees
+            double newX = (odPose.getX(DistanceUnit.CM) * Math.cos(-odPose.getHeading(AngleUnit.RADIANS))) - odPose.getY(DistanceUnit.CM) * Math.sin(-odPose.getHeading(AngleUnit.RADIANS));
+            double newY = (odPose.getX(DistanceUnit.CM) * Math.sin(-odPose.getHeading(AngleUnit.RADIANS))) + odPose.getY(DistanceUnit.CM) * Math.cos(-odPose.getHeading(AngleUnit.RADIANS));
+
+            odPose = new Pose2D(DistanceUnit.CM, newX, newY, AngleUnit.RADIANS, odPose.getHeading(AngleUnit.RADIANS));
+
             Pose2D visionPose = getGoodLimeLightPose();
             if (lastODPose == null) {
                 lastODPose = odPose;

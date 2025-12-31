@@ -52,6 +52,7 @@ public class LimelightLogic {
         }
     }
 
+    @Deprecated
     public void trackGoal() {
         if (limelight.getLatestResult() != null && Math.abs(limelight.getLatestResult().getTx()) > 1) {
             p += limelight.getLatestResult().getTx() * Constants.Turret.TRACK_GOAL_P;
@@ -61,6 +62,7 @@ public class LimelightLogic {
         }
     }
 
+    @Deprecated
     public Pose2D limelightBotPose() {
         if (result != null) {
             double a = Turret.turretServoMaster.getPosition() - 0.5;
@@ -122,7 +124,7 @@ public class LimelightLogic {
         return new LimeLightInfo(botPose, result);
     }
 
-
+    @Deprecated
     public double disToGoal() {
         if (result != null) {
             Pose2D botPose = limelightBotPose();
@@ -134,6 +136,7 @@ public class LimelightLogic {
         }
     }
 
+    @Deprecated
     public Constants.Game.MOTIF checkMotif(LLResultTypes.FiducialResult aprilTag) {
         if (aprilTag.getFiducialId() == 21) {
             return Constants.Game.MOTIF.GPP;
@@ -145,6 +148,7 @@ public class LimelightLogic {
         return null;
     }
 
+    // @Deprecated
     // public void findMotif() {
     //     for (LLResultTypes.FiducialResult tag : result.getFiducialResults()) {
     //         if (checkMotif(tag) != null) {

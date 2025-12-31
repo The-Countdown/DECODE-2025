@@ -70,8 +70,9 @@ public class HeadingPowerScaleTuner extends OpMode {
     @Override
     public void stop() {
         robotContainer.drivetrain.setTargets(Constants.Swerve.STOP_FORMATION, Constants.Swerve.NO_POWER);
-        String csv = robotContainer.arraysToCSV(distance.toArray(new String[0]), time.toArray(new String[0]));
-        robotContainer.writeToFile("Acceleration_Heading Data Log.txt", csv);
+        // This is erroring and I don't know why
+        // String csv = robotContainer.arraysToCSV(distance.toArray(new String[0]), time.toArray(new String[0]));
+        // robotContainer.writeToFile("Acceleration_Heading Data Log.txt", csv);
 
         Status.isDrivingActive = false;
         Status.opModeIsActive = false;
