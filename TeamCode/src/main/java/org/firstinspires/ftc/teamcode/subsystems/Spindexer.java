@@ -11,6 +11,8 @@ import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 import org.firstinspires.ftc.teamcode.util.LinkedServos;
 import org.firstinspires.ftc.teamcode.util.PIDF;
 
+import java.util.Arrays;
+
 public class Spindexer {
     private final RobotContainer robotContainer;
     private final LinkedServos spindexerServo;
@@ -40,9 +42,7 @@ public class Spindexer {
         this.spindexerError = 0;
         this.slotZeroAngle = 0;
 
-        for (int i = 0; i < this.slotColor.length; i++) {
-            this.slotColor[i] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;
-        }
+        Arrays.fill(this.slotColor, Constants.Game.ARTIFACT_COLOR.UNKNOWN);
         spindexerPIDF = new PIDF(robotContainer, Constants.Spindexer.KP, Constants.Spindexer.KI, Constants.Spindexer.KD, Constants.Spindexer.KF);
     }
 
@@ -57,7 +57,7 @@ public class Spindexer {
         double servoPower = calculate();
         robotContainer.telemetry.addData("Spin Error:", servoPower);
         if (Math.abs(spindexerError) > 5 && !this.pause) {
-            if (clockwise && Math.abs(spindexerError) > 20) {
+            if (clockwise && spindexerError < -20) {
                 spindexerServo.setPower(-Math.abs(servoPower));
             } else {
                 spindexerServo.setPower(servoPower);
