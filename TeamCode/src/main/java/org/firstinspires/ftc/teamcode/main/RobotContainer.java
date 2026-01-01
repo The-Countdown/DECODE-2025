@@ -54,6 +54,7 @@ import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 import org.firstinspires.ftc.teamcode.util.LimeLightInfo;
 import org.firstinspires.ftc.teamcode.util.LinkedMotors;
 import org.firstinspires.ftc.teamcode.util.LinkedServos;
+import org.firstinspires.ftc.teamcode.util.TelemetryLogger;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -87,8 +88,10 @@ public class RobotContainer {
     private final ArrayList<String> eventTelemetry = new ArrayList<>();
     private final ArrayList<String> eventTelemetryCaptions = new ArrayList<>();
     private final ArrayList<Object> eventTelemetryValues = new ArrayList<>();
+    private Map<String, Object> currentLoopData = new HashMap<>();
     public final SwerveModule[] swerveModules = new SwerveModule[Constants.Swerve.NUM_MOTORS];
     public SwervePDF[] swerveServosPDF = new SwervePDF[Constants.Swerve.NUM_SERVOS];
+    public TelemetryLogger telemetryLogger;
     public LocalizationUpdater localizationUpdater;
     public DrivetrainUpdater drivetrainUpdater;
     public PathingUpdater pathingUpdater;
@@ -255,6 +258,7 @@ public class RobotContainer {
         registerLoopTimer("teleOp");
         registerLoopTimer("drivetrainUpdater");
         registerLoopTimer("pinpointUpdater");
+        registerLoopTimer("telemetryLogger");
     }
 
     public void init() {
@@ -297,6 +301,8 @@ public class RobotContainer {
         RobotContainer.HardwareDevices.limelight.start(); // IDK what this does
 
         // Start the required threads
+        telemetryLogger = new TelemetryLogger(this);
+        telemetryLogger.start();
         localizationUpdater = new LocalizationUpdater(this);
         localizationUpdater.start();
         drivetrainUpdater = new DrivetrainUpdater(this);
@@ -338,6 +344,15 @@ public class RobotContainer {
             this.pathingUpdater.stopThread();
             try {
                 this.pathingUpdater.join();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        if (this.telemetryLogger != null) {
+            this.telemetryLogger.stopThread();
+            try {
+                this.telemetryLogger.join();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -546,37 +561,35 @@ public class RobotContainer {
     }
 
     public void addDataLog(String caption, Object data, boolean driveStation) {
-        int currentRow = 0;
+        if (data == null) data = "null";
 
-        if (data == null) {
-            data = "null";
-        }
-
-        if (!telemetryHeaderList.isEmpty()) {
-            currentRow = telemetryCache.get(telemetryHeaderList.get(0)).size();
-        }
-
-        if (!telemetryCache.containsKey(caption)) {
+        // Add new headers if needed
+        if (!telemetryHeaderList.contains(caption)) {
             telemetryHeaderList.add(caption);
-            ArrayList<String> newColumn = new ArrayList<>();
-            for (int i = 0; i < currentRow; i++) newColumn.add("");
-            telemetryCache.put(caption, newColumn);
+            telemetryCache.put(caption, new ArrayList<>());
         }
 
-        telemetryCache.get(caption).add(data.toString());
-
-        for (String header : telemetryHeaderList) {
-            if (!header.equals(caption)) {
-                ArrayList<String> column = telemetryCache.get(header);
-                while (column.size() < telemetryCache.get(caption).size()) {
-                    column.add("");
-                }
-            }
-        }
+        // Put this loop’s value in the buffer
+        currentLoopData.put(caption, data.toString());
 
         if (driveStation) {
             telemetry.addData(caption, data);
         }
+    }
+
+    public void commitLoopData() {
+        // Determine the current row number
+        int row = telemetryCache.get(telemetryHeaderList.get(0)).size();
+
+        // For every column, add value from buffer or empty string
+        for (String header : telemetryHeaderList) {
+            ArrayList<String> column = telemetryCache.get(header);
+            String value = currentLoopData.getOrDefault(header, "").toString();
+            column.add(value);
+        }
+
+        // Clear the buffer for the next loop
+        currentLoopData.clear();
     }
 
     public void writeDataLog() {
@@ -603,7 +616,7 @@ public class RobotContainer {
             csvLog.append('\n');
         }
 
-        writeToFile("TelemetryLog", csvLog.toString());
+        writeToFile("TelemetryLog.txt", csvLog.toString());
     }
 
     public void writeEventLog() {
@@ -614,6 +627,8 @@ public class RobotContainer {
             log.append('\n');
             log.append('\n');
         }
+
+        writeToFile("EventLog.txt", log.toString());
     }
 
     public void telemetry(String opMode) {
@@ -734,6 +749,7 @@ public class RobotContainer {
         }
         telemetry.addLine();
         displayEventTelemetry();
+        commitLoopData();
         telemetry.update();
     }
 }
