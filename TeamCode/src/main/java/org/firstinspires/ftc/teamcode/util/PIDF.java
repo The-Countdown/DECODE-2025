@@ -75,6 +75,14 @@ public class PIDF {
     public double getPIDFError(final double target, final double currentTime, final double currentValue) {
         return target - currentValue;
     }
+
+    public PIDF updateValues(RobotContainer robotContainer, double kp, double ki, double kd, double kf) {
+        if (this.kp != kp || this.ki != ki || this.kd != kd || this.kf != kf) {
+            return new PIDF(robotContainer, kp, ki, kd, kf)
+        } else {
+            return this;
+        }
+    }
     
     /**
      * Resets the integral and derivative errors.

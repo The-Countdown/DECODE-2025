@@ -18,12 +18,9 @@ public class Spindexer {
     private final BetterColorSensor colorSensor;
     public double targetAngle;
     public double lastPosition;
-    private double error;
     private double spindexerError;
-    private double lastError;
     public boolean pause;
     private boolean clockwise;
-    private double lastP; //Delete this
     private PIDF spindexerPIDF;
     private ElapsedTime beamTimer = new ElapsedTime();
     private ElapsedTime jamTimer = new ElapsedTime();
@@ -57,8 +54,8 @@ public class Spindexer {
 
         double servoPower = calculate();
         robotContainer.telemetry.addData("Spin Error:", servoPower);
-        if (spindexerError > 5 && !this.pause) {
-            if (clockwise) {
+        if (Math.abs(spindexerError) > 5 && !this.pause) {
+            if (clockwise && Math.abs(spindexerError) > 20) {
                 spindexerServo.setPower(-Math.abs(servoPower));
             } else {
                 spindexerServo.setPower(servoPower);
@@ -68,10 +65,7 @@ public class Spindexer {
             clockwise = false;
         }
 
-        if (Constants.Spindexer.KP != lastP) {
-            spindexerPIDF = new PIDF(robotContainer, Constants.Spindexer.KP, Constants.Spindexer.KI, Constants.Spindexer.KD, Constants.Spindexer.KF);
-            lastP = Constants.Spindexer.KP;
-        }
+        spindexerPIDF = spindexerPIDF.updateValues(robotContainer, Constants.Spindexer.KP, Constants.Spindexer.KI, Constants.Spindexer.KD, Constants.Spindexer.KF);
 
 
         if (robotContainer.beamBreakToggleButton.wasJustReleased() || robotContainer.beamBreakToggleButton.isHeldFor(0.1)) {
