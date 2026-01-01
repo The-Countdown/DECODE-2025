@@ -308,8 +308,10 @@ public class Constants {
         public static double[] HOOD_PRESETS = {0.45, 0, 0};
         public static double TURRET_LIMIT_MIN_ANGLE = -90;
         public static double TURRET_LIMIT_MAX_ANGLE = 125;
-        public static double FLYWHEEL_P = 0.00019;
-        public static double FLYWHEEL_D = 0.0033;
+        public static double FLYWHEEL_KP = 0.00019;
+        public static double FLYWHEEL_KI = 0;
+        public static double FLYWHEEL_KD = 0.0033;
+        public static double FLYWHEEL_KF = 0;
     }
 
     @Config

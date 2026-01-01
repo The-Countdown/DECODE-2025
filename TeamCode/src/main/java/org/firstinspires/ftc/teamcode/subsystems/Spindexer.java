@@ -48,6 +48,8 @@ public class Spindexer {
 
     // TODO: Change to -180 to 180 instead of 0 - 360
     public void update(boolean teleop) {
+        spindexerPIDF = spindexerPIDF.updateValues(robotContainer, Constants.Spindexer.KP, Constants.Spindexer.KI, Constants.Spindexer.KD, Constants.Spindexer.KF);
+
         spindexerError = Math.abs(getError());
         boolean jammed = jammed();
         robotContainer.telemetry.addData("jammed:", jammed);
@@ -64,8 +66,6 @@ public class Spindexer {
             spindexerServo.setPower(0);
             clockwise = false;
         }
-
-        spindexerPIDF = spindexerPIDF.updateValues(robotContainer, Constants.Spindexer.KP, Constants.Spindexer.KI, Constants.Spindexer.KD, Constants.Spindexer.KF);
 
 
         if (robotContainer.beamBreakToggleButton.wasJustReleased() || robotContainer.beamBreakToggleButton.isHeldFor(0.1)) {

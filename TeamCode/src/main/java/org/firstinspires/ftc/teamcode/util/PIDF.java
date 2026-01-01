@@ -77,8 +77,8 @@ public class PIDF {
     }
 
     public PIDF updateValues(RobotContainer robotContainer, double kp, double ki, double kd, double kf) {
-        if (this.kp != kp || this.ki != ki || this.kd != kd || this.kf != kf) {
-            return new PIDF(robotContainer, kp, ki, kd, kf)
+        if (this.kP != kp || this.kI != ki || this.kD != kd || this.kD != kf) {
+            return new PIDF(robotContainer, kp, ki, kd, kf);
         } else {
             return this;
         }

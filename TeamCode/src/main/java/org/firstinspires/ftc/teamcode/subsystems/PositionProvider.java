@@ -55,12 +55,6 @@ public class PositionProvider {
         if (LimeLight) {
             Pose2D odPose = RobotContainer.HardwareDevices.pinpoint.getPosition();
 
-            // Unrotate the pinpoint to zero degrees
-            double newX = (odPose.getX(DistanceUnit.CM) * Math.cos(-odPose.getHeading(AngleUnit.RADIANS))) - odPose.getY(DistanceUnit.CM) * Math.sin(-odPose.getHeading(AngleUnit.RADIANS));
-            double newY = (odPose.getX(DistanceUnit.CM) * Math.sin(-odPose.getHeading(AngleUnit.RADIANS))) + odPose.getY(DistanceUnit.CM) * Math.cos(-odPose.getHeading(AngleUnit.RADIANS));
-
-            odPose = new Pose2D(DistanceUnit.CM, newX, newY, AngleUnit.RADIANS, odPose.getHeading(AngleUnit.RADIANS));
-
             Pose2D visionPose = getGoodLimeLightPose();
             if (lastODPose == null) {
                 lastODPose = odPose;
@@ -85,22 +79,19 @@ public class PositionProvider {
                 startODPose = odPose;
             }
             // Add something about rejecting poses that are far from the current average
-            if (visionTimer.seconds() > 1 && visionPoseList.size() > 20) {
+            if (visionTimer.seconds() > 1 && visionPoseList.size() > 80) {
                 // Average all vision estimates over the time.
                 double llX = 0;
                 double llY = 0;
-                double llH = 0;
                 for (int i = 0; i < visionPoseList.size(); i++) {
                     llX += visionPoseList.get(i).getX(DistanceUnit.CM);
                     llY += visionPoseList.get(i).getY(DistanceUnit.CM);
-                    llH += visionPoseList.get(i).getHeading(AngleUnit.DEGREES);
                 }
 
                 llX = llX / visionPoseList.size();
                 llY = llY / visionPoseList.size();
-                llH = llH / visionPoseList.size();
 
-                visionOffsetPose = new Pose2D(DistanceUnit.CM, llX - odPose.getX(DistanceUnit.CM), llY - odPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, HelperFunctions.normalizeAngle(llH - odPose.getHeading(AngleUnit.DEGREES)));
+                visionOffsetPose = new Pose2D(DistanceUnit.CM, llX - odPose.getX(DistanceUnit.CM), llY - odPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, 0);
                 visionTimer.reset();
                 visionPoseList = new ArrayList<>();
                 startODPose = odPose;
@@ -108,9 +99,7 @@ public class PositionProvider {
             Status.currentPose = getRobotPose();
             lastODPose = odPose;
         } else {
-            // Status.currentPose = new Pose2D(DistanceUnit.CM, RobotContainer.HardwareDevices.pinpoint.getPosX(DistanceUnit.CM), RobotContainer.HardwareDevices.pinpoint.getPosY(DistanceUnit.CM), AngleUnit.DEGREES, RobotContainer.HardwareDevices.imu.getRobotYawPitchRollAngles().getYaw());
            Status.currentPose = new Pose2D(DistanceUnit.CM, RobotContainer.HardwareDevices.pinpoint.getPosX(DistanceUnit.CM), RobotContainer.HardwareDevices.pinpoint.getPosY(DistanceUnit.CM), AngleUnit.DEGREES, RobotContainer.HardwareDevices.pinpoint.getPosition().getHeading(AngleUnit.DEGREES));
-            // Status.currentPose = RobotContainer.HardwareDevices.pinpoint.getPosition();
         }
     }
 

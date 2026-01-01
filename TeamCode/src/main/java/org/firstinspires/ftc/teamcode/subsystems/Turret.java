@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 import org.firstinspires.ftc.teamcode.util.LinkedMotors;
 import org.firstinspires.ftc.teamcode.util.LinkedServos;
+import org.firstinspires.ftc.teamcode.util.PIDF;
 
 public class Turret extends RobotContainer.HardwareDevices {
     private final RobotContainer robotContainer;
@@ -19,6 +20,7 @@ public class Turret extends RobotContainer.HardwareDevices {
     private final LinkedServos turretServos;
     public final BetterServo hoodServo;
     private FlywheelPDF flywheelPDF;
+    private PIDF flywheelPIDF;
     private double targetPosition;
     private double targetPositionDegrees;
     private double manualTurretPos;
@@ -31,12 +33,15 @@ public class Turret extends RobotContainer.HardwareDevices {
         this.hoodServo = hoodServo;
         this.turretServos = turretServos;
         this.flywheelPDF = new FlywheelPDF(robotContainer, flyWheelMotors);
+        // this.flywheelPIDF = new PIDF(robotContainer, Constants.Turret.FLYWHEEL_KP, Constants.Turret.FLYWHEEL_KI, Constants.Turret.FLYWHEEL_KD, Constants.Turret.FLYWHEEL_KF);
         this.targetPosition = 0;
         this.manualTurretPos = 0;
         this.turretAngleOffset = 0;
     }
 
     public void update(boolean teleop) {
+        // flywheelPIDF = flywheelPIDF.updateValues(robotContainer, Constants.Turret.FLYWHEEL_KP, Constants.Turret.FLYWHEEL_KI, Constants.Turret.FLYWHEEL_KD, Constants.Turret.FLYWHEEL_KF);
+
         Status.turretToggleButton.update(Status.turretToggle);
 
         if (teleop) {
@@ -120,6 +125,7 @@ public class Turret extends RobotContainer.HardwareDevices {
         flywheel.targetVelocity = flywheel.targetVelocity * Constants.Turret.FLYWHEEL_MAX_VELOCITY;
         Status.flywheelAtTargetSpeed = robotContainer.turret.flywheel.atTargetVelocity();
         double targetPower = flywheelPDF.calculate(flywheel.targetVelocity);
+        // double targetPower = flywheelPIDF.update((flywheel.targetVelocity));
         robotContainer.telemetry.addData("Flywheel Target Speed", flywheel.targetVelocity);
         robotContainer.telemetry.addData("Flywheel Power", targetPower);
         flyWheelMotors.setPower(targetPower);

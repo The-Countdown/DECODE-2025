@@ -38,10 +38,10 @@ public class FlywheelPDF {
 
         robotContainer.telemetry.addData("Flywheel Error", error);
 
-        p = Constants.Turret.FLYWHEEL_P * error;
+        p = Constants.Turret.FLYWHEEL_KP * error;
         //ff = Constants.Turret.FLYWHEEL_F * Math.signum(error);
 
-        d = (Constants.Turret.FLYWHEEL_D * (lastError - error));
+        d = (Constants.Turret.FLYWHEEL_KD * (lastError - error));
 
         lastTargetPower = lastTargetPower + (p - d);
         if (lastTargetPower > 1) {
