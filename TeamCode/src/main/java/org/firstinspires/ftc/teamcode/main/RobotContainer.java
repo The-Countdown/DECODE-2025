@@ -563,6 +563,10 @@ public class RobotContainer {
     public void addDataLog(String caption, Object data, boolean driveStation) {
         if (data == null) data = "null";
 
+        if (Status.competitionMode) { // At some point make this a seperate varuable
+            return;
+        }
+
         String dataString = data.toString();
 
         dataString = dataString.replaceAll(",", "|");
