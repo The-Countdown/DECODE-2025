@@ -563,6 +563,11 @@ public class RobotContainer {
     public void addDataLog(String caption, Object data, boolean driveStation) {
         if (data == null) data = "null";
 
+        String dataString = data.toString();
+
+        dataString = dataString.replaceAll(",", "|");
+
+
         // Add new headers if needed
         if (!telemetryHeaderList.contains(caption)) {
             telemetryHeaderList.add(caption);
@@ -570,7 +575,7 @@ public class RobotContainer {
         }
 
         // Put this loop’s value in the buffer
-        currentLoopData.put(caption, data.toString());
+        currentLoopData.put(caption, dataString);
 
         if (driveStation) {
             telemetry.addData(caption, data);
