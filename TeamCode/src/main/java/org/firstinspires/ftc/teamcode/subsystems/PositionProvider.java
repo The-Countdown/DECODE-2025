@@ -79,7 +79,7 @@ public class PositionProvider {
                 startODPose = odPose;
             }
             // Add something about rejecting poses that are far from the current average
-            if (visionTimer.seconds() > 1 && visionPoseList.size() > 80) {
+            if (visionTimer.seconds() > 0.2 && visionPoseList.size() > 8) {
                 // Average all vision estimates over the time.
                 double llX = 0;
                 double llY = 0;
