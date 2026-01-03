@@ -561,11 +561,15 @@ public class RobotContainer {
     }
 
     public void addDataLog(String caption, Object data, boolean driveStation) {
-        if (data == null) data = "null";
+        if (driveStation) {
+            telemetry.addData(caption, data);
+        }
 
-        if (Status.competitionMode) { // At some point make this a seperate varuable
+        if (Status.loggingToggle) {
             return;
         }
+
+        if (data == null) data = "null";
 
         String dataString = data.toString();
 
@@ -580,10 +584,6 @@ public class RobotContainer {
 
         // Put this loop’s value in the buffer
         currentLoopData.put(caption, dataString);
-
-        if (driveStation) {
-            telemetry.addData(caption, data);
-        }
     }
 
     public void commitLoopData() {

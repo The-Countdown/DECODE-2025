@@ -52,10 +52,10 @@ public class Spindexer {
 
         spindexerError = Math.abs(getError());
         boolean jammed = jammed();
-        robotContainer.telemetry.addData("jammed:", jammed);
+        robotContainer.telemetry.addData("Spindexer Jammed", jammed);
 
         double servoPower = calculate();
-        robotContainer.telemetry.addData("Spin Error:", servoPower);
+        robotContainer.telemetry.addData("Spin Error", servoPower);
         if (Math.abs(spindexerError) > 5 && !this.pause) {
             if (clockwise && spindexerError < -20) {
                 spindexerServo.setPower(-Math.abs(servoPower));
@@ -68,8 +68,8 @@ public class Spindexer {
         }
 
 
-        if (robotContainer.beamBreakToggleButton.wasJustReleased() || robotContainer.beamBreakToggleButton.isHeldFor(0.1)) {
-            robotContainer.delayedActionManager.schedule(() -> function2(), Constants.Spindexer.COLOR_SENSE_TIME);
+        if (robotContainer.beamBreakToggleButton.wasJustReleased() || robotContainer.beamBreakToggleButton.holdDuration() >= Constants.Spindexer.TIME_BEAM_BREAK_TRUE_BEFORE_COLOR_SENSOR_CHECK) {
+            robotContainer.delayedActionManager.schedule(() -> function2(), Constants.Spindexer.TIME_BETWEEN_BEAM_BREAK_AND_COLOR_SENSOR);
             beamTimer.reset();
         }
 
@@ -82,7 +82,6 @@ public class Spindexer {
                 spindexerServo.setPower(1);
             }
         }
-        //Should this stop running when right bumper is held???? -Elliot
 
         if (teleop) {
             if (robotContainer.gamepadEx1.leftBumper.wasJustPressed()) {
@@ -200,22 +199,23 @@ public class Spindexer {
         if (matchMotif) {
             shootAll(Status.motif);
         } else {
-            robotContainer.delayedActionManager.schedule(() -> spindexerServo.setPower(1), 0);
+            robotContainer.delayedActionManager.schedule(() -> this.pause = true, () -> robotContainer.turret.flywheel.atTargetVelocity());
+            robotContainer.delayedActionManager.schedule(() -> this.pause = false, () -> robotContainer.turret.flywheel.atTargetVelocity(), Constants.Spindexer.FULL_EMPTY_SPINTIME);
         }
     }
     public void shootAll(Constants.Game.MOTIF motif){
         if (motif == Constants.Game.MOTIF.PPG){
-            robotContainer.delayedActionManager.schedule( ()-> goToNextColorSlot(Constants.Game.ARTIFACT_COLOR.PURPLE), 0);
-            robotContainer.delayedActionManager.schedule( ()-> goToNextColorSlot(Constants.Game.ARTIFACT_COLOR.PURPLE), 750);
-            robotContainer.delayedActionManager.schedule( ()-> goToNextColorSlot(Constants.Game.ARTIFACT_COLOR.PURPLE), 1500);
+            robotContainer.delayedActionManager.schedule( ()-> goToNextColorIntakeSlot(Constants.Game.ARTIFACT_COLOR.PURPLE), 0);
+            robotContainer.delayedActionManager.schedule( ()-> goToNextColorIntakeSlot(Constants.Game.ARTIFACT_COLOR.PURPLE), 750);
+            robotContainer.delayedActionManager.schedule( ()-> goToNextColorIntakeSlot(Constants.Game.ARTIFACT_COLOR.PURPLE), 1500);
         } else if (motif == Constants.Game.MOTIF.PGP){
-            robotContainer.delayedActionManager.schedule( ()-> goToNextColorSlot(Constants.Game.ARTIFACT_COLOR.PURPLE), 0);
-            robotContainer.delayedActionManager.schedule( ()-> goToNextColorSlot(Constants.Game.ARTIFACT_COLOR.PURPLE), 750);
-            robotContainer.delayedActionManager.schedule( ()-> goToNextColorSlot(Constants.Game.ARTIFACT_COLOR.PURPLE), 1500);
+            robotContainer.delayedActionManager.schedule( ()-> goToNextColorIntakeSlot(Constants.Game.ARTIFACT_COLOR.PURPLE), 0);
+            robotContainer.delayedActionManager.schedule( ()-> goToNextColorIntakeSlot(Constants.Game.ARTIFACT_COLOR.PURPLE), 750);
+            robotContainer.delayedActionManager.schedule( ()-> goToNextColorIntakeSlot(Constants.Game.ARTIFACT_COLOR.PURPLE), 1500);
         } else if (motif == Constants.Game.MOTIF.GPP){
-            robotContainer.delayedActionManager.schedule( ()-> goToNextColorSlot(Constants.Game.ARTIFACT_COLOR.PURPLE), 0);
-            robotContainer.delayedActionManager.schedule( ()-> goToNextColorSlot(Constants.Game.ARTIFACT_COLOR.PURPLE), 750);
-            robotContainer.delayedActionManager.schedule( ()-> goToNextColorSlot(Constants.Game.ARTIFACT_COLOR.PURPLE), 1500);
+            robotContainer.delayedActionManager.schedule( ()-> goToNextColorIntakeSlot(Constants.Game.ARTIFACT_COLOR.PURPLE), 0);
+            robotContainer.delayedActionManager.schedule( ()-> goToNextColorIntakeSlot(Constants.Game.ARTIFACT_COLOR.PURPLE), 750);
+            robotContainer.delayedActionManager.schedule( ()-> goToNextColorIntakeSlot(Constants.Game.ARTIFACT_COLOR.PURPLE), 1500);
         }
     }
 
@@ -256,7 +256,7 @@ public class Spindexer {
         }
     }
 
-    public void goToNextColorSlot(Constants.Game.ARTIFACT_COLOR color){
+    public void goToNextColorIntakeSlot(Constants.Game.ARTIFACT_COLOR color){
        for (int i = 0; i < Constants.Spindexer.INTAKE_SLOT_ANGLES.length; i++) {
            if (slotColor[i] == color){
                for (int j = ((i*120) + slotZeroAngle)/120;  j >0; j--){
@@ -266,6 +266,135 @@ public class Spindexer {
            }
        }
     }
+
+    public void shootAllMotifOrder(boolean onlyMotif) {
+        Status.turretToggle = true;
+        Status.intakeToggle = false;
+        Status.flywheelToggle = true;
+
+        int closestSlot = (getCurrentTransferSlot() + 1) % 3;
+        int secondClosestSlot = getCurrentTransferSlot();
+        int thirdClosestSlot = (getCurrentTransferSlot() - 1 + 3) % 3;
+
+        int[] slots = {closestSlot, secondClosestSlot, thirdClosestSlot};
+        Constants.Game.ARTIFACT_COLOR[] slotColors = {
+                slotColor[closestSlot],
+                slotColor[secondClosestSlot],
+                slotColor[thirdClosestSlot]
+        };
+
+        Constants.Game.ARTIFACT_COLOR[] motifColors = getMotifColors(Status.motif);
+
+        int firstSlot = pickFirstSlot(slots, slotColors, motifColors, onlyMotif);
+        if (firstSlot == -1) return;
+        int secondSlot = pickSecondSlot(firstSlot, slots, slotColors, motifColors, onlyMotif);
+        if (secondSlot == -1) return;
+        int thirdSlot = pickThirdSlot(firstSlot, secondSlot, slots, slotColors, motifColors, onlyMotif);
+        if (thirdSlot == -1) return;
+
+        shootSlots(firstSlot, secondSlot, thirdSlot);
+    }
+
+
+    private int pickFirstSlot(int[] slots, Constants.Game.ARTIFACT_COLOR[] slotColors, Constants.Game.ARTIFACT_COLOR[] motifColors, boolean onlyMotif) {
+        Constants.Game.ARTIFACT_COLOR firstColor = motifColors[0];
+
+        if (Status.motif == Constants.Game.MOTIF.UNKNOWN || (slotColors[0] != firstColor && slotColors[1] != firstColor && slotColors[2] != firstColor)) {
+            if (!onlyMotif) {
+                robotContainer.delayedActionManager.schedule(() -> this.pause = true, () -> robotContainer.turret.flywheel.atTargetVelocity());
+                robotContainer.delayedActionManager.schedule(() -> this.pause = false, () -> robotContainer.turret.flywheel.atTargetVelocity(), Constants.Spindexer.FULL_EMPTY_SPINTIME);
+            }
+            return -1;
+        }
+
+        for (int i = 0; i < 3; i++) {
+            if (slotColors[i] == firstColor) {
+                return slots[i];
+            }
+        }
+
+        return -1;
+    }
+
+    private int pickSecondSlot(int firstSlot, int[] slots, Constants.Game.ARTIFACT_COLOR[] slotColors, Constants.Game.ARTIFACT_COLOR[] motifColors, boolean onlyMotif) {
+        Constants.Game.ARTIFACT_COLOR secondColor = motifColors[1];
+
+        for (int i = 0; i < 3; i++) {
+            if (slots[i] != firstSlot && slotColors[i] == secondColor) {
+                return slots[i];
+            }
+        }
+
+        if (onlyMotif) {
+            shootSlot(firstSlot);
+            return -1;
+        }
+
+        for (int i = 0; i < 3; i++) {
+            if (slots[i] != firstSlot) return slots[i];
+        }
+
+        return slots[0];
+    }
+
+
+    private int pickThirdSlot(int firstSlot, int secondSlot, int[] slots, Constants.Game.ARTIFACT_COLOR[] slotColors, Constants.Game.ARTIFACT_COLOR[] motifColors, boolean onlyMotif) {
+        Constants.Game.ARTIFACT_COLOR thirdColor = motifColors[2];
+
+        for (int i = 0; i < 3; i++) {
+            if (slots[i] != firstSlot && slots[i] != secondSlot && slotColors[i] == thirdColor) {
+                return slots[i];
+            }
+        }
+
+        if (onlyMotif) {
+            shootSlots(firstSlot, secondSlot);
+            return -1;
+        }
+
+        for (int i = 0; i < 3; i++) {
+            if (slots[i] != firstSlot && slots[i] != secondSlot) return slots[i];
+        }
+
+        return slots[0];
+    }
+
+
+    public void shootSlots(int firstSlotIndex, int secondSlotIndex, int thirdSlotIndex) {
+        if ((firstSlotIndex + 1) % 3 == secondSlotIndex && (secondSlotIndex + 1) % 3 == thirdSlotIndex) {
+            setTargetAngle(Constants.Spindexer.BEFORE_TRANSFER_SLOT_ANGLES[firstSlotIndex]);
+            robotContainer.delayedActionManager.schedule(() -> setTargetAngle(Constants.Spindexer.AFTER_TRANSFER_SLOT_ANGLES[thirdSlotIndex]), () -> Math.abs(getError()) < 5);
+        } else {
+            shootSlot(firstSlotIndex);
+            shootSlot(secondSlotIndex);
+            shootSlot(thirdSlotIndex);
+        }
+    }
+
+    public void shootSlots(int firstSlotIndex, int secondSlotIndex) {
+        if ((firstSlotIndex + 1) % 3 == secondSlotIndex) {
+            setTargetAngle(Constants.Spindexer.BEFORE_TRANSFER_SLOT_ANGLES[firstSlotIndex]);
+            robotContainer.delayedActionManager.schedule(() -> setTargetAngle(Constants.Spindexer.AFTER_TRANSFER_SLOT_ANGLES[secondSlotIndex]), () -> Math.abs(getError()) < 5);
+        } else {
+            shootSlot(firstSlotIndex);
+            shootSlot(secondSlotIndex);
+        }
+    }
+
+    public void shootSlot(int slotIndex) {
+        setTargetAngle(Constants.Spindexer.BEFORE_TRANSFER_SLOT_ANGLES[slotIndex]);
+        robotContainer.delayedActionManager.schedule(() -> setTargetAngle(Constants.Spindexer.AFTER_TRANSFER_SLOT_ANGLES[slotIndex]), () -> Math.abs(getError()) < 5);
+    }
+
+    private Constants.Game.ARTIFACT_COLOR[] getMotifColors(Constants.Game.MOTIF motif) {
+        switch (motif) {
+            case GPP: return new Constants.Game.ARTIFACT_COLOR[]{Constants.Game.ARTIFACT_COLOR.GREEN, Constants.Game.ARTIFACT_COLOR.PURPLE, Constants.Game.ARTIFACT_COLOR.PURPLE};
+            case PGP: return new Constants.Game.ARTIFACT_COLOR[]{Constants.Game.ARTIFACT_COLOR.PURPLE, Constants.Game.ARTIFACT_COLOR.GREEN, Constants.Game.ARTIFACT_COLOR.PURPLE};
+            case PPG: return new Constants.Game.ARTIFACT_COLOR[]{Constants.Game.ARTIFACT_COLOR.PURPLE, Constants.Game.ARTIFACT_COLOR.PURPLE, Constants.Game.ARTIFACT_COLOR.GREEN};
+            default:  return new Constants.Game.ARTIFACT_COLOR[]{Constants.Game.ARTIFACT_COLOR.UNKNOWN, Constants.Game.ARTIFACT_COLOR.UNKNOWN, Constants.Game.ARTIFACT_COLOR.UNKNOWN};
+        }
+    }
+
 
     public void moveIntakeCounterClockwise(){
         targetAngle = (targetAngle - 120) % 360;

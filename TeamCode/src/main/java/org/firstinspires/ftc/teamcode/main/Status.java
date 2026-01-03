@@ -48,4 +48,5 @@ public class Status {
     public static boolean flywheelAtTargetSpeed = true;
     public static boolean flywheelToggle = false;
     public static boolean manualControl = false;
+    public static boolean loggingToggle = false;
 }
