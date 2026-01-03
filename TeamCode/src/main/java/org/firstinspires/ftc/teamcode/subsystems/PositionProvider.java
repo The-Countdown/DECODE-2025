@@ -53,6 +53,8 @@ public class PositionProvider {
 
     public void update(boolean LimeLight) {
         if (LimeLight) {
+            // It is possible to if I unrotate the odPose by the odHeading and then unrotate the limelight pose by the limelight heading and then do the math and stuff with the poses.
+            // Then re-rotate the resulting pose after math by the limelight heading pose.
             Pose2D odPose = RobotContainer.HardwareDevices.pinpoint.getPosition();
 
             Pose2D visionPose = getGoodLimeLightPose();

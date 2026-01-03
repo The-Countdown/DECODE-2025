@@ -21,6 +21,7 @@ public class DriverStationUtil {
     @OpModeRegistrar
     public static void register(OpModeManager manager) {
         manager.register(metaForClass("Toggle Competition Mode"), new ToggleCompetitionMode());
+        manager.register(metaForClass("Toggle Logging to File"), new ToggleLoggingToFile());
         manager.register(metaForClass("Alliance Switch"), new AllianceSwitch());
     }
 
@@ -38,15 +39,15 @@ public class DriverStationUtil {
         }
     }
 
-    static class ToggleLogging extends LinearOpMode {
+    static class ToggleLoggingToFile extends LinearOpMode {
         @Override
         public void runOpMode() {
-            Status.loggingToggle = !Status.loggingToggle;
+            Status.loggingToFile = !Status.loggingToFile;
 
             waitForStart();
 
             while (opModeIsActive()) {
-                telemetry.addData("Logging is now", Status.loggingToggle ? "ENABLED" : "DISABLED");
+                telemetry.addData("Logging to file is now", Status.loggingToFile ? "ENABLED" : "DISABLED");
                 telemetry.update();
             }
         }

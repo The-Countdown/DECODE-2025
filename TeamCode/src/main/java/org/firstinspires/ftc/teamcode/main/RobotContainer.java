@@ -279,7 +279,7 @@ public class RobotContainer {
             telemetry.setMsTransmissionInterval(Constants.System.TELEMETRY_UPDATE_INTERVAL_MS);
         }
         this.drivetrain.setTargets(Constants.Swerve.STOP_FORMATION, Constants.Swerve.NO_POWER);
-        feedForward.accelTableInit();
+        // feedForward.accelTableInit();
     }
 
     public void start(OpMode opmode, boolean teleop) {
@@ -563,12 +563,19 @@ public class RobotContainer {
         ReadWriteFile.writeFile(myFileName, data);
     }
 
-    public void addDataLog(String caption, Object data, boolean driveStation) {
+    public void addDataLog(String caption, Object data, boolean driveStation, boolean logInCompetitionMode) {
         if (driveStation) {
-            telemetry.addData(caption, data);
+            if (Status.competitionMode) {
+                if (logInCompetitionMode) {
+                    telemetry.addData(caption, data);
+                }
+            } else {
+                // If we are not in competition mode we will log everything
+                telemetry.addData(caption, data);
+            }
         }
 
-        if (Status.loggingToggle) {
+        if (Status.loggingToFile) {
             return;
         }
 
@@ -591,6 +598,9 @@ public class RobotContainer {
 
     public void commitLoopData() {
         // Determine the current row number
+        if (telemetryHeaderList.isEmpty()) {
+            return;
+        }
         int row = telemetryCache.get(telemetryHeaderList.get(0)).size();
 
         // For every column, add value from buffer or empty string
@@ -649,99 +659,93 @@ public class RobotContainer {
         } else if (telemetryLoopTimer.milliseconds() < Constants.System.TELEMETRY_COMP_UPDATE_INTERVAL_MS && Status.competitionMode) {
             return;
         }
-        addDataLog("Time Stamp", System.currentTimeMillis() - startTimeMs, true);
-        if (Status.competitionMode) {
-            addDataLog("Alliance", Status.alliance, true);
-            telemetry.addLine();
-            addDataLog("Spindexer Slot Colors", null, true);
-            telemetry.addLine();
-            addDataLog("Flywheel at Target Velocity", turret.flywheel.atTargetVelocity(), true);
-            telemetry.addLine();
-            addDataLog("OpMode Avg Loop Time", (int) getRollingAverageLoopTime(opMode) + " ms", true);
-            addDataLog("DriveTrain Avg Loop Time", (int) drivetrainUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms", true);
-            addDataLog("Pinpoint Avg Loop Time", (int) localizationUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms", true);
-            telemetry.addLine();
-            addDataLog("Pinpoint X", Status.currentPose.getX(DistanceUnit.CM) + " cm", true);
-            addDataLog("Pinpoint Y", Status.currentPose.getY(DistanceUnit.CM) + " cm", true);
-            addDataLog("Pinpoint Heading", Status.currentHeading + "°", true);
-            telemetry.addLine();
-            displayEventTelemetry();
-            telemetry.update();
-            return;
-        }
-        addDataLog("Alliance", Status.alliance, true);
-        addDataLog("Control Hub Voltage", controlHubVoltage + " V", true);
-        addDataLog("Expansion Hub Voltage", expansionHubVoltage + " V", true);
-        addDataLog("Control Hub Current", controlHubCurrent + " A", true);
-        addDataLog("Expansion Hub Current", expansionHubCurrent + " A", true);
+        
+        // This line is required for the logViwer to work correctly
+        // It also need to be at column zero and spelled exactly "Time Stamp"
+        addDataLog("Time Stamp", System.currentTimeMillis() - startTimeMs, true, true);
+
+        // Stuff also in competition mode
+        addDataLog("Alliance", Status.alliance, true, true);
         telemetry.addLine();
-        addDataLog("Spindexer Angle", spindexer.getAngle(), true);
-        addDataLog("Spindexer Intake Slot", spindexer.getCurrentIntakeSlot(), true);
-        addDataLog("Spindexer Target Angle", spindexer.targetAngle, true);
-        addDataLog("Spindexer Error Angle", spindexer.getError(), true);
-        addDataLog("Spindexer Slot Colors", Arrays.toString(spindexer.slotColor), true);
-        addDataLog("Flywheel Target Velocity", turret.flywheel.targetVelocity, true);
-        addDataLog("Flywheel Current Velocity", HardwareDevices.flyWheelMotorMaster.getVelocity(), true);
-        addDataLog("Flywheel at Target Velocity", turret.flywheel.atTargetVelocity(), true);
-        addDataLog("Flywheel Main Motor Current mA", HardwareDevices.flyWheelMotorMaster.getCurrent(CurrentUnit.MILLIAMPS), true);
-        addDataLog("Flywheel Secondary Motor Current mA", HardwareDevices.flyWheelMotorSlave.getCurrent(CurrentUnit.MILLIAMPS), true);
+        addDataLog("Spindexer Slot Colors", null, true, true);
+        telemetry.addLine();
+        addDataLog("Flywheel at Target Velocity", turret.flywheel.atTargetVelocity(), true, true);
+        telemetry.addLine();
+        addDataLog("OpMode Avg Loop Time", (int) getRollingAverageLoopTime(opMode) + " ms", true, true);
+        addDataLog("DriveTrain Avg Loop Time", (int) drivetrainUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms", true, true);
+        addDataLog("Pinpoint Avg Loop Time", (int) localizationUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms", true, true);
+        telemetry.addLine();
+        addDataLog("Pinpoint X", Status.currentPose.getX(DistanceUnit.CM) + " cm", true, true);
+        addDataLog("Pinpoint Y", Status.currentPose.getY(DistanceUnit.CM) + " cm", true, true);
+        addDataLog("Pinpoint Heading", Status.currentHeading + "°", true, true);
+        addDataLog("Logging to file", Status.loggingToFile, true, true);
+
+        // Stuff not in competition mode
+        addDataLog("Control Hub Voltage", controlHubVoltage + " V", true, false);
+        addDataLog("Expansion Hub Voltage", expansionHubVoltage + " V", true, false);
+        addDataLog("Control Hub Current", controlHubCurrent + " A", true, false);
+        addDataLog("Expansion Hub Current", expansionHubCurrent + " A", true, false);
+        addDataLog("Total Amps", controlHubCurrent + expansionHubCurrent + " A", true, false);
+        telemetry.addLine();
+        addDataLog("Spindexer Angle", spindexer.getAngle(), true, false);
+        addDataLog("Spindexer Intake Slot", spindexer.getCurrentIntakeSlot(), true, false);
+        addDataLog("Spindexer Target Angle", spindexer.targetAngle, true, false);
+        addDataLog("Spindexer Error Angle", spindexer.getError(), true, false);
+        addDataLog("Flywheel Target Velocity", turret.flywheel.targetVelocity, true, false);
+        addDataLog("Flywheel Current Velocity", HardwareDevices.flyWheelMotorMaster.getVelocity(), true, false);
+        addDataLog("Flywheel Main Motor Current mA", HardwareDevices.flyWheelMotorMaster.getCurrent(CurrentUnit.MILLIAMPS), true, false);
+        addDataLog("Flywheel Secondary Motor Current mA", HardwareDevices.flyWheelMotorSlave.getCurrent(CurrentUnit.MILLIAMPS), true, false);
         telemetry.addLine();
         if (limelightLogic.limelight.getLatestResult() != null) {
-            addDataLog("Limelight Current Visibility", true, true);
-            addDataLog("Limelight Current Result", limelightLogic.hasResult(), true);
+            addDataLog("Limelight Current Visibility", true, true, false);
+            addDataLog("Limelight Current Result", limelightLogic.hasResult(), true, false);
         } else {
-            addDataLog("Limelight Current Visibility", false, true);
+            addDataLog("Limelight Current Visibility", false, true, false);
         }
         LimeLightInfo LLInfo = limelightLogic.logicBotPoseCM();
         if (LLInfo != null) {
-            addDataLog("Limelight tx", LLInfo.result.getTx(), true);
-            addDataLog("Limelight ty", LLInfo.result.getTy(), true);
+            addDataLog("Limelight tx", LLInfo.result.getTx(), true, false);
+            addDataLog("Limelight ty", LLInfo.result.getTy(), true, false);
         } else {
-            addDataLog("Limelight tx", null, true);
-            addDataLog("Limelight ty", null, true);
+            addDataLog("Limelight tx", null, true, false);
+            addDataLog("Limelight ty", null, true, false);
         }
 
-        addDataLog("Turret Current Angle", turret.getPositionDegrees(), true);
-        addDataLog("Hood Position", HardwareDevices.hoodServo.getPosition(), true);
+        addDataLog("Turret Current Angle", turret.getPositionDegrees(), true, false);
+        addDataLog("Hood Position", HardwareDevices.hoodServo.getPosition(), true, false);
         telemetry.addLine();
-        addDataLog("Limelight Offset Position", positionProvider.getVisionOffsetPose(), true);
+        addDataLog("Limelight Offset Position", positionProvider.getVisionOffsetPose(), true, false);
         telemetry.addLine();
-        addDataLog("Pinpoint X", Status.currentPose.getX(DistanceUnit.CM) + " cm", true);
-        addDataLog("Pinpoint Y", Status.currentPose.getY(DistanceUnit.CM) + " cm", true);
-        addDataLog("Robot Heading", Status.currentHeading + "°", true);
-        addDataLog("Pinpoint Heading", RobotContainer.HardwareDevices.pinpoint.getPosition().getHeading(AngleUnit.DEGREES), true);
-        addDataLog("Pinpoint Status", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus(), true);
-        addDataLog("Distance to Goal", HelperFunctions.disToGoal(), true);
+        addDataLog("Robot Heading", Status.currentHeading + "°", true, false);
+        addDataLog("Pinpoint Heading", RobotContainer.HardwareDevices.pinpoint.getPosition().getHeading(AngleUnit.DEGREES), true, false);
+        addDataLog("Pinpoint Status", RobotContainer.HardwareDevices.pinpoint.getDeviceStatus(), true, false);
+        addDataLog("Distance to Goal", HelperFunctions.disToGoal(), true, false);
         telemetry.addLine();
-        addDataLog("OpMode Avg Loop Time", (int) getRollingAverageLoopTime(opMode) + " ms", true);
-        addDataLog("OpMode Loop Time", CURRENT_LOOP_TIME_MS + " ms", true);
+        addDataLog("OpMode Loop Time", CURRENT_LOOP_TIME_MS + " ms", true, false);
+        addDataLog("DriveTrain Loop Time", (int) drivetrainUpdater.CURRENT_LOOP_TIME_MS + " ms", true, false);
+        addDataLog("Pinpoint Loop Time", (int) localizationUpdater.CURRENT_LOOP_TIME_MS + " ms", true, false);
         telemetry.addLine();
-        addDataLog("DriveTrain Avg Loop Time", (int) drivetrainUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms", true);
-        addDataLog("DriveTrain Loop Time", (int) drivetrainUpdater.CURRENT_LOOP_TIME_MS + " ms", true);
-        addDataLog("Goal Position", Status.goalPose, true);
-        addDataLog("Start Position", Status.startingPose, true);
+        addDataLog("Goal Position", Status.goalPose, true, false);
+        addDataLog("Start Position", Status.startingPose, true, false);
         telemetry.addLine();
-        addDataLog("Pinpoint Avg Loop Time", (int) localizationUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms", true);
-        addDataLog("Pinpoint Loop Time", (int) localizationUpdater.CURRENT_LOOP_TIME_MS + " ms", true);
+        addDataLog("Field Oriented", Status.fieldOriented, true, false);
+        addDataLog("Intake Toggle", Status.intakeToggle, true, false);
         telemetry.addLine();
-        addDataLog("Field Oriented", Status.fieldOriented, true);
-        addDataLog("Intake Toggle", Status.intakeToggle, true);
-        telemetry.addLine();
-        addDataLog("Beam Break", HardwareDevices.beamBreak.isPressed(), true);
-//       telemetry.addData("Red", HardwareDevices.colorSensor.updateRed());
-//       telemetry.addData("Blue", HardwareDevices.colorSensor.updateBlue());
-//       telemetry.addData("Green", HardwareDevices.colorSensor.updateGreen());
-//       telemetry.addData("Color Sensor Distance (cm)", HardwareDevices.colorSensor.getDistance());
+        addDataLog("Beam Break", HardwareDevices.beamBreak.isPressed(), true, false);
+        // addDataLog("Red", HardwareDevices.colorSensor.updateRed(), true, false);
+        // addDataLog("Blue", HardwareDevices.colorSensor.updateBlue(), true, false);
+        // addDataLog("Green", HardwareDevices.colorSensor.updateGreen(), true, false);
+        // addDataLog("Color Sensor Distance (cm)", HardwareDevices.colorSensor.getDistance(), true, false);
         for (int i = 0; i < swerveModules.length; i++) {
             telemetry.addLine();
             telemetry.addLine("Servo" + i);
-            addDataLog("Swerve Servo " + i + " Angle", swerveModules[i].servo.getAngle(), true);
-            addDataLog("Swerve Servo " + i + " Target", swerveServosPDF[i].getTargetAngle(), true);
-            addDataLog("Swerve Servo " + i + " Servo Target Power", swerveServosPDF[i].calculate(), true);
-            addDataLog("Swerve Servo " + i + " Servo Error", swerveServosPDF[i].getError(), true);
-            addDataLog("Swerve Motor " + i + " Target Power", swerveModules[i].motor.targetPower, true);
-            addDataLog("Swerve Motor " + i + " Current Velocity", swerveModules[i].motor.getVelocity(), true);
-            addDataLog("Swerve Motor " + i + " Current Power", RobotContainer.HardwareDevices.swerveMotors[i].getPower(), true);
+            addDataLog("Swerve Servo " + i + " Angle", swerveModules[i].servo.getAngle(), true, false);
+            addDataLog("Swerve Servo " + i + " Target", swerveServosPDF[i].getTargetAngle(), true, false);
+            addDataLog("Swerve Servo " + i + " Servo Target Power", swerveServosPDF[i].calculate(), true, false);
+            addDataLog("Swerve Servo " + i + " Servo Error", swerveServosPDF[i].getError(), true, false);
+            addDataLog("Swerve Motor " + i + " Target Power", swerveModules[i].motor.targetPower, true, false);
+            addDataLog("Swerve Motor " + i + " Current Velocity", swerveModules[i].motor.getVelocity(), true, false);
+            addDataLog("Swerve Motor " + i + " Current Power", RobotContainer.HardwareDevices.swerveMotors[i].getPower(), true, false);
         }
         telemetry.addLine();
         displayEventTelemetry();

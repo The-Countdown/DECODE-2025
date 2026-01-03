@@ -18,12 +18,8 @@ public class Status {
     public static double currentHeading = 0;
     public static Constants.Game.MOTIF  motif = Constants.Game.MOTIF.UNKNOWN;
     public static Constants.Game.ALLIANCE alliance = Constants.Game.ALLIANCE.RED;
-    public static boolean competitionMode;
-
-    /**
-     * A map to store the status of each swerve servo.
-     * The key is the integer, and the value is the ServoStatus enum.
-     */
+    public static boolean competitionMode = false;
+    public static boolean loggingToFile = true;
 
     public static Pose2D cornerResetPose;
     public static Pose2D goalPose;
@@ -48,5 +44,4 @@ public class Status {
     public static boolean flywheelAtTargetSpeed = true;
     public static boolean flywheelToggle = false;
     public static boolean manualControl = false;
-    public static boolean loggingToggle = false;
 }
