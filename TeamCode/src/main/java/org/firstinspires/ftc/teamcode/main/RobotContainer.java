@@ -30,6 +30,7 @@ import org.firstinspires.ftc.teamcode.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.drivetrain.DrivetrainUpdater;
 import org.firstinspires.ftc.teamcode.drivetrain.SwerveModule;
 import org.firstinspires.ftc.teamcode.drivetrain.SwervePDF;
+import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.FeedForward;
 import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.HeadingPID;
 import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.LatitudePID;
 import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.LocalizationUpdater;
@@ -96,6 +97,7 @@ public class RobotContainer {
     public DrivetrainUpdater drivetrainUpdater;
     public PathingUpdater pathingUpdater;
     public PathPlanner pathPlanner;
+    public FeedForward feedForward;
     public LimelightLogic limelightLogic;
     public PositionProvider positionProvider;
     public HuskyLensLogic huskyLensLogic1;
@@ -277,6 +279,7 @@ public class RobotContainer {
             telemetry.setMsTransmissionInterval(Constants.System.TELEMETRY_UPDATE_INTERVAL_MS);
         }
         this.drivetrain.setTargets(Constants.Swerve.STOP_FORMATION, Constants.Swerve.NO_POWER);
+        feedForward.accelTableInit();
     }
 
     public void start(OpMode opmode, boolean teleop) {
@@ -561,11 +564,15 @@ public class RobotContainer {
     }
 
     public void addDataLog(String caption, Object data, boolean driveStation) {
-        if (data == null) data = "null";
+        if (driveStation) {
+            telemetry.addData(caption, data);
+        }
 
-        if (Status.competitionMode) { // At some point make this a seperate varuable
+        if (Status.loggingToggle) {
             return;
         }
+
+        if (data == null) data = "null";
 
         String dataString = data.toString();
 
@@ -580,10 +587,6 @@ public class RobotContainer {
 
         // Put this loop’s value in the buffer
         currentLoopData.put(caption, dataString);
-
-        if (driveStation) {
-            telemetry.addData(caption, data);
-        }
     }
 
     public void commitLoopData() {

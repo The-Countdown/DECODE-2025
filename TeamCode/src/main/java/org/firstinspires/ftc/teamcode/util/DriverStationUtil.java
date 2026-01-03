@@ -38,6 +38,20 @@ public class DriverStationUtil {
         }
     }
 
+    static class ToggleLogging extends LinearOpMode {
+        @Override
+        public void runOpMode() {
+            Status.loggingToggle = !Status.loggingToggle;
+
+            waitForStart();
+
+            while (opModeIsActive()) {
+                telemetry.addData("Logging is now", Status.loggingToggle ? "ENABLED" : "DISABLED");
+                telemetry.update();
+            }
+        }
+    }
+
     static class AllianceSwitch extends LinearOpMode {
         @Override
         public void runOpMode() {

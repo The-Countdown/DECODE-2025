@@ -12,6 +12,8 @@ import org.firstinspires.ftc.teamcode.drivetrain.SwerveModule;
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
 import java.util.HashMap;
+import java.util.NavigableMap;
+import java.util.TreeMap;
 
 /**
  * The `Constants` class provides a centralized location for all the fixed values and
@@ -248,10 +250,11 @@ public class Constants {
         public static double LATITUDE_PID_TOLERANCE_CM = 2;
         public static double LONGITUDE_PID_TOLERANCE_CM = 2;
         public static int PINPOINT_UPDATE_DELAY_MS = 50;
-        public static double SWERVE_MAX_VELOCITY = 2000;
+        public static double SWERVE_MAX_VELOCITY = 2200;
         public static double SWERVE_MAX_POWER = 1;
         public static int PATH_NUM_OF_SPLITS_FOR_ESTIMATED_TIME = 5;
         public static int PATH_TIMEOUT_ERROR_MS = 500;
+        public static NavigableMap<Double, Double> ACCELERATION_TABLE = new TreeMap<>();
     }
 
     @Config
@@ -326,7 +329,10 @@ public class Constants {
         public static double ANGLE_OFFSET = 45;
         public static double JAM_TIME_THRESHOLD = 1;
         public static double[] INTAKE_SLOT_ANGLES = {120, 240, 360};
-        public static int COLOR_SENSE_TIME = 30;
+        public static double[] BEFORE_TRANSFER_SLOT_ANGLES = {0, 0, 0};
+        public static double[] AFTER_TRANSFER_SLOT_ANGLES = {0, 0, 0};
+        public static int TIME_BETWEEN_BEAM_BREAK_AND_COLOR_SENSOR = 30;
+        public static double TIME_BEAM_BREAK_TRUE_BEFORE_COLOR_SENSOR_CHECK = 0.1;
         public static double KP = 0.0043;
         public static double KI = 0;
         public static double KD = 0.001;
