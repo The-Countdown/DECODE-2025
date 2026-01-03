@@ -52,13 +52,12 @@ public class Spindexer {
 
         spindexerError = Math.abs(getError());
         boolean jammed = jammed();
-        robotContainer.telemetry.addData("Spindexer Jammed", jammed);
 
         double servoPower = calculate();
-        robotContainer.telemetry.addData("Spin Error", servoPower);
         if (Math.abs(spindexerError) > 5 && !this.pause) {
             if (clockwise && spindexerError < -20) {
                 spindexerServo.setPower(-Math.abs(servoPower));
+                // spindexerServo.setPower(Math.abs(servoPower));
             } else {
                 spindexerServo.setPower(servoPower);
             }
@@ -68,7 +67,8 @@ public class Spindexer {
         }
 
 
-        if (robotContainer.beamBreakToggleButton.wasJustReleased() || robotContainer.beamBreakToggleButton.holdDuration() >= Constants.Spindexer.TIME_BEAM_BREAK_TRUE_BEFORE_COLOR_SENSOR_CHECK) {
+        // if (robotContainer.beamBreakToggleButton.wasJustReleased() || robotContainer.beamBreakToggleButton.holdDuration() >= Constants.Spindexer.TIME_BEAM_BREAK_TRUE_BEFORE_COLOR_SENSOR_CHECK) {
+        if (robotContainer.beamBreakToggleButton.wasJustReleased() || robotContainer.beamBreakToggleButton.isHeldFor(0.1)) {
             robotContainer.delayedActionManager.schedule(() -> function2(), Constants.Spindexer.TIME_BETWEEN_BEAM_BREAK_AND_COLOR_SENSOR);
             beamTimer.reset();
         }
@@ -167,8 +167,6 @@ public class Spindexer {
         if (colorSensor.getDistance() < Constants.Spindexer.DIST_TOLERANCE && robotContainer.spindexer.spindexerError < 20) {
             slotColor[getCurrentIntakeSlot()] = getArtifactColor(colorSensor.updateBlue(), colorSensor.updateGreen());
             robotContainer.spindexer.moveIntakeSlotClockwise();
-        } else {
-            robotContainer.telemetry.addLine("No ball in distance");
         }
     }
 
@@ -404,8 +402,6 @@ public class Spindexer {
     public boolean jammed() {
         double error = Math.abs(getError());
         double speed = Math.abs((getAngle() - this.lastPosition) * robotContainer.CURRENT_LOOP_TIME_MS);
-        robotContainer.telemetry.addData("jam error:", error);
-        robotContainer.telemetry.addData("jam speed:", speed);
         if (error < 15 && speed > 10) {
             jamTimer.reset();
         }

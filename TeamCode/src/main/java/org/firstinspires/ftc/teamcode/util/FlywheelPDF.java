@@ -36,8 +36,6 @@ public class FlywheelPDF {
             return 1;
         }
 
-        robotContainer.telemetry.addData("Flywheel Error", error);
-
         p = Constants.Turret.FLYWHEEL_KP * error;
         //ff = Constants.Turret.FLYWHEEL_F * Math.signum(error);
 

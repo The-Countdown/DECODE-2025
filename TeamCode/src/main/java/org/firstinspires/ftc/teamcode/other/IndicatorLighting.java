@@ -89,7 +89,7 @@ public class IndicatorLighting {
                         robotContainer.allIndicatorLights.setColor(Constants.LED.COLOR.GREEN);
                         lightTimer.reset();
                     }
-                } else if (robotContainer.turret.flywheel.atTargetVelocity() && Status.flywheelToggle) {
+                } else if (Status.flywheelAtTargetSpeed && Status.flywheelToggle) {
                     if (Status.currentLightColor != Constants.LED.COLOR.AZURE) {
                         robotContainer.allIndicatorLights.setColor(Constants.LED.COLOR.AZURE);
                         lightTimer.reset();

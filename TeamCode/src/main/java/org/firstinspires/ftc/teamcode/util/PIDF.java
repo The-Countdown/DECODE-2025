@@ -42,21 +42,9 @@ public class PIDF {
         final double derivativeError = (dt != 0) ? ((error - lastError) / dt) : 0;
         integralError += error * dt;
 
-        robotContainer.telemetry.addData("sk-error", error);
-        robotContainer.telemetry.addData("sk-lastError", error);
-
         // Save history
         previousTime = currentTime;
         lastError = error;
-
-        robotContainer.telemetry.addData("sk-dt", dt);
-        robotContainer.telemetry.addData("sk-de", derivativeError);
-
-        robotContainer.telemetry.addData("sk-p", (kP * error));
-        robotContainer.telemetry.addData("sk-i", (kI * integralError));
-        robotContainer.telemetry.addData("sk-kd", (kD));
-        robotContainer.telemetry.addData("sk-d", (kD * derivativeError));
-        robotContainer.telemetry.addData("sk-f", (kF * Math.signum(error)));
 
         double fi;
 

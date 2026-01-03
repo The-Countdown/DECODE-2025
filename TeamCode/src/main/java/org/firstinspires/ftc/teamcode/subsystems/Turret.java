@@ -126,8 +126,6 @@ public class Turret extends RobotContainer.HardwareDevices {
         Status.flywheelAtTargetSpeed = robotContainer.turret.flywheel.atTargetVelocity();
         double targetPower = flywheelPDF.calculate(flywheel.targetVelocity);
         // double targetPower = flywheelPIDF.update((flywheel.targetVelocity));
-        robotContainer.telemetry.addData("Flywheel Target Speed", flywheel.targetVelocity);
-        robotContainer.telemetry.addData("Flywheel Power", targetPower);
         flyWheelMotors.setPower(targetPower);
     }
 
@@ -172,16 +170,8 @@ public class Turret extends RobotContainer.HardwareDevices {
             xDiff = Status.goalPose.getX(DistanceUnit.CM) + Status.currentPose.getX(DistanceUnit.CM);
             yDiff = Status.goalPose.getY(DistanceUnit.CM) - Status.currentPose.getY(DistanceUnit.CM);
         }
-        robotContainer.telemetry.addData("Goal x cm", Status.goalPose.getX(DistanceUnit.CM));
-        robotContainer.telemetry.addData("Goal y cm", Status.goalPose.getY(DistanceUnit.CM));
-        robotContainer.telemetry.addData("Robot x cm", Status.currentPose.getX(DistanceUnit.CM));
-        robotContainer.telemetry.addData("Robot y cm", Status.currentPose.getY(DistanceUnit.CM));
-        robotContainer.telemetry.addData("x Diff", xDiff);
-        robotContainer.telemetry.addData("y Diff", yDiff);
-
         double angleToFaceGoal = ((Math.atan(yDiff / xDiff) * (180 / Math.PI)) + Status.currentHeading - 180);
         setTargetAngle(HelperFunctions.normalizeAngle(angleToFaceGoal));
-        robotContainer.telemetry.addData("Angle To Face Goal", angleToFaceGoal);
     }
 
     public boolean atTarget() {

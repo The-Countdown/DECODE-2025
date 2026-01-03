@@ -57,8 +57,6 @@ public class LimelightLogic {
         if (limelight.getLatestResult() != null && Math.abs(limelight.getLatestResult().getTx()) > 1) {
             p += limelight.getLatestResult().getTx() * Constants.Turret.TRACK_GOAL_P;
             robotContainer.turret.setTargetAngle(p);
-            telemetry.addData("TX", limelight.getLatestResult().getTx());
-            telemetry.addData("p", p);
         }
     }
 
