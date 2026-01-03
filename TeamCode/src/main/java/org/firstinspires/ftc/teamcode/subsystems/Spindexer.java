@@ -165,6 +165,7 @@ public class Spindexer {
 
     public void function2() {
         if (colorSensor.getDistance() < Constants.Spindexer.DIST_TOLERANCE && robotContainer.spindexer.spindexerError < 20) {
+            slotColor[getCurrentIntakeSlot()] = getArtifactColor(colorSensor.updateBlue(), colorSensor.updateGreen());
             robotContainer.spindexer.moveIntakeSlotClockwise();
         } else {
             robotContainer.telemetry.addLine("No ball in distance");
