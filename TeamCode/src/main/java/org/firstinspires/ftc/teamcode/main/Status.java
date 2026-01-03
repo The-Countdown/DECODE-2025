@@ -19,7 +19,7 @@ public class Status {
     public static Constants.Game.MOTIF  motif = Constants.Game.MOTIF.UNKNOWN;
     public static Constants.Game.ALLIANCE alliance = Constants.Game.ALLIANCE.RED;
     public static boolean competitionMode = false;
-    public static boolean loggingToFile = false;
+    public static boolean loggingToFile = true;
 
     public static Pose2D cornerResetPose;
     public static Pose2D goalPose;
