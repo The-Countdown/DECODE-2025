@@ -12,6 +12,8 @@ import org.firstinspires.ftc.teamcode.drivetrain.SwerveModule;
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
 import java.util.HashMap;
+import java.util.NavigableMap;
+import java.util.TreeMap;
 
 /**
  * The `Constants` class provides a centralized location for all the fixed values and
@@ -248,10 +250,11 @@ public class Constants {
         public static double LATITUDE_PID_TOLERANCE_CM = 2;
         public static double LONGITUDE_PID_TOLERANCE_CM = 2;
         public static int PINPOINT_UPDATE_DELAY_MS = 50;
-        public static double SWERVE_MAX_VELOCITY = 2000;
+        public static double SWERVE_MAX_VELOCITY = 2200;
         public static double SWERVE_MAX_POWER = 1;
         public static int PATH_NUM_OF_SPLITS_FOR_ESTIMATED_TIME = 5;
         public static int PATH_TIMEOUT_ERROR_MS = 500;
+        public static NavigableMap<Double, Double> ACCELERATION_TABLE = new TreeMap<>();
     }
 
     @Config
