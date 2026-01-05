@@ -6,15 +6,30 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit;
+import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.FeedForward;
 import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.PathingUpdater;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "TeleOp")
 public class TeleOp extends OpMode {
     private RobotContainer robotContainer;
     private final ElapsedTime pinpointTimer = new ElapsedTime();
+    private double currentHeading = 0;
+    private double currentSpeed = 0;
+    private double currentDist = 0;
+    private double lastDist = 0;
+    private double lastHeading = 0;
+    private double htopSpeed = 0;
+    private double topSpeed = 0;
+    private double hvelocity = 0;
+    private final ElapsedTime spinTimer = new ElapsedTime();
+
 
     @Override
     public void init() {
@@ -45,6 +60,13 @@ public class TeleOp extends OpMode {
         robotContainer.start(this, true);
         robotContainer.spindexer.goToFirstIntakeSlot(); // This should likely be in robotcontainer start
         robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[0]); // This should likely be in the robotcontainer start
+        robotContainer.gamepadEx1.rumble(10000);
+        robotContainer.gamepadEx2.rumble(10000);
+        List<FeedForward.TrajectoryPoint> path = robotContainer.feedForward.generatePath(new Pose2D(DistanceUnit.CM, 0, 0, AngleUnit.DEGREES, 0), new Pose2D(DistanceUnit.CM, 100, 100, AngleUnit.DEGREES, 0), 0.02);
+        robotContainer.addEventTelemetry("FeedForward Pose", path.get(path.size() - 1).pose.toString());
+        robotContainer.addEventTelemetry("FeedForward Time", path.get(path.size() - 1).time);
+        robotContainer.addEventTelemetry("FeedForward Velocity", path.get(path.size() - 1).velocity);
+        spinTimer.reset();
     }
 
     @Override
@@ -115,6 +137,37 @@ public class TeleOp extends OpMode {
         } else {
             robotContainer.intake.setPower(Constants.Intake.REVERSE_TOP_SPEED);
         }
+
+//        robotContainer.telemetry.addData("heading", RobotContainer.HardwareDevices.pinpoint.getHeading(UnnormalizedAngleUnit.DEGREES));
+//        currentHeading = Status.currentHeading;
+//
+//        if (currentHeading >= lastHeading - 3) {
+//            if (!robotContainer.gamepadEx1.atRest.isHeld()) {
+//                hvelocity = (Math.abs(currentHeading) - Math.abs(lastHeading)) / spinTimer.seconds();
+//            }
+//        } else {
+//            if (!robotContainer.gamepadEx1.atRest.isHeld()) {
+//                hvelocity = (currentHeading + (360 - lastHeading)) / spinTimer.seconds();
+//            }
+//        }
+//
+//        if (hvelocity > htopSpeed) {
+//            htopSpeed = hvelocity;
+//        }
+//
+//        currentDist = Math.sqrt(Math.pow(Status.currentPose.getX(DistanceUnit.CM), 2) + Math.pow(Status.currentPose.getY(DistanceUnit.CM), 2));
+//        currentSpeed = (Math.abs(currentDist) - Math.abs(lastDist)) / spinTimer.seconds();
+//
+//        if (currentSpeed > topSpeed){
+//            topSpeed = currentSpeed;
+//        }
+//
+//        robotContainer.telemetry.addData("Max Heading Speed", htopSpeed);
+//        robotContainer.telemetry.addData("Max Speed", topSpeed);
+//
+//        spinTimer.reset();
+//        lastHeading = currentHeading;
+//        lastDist = currentDist;
 
         Thread.yield();
     }

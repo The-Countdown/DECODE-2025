@@ -120,6 +120,8 @@ public class GamepadWrapper {
     public final ButtonReader rightStickX = new ButtonReader();
     public final ButtonReader rightStickY = new ButtonReader();
 
+    public final ButtonReader atRest = new ButtonReader();
+
     public GamepadWrapper(Gamepad gamepad) {
         this.gamepad = gamepad;
     }
@@ -154,6 +156,7 @@ public class GamepadWrapper {
         rightStickX.update(Math.abs(gamepad.right_stick_x) > 0);
         rightStickY.update(Math.abs(gamepad.right_stick_y) > 0);
 
+        atRest.update(gamepad.atRest());
     }
 
     public void rumble(int durationMs) {

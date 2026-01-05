@@ -188,14 +188,11 @@ public class Constants {
                 SERVO_KF = {0.065, 0.065, 0.04, 0.06};
 
         public static double SERVO_PIDF_TOLERANCE_DEGREES = 1;
-
         public static final int MOTOR_RPM_TESTED_MAX = 5800;
-
         public static final int MOTOR_TICKS_PER_REVOLUTION = 28;
-
         public static final double MOTOR_TO_WHEEL_GEAR_RATIO = 0.0967;
-
         public static final int MOTOR_MAX_VELOCITY_TICKS_PER_SECOND = ((MOTOR_RPM_TESTED_MAX / 60) * MOTOR_TICKS_PER_REVOLUTION) - 328;
+        public static final double WHEEL_CIRCUMFERENCE_CM = 6.1 * Math.PI;
     }
 
     @Config
@@ -251,10 +248,14 @@ public class Constants {
         public static double LONGITUDE_PID_TOLERANCE_CM = 2;
         public static int PINPOINT_UPDATE_DELAY_MS = 50;
         public static double SWERVE_MAX_VELOCITY = 2200;
+        public static double SWERVE_MAX_VELOCITY_CM_S = ((SWERVE_MAX_VELOCITY / Swerve.MOTOR_TICKS_PER_REVOLUTION) * Swerve.MOTOR_TO_WHEEL_GEAR_RATIO) * Swerve.WHEEL_CIRCUMFERENCE_CM;
         public static double SWERVE_MAX_POWER = 1;
         public static int PATH_NUM_OF_SPLITS_FOR_ESTIMATED_TIME = 5;
         public static int PATH_TIMEOUT_ERROR_MS = 500;
         public static NavigableMap<Double, Double> ACCELERATION_TABLE = new TreeMap<>();
+        public static double MAX_HEADING_VELOCITY_DEG_SEC = 688;
+        public static double MAX_HEADING_VELOCITY_WHILE_MOVING = 0;
+        public static double MAX_LINEAR_VELOCITY_WHILE_ROTATING = 0;
     }
 
     @Config

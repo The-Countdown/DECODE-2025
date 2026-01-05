@@ -235,7 +235,7 @@ public class RobotContainer {
         LinkedServos turretServos = new LinkedServos(HardwareDevices.turretServoMaster, HardwareDevices.turretServoSlave);
 
         pathPlanner = new PathPlanner(telemetry, this);
-
+        feedForward = new FeedForward();
         limelightLogic = new LimelightLogic(this, telemetry, HardwareDevices.limelight);
         positionProvider = new PositionProvider(this, limelightLogic, HardwareDevices.pinpoint);
         huskyLensLogic1 = new HuskyLensLogic(this, RobotContainer.HardwareDevices.huskyLens1);

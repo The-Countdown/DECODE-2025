@@ -51,7 +51,7 @@ public class FeedForward {
                 double dd = higherKey - lowerKey;
                 velocity = dd / dtSegment;
             } else {
-                velocity = Constants.Pathing.SWERVE_MAX_VELOCITY;
+                velocity = Constants.Pathing.SWERVE_MAX_VELOCITY_CM_S;
             }
 
             distanceTraveled += velocity * dt;
