@@ -52,7 +52,7 @@ public class Constants {
 
     @Config
     public static class Robot {
-        public static double CORRECTION_DEGREES_MULTIPLIER = 0.00001;
+        public static double CORRECTION_DEGREES_MULTIPLIER = 0.001;
         public static int MOTOR_UPDATE_TIME = 50;
         public static int SERVO_UPDATE_TIME = 100;
         public static int COLOR_UPDATE_TIME = 50;

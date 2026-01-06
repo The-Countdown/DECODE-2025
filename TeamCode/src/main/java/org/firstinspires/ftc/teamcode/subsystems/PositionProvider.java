@@ -36,9 +36,13 @@ public class PositionProvider {
     }
 
     public Pose2D getRobotPose() {
+        // Rotate the odPose by the vision offset
         Pose2D odPose = pinpoint.getPosition();
         double rx = (odPose.getX(DistanceUnit.CM) + visionOffsetPose.getX(DistanceUnit.CM)) * 0.9914129;
         double ry = (odPose.getY(DistanceUnit.CM) + visionOffsetPose.getY(DistanceUnit.CM)) * 0.998610856289;
+        double rh = visionOffsetPose.getHeading(AngleUnit.RADIANS);
+        double newX = rx * Math.cos(-rh) - ry * Math.sin(-rh);
+        double newY = ry * Math.cos(-rh) + rx * Math.sin(-rh);
         double rHeading = (odPose.getHeading(AngleUnit.DEGREES) + visionOffsetPose.getHeading(AngleUnit.DEGREES));
         return new Pose2D(DistanceUnit.CM, rx, ry, AngleUnit.DEGREES, rHeading);
     }
@@ -55,19 +59,19 @@ public class PositionProvider {
     public void update(boolean LimeLight) {
         if (LimeLight) {
             Pose2D odPose = RobotContainer.HardwareDevices.pinpoint.getPosition();
+            if (robotContainer.gamepadEx1.dpadDown.isHeld()) {
+                LimeLightInfo visionInfo = getGoodLimeLightInfo();
 
-            LimeLightInfo visionInfo = getGoodLimeLightInfo();
+                if (visionInfo != null) {
+                    double lateralDistance = visionInfo.result.getTx();
+                    Status.correctionDegrees += lateralDistance * HelperFunctions.disToGoal() * Constants.Robot.CORRECTION_DEGREES_MULTIPLIER;
 
-            if (visionInfo != null) {
-                double lateralDistance = visionInfo.result.getTx();
-                Status.correctionDegrees += lateralDistance * HelperFunctions.disToGoal() * Constants.Robot.CORRECTION_DEGREES_MULTIPLIER;
+                    double newX = odPose.getX(DistanceUnit.CM) * Math.cos(-Math.toRadians(Status.correctionDegrees)) - odPose.getY(DistanceUnit.CM) * Math.sin(-Math.toRadians(Status.correctionDegrees));
+                    double newY = odPose.getY(DistanceUnit.CM) * Math.cos(-Math.toRadians(Status.correctionDegrees)) + odPose.getX(DistanceUnit.CM) * Math.sin(-Math.toRadians(Status.correctionDegrees));
 
-                double newX = odPose.getX(DistanceUnit.CM) * Math.cos(Math.toRadians(Status.correctionDegrees)) - odPose.getY(DistanceUnit.CM) * Math.sin(Math.toRadians(Status.correctionDegrees));
-                double newY = odPose.getY(DistanceUnit.CM) * Math.cos(Math.toRadians(Status.correctionDegrees)) + odPose.getX(DistanceUnit.CM) * Math.sin(Math.toRadians(Status.correctionDegrees));
-
-                visionOffsetPose = new Pose2D(DistanceUnit.CM, newX - odPose.getX(DistanceUnit.CM), newY - odPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, 0);
+                    visionOffsetPose = new Pose2D(DistanceUnit.CM, newX - odPose.getX(DistanceUnit.CM), newY - odPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, Status.correctionDegrees);
+                }
             }
-            
             Status.currentPose = getRobotPose();
             lastODPose = odPose;
         } else {
