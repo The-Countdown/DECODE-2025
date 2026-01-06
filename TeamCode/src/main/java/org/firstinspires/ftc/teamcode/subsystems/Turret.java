@@ -45,6 +45,8 @@ public class Turret extends RobotContainer.HardwareDevices {
         Status.turretToggleButton.update(Status.turretToggle);
 
         if (teleop) {
+            // Change this to change the Status.change degree whatever to rotate the robot pose, but this will need to be changed in the robot
+            // So some though will be required
             if (robotContainer.gamepadEx2.dpadLeft.wasJustReleased()) {
                 turretAngleOffset -= 3;
             }
