@@ -132,6 +132,10 @@ public class DelayedActionManager {
             }
         }
 
+        public void forceExecute() {
+            action.run();
+        }
+
         public boolean isExecuted() {
             return executed || cancelled;
         }

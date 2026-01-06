@@ -31,6 +31,7 @@ public class PathPlanner {
     private final RobotContainer robotContainer;
     public boolean pathCompleted = false;
     public int currentPath;
+    public ElapsedTime timeoutCheck = new ElapsedTime();
 
     public PathPlanner(Telemetry telemetry, RobotContainer robotContainer) {
         this.telemetry = telemetry;
@@ -43,13 +44,13 @@ public class PathPlanner {
         pointAmount += 1;
     }
 
-    public void addSleepPose(double time) {
-        poses.add(new SleepPose(time));
+    public void addPoseTimeout(Pose2D pose, double timeoutMS) {
+        poses.add(new PositionPose(pose));
         pointAmount += 1;
     }
 
-    public void addActionPose(Runnable... actions) {
-        poses.add(new ActionPose(robotContainer, actions));
+    public void addSleepPose(double time) {
+        poses.add(new SleepPose(time));
         pointAmount += 1;
     }
 
@@ -59,14 +60,28 @@ public class PathPlanner {
     }
 
     public boolean driveUsingPID(int index) {
+        // Skip pose if past timeout
+        if (poses.get(index).getTimeout() != 0) {
+            if (poses.get(index).getTimeout() < timeoutCheck.milliseconds()) {
+                timeoutCheck.reset();
+                return true;
+            }
+        }
+
         if (poses.get(index) instanceof PositionPose) {
             Status.targetPose = poses.get(index).getPose();
+            if (PoseMath.isAtPos()) {
+                timeoutCheck.reset();
+                return true;
+            }
         } else if (poses.get(index) instanceof SleepPose) {
+            timeoutCheck.reset();
             return poses.get(index).getDone();
         } else if (poses.get(index) instanceof ActionPose) {
+            timeoutCheck.reset();
             return poses.get(index).runActions();
         }
-        return PoseMath.isAtPos();
+        return false;
     }
 
     public void driveThroughPath(ElapsedTime pathTimer) {

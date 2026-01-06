@@ -67,8 +67,10 @@ public class Constants {
                         RevHubOrientationOnRobot.UsbFacingDirection.LEFT
                 )
         );
-
-        //public static double startingX = -156.21, startingY = -38.78, startingHeading = -180;
+        // Robot Dimentions 17 7/8 (number plate side) X 17 3/4 (intake side)
+        // x = -72 + (8.5 + 7/16) = -63.0625
+        // y = -72 + 48 + (8.5 + 3/8) = -15.125
+        //public static double startingX = -158.286875, startingY = -37.96375, startingHeading = -180;
         public static double STARTING_X = -160.9725, STARTING_Y = -43.02125, STARTING_HEADING = -180;
         public static double GOALSIDE_STARTING_X = 142.5575, GOALSIDE_STARTING_Y = -18.415, GOALSIDE_STARTING_HEADING = 0;
 

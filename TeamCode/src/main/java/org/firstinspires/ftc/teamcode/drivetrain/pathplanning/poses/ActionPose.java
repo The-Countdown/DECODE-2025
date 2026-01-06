@@ -14,11 +14,10 @@ public class ActionPose extends GeneralPose {
             this.delayedActions.add(new DelayedActionManager.DelayedAction(robotContainer, actions[i], 0));
         }
     }
-
     @Override
     public boolean runActions() {
         for (int i = 0; i < this.delayedActions.size(); i++) {
-            this.delayedActions.get(i).execute();
+            this.delayedActions.get(i).forceExecute();
         }
         return true;
     }

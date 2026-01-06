@@ -3,7 +3,9 @@ package org.firstinspires.ftc.teamcode.drivetrain.pathplanning.poses;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 public class GeneralPose {
+    private double timeoutMS;
     public GeneralPose() {
+        timeoutMS = 0;
     }
 
     public Pose2D getPose() {
@@ -20,5 +22,12 @@ public class GeneralPose {
 
     public boolean runActions() {
         return false;
+    }
+
+    public void setTimeoue(double timeout) {
+        timeoutMS = timeout;
+    }
+    public double getTimeout() {
+        return timeoutMS;
     }
 }

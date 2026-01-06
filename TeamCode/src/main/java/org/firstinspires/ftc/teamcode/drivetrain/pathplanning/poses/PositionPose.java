@@ -9,6 +9,11 @@ public class PositionPose extends GeneralPose {
         this.pose = pose;
     }
 
+    public PositionPose(Pose2D pose, double timeoutMS) {
+        this.pose = pose;
+        setTimeoue(timeoutMS);
+    }
+
     @Override
     public Pose2D getPose() {
         return this.pose;
