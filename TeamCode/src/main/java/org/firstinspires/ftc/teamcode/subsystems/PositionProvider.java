@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
@@ -53,51 +54,20 @@ public class PositionProvider {
 
     public void update(boolean LimeLight) {
         if (LimeLight) {
-            // It is possible to if I unrotate the odPose by the odHeading and then unrotate the limelight pose by the limelight heading and then do the math and stuff with the poses.
-            // Then re-rotate the resulting pose after math by the limelight heading pose.
             Pose2D odPose = RobotContainer.HardwareDevices.pinpoint.getPosition();
 
-            Pose2D visionPose = getGoodLimeLightPose();
-            if (lastODPose == null) {
-                lastODPose = odPose;
-            }
+            LimeLightInfo visionInfo = getGoodLimeLightInfo();
 
-            if (visionPose != null) {
-                if (startODPose == null) {
-                    startODPose = odPose;
-                }
-                // If robot has not moved much
-                if (Math.abs(startODPose.getX(DistanceUnit.CM) - odPose.getX(DistanceUnit.CM)) < 2 && Math.abs(startODPose.getY(DistanceUnit.CM) - odPose.getY(DistanceUnit.CM)) < 2 && Math.abs(startODPose.getHeading(AngleUnit.DEGREES) - odPose.getHeading(AngleUnit.DEGREES)) < 4 && robotContainer.gamepadEx1.dpadDown.isHeld()) {
-//                if (robotContainer.gamepadEx1.rightStickX() == 0 && robotContainer.gamepadEx1.leftStickX() == 0 && robotContainer.gamepadEx1.leftStickY() == 0) {
-                    visionPoseList.add(visionPose);
-                } else {
-                    visionTimer.reset();
-                    visionPoseList = new ArrayList<>();
-                    startODPose = odPose;
-                }
-            } else {
-                visionTimer.reset();
-                visionPoseList = new ArrayList<>();
-                startODPose = odPose;
-            }
-            // Add something about rejecting poses that are far from the current average
-            if (visionTimer.seconds() > 0.2 && visionPoseList.size() > 8) {
-                // Average all vision estimates over the time.
-                double llX = 0;
-                double llY = 0;
-                for (int i = 0; i < visionPoseList.size(); i++) {
-                    llX += visionPoseList.get(i).getX(DistanceUnit.CM);
-                    llY += visionPoseList.get(i).getY(DistanceUnit.CM);
-                }
+            if (visionInfo != null) {
+                double lateralDistance = visionInfo.result.getTx();
+                Status.correctionDegrees += lateralDistance * HelperFunctions.disToGoal() * Constants.Robot.CORRECTION_DEGREES_MULTIPLIER;
 
-                llX = llX / visionPoseList.size();
-                llY = llY / visionPoseList.size();
+                double newX = odPose.getX(DistanceUnit.CM) * Math.cos(Math.toRadians(Status.correctionDegrees)) - odPose.getY(DistanceUnit.CM) * Math.sin(Math.toRadians(Status.correctionDegrees));
+                double newY = odPose.getY(DistanceUnit.CM) * Math.cos(Math.toRadians(Status.correctionDegrees)) + odPose.getX(DistanceUnit.CM) * Math.sin(Math.toRadians(Status.correctionDegrees));
 
-                visionOffsetPose = new Pose2D(DistanceUnit.CM, llX - odPose.getX(DistanceUnit.CM), llY - odPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, 0);
-                visionTimer.reset();
-                visionPoseList = new ArrayList<>();
-                startODPose = odPose;
+                visionOffsetPose = new Pose2D(DistanceUnit.CM, newX - odPose.getX(DistanceUnit.CM), newY - odPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, 0);
             }
+            
             Status.currentPose = getRobotPose();
             lastODPose = odPose;
         } else {
@@ -142,5 +112,31 @@ public class PositionProvider {
         }
         // Maybe more?
         return info.pose;
+    }
+    private LimeLightInfo getGoodLimeLightInfo() {
+        LimeLightInfo info = limelightLogic.logicBotPoseCM();
+        if (info == null) {
+            return null;
+        }
+        // If LimeLight result outside of the field ignore it
+        double x = info.pose.getX(DistanceUnit.CM);
+        double y = info.pose.getY(DistanceUnit.CM);
+        double yaw = info.pose.getHeading(AngleUnit.DEGREES);
+        // If outside the field x
+        if (Math.abs(x) > 182.88) {
+            robotContainer.telemetry.addData("Limelight Failed because", " x+");
+            return null;
+        }
+        // If outside the field y
+        if (Math.abs(y) > 182.88) {
+            robotContainer.telemetry.addData("Limelight Failed because", " y+");
+            return null;
+        }
+        // If yaw is impossible
+//        if (yaw > 360 || yaw < 0) {
+//            robotContainer.telemetry.addData("Limelight Failed because", " yaw");
+//            return null;
+//        }
+        return info;
     }
 }
