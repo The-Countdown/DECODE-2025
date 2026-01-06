@@ -45,7 +45,7 @@ public class PathPlanner {
     }
 
     public void addPoseTimeout(Pose2D pose, double timeoutMS) {
-        poses.add(new PositionPose(pose));
+        poses.add(new PositionPose(pose, timeoutMS));
         pointAmount += 1;
     }
 

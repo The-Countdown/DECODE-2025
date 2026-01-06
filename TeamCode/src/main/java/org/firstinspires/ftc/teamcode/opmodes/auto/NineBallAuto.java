@@ -29,8 +29,8 @@ public class NineBallAuto extends OpMode {
     public static double BEFORE_TAPE = 84;
     public static double AFTER_TAPE = 160;
     public static double TAPE_LOW = -97;
-    public static double TAPE_MID = -35;
-    public static double TAPE_HIGH = 35;
+    public static double TAPE_MID = -37;
+    public static double TAPE_HIGH = 37;
     public static double MIDPOINT = 18;
     public static double MIDDLE = 20;
 
@@ -128,8 +128,7 @@ public class NineBallAuto extends OpMode {
             robotContainer.pathPlanner.addActionPose(intakeSleepPose);
             robotContainer.pathPlanner.addSleepPose(400);
             robotContainer.pathPlanner.addActionPose(endOfIntake);
-            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 10, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)), 2000);
-            // problem line below (it has nothing to do with its contents any function I put here doesn't run)
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 10, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)), 2250);
             robotContainer.pathPlanner.addActionPose(shoot);
             robotContainer.pathPlanner.addSleepPose(2000);
             robotContainer.pathPlanner.addActionPose(goToIntake);
@@ -139,7 +138,7 @@ public class NineBallAuto extends OpMode {
             robotContainer.pathPlanner.addActionPose(intakeSleepPose);
             robotContainer.pathPlanner.addSleepPose(400);
             robotContainer.pathPlanner.addActionPose(endOfIntake);
-            robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 10, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)));
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 10, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)), 2250);
             robotContainer.pathPlanner.addActionPose(shoot);
             robotContainer.pathPlanner.addSleepPose(2000);
             robotContainer.pathPlanner.addActionPose(goToIntake);
@@ -157,8 +156,7 @@ public class NineBallAuto extends OpMode {
             robotContainer.pathPlanner.addActionPose(intakeSleepPose);
             robotContainer.pathPlanner.addSleepPose(400);
             robotContainer.pathPlanner.addActionPose(endOfIntake);
-            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 10, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)), 2000);
-            // problem line below (it has nothing to do with its contents any function I put here doesn't run)
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 10, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)), 2250);
             robotContainer.pathPlanner.addActionPose(shoot);
             robotContainer.pathPlanner.addSleepPose(2000);
             robotContainer.pathPlanner.addActionPose(goToIntake);
@@ -168,7 +166,7 @@ public class NineBallAuto extends OpMode {
             robotContainer.pathPlanner.addActionPose(intakeSleepPose);
             robotContainer.pathPlanner.addSleepPose(400);
             robotContainer.pathPlanner.addActionPose(endOfIntake);
-            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 10, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)), 2000);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 10, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)), 2250);
             robotContainer.pathPlanner.addActionPose(shoot);
             robotContainer.pathPlanner.addSleepPose(2000);
             robotContainer.pathPlanner.addActionPose(goToIntake);

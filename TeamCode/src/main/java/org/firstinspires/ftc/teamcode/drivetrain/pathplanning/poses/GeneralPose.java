@@ -24,7 +24,7 @@ public class GeneralPose {
         return false;
     }
 
-    public void setTimeoue(double timeout) {
+    public void setTimeout(double timeout) {
         timeoutMS = timeout;
     }
     public double getTimeout() {

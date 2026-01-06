@@ -11,7 +11,7 @@ public class PositionPose extends GeneralPose {
 
     public PositionPose(Pose2D pose, double timeoutMS) {
         this.pose = pose;
-        setTimeoue(timeoutMS);
+        setTimeout(timeoutMS);
     }
 
     @Override
