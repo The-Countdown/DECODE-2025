@@ -4,9 +4,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class SleepPose extends GeneralPose {
     public double sleepTime; // In miliseconds
-    public ElapsedTime sleepTimer = null;
+    public ElapsedTime sleepTimer;
     public SleepPose(double time) {
         this.sleepTime = time;
+        sleepTimer = null;
     }
 
     @Override

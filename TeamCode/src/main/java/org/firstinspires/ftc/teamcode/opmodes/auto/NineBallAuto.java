@@ -54,13 +54,16 @@ public class NineBallAuto extends OpMode {
         //Actions
         ActionPose start = new ActionPose(robotContainer,
             () -> Constants.Pathing.LATITUDE_KP *= 1,
-            () -> Constants.Pathing.LONGITUDE_KP *= 1
+            () -> Constants.Pathing.LONGITUDE_KP *= 1,
+            () -> Status.flywheelToggle = true,
+            () -> Status.intakeToggle = false,
+            () -> Status.turretToggle = true
         );
 
         ActionPose shoot = new ActionPose(robotContainer,
             () -> robotContainer.intake.setPower(Constants.Intake.BEST_INTAKE_SPEED),
             () -> robotContainer.spindexer.pause(),
-            () -> robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.shootAll(false),  300),
+            () -> robotContainer.spindexer.shootAll(false),
             () -> robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.unpause(),  Constants.Spindexer.FULL_EMPTY_SPINTIME)
         );
 
@@ -75,14 +78,14 @@ public class NineBallAuto extends OpMode {
             () -> Constants.Pathing.LONGITUDE_KP /= 2,
             () -> Constants.Pathing.LATITUDE_KP /= 2,
             () -> Constants.Pathing.HEADING_KP /= 2,
-            () -> robotContainer.delayedActionManager.schedule(() -> Constants.Pathing.LATITUDE_KP *= 0.75, 1500),
-            () -> robotContainer.delayedActionManager.schedule(() -> Constants.Pathing.LATITUDE_KP *= 0.75, 1500),
+            () -> robotContainer.delayedActionManager.schedule(() -> Constants.Pathing.LATITUDE_KP *= 0.8, 1000),
+            () -> robotContainer.delayedActionManager.schedule(() -> Constants.Pathing.LATITUDE_KP *= 0.8,  1000),
             () -> robotContainer.intake.setPower(Constants.Intake.BEST_INTAKE_SPEED)
         );
 
         ActionPose intakeSleepPose = new ActionPose(robotContainer,
-            () -> Constants.Pathing.LONGITUDE_KP *= 4/3,
-            () -> Constants.Pathing.LONGITUDE_KP *= 4/3
+            () -> Constants.Pathing.LONGITUDE_KP *= 1.25,
+            () -> Constants.Pathing.LONGITUDE_KP *= 1.25
         );
 
         ActionPose endOfIntake = new ActionPose(robotContainer,
@@ -103,6 +106,7 @@ public class NineBallAuto extends OpMode {
         if (Status.alliance == Constants.Game.ALLIANCE.BLUE) {
             robotContainer.pathPlanner.addPose(Status.startingPose);
             robotContainer.pathPlanner.addActionPose(start);
+            robotContainer.pathPlanner.addSleepPose(Constants.Turret.FLYWHEEL_SPINUP_MS);
             robotContainer.pathPlanner.addActionPose(shoot);
             robotContainer.pathPlanner.addSleepPose(3600);
             robotContainer.pathPlanner.addActionPose(goToIntake);
@@ -113,6 +117,7 @@ public class NineBallAuto extends OpMode {
             robotContainer.pathPlanner.addSleepPose(400);
             robotContainer.pathPlanner.addActionPose(endOfIntake);
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 10, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)));
+            //problem line below (it has nothing to do with its contents any function I put here doesn't run)
             robotContainer.pathPlanner.addActionPose(shoot);
             robotContainer.pathPlanner.addSleepPose(2000);
             robotContainer.pathPlanner.addActionPose(goToIntake);
@@ -130,6 +135,7 @@ public class NineBallAuto extends OpMode {
         } else {
             robotContainer.pathPlanner.addPose(Status.startingPose);
             robotContainer.pathPlanner.addActionPose(start);
+            robotContainer.pathPlanner.addSleepPose(Constants.Turret.FLYWHEEL_SPINUP_MS);
             robotContainer.pathPlanner.addActionPose(shoot);
             robotContainer.pathPlanner.addSleepPose(3600);
             robotContainer.pathPlanner.addActionPose(goToIntake);
@@ -140,6 +146,7 @@ public class NineBallAuto extends OpMode {
             robotContainer.pathPlanner.addSleepPose(400);
             robotContainer.pathPlanner.addActionPose(endOfIntake);
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 10, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)));
+            //problem line below (it has nothing to do with its contents any function I put here doesn't run)
             robotContainer.pathPlanner.addActionPose(shoot);
             robotContainer.pathPlanner.addSleepPose(2000);
             robotContainer.pathPlanner.addActionPose(goToIntake);
@@ -194,6 +201,7 @@ public class NineBallAuto extends OpMode {
         robotContainer.telemetry.addData("longitude", robotContainer.longitudePID.calculate());
         robotContainer.telemetry.addData("latitude", robotContainer.latitudePID.calculate());
         robotContainer.telemetry.addData("drive target", Status.targetPose);
+        robotContainer.telemetry.addData("Current Pose", Status.currentPose);
         robotContainer.telemetry.update();
 
         blackboard.put("pose", Status.currentPose);
@@ -202,11 +210,9 @@ public class NineBallAuto extends OpMode {
 
     @Override
     public void stop() {
-        Constants.Pathing.LONGITUDE_KP = 0.014;
-        Constants.Pathing.LATITUDE_KP = 0.014;
-        Constants.Pathing.LATITUDE_PID_TOLERANCE_CM = 1;
-        Constants.Pathing.LONGITUDE_PID_TOLERANCE_CM = 1;
         robotContainer.delayedActionManager.cancelAll();
+        robotContainer.telemetry.addData("Stopped", true);
+        telemetry.update();
         // if(Status.alliance == Constants.Game.ALLIANCE.RED) {
         //     blackboard.put("pose", new Pose2D(DistanceUnit.CM, Status.currentPose.getX(DistanceUnit.CM), Status.currentPose.getY(DistanceUnit.CM)+9, AngleUnit.DEGREES, Status.currentPose.getHeading(AngleUnit.DEGREES)));
         // } else {

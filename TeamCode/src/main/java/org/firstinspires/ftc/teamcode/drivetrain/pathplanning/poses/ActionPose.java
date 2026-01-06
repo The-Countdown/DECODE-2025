@@ -6,9 +6,10 @@ import org.firstinspires.ftc.teamcode.util.DelayedActionManager;
 import java.util.ArrayList;
 
 public class ActionPose extends GeneralPose {
-    private ArrayList<DelayedActionManager.Action> delayedActions = new ArrayList<>();
+    private ArrayList<DelayedActionManager.Action> delayedActions;
 
     public ActionPose(RobotContainer robotContainer, Runnable... actions) {
+        delayedActions = new ArrayList<>();
         for (int i = 0; i < actions.length; i++) {
             this.delayedActions.add(new DelayedActionManager.DelayedAction(robotContainer, actions[i], 0));
         }

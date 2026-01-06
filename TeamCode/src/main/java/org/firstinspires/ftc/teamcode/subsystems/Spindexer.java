@@ -198,8 +198,7 @@ public class Spindexer {
         if (matchMotif) {
             shootAll(Status.motif);
         } else {
-            robotContainer.delayedActionManager.schedule(() -> this.pause = true, () -> robotContainer.turret.flywheel.atTargetVelocity());
-            robotContainer.delayedActionManager.schedule(() -> this.pause = false, () -> robotContainer.turret.flywheel.atTargetVelocity(), Constants.Spindexer.FULL_EMPTY_SPINTIME);
+            robotContainer.delayedActionManager.schedule(() -> spindexerServo.setPower(1), 0);
         }
     }
     public void shootAll(Constants.Game.MOTIF motif){
