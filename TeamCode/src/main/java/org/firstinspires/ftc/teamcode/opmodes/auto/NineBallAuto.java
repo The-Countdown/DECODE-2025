@@ -57,7 +57,6 @@ public class NineBallAuto extends OpMode {
 
         //Actions
         ActionPose start = new ActionPose(robotContainer,
-            () -> robotContainer.spindexer.pause = false,
             () -> Constants.Pathing.LATITUDE_KP *= 1.2,
             () -> Constants.Pathing.LONGITUDE_KP *= 1.2,
             () -> Status.flywheelToggle = true,
@@ -138,7 +137,7 @@ public class NineBallAuto extends OpMode {
 //            robotContainer.pathPlanner.addActionPose(intakeSleepPose);
 //            robotContainer.pathPlanner.addSleepPose(400);
             robotContainer.pathPlanner.addActionPose(endOfIntake);
-            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 10, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)), 2250);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 10, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)), 2750);
             robotContainer.pathPlanner.addActionPose(shoot);
             robotContainer.pathPlanner.addSleepPose(2000);
             robotContainer.pathPlanner.addActionPose(goToIntake);
@@ -166,7 +165,7 @@ public class NineBallAuto extends OpMode {
 //            robotContainer.pathPlanner.addActionPose(intakeSleepPose);
 //            robotContainer.pathPlanner.addSleepPose(400);
             robotContainer.pathPlanner.addActionPose(endOfIntake);
-            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 10, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)), 2250);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 10, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)), 2750);
             robotContainer.pathPlanner.addActionPose(shoot);
             robotContainer.pathPlanner.addSleepPose(2000);
             robotContainer.pathPlanner.addActionPose(goToIntake);
@@ -180,7 +179,6 @@ public class NineBallAuto extends OpMode {
         Status.lightsOn = true;
         Status.isDrivingActive = false;
         robotContainer.start(this, false);
-        robotContainer.spindexer.pause = true;
         Status.intakeToggle = true;
         Status.turretToggle = false;
         robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[0]);
