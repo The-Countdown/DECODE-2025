@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -29,7 +30,6 @@ public class TeleOp extends OpMode {
     private double topSpeed = 0;
     private double hvelocity = 0;
     private final ElapsedTime spinTimer = new ElapsedTime();
-
 
     @Override
     public void init() {
@@ -60,8 +60,7 @@ public class TeleOp extends OpMode {
         robotContainer.start(this, true);
         robotContainer.spindexer.goToFirstIntakeSlot(); // This should likely be in robotcontainer start
         robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[0]); // This should likely be in the robotcontainer start
-        robotContainer.gamepadEx1.rumble(10000);
-        robotContainer.gamepadEx2.rumble(10000);
+        robotContainer.gamepadEx1.gamepad.setLedColor(1,0,1,Gamepad.LED_DURATION_CONTINUOUS);
         List<FeedForward.TrajectoryPoint> path = robotContainer.feedForward.generatePath(new Pose2D(DistanceUnit.CM, 0, 0, AngleUnit.DEGREES, 0), new Pose2D(DistanceUnit.CM, 100, 100, AngleUnit.DEGREES, 0), 0.02);
         robotContainer.addEventTelemetry("FeedForward Pose", path.get(path.size() - 1).pose.toString());
         robotContainer.addEventTelemetry("FeedForward Time", path.get(path.size() - 1).time);

@@ -62,6 +62,19 @@ public class GamepadWrapper {
             return false;
         }
 
+        public boolean isHeldForAtLeast(double seconds) {
+            if (isTiming) {
+                double time = holdDuration.seconds();
+                if (!alreadyTriggered && time > seconds) {
+                    alreadyTriggered = true;
+                    return true;
+                }
+            } else {
+                alreadyTriggered = false;
+            }
+            return false;
+        }
+
         public boolean isHeldFor(double seconds, double toleranceSeconds) {
             if (isTiming) {
                 double time = holdDuration.seconds();
@@ -90,7 +103,7 @@ public class GamepadWrapper {
         }
     }
 
-    private final Gamepad gamepad;
+    public final Gamepad gamepad;
 
     public final ButtonReader share = new ButtonReader(); // back
     public final ButtonReader options = new ButtonReader(); // start
@@ -160,7 +173,7 @@ public class GamepadWrapper {
     }
 
     public void rumble(int durationMs) {
-        gamepad.rumble(durationMs);
+        gamepad.rumble(1, 1, durationMs);
     }
 
     public float leftStickX() {

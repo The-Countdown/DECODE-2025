@@ -70,7 +70,7 @@ public class Spindexer {
             clockwise = false;
         }
 
-        if (robotContainer.beamBreakToggleButton.wasJustReleased() || robotContainer.beamBreakToggleButton.isHeldFor(0.1)) {
+        if (robotContainer.beamBreakToggleButton.wasJustReleased() || robotContainer.beamBreakToggleButton.isHeldForAtLeast(0.25)) {
             robotContainer.delayedActionManager.schedule(() -> function2(), Constants.Spindexer.TIME_BETWEEN_BEAM_BREAK_AND_COLOR_SENSOR);
             beamTimer.reset();
         }
@@ -169,6 +169,8 @@ public class Spindexer {
         if (colorSensor.getDistance() < Constants.Spindexer.DIST_TOLERANCE && Math.abs(robotContainer.spindexer.spindexerError) < 20) {
             slotColor[getCurrentIntakeSlot()] = getArtifactColor(colorSensor.updateBlue(), colorSensor.updateGreen());
             robotContainer.spindexer.moveIntakeSlotClockwise();
+            robotContainer.gamepadEx1.rumble(100);
+            robotContainer.gamepadEx2.rumble(100);
         }
     }
 
