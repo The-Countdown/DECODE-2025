@@ -728,6 +728,7 @@ public class RobotContainer {
             addDataLog("Intake Toggle", Status.intakeToggle, true);
             telemetry.addLine();
             addDataLog("Beam Break", HardwareDevices.beamBreak.isPressed(), true);
+            addDataLog("xFormation", drivetrain.xFormation, true);
             // addDataLog("Red", HardwareDevices.colorSensor.updateRed(), true);
             // addDataLog("Blue", HardwareDevices.colorSensor.updateBlue(), true);
             // addDataLog("Green", HardwareDevices.colorSensor.updateGreen(), true);
