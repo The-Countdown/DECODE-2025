@@ -27,7 +27,6 @@ public class Spindexer {
     private ElapsedTime beamTimer = new ElapsedTime();
     private ElapsedTime jamTimer = new ElapsedTime();
     private ElapsedTime unjamTimer = new ElapsedTime();
-    private ElapsedTime waitAtStartTimer = new ElapsedTime();
     public Constants.Game.ARTIFACT_COLOR[] slotColor = {Constants.Game.ARTIFACT_COLOR.UNKNOWN, Constants.Game.ARTIFACT_COLOR.UNKNOWN, Constants.Game.ARTIFACT_COLOR.UNKNOWN};
     public int slotZeroAngle;
     public Spindexer (RobotContainer robotContainer, LinkedServos spindexerServos, BetterAnalogInput spindexerAnalog, BetterColorSensor colorSensor) {
@@ -49,11 +48,6 @@ public class Spindexer {
 
     // TODO: Change to -180 to 180 instead of 0 - 360
     public void update(boolean teleop) {
-        // Terrible auto hack to make it not spit out a ball on start
-        if (waitAtStartTimer.seconds() < 1) {
-            return;
-        }
-
         spindexerPIDF = spindexerPIDF.updateValues(robotContainer, Constants.Spindexer.KP, Constants.Spindexer.KI, Constants.Spindexer.KD, Constants.Spindexer.KF);
 
         spindexerError = getError();

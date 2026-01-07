@@ -5,6 +5,7 @@ import android.provider.SyncStateContract;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -182,7 +183,8 @@ public class NineBallAuto extends OpMode {
         Status.intakeToggle = true;
         Status.turretToggle = false;
         robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[0]);
-
+        robotContainer.spindexer.pause();
+        RobotContainer.HardwareDevices.spindexerServoMaster.updateSetPower(0);
 
         if (Status.wentBackToStart) {
             Status.startingPose = (Pose2D) blackboard.getOrDefault("pose", Status.startingPose);
