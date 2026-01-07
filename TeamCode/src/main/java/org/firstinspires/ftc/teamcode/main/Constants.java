@@ -315,7 +315,7 @@ public class Constants {
         public static double[] HOOD_PRESETS = {0.52, 0.07, 0.18};
         public static double TURRET_LIMIT_MIN_ANGLE = -90;
         public static double TURRET_LIMIT_MAX_ANGLE = 125;
-        public static double FLYWHEEL_KP = 0.0002;
+        public static double FLYWHEEL_KP = 0.0004;
         public static double FLYWHEEL_KI = 0;
         public static double FLYWHEEL_KD = 0.0033;
         public static double FLYWHEEL_KF = 0;

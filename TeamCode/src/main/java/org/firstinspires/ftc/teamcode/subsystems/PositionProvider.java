@@ -59,12 +59,12 @@ public class PositionProvider {
     public void update(boolean LimeLight) {
         if (LimeLight) {
             Pose2D odPose = RobotContainer.HardwareDevices.pinpoint.getPosition();
-            if (robotContainer.gamepadEx1.dpadDown.isHeld()) {
+            if (robotContainer.drivetrain.xFormation) {
                 LimeLightInfo visionInfo = getGoodLimeLightInfo();
 
                 if (visionInfo != null) {
                     double lateralDistance = visionInfo.result.getTx();
-                    Status.correctionDegrees += lateralDistance * HelperFunctions.disToGoal() * Constants.Robot.CORRECTION_DEGREES_MULTIPLIER;
+                    Status.correctionDegrees += (lateralDistance * Constants.Robot.CORRECTION_DEGREES_MULTIPLIER) / HelperFunctions.disToGoal();
 
                     double newX = odPose.getX(DistanceUnit.CM) * Math.cos(-Math.toRadians(Status.correctionDegrees)) - odPose.getY(DistanceUnit.CM) * Math.sin(-Math.toRadians(Status.correctionDegrees));
                     double newY = odPose.getY(DistanceUnit.CM) * Math.cos(-Math.toRadians(Status.correctionDegrees)) + odPose.getX(DistanceUnit.CM) * Math.sin(-Math.toRadians(Status.correctionDegrees));

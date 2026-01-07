@@ -49,7 +49,7 @@ public class Spindexer {
 
     // TODO: Change to -180 to 180 instead of 0 - 360
     public void update(boolean teleop) {
-        if (waitAtStartTimer.seconds() < Constants.Turret.FLYWHEEL_SPINUP_MS) {
+        if (waitAtStartTimer.seconds() < Constants.Turret.FLYWHEEL_SPINUP_MS && !teleop) {
             return;
         }
         spindexerPIDF = spindexerPIDF.updateValues(robotContainer, Constants.Spindexer.KP, Constants.Spindexer.KI, Constants.Spindexer.KD, Constants.Spindexer.KF);

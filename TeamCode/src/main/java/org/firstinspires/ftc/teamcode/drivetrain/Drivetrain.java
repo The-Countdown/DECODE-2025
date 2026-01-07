@@ -19,6 +19,7 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
     double[] calculatedAngles;
     double[] calculatedPowers;
     double[] lastAngles = Constants.Swerve.STOP_FORMATION;
+    public boolean xFormation = false;
     GamepadWrapper.ButtonReader xButton = new GamepadWrapper.ButtonReader();
     GamepadWrapper.ButtonReader yButton = new GamepadWrapper.ButtonReader();
     GamepadWrapper.ButtonReader rXButton = new GamepadWrapper.ButtonReader();
@@ -62,13 +63,15 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
             return;
         }
 
-        if (x == 0 && y == 0 && rX == 0 && stopTimer.seconds() >= 1) {
+        if (x == 0 && y == 0 && rX == 0 && stopTimer.seconds() >= 0.5) {
             Status.flywheelToggle = true;
             setTargets(Constants.Swerve.STOP_FORMATION, Constants.Swerve.NO_POWER);
+            xFormation = true;
             return;
         }
+        xFormation = false;
 
-        if ( x == 0 && y == 0 && rX == 0) {
+        if (x == 0 && y == 0 && rX == 0) {
             Status.flywheelToggle = true;
             setTargets(lastAngles, Constants.Swerve.NO_POWER);
             return;
