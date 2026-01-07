@@ -1,11 +1,8 @@
 package org.firstinspires.ftc.teamcode.opmodes.auto;
 
-import android.provider.SyncStateContract;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -16,30 +13,15 @@ import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.poses.ActionPose;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
-import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 
-@Autonomous(name="NineBallAuto", group="Robot")
+@Autonomous(name="NineBallSide", group="Robot")
 @Config
-public class NineBallAuto extends OpMode {
+public class NineBallSide extends OpMode {
     private RobotContainer robotContainer;
     private final ElapsedTime pathTimer = new ElapsedTime();
-
-    // 102.22
-    // 91.44
-    // 30.48
     public static double BEFORE_TAPE = 84;
     public static double AFTER_TAPE = 160;
     public static double TAPE_LOW = -97;
-    public static double TAPE_MID = -37;
-    public static double TAPE_HIGH = 25;
-    public static double MIDPOINT = 18;
-    public static double MIDDLE = 20;
-
-    public static Pose2D
-            RED_MIDDLE = new Pose2D(DistanceUnit.INCH, MIDDLE, -MIDDLE, AngleUnit.DEGREES, -135),
-            RED_MIDPOINT = new Pose2D(DistanceUnit.INCH, 0, -MIDPOINT, AngleUnit.DEGREES, -112.5),
-            BLUE_MIDDLE = new Pose2D(DistanceUnit.INCH, MIDDLE, MIDDLE, AngleUnit.DEGREES, 135),
-            BLUE_MIDPOINT = new Pose2D(DistanceUnit.INCH, 0, MIDPOINT, AngleUnit.DEGREES, 112.5);
 
     @Override
     public void init() {
@@ -93,10 +75,6 @@ public class NineBallAuto extends OpMode {
             () -> robotContainer.intake.setPower(Constants.Intake.BEST_INTAKE_SPEED)
         );
 
-        ActionPose intakeSleepPose = new ActionPose(robotContainer
-
-        );
-
         ActionPose endOfIntake = new ActionPose(robotContainer,
             () -> Constants.Pathing.LONGITUDE_KP *= 2.5,
             () -> Constants.Pathing.LATITUDE_KP *= 2.5,
@@ -111,10 +89,6 @@ public class NineBallAuto extends OpMode {
         () -> Constants.Pathing.HEADING_PID_TOLERANCE_DEGREES *= 2
         );
 
-//        ActionPose  = new ActionPose(robotContainer,
-//
-//        );
-
         if (Status.alliance == Constants.Game.ALLIANCE.BLUE) {
             robotContainer.pathPlanner.addPose(Status.startingPose);
             robotContainer.pathPlanner.addActionPose(start);
@@ -122,23 +96,19 @@ public class NineBallAuto extends OpMode {
             robotContainer.pathPlanner.addActionPose(shoot);
             robotContainer.pathPlanner.addSleepPose(3000);
             robotContainer.pathPlanner.addActionPose(goToIntake);
-            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, TAPE_LOW, BEFORE_TAPE, AngleUnit.DEGREES, 90), 1250);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 1, AFTER_TAPE, AngleUnit.DEGREES, 90), 3750);
             robotContainer.pathPlanner.addActionPose(intake);
-            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, TAPE_LOW, AFTER_TAPE, AngleUnit.DEGREES, 90), 3500);
-//            robotContainer.pathPlanner.addActionPose(intakeSleepPose);
-//            robotContainer.pathPlanner.addSleepPose(400);
+            robotContainer.pathPlanner.addSleepPose(1000);
             robotContainer.pathPlanner.addActionPose(endOfIntake);
             robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 10, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)), 2250);
             robotContainer.pathPlanner.addActionPose(shoot);
             robotContainer.pathPlanner.addSleepPose(2000);
             robotContainer.pathPlanner.addActionPose(goToIntake);
-            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, TAPE_MID, BEFORE_TAPE, AngleUnit.DEGREES, 90), 2000);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, TAPE_LOW, BEFORE_TAPE, AngleUnit.DEGREES, 90), 1250);
             robotContainer.pathPlanner.addActionPose(intake);
-            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, TAPE_MID, AFTER_TAPE, AngleUnit.DEGREES, 90), 3500);
-//            robotContainer.pathPlanner.addActionPose(intakeSleepPose);
-//            robotContainer.pathPlanner.addSleepPose(400);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, TAPE_LOW, AFTER_TAPE, AngleUnit.DEGREES, 90), 3500);
             robotContainer.pathPlanner.addActionPose(endOfIntake);
-            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 10, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)), 2750);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 10, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)), 2250);
             robotContainer.pathPlanner.addActionPose(shoot);
             robotContainer.pathPlanner.addSleepPose(2000);
             robotContainer.pathPlanner.addActionPose(goToIntake);
@@ -150,23 +120,19 @@ public class NineBallAuto extends OpMode {
             robotContainer.pathPlanner.addActionPose(shoot);
             robotContainer.pathPlanner.addSleepPose(3000);
             robotContainer.pathPlanner.addActionPose(goToIntake);
-            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, TAPE_LOW, -BEFORE_TAPE, AngleUnit.DEGREES, -90), 1250);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 1, -AFTER_TAPE, AngleUnit.DEGREES, -90), 3750);
             robotContainer.pathPlanner.addActionPose(intake);
-            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, TAPE_LOW, -AFTER_TAPE, AngleUnit.DEGREES, -90), 3500);
-//            robotContainer.pathPlanner.addActionPose(intakeSleepPose);
-//            robotContainer.pathPlanner.addSleepPose(400);
+            robotContainer.pathPlanner.addSleepPose(1000);
             robotContainer.pathPlanner.addActionPose(endOfIntake);
             robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 10, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)), 2250);
             robotContainer.pathPlanner.addActionPose(shoot);
             robotContainer.pathPlanner.addSleepPose(2000);
             robotContainer.pathPlanner.addActionPose(goToIntake);
-            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, TAPE_MID, -BEFORE_TAPE, AngleUnit.DEGREES, -90), 2000);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, TAPE_LOW, -BEFORE_TAPE, AngleUnit.DEGREES, -90), 1250);
             robotContainer.pathPlanner.addActionPose(intake);
-            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, TAPE_MID, -AFTER_TAPE, AngleUnit.DEGREES, -90), 3500);
-//            robotContainer.pathPlanner.addActionPose(intakeSleepPose);
-//            robotContainer.pathPlanner.addSleepPose(400);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, TAPE_LOW, -AFTER_TAPE, AngleUnit.DEGREES, -90), 3500);
             robotContainer.pathPlanner.addActionPose(endOfIntake);
-            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 10, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)), 2750);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 10, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)), 2250);
             robotContainer.pathPlanner.addActionPose(shoot);
             robotContainer.pathPlanner.addSleepPose(2000);
             robotContainer.pathPlanner.addActionPose(goToIntake);
@@ -218,7 +184,6 @@ public class NineBallAuto extends OpMode {
 
         blackboard.put("pose", Status.currentPose);
     }
-    //3.4 -6.8
 
     @Override
     public void stop() {
@@ -233,11 +198,6 @@ public class NineBallAuto extends OpMode {
         Constants.Pathing.LATITUDE_KP = 0.009;
         Constants.Pathing.HEADING_KP = 0.01;
 
-        // if(Status.alliance == Constants.Game.ALLIANCE.RED) {
-        //     blackboard.put("pose", new Pose2D(DistanceUnit.CM, Status.currentPose.getX(DistanceUnit.CM), Status.currentPose.getY(DistanceUnit.CM)+9, AngleUnit.DEGREES, Status.currentPose.getHeading(AngleUnit.DEGREES)));
-        // } else {
-        //     blackboard.put("pose", new Pose2D(DistanceUnit.CM, Status.currentPose.getX(DistanceUnit.CM), Status.currentPose.getY(DistanceUnit.CM)-9, AngleUnit.DEGREES, Status.currentPose.getHeading(AngleUnit.DEGREES)));
-        // }
         if(Status.alliance == Constants.Game.ALLIANCE.RED) {
             blackboard.put("pose", new Pose2D(DistanceUnit.CM, Status.currentPose.getX(DistanceUnit.CM) + 12, Status.currentPose.getY(DistanceUnit.CM) + 12, AngleUnit.DEGREES, Status.currentPose.getHeading(AngleUnit.DEGREES)));
         } else {
