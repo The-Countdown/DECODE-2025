@@ -22,7 +22,7 @@ public class Spindexer {
     public double lastPosition;
     private double spindexerError;
     public boolean pause;
-    private boolean clockwise;
+    public boolean clockwise;
     private PIDF spindexerPIDF;
     private ElapsedTime beamTimer = new ElapsedTime();
     private ElapsedTime jamTimer = new ElapsedTime();
@@ -50,7 +50,7 @@ public class Spindexer {
     public void update(boolean teleop) {
         spindexerPIDF = spindexerPIDF.updateValues(robotContainer, Constants.Spindexer.KP, Constants.Spindexer.KI, Constants.Spindexer.KD, Constants.Spindexer.KF);
 
-        spindexerError = Math.abs(getError());
+        spindexerError = getError();
         boolean jammed = jammed();
 
         double servoPower = calculate();
@@ -66,8 +66,6 @@ public class Spindexer {
             clockwise = false;
         }
 
-
-        // if (robotContainer.beamBreakToggleButton.wasJustReleased() || robotContainer.beamBreakToggleButton.holdDuration() >= Constants.Spindexer.TIME_BEAM_BREAK_TRUE_BEFORE_COLOR_SENSOR_CHECK) {
         if (robotContainer.beamBreakToggleButton.wasJustReleased() || robotContainer.beamBreakToggleButton.isHeldFor(0.1)) {
             robotContainer.delayedActionManager.schedule(() -> function2(), Constants.Spindexer.TIME_BETWEEN_BEAM_BREAK_AND_COLOR_SENSOR);
             beamTimer.reset();
@@ -164,7 +162,7 @@ public class Spindexer {
     }
 
     public void function2() {
-        if (colorSensor.getDistance() < Constants.Spindexer.DIST_TOLERANCE && robotContainer.spindexer.spindexerError < 20) {
+        if (colorSensor.getDistance() < Constants.Spindexer.DIST_TOLERANCE && Math.abs(robotContainer.spindexer.spindexerError) < 20) {
             slotColor[getCurrentIntakeSlot()] = getArtifactColor(colorSensor.updateBlue(), colorSensor.updateGreen());
             robotContainer.spindexer.moveIntakeSlotClockwise();
         }
