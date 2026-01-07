@@ -183,8 +183,6 @@ public class NineBallAuto extends OpMode {
         Status.intakeToggle = true;
         Status.turretToggle = false;
         robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[0]);
-        robotContainer.spindexer.pause();
-        RobotContainer.HardwareDevices.spindexerServoMaster.updateSetPower(0);
 
         if (Status.wentBackToStart) {
             Status.startingPose = (Pose2D) blackboard.getOrDefault("pose", Status.startingPose);
@@ -198,6 +196,7 @@ public class NineBallAuto extends OpMode {
     @Override
     public void loop() {
         robotContainer.update(false);
+        robotContainer.allIndicatorLights.lightsUpdate();
         robotContainer.turret.pointAtGoal();
         robotContainer.pathPlanner.driveThroughPath(pathTimer);
         Status.turretToggleButton.update(Status.turretToggle);
