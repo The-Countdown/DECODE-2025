@@ -49,7 +49,7 @@ public class Spindexer {
 
     // TODO: Change to -180 to 180 instead of 0 - 360
     public void update(boolean teleop) {
-        if (waitAtStartTimer.seconds() < Constants.Turret.FLYWHEEL_SPINUP_MS && !teleop) {
+        if (waitAtStartTimer.milliseconds() < Constants.Turret.FLYWHEEL_SPINUP_MS && !teleop) {
             return;
         }
         spindexerPIDF = spindexerPIDF.updateValues(robotContainer, Constants.Spindexer.KP, Constants.Spindexer.KI, Constants.Spindexer.KD, Constants.Spindexer.KF);
@@ -195,14 +195,18 @@ public class Spindexer {
         targetAngle = (targetAngle + 120) % 360;
     }
 
+    public void shootToggle(boolean shootToggle){
+        Status.turretToggle = shootToggle;
+        Status.intakeToggle = !shootToggle;
+        Status.flywheelToggle = shootToggle;
+    }
     public void shootAll(boolean matchMotif) {
-        Status.turretToggle = true;
-        Status.intakeToggle = false;
-        Status.flywheelToggle = true;
+        shootToggle(true);
         if (matchMotif) {
             shootAll(Status.motif);
         } else {
-            robotContainer.delayedActionManager.schedule(() -> spindexerServo.setPower(1), 0);
+            pause();
+            robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.unpause(),  Constants.Spindexer.FULL_EMPTY_SPINTIME);
         }
     }
     public void shootAll(Constants.Game.MOTIF motif){

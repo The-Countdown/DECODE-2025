@@ -113,7 +113,7 @@ public class Turret extends RobotContainer.HardwareDevices {
                 robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[0]);
             }
 
-            if (!Status.intakeToggle) {
+            if (Status.turretToggle) {
                 flywheel.targetVelocity = Math.min(Status.turretToggleButton.holdDuration() * Constants.Turret.FLYWHEEL_CURVE, robotContainer.turret.flywheel.interpolateByDistance(HelperFunctions.disToGoal()));
             } else {
                 flywheel.targetVelocity = 0;

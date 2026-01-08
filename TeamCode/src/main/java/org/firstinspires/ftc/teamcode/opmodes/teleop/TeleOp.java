@@ -130,10 +130,9 @@ public class TeleOp extends OpMode {
             Status.isDrivingActive = true;
         }
 
-        if (Status.intakeToggle) {
-            double power = robotContainer.gamepadEx1.rightTriggerRaw() - (robotContainer.gamepadEx1.leftTriggerRaw());
-            robotContainer.intake.setPower(Math.signum(power) * Math.min(Math.abs(power), Constants.Intake.TOP_SPEED));
-        }
+        double power = robotContainer.gamepadEx1.rightTriggerRaw() - (robotContainer.gamepadEx1.leftTriggerRaw());
+        robotContainer.intake.setPower(Math.signum(power) * Math.min(Math.abs(power), Constants.Intake.TOP_SPEED));
+
 
 //        robotContainer.telemetry.addData("heading", RobotContainer.HardwareDevices.pinpoint.getHeading(UnnormalizedAngleUnit.DEGREES));
 //        currentHeading = Status.currentHeading;

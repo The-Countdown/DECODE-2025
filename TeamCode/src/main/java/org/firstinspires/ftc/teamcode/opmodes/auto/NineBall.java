@@ -54,57 +54,43 @@ public class NineBall extends OpMode {
 
         //Actions
         ActionPose start = new ActionPose(robotContainer,
-            () -> Constants.Pathing.LATITUDE_KP *= 1.2,
-            () -> Constants.Pathing.LONGITUDE_KP *= 1.2,
-            () -> Status.flywheelToggle = true,
-            () -> Status.intakeToggle = false,
-            () -> Status.turretToggle = true,
-            () -> Constants.Pathing.LONGITUDE_PID_TOLERANCE_CM *= 1,
-            () -> Constants.Pathing.LATITUDE_PID_TOLERANCE_CM *= 1
+                () -> Constants.Pathing.LATITUDE_KP *= 1.2,
+                () -> Constants.Pathing.LONGITUDE_KP *= 1.2,
+                () -> robotContainer.spindexer.shootToggle(true),
+                () -> Constants.Pathing.LONGITUDE_PID_TOLERANCE_CM *= 1,
+                () -> Constants.Pathing.LATITUDE_PID_TOLERANCE_CM *= 1
         );
 
         ActionPose shoot = new ActionPose(robotContainer,
-            () -> robotContainer.intake.setPower(Constants.Intake.BEST_INTAKE_SPEED),
-            () -> robotContainer.spindexer.pause(),
-            () -> robotContainer.spindexer.shootAll(false),
-            () -> robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.unpause(),  Constants.Spindexer.FULL_EMPTY_SPINTIME),
-            () -> Constants.Pathing.LONGITUDE_PID_TOLERANCE_CM /= 1.5,
-            () -> Constants.Pathing.LATITUDE_PID_TOLERANCE_CM /= 1.5
+                () -> robotContainer.intake.setPower(Constants.Intake.BEST_INTAKE_SPEED),
+                () -> robotContainer.spindexer.shootAll(false),
+                () -> Constants.Pathing.LONGITUDE_PID_TOLERANCE_CM /= 1.5,
+                () -> Constants.Pathing.LATITUDE_PID_TOLERANCE_CM /= 1.5
         );
 
         ActionPose goToIntake = new ActionPose(robotContainer,
-            () -> robotContainer.intake.setPower(0.0),
-            () -> Constants.Pathing.HEADING_PID_TOLERANCE_DEGREES /= 2,
-            () -> Status.flywheelToggle = false,
-            () -> Status.intakeToggle = true,
-            () -> Status.turretToggle = false
+                () -> robotContainer.intake.setPower(0.0),
+                () -> Constants.Pathing.HEADING_PID_TOLERANCE_DEGREES /= 2,
+                () -> robotContainer.spindexer.shootToggle(false)
         );
 
         ActionPose intake = new ActionPose(robotContainer,
-            () -> Constants.Pathing.LONGITUDE_KP /= 2,
-            () -> Constants.Pathing.LATITUDE_KP /= 2,
-            () -> Constants.Pathing.HEADING_KP /= 2,
-            () -> robotContainer.delayedActionManager.schedule(() -> Constants.Pathing.LATITUDE_KP /= 1.25, 2750),
-            () -> robotContainer.delayedActionManager.schedule(() -> Constants.Pathing.LATITUDE_KP /= 1.25,  2750),
-            () -> robotContainer.intake.setPower(Constants.Intake.BEST_INTAKE_SPEED)
-        );
-
-        ActionPose intakeSleepPose = new ActionPose(robotContainer
-
+                () -> Constants.Pathing.LONGITUDE_KP /= 2,
+                () -> Constants.Pathing.LATITUDE_KP /= 2,
+                () -> Constants.Pathing.HEADING_KP /= 2,
+                () -> robotContainer.intake.setPower(Constants.Intake.BEST_INTAKE_SPEED)
         );
 
         ActionPose endOfIntake = new ActionPose(robotContainer,
-            () -> Constants.Pathing.LONGITUDE_KP *= 2.5,
-            () -> Constants.Pathing.LATITUDE_KP *= 2.5,
-            () -> Constants.Pathing.HEADING_KP *= 2,
-            () -> robotContainer.intake.setPower(-Constants.Intake.BEST_INTAKE_SPEED),
-            () -> robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setPower(0.0), 100),
-            () -> Status.flywheelToggle = true,
-            () -> Status.intakeToggle = false,
-            () -> Status.turretToggle = true,
-            () -> Constants.Pathing.LONGITUDE_PID_TOLERANCE_CM *= 1.5,
-            () -> Constants.Pathing.LATITUDE_PID_TOLERANCE_CM *= 1.5,
-        () -> Constants.Pathing.HEADING_PID_TOLERANCE_DEGREES *= 2
+                () -> Constants.Pathing.LONGITUDE_KP *= 2,
+                () -> Constants.Pathing.LATITUDE_KP *= 2,
+                () -> Constants.Pathing.HEADING_KP *= 2,
+                () -> robotContainer.intake.setPower(-Constants.Intake.BEST_INTAKE_SPEED),
+                () -> robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setPower(0.0), 100),
+                () -> robotContainer.spindexer.shootToggle(true),
+                () -> Constants.Pathing.LONGITUDE_PID_TOLERANCE_CM *= 1.5,
+                () -> Constants.Pathing.LATITUDE_PID_TOLERANCE_CM *= 1.5,
+                () -> Constants.Pathing.HEADING_PID_TOLERANCE_DEGREES *= 2
         );
 
 //        ActionPose  = new ActionPose(robotContainer,
@@ -210,6 +196,8 @@ public class NineBall extends OpMode {
         robotContainer.telemetry.addData("Current Pose", Status.currentPose);
         robotContainer.telemetry.addData("At target", PoseMath.isAtPos());
         robotContainer.telemetry.addData("Timeout", robotContainer.pathPlanner.timeoutCheck);
+        robotContainer.telemetry.addData("Spindexer Error",robotContainer.spindexer.getError());
+        robotContainer.telemetry.addData("Spindexer Target",robotContainer.spindexer.targetAngle);
         robotContainer.telemetry.update();
 
         blackboard.put("pose", Status.currentPose);
