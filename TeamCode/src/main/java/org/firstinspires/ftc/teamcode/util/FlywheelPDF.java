@@ -45,7 +45,8 @@ public class FlywheelPDF {
         if (lastTargetPower > 1) {
             lastTargetPower = 1;
         }
+
         lastError = error;
-        return lastTargetPower  * 1 + ((14 - robotContainer.getVoltage(Constants.Robot.CONTROL_HUB_INDEX)) / 14);
+        return lastTargetPower * 1 + ((14 - robotContainer.getVoltage(Constants.Robot.CONTROL_HUB_INDEX)) / 14);
     }
 }

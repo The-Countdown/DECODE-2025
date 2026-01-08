@@ -27,7 +27,6 @@ public class Spindexer {
     private ElapsedTime beamTimer = new ElapsedTime();
     private ElapsedTime jamTimer = new ElapsedTime();
     private ElapsedTime unjamTimer = new ElapsedTime();
-    public ElapsedTime waitAtStartTimer = new ElapsedTime();
     public Constants.Game.ARTIFACT_COLOR[] slotColor = {Constants.Game.ARTIFACT_COLOR.UNKNOWN, Constants.Game.ARTIFACT_COLOR.UNKNOWN, Constants.Game.ARTIFACT_COLOR.UNKNOWN};
     public int slotZeroAngle;
     public Spindexer (RobotContainer robotContainer, LinkedServos spindexerServos, BetterAnalogInput spindexerAnalog, BetterColorSensor colorSensor) {
@@ -49,7 +48,7 @@ public class Spindexer {
 
     // TODO: Change to -180 to 180 instead of 0 - 360
     public void update(boolean teleop) {
-        if (waitAtStartTimer.milliseconds() < Constants.Turret.FLYWHEEL_SPINUP_MS && !teleop) {
+        if (Status.waitToShoot && !teleop) {
             return;
         }
         spindexerPIDF = spindexerPIDF.updateValues(robotContainer, Constants.Spindexer.KP, Constants.Spindexer.KI, Constants.Spindexer.KD, Constants.Spindexer.KF);
@@ -202,6 +201,7 @@ public class Spindexer {
     }
     public void shootAll(boolean matchMotif) {
         shootToggle(true);
+        Status.waitToShoot = false;
         if (matchMotif) {
             shootAll(Status.motif);
         } else {
