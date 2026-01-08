@@ -24,7 +24,7 @@ public class NineBall extends OpMode {
     // 91.44
     // 30.48
     public static double BEFORE_TAPE = 84;
-    public static double AFTER_TAPE = 160;
+    public static double AFTER_TAPE = 163;
     public static double TAPE_LOW = -97;
     public static double TAPE_MID = -37;
     public static double TAPE_HIGH = 25;
@@ -104,9 +104,9 @@ public class NineBall extends OpMode {
             robotContainer.pathPlanner.addActionPose(shoot);
             robotContainer.pathPlanner.addSleepPose(3000);
             robotContainer.pathPlanner.addActionPose(goToIntake);
-            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, TAPE_LOW, BEFORE_TAPE, AngleUnit.DEGREES, 90), 1250);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, TAPE_LOW, BEFORE_TAPE, AngleUnit.DEGREES, 90), 1750);
             robotContainer.pathPlanner.addActionPose(intake);
-            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, TAPE_LOW, AFTER_TAPE, AngleUnit.DEGREES, 90), 3500);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, TAPE_LOW, AFTER_TAPE, AngleUnit.DEGREES, 90), 4000);
 //            robotContainer.pathPlanner.addActionPose(intakeSleepPose);
 //            robotContainer.pathPlanner.addSleepPose(400);
             robotContainer.pathPlanner.addActionPose(endOfIntake);
@@ -116,7 +116,7 @@ public class NineBall extends OpMode {
             robotContainer.pathPlanner.addActionPose(goToIntake);
             robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, TAPE_MID, BEFORE_TAPE, AngleUnit.DEGREES, 90), 2000);
             robotContainer.pathPlanner.addActionPose(intake);
-            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, TAPE_MID, AFTER_TAPE, AngleUnit.DEGREES, 90), 3500);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, TAPE_MID, AFTER_TAPE, AngleUnit.DEGREES, 90), 4000);
 //            robotContainer.pathPlanner.addActionPose(intakeSleepPose);
 //            robotContainer.pathPlanner.addSleepPose(400);
             robotContainer.pathPlanner.addActionPose(endOfIntake);
@@ -132,9 +132,9 @@ public class NineBall extends OpMode {
             robotContainer.pathPlanner.addActionPose(shoot);
             robotContainer.pathPlanner.addSleepPose(3000);
             robotContainer.pathPlanner.addActionPose(goToIntake);
-            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, TAPE_LOW, -BEFORE_TAPE, AngleUnit.DEGREES, -90), 1250);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, TAPE_LOW, -BEFORE_TAPE, AngleUnit.DEGREES, -90), 1750);
             robotContainer.pathPlanner.addActionPose(intake);
-            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, TAPE_LOW, -AFTER_TAPE, AngleUnit.DEGREES, -90), 3500);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, TAPE_LOW, -AFTER_TAPE, AngleUnit.DEGREES, -90), 4000);
 //            robotContainer.pathPlanner.addActionPose(intakeSleepPose);
 //            robotContainer.pathPlanner.addSleepPose(400);
             robotContainer.pathPlanner.addActionPose(endOfIntake);
@@ -144,7 +144,7 @@ public class NineBall extends OpMode {
             robotContainer.pathPlanner.addActionPose(goToIntake);
             robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, TAPE_MID, -BEFORE_TAPE, AngleUnit.DEGREES, -90), 2000);
             robotContainer.pathPlanner.addActionPose(intake);
-            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, TAPE_MID, -AFTER_TAPE, AngleUnit.DEGREES, -90), 3500);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, TAPE_MID, -AFTER_TAPE, AngleUnit.DEGREES, -90), 4000);
 //            robotContainer.pathPlanner.addActionPose(intakeSleepPose);
 //            robotContainer.pathPlanner.addSleepPose(400);
             robotContainer.pathPlanner.addActionPose(endOfIntake);
