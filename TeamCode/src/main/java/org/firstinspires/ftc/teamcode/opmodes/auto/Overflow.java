@@ -163,8 +163,7 @@ public class Overflow extends OpMode {
         Status.lightsOn = true;
         Status.isDrivingActive = false;
         robotContainer.start(this, false);
-        Status.intakeGamepadable = true;
-        Status.turretToggle = false;
+        robotContainer.spindexer.shootToggle(true);
         robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[0]);
 
         if (Status.wentBackToStart) {
@@ -182,11 +181,10 @@ public class Overflow extends OpMode {
         robotContainer.allIndicatorLights.lightsUpdate();
         robotContainer.turret.pointAtGoal();
         robotContainer.pathPlanner.driveThroughPath(pathTimer);
-        Status.turretToggleButton.update(Status.turretToggle);
+        Status.turretToggleButton.update(Status.flywheelToggle);
 
         robotContainer.telemetry.addData("Flywheel Toggle: ", Status.flywheelToggle);
         robotContainer.telemetry.addData("Intake Toggle: ", Status.intakeGamepadable);
-        robotContainer.telemetry.addData("Turret Toggle: ", Status.turretToggle);
         robotContainer.telemetry.addData("Intake Velocity: ", robotContainer.intake.getVelocity());
         robotContainer.telemetry.addData("Flywheel Velocity: ", RobotContainer.HardwareDevices.flyWheelMotorMaster.getVelocity());
         robotContainer.telemetry.addData("Pause", robotContainer.spindexer.pause);

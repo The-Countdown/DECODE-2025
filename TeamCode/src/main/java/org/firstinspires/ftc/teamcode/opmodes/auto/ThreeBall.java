@@ -39,9 +39,7 @@ public class ThreeBall extends OpMode {
         ActionPose start = new ActionPose(robotContainer,
             () -> Constants.Pathing.LATITUDE_KP *= 1.2,
             () -> Constants.Pathing.LONGITUDE_KP *= 1.2,
-            () -> Status.flywheelToggle = true,
-            () -> Status.intakeGamepadable = false,
-            () -> Status.turretToggle = true,
+            () -> robotContainer.spindexer.shootToggle(true),
             () -> Constants.Pathing.LONGITUDE_PID_TOLERANCE_CM *= 1,
             () -> Constants.Pathing.LATITUDE_PID_TOLERANCE_CM *= 1
         );
@@ -58,9 +56,7 @@ public class ThreeBall extends OpMode {
         ActionPose goToEnd = new ActionPose(robotContainer,
             () -> robotContainer.intake.setPower(0.0),
             () -> Constants.Pathing.HEADING_PID_TOLERANCE_DEGREES /= 2,
-            () -> Status.flywheelToggle = false,
-            () -> Status.intakeGamepadable = true,
-            () -> Status.turretToggle = false
+            () -> robotContainer.spindexer.shootToggle(false)
         );
 
         if (Status.alliance == Constants.Game.ALLIANCE.BLUE) {
@@ -88,8 +84,7 @@ public class ThreeBall extends OpMode {
         Status.lightsOn = true;
         Status.isDrivingActive = false;
         robotContainer.start(this, false);
-        Status.intakeGamepadable = true;
-        Status.turretToggle = false;
+        robotContainer.spindexer.shootToggle(true);
         robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[0]);
 
         if (Status.wentBackToStart) {
@@ -107,11 +102,10 @@ public class ThreeBall extends OpMode {
         robotContainer.allIndicatorLights.lightsUpdate();
         robotContainer.turret.pointAtGoal();
         robotContainer.pathPlanner.driveThroughPath(pathTimer);
-        Status.turretToggleButton.update(Status.turretToggle);
+        Status.turretToggleButton.update(Status.flywheelToggle);
 
         robotContainer.telemetry.addData("Flywheel Toggle: ", Status.flywheelToggle);
         robotContainer.telemetry.addData("Intake Toggle: ", Status.intakeGamepadable);
-        robotContainer.telemetry.addData("Turret Toggle: ", Status.turretToggle);
         robotContainer.telemetry.addData("Intake Velocity: ", robotContainer.intake.getVelocity());
         robotContainer.telemetry.addData("Flywheel Velocity: ", RobotContainer.HardwareDevices.flyWheelMotorMaster.getVelocity());
         robotContainer.telemetry.addData("Pause", robotContainer.spindexer.pause);

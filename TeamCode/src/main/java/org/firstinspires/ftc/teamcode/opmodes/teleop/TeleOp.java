@@ -50,7 +50,7 @@ public class TeleOp extends OpMode {
         Status.opModeIsActive = true;
         Status.lightsOn = true;
         Status.intakeGamepadable = true;
-        Status.turretToggle = false;
+        Status.flywheelToggle = false;
         robotContainer.spindexer.slotColor[0] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;
         robotContainer.spindexer.slotColor[1] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;
         robotContainer.spindexer.slotColor[2] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;

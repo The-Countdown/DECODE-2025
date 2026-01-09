@@ -102,12 +102,12 @@ public class Spindexer {
 
             if (robotContainer.gamepadEx2.dpadUp.wasJustPressed()) {
                 Status.intakeGamepadable = false;
-                Status.turretToggle = true;
+                Status.flywheelToggle = true;
             }
 
             if (robotContainer.gamepadEx1.dpadUp.wasJustPressed()) {
                 Status.intakeGamepadable = false;
-                Status.turretToggle = true;
+                Status.flywheelToggle = true;
             }
 
             if (robotContainer.gamepadEx2.rightBumper.isHeld()) {
@@ -120,14 +120,14 @@ public class Spindexer {
 
             if (robotContainer.gamepadEx2.dpadUp.wasJustReleased()) {
                 Status.intakeGamepadable = true;
-                Status.turretToggle = false;
+                Status.flywheelToggle = false;
                 spindexerServo.setPower(0);
                 this.pause = false;
             }
 
             if (robotContainer.gamepadEx1.dpadUp.wasJustReleased()) {
                 Status.intakeGamepadable = true;
-                Status.turretToggle = false;
+                Status.flywheelToggle = false;
                 spindexerServo.setPower(0);
                 this.pause = false;
             }
@@ -202,9 +202,8 @@ public class Spindexer {
     }
 
     public void shootToggle(boolean shootToggle){
-        Status.turretToggle = shootToggle;
-        Status.intakeGamepadable = !shootToggle;
         Status.flywheelToggle = shootToggle;
+        Status.intakeGamepadable = !shootToggle;
     }
     public void shootAll(boolean matchMotif) {
         shootToggle(true);
@@ -281,9 +280,7 @@ public class Spindexer {
     }
 
     public void shootAllMotifOrder(boolean onlyMotif) {
-        Status.turretToggle = true;
-        Status.intakeGamepadable = false;
-        Status.flywheelToggle = true;
+        shootToggle(true);
 
         int closestSlot = (getCurrentTransferSlot() + 1) % 3;
         int secondClosestSlot = getCurrentTransferSlot();
