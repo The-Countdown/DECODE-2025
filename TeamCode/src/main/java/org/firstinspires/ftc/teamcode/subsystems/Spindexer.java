@@ -101,13 +101,11 @@ public class Spindexer {
             }
 
             if (robotContainer.gamepadEx2.dpadUp.wasJustPressed()) {
-                Status.intakeGamepadable = false;
-                Status.turretToggle = true;
+                Status.flywheelToggle = true;
             }
 
             if (robotContainer.gamepadEx1.dpadUp.wasJustPressed()) {
-                Status.intakeGamepadable = false;
-                Status.turretToggle = true;
+                Status.flywheelToggle = true;
             }
 
             if (robotContainer.gamepadEx2.rightBumper.isHeld()) {
@@ -119,17 +117,11 @@ public class Spindexer {
             }
 
             if (robotContainer.gamepadEx2.dpadUp.wasJustReleased()) {
-                Status.intakeGamepadable = true;
-                Status.turretToggle = false;
-                spindexerServo.setPower(0);
-                this.pause = false;
+                Status.flywheelToggle = false;
             }
 
             if (robotContainer.gamepadEx1.dpadUp.wasJustReleased()) {
-                Status.intakeGamepadable = true;
-                Status.turretToggle = false;
-                spindexerServo.setPower(0);
-                this.pause = false;
+                Status.flywheelToggle = false;
             }
 
             if (robotContainer.gamepadEx2.rightBumper.wasJustReleased()) {
