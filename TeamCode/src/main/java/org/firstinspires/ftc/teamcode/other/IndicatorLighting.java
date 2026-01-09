@@ -99,9 +99,14 @@ public class IndicatorLighting {
                         robotContainer.allIndicatorLights.setColor(Constants.LED.COLOR.RED);
                         lightTimer.reset();
                     }
-                } else if (Status.intakeToggle) {
+                } else if (Status.intakeGamepadable) {
                     if (Status.currentLightColor != Constants.LED.COLOR.ORANGE) {
                         robotContainer.allIndicatorLights.setColor(Constants.LED.COLOR.ORANGE);
+                        lightTimer.reset();
+                    }
+                } else {
+                    if (Status.currentLightColor != Constants.LED.COLOR.YELLOW) {
+                        robotContainer.allIndicatorLights.setColor(Constants.LED.COLOR.YELLOW);
                         lightTimer.reset();
                     }
                 }

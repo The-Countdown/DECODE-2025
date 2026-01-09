@@ -51,7 +51,7 @@ public class Turret extends RobotContainer.HardwareDevices {
                 turretAngleOffset += 3;
             }
 
-            if (!Status.intakeToggle) {
+            if (!Status.flywheelToggle) {
                 flywheel.targetVelocity = Math.min(Status.turretToggleButton.holdDuration() * Constants.Turret.FLYWHEEL_CURVE, robotContainer.turret.flywheel.interpolateByDistance(HelperFunctions.disToGoal()));
             } else {
                 flywheel.targetVelocity = 0;
@@ -82,13 +82,6 @@ public class Turret extends RobotContainer.HardwareDevices {
                 } else {
                     Status.goalPose = new Pose2D(DistanceUnit.INCH, -70, 68, AngleUnit.DEGREES, 45);
                 }
-            }
-
-            // Automated flywheel
-            if (robotContainer.gamepadEx2.circle.wasJustReleased() && !Status.intakeToggle) {
-                Status.turretToggle = true;
-            } else if (robotContainer.gamepadEx2.circle.wasJustReleased() && Status.intakeToggle) {
-                Status.turretToggle = false;
             }
 
             // Turret turn - Right stick X

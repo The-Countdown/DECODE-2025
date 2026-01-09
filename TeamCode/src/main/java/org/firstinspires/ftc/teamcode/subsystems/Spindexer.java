@@ -82,6 +82,13 @@ public class Spindexer {
             } else if (unjamTimer.seconds() > 0.2) {
                 spindexerServo.setPower(1);
             }
+        } else {
+            if (jammed) {
+                Status.intakeGamepadable = false;
+                robotContainer.intake.setPower(-0.75);
+                robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setPower(0), 100);
+                robotContainer.delayedActionManager.schedule(() -> Status.intakeGamepadable = true, 100);
+            }
         }
 
         if (teleop) {
@@ -94,12 +101,12 @@ public class Spindexer {
             }
 
             if (robotContainer.gamepadEx2.dpadUp.wasJustPressed()) {
-                Status.intakeToggle = false;
+                Status.intakeGamepadable = false;
                 Status.turretToggle = true;
             }
 
             if (robotContainer.gamepadEx1.dpadUp.wasJustPressed()) {
-                Status.intakeToggle = false;
+                Status.intakeGamepadable = false;
                 Status.turretToggle = true;
             }
 
@@ -112,14 +119,14 @@ public class Spindexer {
             }
 
             if (robotContainer.gamepadEx2.dpadUp.wasJustReleased()) {
-                Status.intakeToggle = true;
+                Status.intakeGamepadable = true;
                 Status.turretToggle = false;
                 spindexerServo.setPower(0);
                 this.pause = false;
             }
 
             if (robotContainer.gamepadEx1.dpadUp.wasJustReleased()) {
-                Status.intakeToggle = true;
+                Status.intakeGamepadable = true;
                 Status.turretToggle = false;
                 spindexerServo.setPower(0);
                 this.pause = false;
@@ -196,7 +203,7 @@ public class Spindexer {
 
     public void shootToggle(boolean shootToggle){
         Status.turretToggle = shootToggle;
-        Status.intakeToggle = !shootToggle;
+        Status.intakeGamepadable = !shootToggle;
         Status.flywheelToggle = shootToggle;
     }
     public void shootAll(boolean matchMotif) {
@@ -275,7 +282,7 @@ public class Spindexer {
 
     public void shootAllMotifOrder(boolean onlyMotif) {
         Status.turretToggle = true;
-        Status.intakeToggle = false;
+        Status.intakeGamepadable = false;
         Status.flywheelToggle = true;
 
         int closestSlot = (getCurrentTransferSlot() + 1) % 3;

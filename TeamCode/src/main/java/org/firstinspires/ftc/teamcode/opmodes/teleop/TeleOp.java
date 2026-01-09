@@ -7,14 +7,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit;
 import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.FeedForward;
 import org.firstinspires.ftc.teamcode.drivetrain.pathplanning.PathingUpdater;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "TeleOp", group = "TeleOp")
@@ -51,7 +49,7 @@ public class TeleOp extends OpMode {
     public void start() {
         Status.opModeIsActive = true;
         Status.lightsOn = true;
-        Status.intakeToggle = true;
+        Status.intakeGamepadable = true;
         Status.turretToggle = false;
         robotContainer.spindexer.slotColor[0] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;
         robotContainer.spindexer.slotColor[1] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;
@@ -130,9 +128,10 @@ public class TeleOp extends OpMode {
             Status.isDrivingActive = true;
         }
 
-        double power = robotContainer.gamepadEx1.rightTriggerRaw() - (robotContainer.gamepadEx1.leftTriggerRaw());
-        robotContainer.intake.setPower(Math.signum(power) * Math.min(Math.abs(power), Constants.Intake.TOP_SPEED));
-
+        if (Status.intakeGamepadable) {
+            double power = robotContainer.gamepadEx1.rightTriggerRaw() - (robotContainer.gamepadEx1.leftTriggerRaw());
+            robotContainer.intake.setPower(Math.signum(power) * Math.min(Math.abs(power), Constants.Intake.TOP_SPEED));
+        }
 
 //        robotContainer.telemetry.addData("heading", RobotContainer.HardwareDevices.pinpoint.getHeading(UnnormalizedAngleUnit.DEGREES));
 //        currentHeading = Status.currentHeading;

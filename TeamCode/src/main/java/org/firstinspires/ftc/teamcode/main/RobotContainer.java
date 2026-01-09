@@ -59,7 +59,6 @@ import org.firstinspires.ftc.teamcode.util.TelemetryLogger;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -725,7 +724,7 @@ public class RobotContainer {
             addDataLog("Start Position", Status.startingPose, true);
             telemetry.addLine();
             addDataLog("Field Oriented", Status.fieldOriented, true);
-            addDataLog("Intake Toggle", Status.intakeToggle, true);
+            addDataLog("Intake Toggle", Status.intakeGamepadable, true);
             telemetry.addLine();
             addDataLog("Beam Break", HardwareDevices.beamBreak.isPressed(), true);
             // addDataLog("Red", HardwareDevices.colorSensor.updateRed(), true);

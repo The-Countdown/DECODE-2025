@@ -162,7 +162,7 @@ public class NineBall extends OpMode {
         Status.lightsOn = true;
         Status.isDrivingActive = false;
         robotContainer.start(this, false);
-        Status.intakeToggle = true;
+        Status.intakeGamepadable = true;
         Status.turretToggle = false;
         robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[0]);
 
@@ -184,7 +184,7 @@ public class NineBall extends OpMode {
         Status.turretToggleButton.update(Status.turretToggle);
 
         robotContainer.telemetry.addData("Flywheel Toggle: ", Status.flywheelToggle);
-        robotContainer.telemetry.addData("Intake Toggle: ", Status.intakeToggle);
+        robotContainer.telemetry.addData("Intake Toggle: ", Status.intakeGamepadable);
         robotContainer.telemetry.addData("Turret Toggle: ", Status.turretToggle);
         robotContainer.telemetry.addData("Intake Velocity: ", robotContainer.intake.getVelocity());
         robotContainer.telemetry.addData("Flywheel Velocity: ", RobotContainer.HardwareDevices.flyWheelMotorMaster.getVelocity());

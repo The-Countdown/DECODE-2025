@@ -38,7 +38,7 @@ public class Status {
     public static boolean isDrivingActive = false;
     public static boolean fieldOriented = false;
 
-    public static boolean intakeToggle = false;
+    public static boolean intakeGamepadable = false;
     public static final GamepadWrapper.ButtonReader turretToggleButton = new GamepadWrapper.ButtonReader();
     public static boolean turretToggle = false;
     public static boolean flywheelAtTargetSpeed = true;
