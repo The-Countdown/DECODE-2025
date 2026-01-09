@@ -19,8 +19,19 @@ import org.firstinspires.ftc.teamcode.main.Status;
 public class Overflow extends OpMode {
     private RobotContainer robotContainer;
     private final ElapsedTime pathTimer = new ElapsedTime();
-    
-    public static double AFTER_TAPE = 155;
+
+    // Positions
+    public static double AFTER_TAPE_Y = 155;
+    public static double HALFWAY_HEADING = 135;
+    public static double INTAKE_HEADING = 90;
+
+    // Sleep Poses
+    public static int SHOOT_TIME = 1750;
+
+    // Timeouts
+    public static int GO_TO_START_TIME = 1750;
+    public static int GO_TO_INTAKE_TIME = 2000;
+    public static int SHIFTING_INTAKE_TIME = 750;
 
     @Override
     public void init() {
@@ -39,120 +50,112 @@ public class Overflow extends OpMode {
 
         //Actions
         ActionPose start = new ActionPose(robotContainer,
-            () -> Constants.Pathing.LATITUDE_KP *= 1.2,
-            () -> Constants.Pathing.LONGITUDE_KP *= 1.2,
-            () -> robotContainer.spindexer.shootToggle(true),
-            () -> Constants.Pathing.LONGITUDE_PID_TOLERANCE_CM *= 1,
-            () -> Constants.Pathing.LATITUDE_PID_TOLERANCE_CM *= 1
+                () -> Constants.Pathing.LATITUDE_KP *= 1.3,
+                () -> Constants.Pathing.LONGITUDE_KP *= 1.3,
+                () -> robotContainer.spindexer.shootToggle(true),
+                () -> Constants.Pathing.LONGITUDE_PID_TOLERANCE_CM *= 1,
+                () -> Constants.Pathing.LATITUDE_PID_TOLERANCE_CM *= 1
         );
 
         ActionPose shoot = new ActionPose(robotContainer,
-            () -> robotContainer.intake.setPower(Constants.Intake.BEST_INTAKE_SPEED),
-            () -> robotContainer.spindexer.shootAll(false),
-            () -> Constants.Pathing.LONGITUDE_PID_TOLERANCE_CM /= 1.5,
-            () -> Constants.Pathing.LATITUDE_PID_TOLERANCE_CM /= 1.5
+                () -> robotContainer.intake.setPower(0.0),
+                () -> robotContainer.spindexer.shootAll(false),
+                () -> Constants.Pathing.LONGITUDE_PID_TOLERANCE_CM /= 1.5,
+                () -> Constants.Pathing.LATITUDE_PID_TOLERANCE_CM /= 1.5
         );
 
-        ActionPose goToIntake = new ActionPose(robotContainer,
-            () -> robotContainer.intake.setPower(0.0),
-            () -> Constants.Pathing.HEADING_PID_TOLERANCE_DEGREES /= 2,
-            () -> robotContainer.spindexer.shootToggle(false)
+        ActionPose goToEnd = new ActionPose(robotContainer,
+                () -> robotContainer.intake.setPower(0.0),
+                () -> robotContainer.spindexer.shootToggle(false)
         );
 
         ActionPose intake = new ActionPose(robotContainer,
-                () -> robotContainer.spindexer.shootToggle(false),
+                () -> Constants.Pathing.HEADING_PID_TOLERANCE_DEGREES /= 2,
                 () -> robotContainer.delayedActionManager.schedule(() -> Constants.Pathing.LATITUDE_KP /= 1.25, 2500),
                 () -> robotContainer.delayedActionManager.schedule(() -> Constants.Pathing.LATITUDE_KP /= 1.25,  2500),
                 () -> robotContainer.delayedActionManager.schedule(() -> Constants.Pathing.LATITUDE_KP *= 1.25, 3250),
                 () -> robotContainer.delayedActionManager.schedule(() -> Constants.Pathing.LATITUDE_KP *= 1.25,  3250),
-                () -> robotContainer.intake.setPower(Constants.Intake.BEST_INTAKE_SPEED)
+                () -> robotContainer.intake.setPower(Constants.Intake.BEST_INTAKE_SPEED),
+                () -> robotContainer.spindexer.shootToggle(false)
         );
 
         ActionPose endOfIntake = new ActionPose(robotContainer,
                 () -> robotContainer.intake.setPower(-Constants.Intake.BEST_INTAKE_SPEED),
-                () -> robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setPower(0.0), 100),
+                () -> robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setPower(Constants.Intake.BEST_INTAKE_SPEED), 100),
                 () -> robotContainer.spindexer.shootToggle(true),
                 () -> Constants.Pathing.LONGITUDE_PID_TOLERANCE_CM *= 1.5,
                 () -> Constants.Pathing.LATITUDE_PID_TOLERANCE_CM *= 1.5
         );
 
         if (Status.alliance == Constants.Game.ALLIANCE.BLUE) {
-            robotContainer.pathPlanner.addPose(Status.startingPose);
             robotContainer.pathPlanner.addActionPose(start);
-            robotContainer.pathPlanner.addSleepPose(Constants.Turret.FLYWHEEL_SPINUP_MS);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 20, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES,  HALFWAY_HEADING), GO_TO_START_TIME);
             robotContainer.pathPlanner.addActionPose(shoot);
-            robotContainer.pathPlanner.addSleepPose(2750);
+            robotContainer.pathPlanner.addSleepPose(SHOOT_TIME);
 
-                robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 20, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES,135), 600);
-                robotContainer.pathPlanner.addActionPose(intake);
-                robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM), AFTER_TAPE, AngleUnit.DEGREES,90), 2750);
-                robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 20, AFTER_TAPE, AngleUnit.DEGREES,  90), 750);
-                robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 5, AFTER_TAPE - 10, AngleUnit.DEGREES,135), 1000);
-                robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) - 3, AFTER_TAPE, AngleUnit.DEGREES, 90), 1000);
-                robotContainer.pathPlanner.addSleepPose(1000);
-                robotContainer.pathPlanner.addActionPose(endOfIntake);
-                robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 10, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES,135), 2250);
-                robotContainer.pathPlanner.addActionPose(shoot);
-                robotContainer.pathPlanner.addSleepPose(2000);
+            robotContainer.pathPlanner.addActionPose(intake);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM), AFTER_TAPE_Y, AngleUnit.DEGREES,  INTAKE_HEADING), GO_TO_INTAKE_TIME);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 5, AFTER_TAPE_Y - 7, AngleUnit.DEGREES,  HALFWAY_HEADING), SHIFTING_INTAKE_TIME);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM), AFTER_TAPE_Y, AngleUnit.DEGREES,  INTAKE_HEADING), SHIFTING_INTAKE_TIME);
+            robotContainer.pathPlanner.addActionPose(endOfIntake);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 10, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES,  HALFWAY_HEADING), GO_TO_START_TIME);
+            robotContainer.pathPlanner.addActionPose(shoot);
+            robotContainer.pathPlanner.addSleepPose(SHOOT_TIME);
 
-                robotContainer.pathPlanner.addActionPose(intake);
-                robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM), AFTER_TAPE - 10, AngleUnit.DEGREES,90), 2750);
-                robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 20, AFTER_TAPE, AngleUnit.DEGREES,  90), 750);
-                robotContainer.pathPlanner.addSleepPose(1000);
-                robotContainer.pathPlanner.addActionPose(endOfIntake);
-                robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 10, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, 135), 2250);
-                robotContainer.pathPlanner.addActionPose(shoot);
-                robotContainer.pathPlanner.addSleepPose(2000);
+            robotContainer.pathPlanner.addActionPose(intake);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM), AFTER_TAPE_Y, AngleUnit.DEGREES,  INTAKE_HEADING), GO_TO_INTAKE_TIME);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 5, AFTER_TAPE_Y - 7, AngleUnit.DEGREES,  HALFWAY_HEADING), SHIFTING_INTAKE_TIME);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM), AFTER_TAPE_Y, AngleUnit.DEGREES,  INTAKE_HEADING), SHIFTING_INTAKE_TIME);
+            robotContainer.pathPlanner.addActionPose(endOfIntake);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 10, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES,  HALFWAY_HEADING), GO_TO_START_TIME);
+            robotContainer.pathPlanner.addActionPose(shoot);
+            robotContainer.pathPlanner.addSleepPose(SHOOT_TIME);
 
-                robotContainer.pathPlanner.addActionPose(intake);
-                robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM), AFTER_TAPE - 10, AngleUnit.DEGREES,90), 2750);
-                robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 20, AFTER_TAPE, AngleUnit.DEGREES,  90), 750);
-                robotContainer.pathPlanner.addSleepPose(1000);
-                robotContainer.pathPlanner.addActionPose(endOfIntake);
-                robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 10, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES,135), 2250);
-                robotContainer.pathPlanner.addActionPose(shoot);
-                robotContainer.pathPlanner.addSleepPose(2000);
+            robotContainer.pathPlanner.addActionPose(intake);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM), AFTER_TAPE_Y, AngleUnit.DEGREES,  INTAKE_HEADING), GO_TO_INTAKE_TIME);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 5, AFTER_TAPE_Y - 7, AngleUnit.DEGREES,  HALFWAY_HEADING), SHIFTING_INTAKE_TIME);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM), AFTER_TAPE_Y, AngleUnit.DEGREES,  INTAKE_HEADING), SHIFTING_INTAKE_TIME);
+            robotContainer.pathPlanner.addActionPose(endOfIntake);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 10, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES,  HALFWAY_HEADING), GO_TO_START_TIME);
+            robotContainer.pathPlanner.addActionPose(shoot);
+            robotContainer.pathPlanner.addSleepPose(SHOOT_TIME);
 
-            robotContainer.pathPlanner.addActionPose(goToIntake);
+            robotContainer.pathPlanner.addActionPose(goToEnd);
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.INCH, Status.startingPose.getX(DistanceUnit.INCH) + 5, Status.startingPose.getY(DistanceUnit.INCH) + 20, AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)));
         } else {
-            robotContainer.pathPlanner.addPose(Status.startingPose);
             robotContainer.pathPlanner.addActionPose(start);
-            robotContainer.pathPlanner.addSleepPose(Constants.Turret.FLYWHEEL_SPINUP_MS);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 20, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES,  -HALFWAY_HEADING), GO_TO_START_TIME);
             robotContainer.pathPlanner.addActionPose(shoot);
-            robotContainer.pathPlanner.addSleepPose(2750);
+            robotContainer.pathPlanner.addSleepPose(SHOOT_TIME);
 
-                robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 20, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES,  -135), 600);
-                robotContainer.pathPlanner.addActionPose(intake);
-                robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM), -AFTER_TAPE, AngleUnit.DEGREES,  -90), 2750);
-                robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 20, -AFTER_TAPE, AngleUnit.DEGREES,  -90), 750);
-                robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 5, -AFTER_TAPE + 10, AngleUnit.DEGREES,  -135), 750);
-                robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) - 3, -AFTER_TAPE, AngleUnit.DEGREES, -90), 1000);
-                robotContainer.pathPlanner.addSleepPose(1000);
-                robotContainer.pathPlanner.addActionPose(endOfIntake);
-                robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 10, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES,  -135), 2250);
-                robotContainer.pathPlanner.addActionPose(shoot);
-                robotContainer.pathPlanner.addSleepPose(2000);
+            robotContainer.pathPlanner.addActionPose(intake);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM), -AFTER_TAPE_Y, AngleUnit.DEGREES,  -INTAKE_HEADING), GO_TO_INTAKE_TIME);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 5, -AFTER_TAPE_Y + 7, AngleUnit.DEGREES,  -HALFWAY_HEADING), SHIFTING_INTAKE_TIME);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM), -AFTER_TAPE_Y, AngleUnit.DEGREES,  -INTAKE_HEADING), SHIFTING_INTAKE_TIME);
+            robotContainer.pathPlanner.addActionPose(endOfIntake);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 10, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES,  -HALFWAY_HEADING), GO_TO_START_TIME);
+            robotContainer.pathPlanner.addActionPose(shoot);
+            robotContainer.pathPlanner.addSleepPose(SHOOT_TIME);
 
-                robotContainer.pathPlanner.addActionPose(intake);
-                robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM), -AFTER_TAPE + 10, AngleUnit.DEGREES,  -90), 2750);
-                robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 20, -AFTER_TAPE, AngleUnit.DEGREES,  -90), 750);
-                robotContainer.pathPlanner.addSleepPose(1000);
-                robotContainer.pathPlanner.addActionPose(endOfIntake);
-                robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 10, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES,  -135), 2250);
-                robotContainer.pathPlanner.addActionPose(shoot);
-                robotContainer.pathPlanner.addSleepPose(2000);
-                
-                robotContainer.pathPlanner.addActionPose(intake);
-                robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM), -AFTER_TAPE + 10, AngleUnit.DEGREES,  -90), 2750);
-                robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 20, -AFTER_TAPE, AngleUnit.DEGREES,  -90), 750);
-                robotContainer.pathPlanner.addSleepPose(1000);
-                robotContainer.pathPlanner.addActionPose(endOfIntake);
-                robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 10, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES,  -135), 2250);
-                robotContainer.pathPlanner.addActionPose(shoot);
-                robotContainer.pathPlanner.addSleepPose(2000);
+            robotContainer.pathPlanner.addActionPose(intake);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM), -AFTER_TAPE_Y, AngleUnit.DEGREES,  -INTAKE_HEADING), GO_TO_INTAKE_TIME);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 5, -AFTER_TAPE_Y + 7, AngleUnit.DEGREES,  -HALFWAY_HEADING), SHIFTING_INTAKE_TIME);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM), -AFTER_TAPE_Y, AngleUnit.DEGREES,  -INTAKE_HEADING), SHIFTING_INTAKE_TIME);
+            robotContainer.pathPlanner.addActionPose(endOfIntake);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 10, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES,  -HALFWAY_HEADING), GO_TO_START_TIME);
+            robotContainer.pathPlanner.addActionPose(shoot);
+            robotContainer.pathPlanner.addSleepPose(SHOOT_TIME);
 
-            robotContainer.pathPlanner.addActionPose(goToIntake);
+            robotContainer.pathPlanner.addActionPose(intake);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM), -AFTER_TAPE_Y, AngleUnit.DEGREES,  -INTAKE_HEADING), GO_TO_INTAKE_TIME);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 5, -AFTER_TAPE_Y + 7, AngleUnit.DEGREES,  -HALFWAY_HEADING), SHIFTING_INTAKE_TIME);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM), -AFTER_TAPE_Y, AngleUnit.DEGREES,  -INTAKE_HEADING), SHIFTING_INTAKE_TIME);
+            robotContainer.pathPlanner.addActionPose(endOfIntake);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 10, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES,  -HALFWAY_HEADING), GO_TO_START_TIME);
+            robotContainer.pathPlanner.addActionPose(shoot);
+            robotContainer.pathPlanner.addSleepPose(SHOOT_TIME);
+
+            robotContainer.pathPlanner.addActionPose(goToEnd);
             robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.INCH, Status.startingPose.getX(DistanceUnit.INCH) + 5, Status.startingPose.getY(DistanceUnit.INCH) - 20, AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)));
         }
     }
@@ -185,12 +188,14 @@ public class Overflow extends OpMode {
 
         robotContainer.telemetry.addData("Flywheel Toggle: ", Status.flywheelToggle);
         robotContainer.telemetry.addData("Intake Toggle: ", Status.intakeGamepadable);
-        robotContainer.telemetry.addData("Intake Velocity: ", robotContainer.intake.getVelocity());
+//        robotContainer.telemetry.addData("Intake Velocity: ", robotContainer.intake.getVelocity());
         robotContainer.telemetry.addData("Flywheel Velocity: ", RobotContainer.HardwareDevices.flyWheelMotorMaster.getVelocity());
-        robotContainer.telemetry.addData("Pause", robotContainer.spindexer.pause);
-        robotContainer.telemetry.addData("heading", robotContainer.headingPID.calculate());
-        robotContainer.telemetry.addData("longitude", robotContainer.longitudePID.calculate());
-        robotContainer.telemetry.addData("latitude", robotContainer.latitudePID.calculate());
+        robotContainer.telemetry.addData("Flywheel Target Velocity", robotContainer.turret.flywheel.targetVelocity);
+        robotContainer.telemetry.addData("Flywheel At Velocity: ", robotContainer.turret.flywheel.atTargetVelocity());
+//        robotContainer.telemetry.addData("Pause", robotContainer.spindexer.pause);
+//        robotContainer.telemetry.addData("heading", robotContainer.headingPID.calculate());
+//        robotContainer.telemetry.addData("longitude", robotContainer.longitudePID.calculate());
+//        robotContainer.telemetry.addData("latitude", robotContainer.latitudePID.calculate());
         robotContainer.telemetry.addData("drive target", Status.targetPose);
         robotContainer.telemetry.addData("Current Pose", Status.currentPose);
         robotContainer.telemetry.addData("At target", PoseMath.isAtPos());
