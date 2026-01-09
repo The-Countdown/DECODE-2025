@@ -28,6 +28,7 @@ public class Spindexer {
     private ElapsedTime jamTimer = new ElapsedTime();
     private ElapsedTime unjamTimer = new ElapsedTime();
     public Constants.Game.ARTIFACT_COLOR[] slotColor = {Constants.Game.ARTIFACT_COLOR.UNKNOWN, Constants.Game.ARTIFACT_COLOR.UNKNOWN, Constants.Game.ARTIFACT_COLOR.UNKNOWN};
+    public int slotsFilled = 0;
     public int slotZeroAngle;
     public Spindexer (RobotContainer robotContainer, LinkedServos spindexerServos, BetterAnalogInput spindexerAnalog, BetterColorSensor colorSensor) {
         this.robotContainer = robotContainer;
@@ -80,13 +81,16 @@ public class Spindexer {
                 unjamTimer.reset();
                 jamTimer.reset();
             } else if (unjamTimer.seconds() > 0.2) {
+                slotColor = new Constants.Game.ARTIFACT_COLOR[] {Constants.Game.ARTIFACT_COLOR.UNKNOWN, Constants.Game.ARTIFACT_COLOR.UNKNOWN, Constants.Game.ARTIFACT_COLOR.UNKNOWN};
+                slotsFilled = 0;
                 spindexerServo.setPower(1);
             }
         } else {
             if (jammed) {
                 Status.intakeGamepadable = false;
+                double prevPower = RobotContainer.HardwareDevices.intakeMotor.getPower();
                 robotContainer.intake.setPower(-0.75);
-                robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setPower(0), 100);
+                robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setPower(prevPower), 100);
                 robotContainer.delayedActionManager.schedule(() -> Status.intakeGamepadable = true, 100);
             }
         }
@@ -167,6 +171,7 @@ public class Spindexer {
         if (colorSensor.getDistance() < Constants.Spindexer.DIST_TOLERANCE && Math.abs(robotContainer.spindexer.spindexerError) < 20) {
             slotColor[getCurrentIntakeSlot()] = getArtifactColor(colorSensor.updateBlue(), colorSensor.updateGreen());
             robotContainer.spindexer.moveIntakeSlotClockwise();
+            slotsFilled ++;
             robotContainer.gamepadEx1.rumble(100);
             robotContainer.gamepadEx2.rumble(100);
         }

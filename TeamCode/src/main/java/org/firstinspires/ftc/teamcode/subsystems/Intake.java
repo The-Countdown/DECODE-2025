@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import org.firstinspires.ftc.teamcode.hardware.BetterDcMotor;
+import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 
 public class Intake {
@@ -25,5 +26,13 @@ public class Intake {
 
     public double getPower() {
         return intakeMotor.getPower();
+    }
+
+    public void function3() {
+        if (robotContainer.spindexer.slotsFilled == 3) {
+            robotContainer.intake.setPower(-Constants.Intake.BEST_INTAKE_SPEED);
+        } else {
+            robotContainer.intake.setPower(Constants.Intake.BEST_INTAKE_SPEED);
+        }
     }
 }
