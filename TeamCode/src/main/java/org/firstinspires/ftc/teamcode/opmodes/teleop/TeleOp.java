@@ -91,6 +91,13 @@ public class TeleOp extends OpMode {
 
         if (robotContainer.gamepadEx1.triangle.wasJustPressed()) {
             Status.isDrivingActive = false;
+            RobotContainer.HardwareDevices.pinpoint.setPosition(Constants.Game.ORIGIN);
+            pinpointTimer.reset();
+            robotContainer.gamepadEx1.rumble(300);
+        }
+
+        if (robotContainer.gamepadEx1.dpadLeft.wasJustPressed()) {
+            Status.isDrivingActive = false;
             RobotContainer.HardwareDevices.pinpoint.setPosition(Status.cornerResetPose);
             pinpointTimer.reset();
             robotContainer.gamepadEx1.rumble(300);

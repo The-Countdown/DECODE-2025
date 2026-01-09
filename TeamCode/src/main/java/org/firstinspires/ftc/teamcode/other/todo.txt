@@ -5,3 +5,10 @@ Robotcontainer update function that will run the update functions of all of the 
 Use the general purpose pid
 Vision will set the robot position on the field during init and then will keep it up to date during teleop
 Make the shooting be able to sort
+
+
+
+
+elliot todo:
+faster move rp at end of auto
+count artifacts that are intaken to avoid penalties
