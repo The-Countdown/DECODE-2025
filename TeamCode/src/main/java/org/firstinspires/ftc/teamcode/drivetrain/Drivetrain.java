@@ -57,14 +57,12 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
                 robotContainer.gamepadEx1.leftStickY.wasJustReleased() ||
                 robotContainer.gamepadEx1.rightStickX.wasJustReleased()) &&
                 x == 0 && y == 0 && rX == 0) {
-            Status.flywheelToggle = true;
             setTargets(lastAngles, Constants.Swerve.NO_POWER);
             stopTimer.reset();
             return;
         }
 
         if (x == 0 && y == 0 && rX == 0 && stopTimer.seconds() >= 0.5) {
-            Status.flywheelToggle = true;
             setTargets(Constants.Swerve.STOP_FORMATION, Constants.Swerve.NO_POWER);
             xFormation = true;
             return;
@@ -72,7 +70,6 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
         xFormation = false;
 
         if (x == 0 && y == 0 && rX == 0) {
-            Status.flywheelToggle = true;
             setTargets(lastAngles, Constants.Swerve.NO_POWER);
             return;
         }

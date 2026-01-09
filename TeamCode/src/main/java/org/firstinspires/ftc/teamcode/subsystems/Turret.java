@@ -40,6 +40,12 @@ public class Turret extends RobotContainer.HardwareDevices {
     public void update(boolean teleop) {
         Status.turretToggleButton.update(Status.flywheelToggle);
 
+        if (Status.flywheelToggle) {
+            flywheel.targetVelocity = Math.min(Status.flywheelToggleButton.holdDuration() * Constants.Turret.FLYWHEEL_CURVE, robotContainer.turret.flywheel.interpolateByDistance(HelperFunctions.disToGoal()));
+        } else {
+            flywheel.targetVelocity = 0;
+        }
+
         if (teleop) {
             // Change this to change the Status.change degree whatever to rotate the robot pose, but this will need to be changed in the robot
             // So some though will be required
@@ -49,12 +55,6 @@ public class Turret extends RobotContainer.HardwareDevices {
 
             if (robotContainer.gamepadEx2.dpadRight.wasJustReleased()) {
                 turretAngleOffset += 3;
-            }
-
-            if (!Status.flywheelToggle) {
-                flywheel.targetVelocity = Math.min(Status.turretToggleButton.holdDuration() * Constants.Turret.FLYWHEEL_CURVE, robotContainer.turret.flywheel.interpolateByDistance(HelperFunctions.disToGoal()));
-            } else {
-                flywheel.targetVelocity = 0;
             }
 
             // Manual turret hood
@@ -104,12 +104,6 @@ public class Turret extends RobotContainer.HardwareDevices {
                 robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[2]);
             } else {
                 robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[0]);
-            }
-
-            if (Status.flywheelToggle) {
-                flywheel.targetVelocity = Math.min(Status.turretToggleButton.holdDuration() * Constants.Turret.FLYWHEEL_CURVE, robotContainer.turret.flywheel.interpolateByDistance(HelperFunctions.disToGoal()));
-            } else {
-                flywheel.targetVelocity = 0;
             }
         }
 
