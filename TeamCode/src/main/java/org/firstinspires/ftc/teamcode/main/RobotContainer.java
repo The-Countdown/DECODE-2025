@@ -690,6 +690,7 @@ public class RobotContainer {
             addDataLog("Flywheel Current Velocity", HardwareDevices.flyWheelMotorMaster.getVelocity(), true);
             addDataLog("Flywheel Main Motor Current mA", HardwareDevices.flyWheelMotorMaster.getCurrent(CurrentUnit.MILLIAMPS), true);
             addDataLog("Flywheel Secondary Motor Current mA", HardwareDevices.flyWheelMotorSlave.getCurrent(CurrentUnit.MILLIAMPS), true);
+            addDataLog("Flywheel2 Current Velocity", HardwareDevices.flyWheelMotorSlave.getVelocity(), true);
             telemetry.addLine();
             if (limelightLogic.limelight.getLatestResult() != null) {
                 addDataLog("Limelight Current Visibility", true, true);

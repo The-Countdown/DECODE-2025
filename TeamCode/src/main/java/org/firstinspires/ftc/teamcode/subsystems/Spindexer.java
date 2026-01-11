@@ -26,6 +26,7 @@ public class Spindexer {
     private PIDF spindexerPIDF;
     private ElapsedTime beamTimer = new ElapsedTime();
     private ElapsedTime jamTimer = new ElapsedTime();
+    private ElapsedTime jamTimerIntake = new ElapsedTime();
     private ElapsedTime unjamTimer = new ElapsedTime();
     public Constants.Game.ARTIFACT_COLOR[] slotColor = {Constants.Game.ARTIFACT_COLOR.UNKNOWN, Constants.Game.ARTIFACT_COLOR.UNKNOWN, Constants.Game.ARTIFACT_COLOR.UNKNOWN};
     public int slotsFilled = 0;
@@ -56,6 +57,7 @@ public class Spindexer {
 
         spindexerError = getError();
         boolean jammed = jammed();
+        boolean intakeJammed = jammedIntake();
 
         double servoPower = calculate();
         if (Math.abs(spindexerError) > 5 && !this.pause) {
@@ -414,6 +416,19 @@ public class Spindexer {
             jamTimer.reset();
         }
         if (error > 15 && speed < 10 && jamTimer.seconds() > Constants.Spindexer.JAM_TIME_THRESHOLD) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean jammedIntake() {
+        double error = Math.abs(getError());
+        double speed = Math.abs((getAngle() - this.lastPosition) * robotContainer.CURRENT_LOOP_TIME_MS);
+        if (error < 25 && speed > 10) {
+            jamTimerIntake.reset();
+        }
+        if (error > 25 && speed < 10 && jamTimerIntake.seconds() > Constants.Spindexer.JAM_TIME_THRESHOLD) {
             return true;
         } else {
             return false;
