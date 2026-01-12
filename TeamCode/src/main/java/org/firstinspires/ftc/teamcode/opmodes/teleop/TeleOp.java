@@ -1,9 +1,12 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
+import android.graphics.drawable.Drawable;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Const;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
@@ -91,7 +94,11 @@ public class TeleOp extends OpMode {
 
         if (robotContainer.gamepadEx1.triangle.wasJustPressed()) {
             Status.isDrivingActive = false;
-            RobotContainer.HardwareDevices.pinpoint.setPosition(Constants.Game.ORIGIN);
+            if (Status.alliance == Constants.Game.ALLIANCE.RED) {
+                RobotContainer.HardwareDevices.pinpoint.setPosition(new Pose2D(DistanceUnit.CM, -155, 160, AngleUnit.DEGREES, 0));
+            } else if (Status.alliance == Constants.Game.ALLIANCE.BLUE) {
+                RobotContainer.HardwareDevices.pinpoint.setPosition(new Pose2D(DistanceUnit.CM, -155, -160, AngleUnit.DEGREES, 0));
+            }
             pinpointTimer.reset();
             robotContainer.gamepadEx1.rumble(300);
             robotContainer.positionProvider.reset();
