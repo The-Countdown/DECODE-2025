@@ -52,6 +52,12 @@ public class Constants {
 
     @Config
     public static class Robot {
+        public static boolean[] SWERVE_MOTORS_ENABLED = {true, true, true, true};
+        public static boolean[] SWERVE_SERVOS_ENABLED = {true, true, true, true};
+
+
+
+
         public static double CORRECTION_DEGREES_MULTIPLIER = 5;
         public static int MOTOR_UPDATE_TIME = 50;
         public static int SERVO_UPDATE_TIME = 100;
@@ -315,7 +321,7 @@ public class Constants {
         public static double[] HOOD_PRESETS = {0.52, 0.07, 0.18};
         public static double TURRET_LIMIT_MIN_ANGLE = -90;
         public static double TURRET_LIMIT_MAX_ANGLE = 125;
-        public static double FLYWHEEL_KP = 0.0008;
+        public static double FLYWHEEL_KP = 0.0002;
         public static double FLYWHEEL_KI = 0;
         public static double FLYWHEEL_KD = 0.0033;
         public static double FLYWHEEL_KF = 0;

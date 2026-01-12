@@ -381,6 +381,8 @@ public class RobotContainer {
         // Update the breamBreak state
         beamBreakToggleButton.update(HardwareDevices.beamBreak.isPressed());
 
+        controlHubVoltage = getVoltage(Constants.Robot.CONTROL_HUB_INDEX);
+
         PREV_LOOP_TIME_MS = CURRENT_LOOP_TIME_MS;
 
         if (teleop) {
@@ -745,6 +747,26 @@ public class RobotContainer {
             //     addDataLog("Swerve Motor " + i + " Current Power", RobotContainer.HardwareDevices.swerveMotors[i].getPower(), true);
             // }
             //
+
+            // Test Power draw
+            addDataLog("Motor Intake", HardwareDevices.intakeMotor.getCurrent(CurrentUnit.MILLIAMPS), true);
+            addDataLog("Motor Flywheel 1", HardwareDevices.flyWheelMotorMaster.getCurrent(CurrentUnit.MILLIAMPS), true);
+            addDataLog("Motor Flywheel 2", HardwareDevices.flyWheelMotorSlave.getCurrent(CurrentUnit.MILLIAMPS), true);
+            addDataLog("Motor Swerve 1", HardwareDevices.swerveMotors[0].getCurrent(CurrentUnit.MILLIAMPS), true);
+            addDataLog("Motor Swerve 2", HardwareDevices.swerveMotors[1].getCurrent(CurrentUnit.MILLIAMPS), true);
+            addDataLog("Motor Swerve 3", HardwareDevices.swerveMotors[2].getCurrent(CurrentUnit.MILLIAMPS), true);
+            addDataLog("Motor Swerve 4", HardwareDevices.swerveMotors[3].getCurrent(CurrentUnit.MILLIAMPS), true);
+
+            addDataLog("Servo Hood", HardwareDevices.hoodServo.getPosition(), true);
+            addDataLog("Servo Turret 1", HardwareDevices.turretServoMaster.getPosition(), true);
+            addDataLog("Servo Turret 2", HardwareDevices.turretServoSlave.getPosition(), true);
+            addDataLog("Servo Swerve 1", HardwareDevices.swerveServos[0].getPower(), true);
+            addDataLog("Servo Swerve 2", HardwareDevices.swerveServos[1].getPower(), true);
+            addDataLog("Servo Swerve 3", HardwareDevices.swerveServos[2].getPower(), true);
+            addDataLog("Servo Swerve 4", HardwareDevices.swerveServos[3].getPower(), true);
+            addDataLog("Servo Spindexer 1", HardwareDevices.spindexerServoMaster.getPower(), true);
+            addDataLog("Servo Spindexer 2", HardwareDevices.spindexerServoSlave.getPower(), true);
+
             telemetry.addLine();
             displayEventTelemetry();
             commitLoopData();

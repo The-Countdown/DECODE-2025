@@ -77,14 +77,22 @@ public class DrivetrainUpdater extends Thread {
 
                 if (Math.abs(robotContainer.swerveServosPDF[i].getError()) <= Constants.Swerve.SERVO_PIDF_TOLERANCE_DEGREES) {
                     robotContainer.drivetrain.swerveServoStatus[i] = ServoStatus.TARGET_REACHED;
-                    robotContainer.swerveModules[i].servo.setPower(0);
+                    if (Constants.Robot.SWERVE_SERVOS_ENABLED[i]) {
+                        robotContainer.swerveModules[i].servo.setPower(0);
+                    }
 
-                    robotContainer.swerveModules[i].motor.setVelocity(acceleratedMotorPower);
+                    if (Constants.Robot.SWERVE_MOTORS_ENABLED[i]) {
+                        robotContainer.swerveModules[i].motor.setVelocity(acceleratedMotorPower);
+                    }
                 } else {
-                    robotContainer.swerveModules[i].servo.setPower(robotContainer.swerveServosPDF[i].calculate() * (1 - (Math.abs(acceleratedMotorPower) * Constants.Swerve.SERVO_PIDF_SCALER)));
+                    if (Constants.Robot.SWERVE_SERVOS_ENABLED[i]) {
+                        robotContainer.swerveModules[i].servo.setPower(robotContainer.swerveServosPDF[i].calculate() * (1 - (Math.abs(acceleratedMotorPower) * Constants.Swerve.SERVO_PIDF_SCALER)));
+                    }
                     robotContainer.drivetrain.swerveServoStatus[i] = ServoStatus.MOVING;
 
-                    robotContainer.swerveModules[i].motor.setVelocity(acceleratedMotorPower * Math.abs(Math.cos(Math.toRadians(robotContainer.swerveServosPDF[i].getError()))));
+                    if (Constants.Robot.SWERVE_MOTORS_ENABLED[i]) {
+                        robotContainer.swerveModules[i].motor.setVelocity(acceleratedMotorPower * Math.abs(Math.cos(Math.toRadians(robotContainer.swerveServosPDF[i].getError()))));
+                    }
                 }
             }
             Thread.yield();

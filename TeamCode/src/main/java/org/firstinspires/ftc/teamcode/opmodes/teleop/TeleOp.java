@@ -94,6 +94,7 @@ public class TeleOp extends OpMode {
             RobotContainer.HardwareDevices.pinpoint.setPosition(Constants.Game.ORIGIN);
             pinpointTimer.reset();
             robotContainer.gamepadEx1.rumble(300);
+            robotContainer.positionProvider.reset();
         }
 
         if (robotContainer.gamepadEx1.circle.wasJustPressed()) {

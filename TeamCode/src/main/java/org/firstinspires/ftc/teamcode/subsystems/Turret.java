@@ -49,8 +49,10 @@ public class Turret extends RobotContainer.HardwareDevices {
         flywheel.targetVelocity = flywheel.targetVelocity * Constants.Turret.FLYWHEEL_MAX_VELOCITY;
         Status.flywheelAtTargetSpeed = robotContainer.turret.flywheel.atTargetVelocity();
         double targetPower = flywheelPDF.calculate(flywheel.targetVelocity);
-        flyWheelMotors.setPower(targetPower);
-
+        // Only run flywheel if good voltage
+        if (robotContainer.controlHubVoltage > 8) {
+            flyWheelMotors.setPower(targetPower);
+        }
         if (teleop) {
             // Change this to change the Status.change degree whatever to rotate the robot pose, but this will need to be changed in the robot
             // So some though will be required

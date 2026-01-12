@@ -38,8 +38,10 @@ public class PositionProvider {
     public Pose2D getRobotPose() {
         // Rotate the odPose by the vision offset
         Pose2D odPose = pinpoint.getPosition();
-        double rx = (odPose.getX(DistanceUnit.CM) + visionOffsetPose.getX(DistanceUnit.CM)) * 0.9914129;
-        double ry = (odPose.getY(DistanceUnit.CM) + visionOffsetPose.getY(DistanceUnit.CM)) * 0.998610856289;
+        // double rx = (odPose.getX(DistanceUnit.CM) + visionOffsetPose.getX(DistanceUnit.CM)) * 0.9914129;
+        // double ry = (odPose.getY(DistanceUnit.CM) + visionOffsetPose.getY(DistanceUnit.CM)) * 0.998610856289;
+        double rx = (odPose.getX(DistanceUnit.CM)) * 0.9914129;
+        double ry = (odPose.getY(DistanceUnit.CM)) * 0.998610856289;
         double rh = visionOffsetPose.getHeading(AngleUnit.RADIANS);
         double newX = rx * Math.cos(-rh) - ry * Math.sin(-rh);
         double newY = ry * Math.cos(-rh) + rx * Math.sin(-rh);
@@ -49,6 +51,10 @@ public class PositionProvider {
 
     public Pose2D getVisionOffsetPose() {
         return visionOffsetPose;
+    }
+
+    public void reset() {
+        this.visionOffsetPose = new Pose2D(DistanceUnit.CM, 0, 0, AngleUnit.DEGREES, 0);
     }
 
     @Deprecated

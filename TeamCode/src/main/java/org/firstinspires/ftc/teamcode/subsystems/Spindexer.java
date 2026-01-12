@@ -89,11 +89,11 @@ public class Spindexer {
             }
         } else {
             if (jammed) {
-                Status.intakeGamepadable = false;
-                double prevPower = RobotContainer.HardwareDevices.intakeMotor.getPower();
-                robotContainer.intake.setPower(-0.75);
-                robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setPower(prevPower), 100);
-                robotContainer.delayedActionManager.schedule(() -> Status.intakeGamepadable = true, 100);
+                // Status.intakeGamepadable = false;
+                // double prevPower = RobotContainer.HardwareDevices.intakeMotor.getPower();
+                // robotContainer.intake.setPower(-0.75);
+                // robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setPower(prevPower), 100);
+                // robotContainer.delayedActionManager.schedule(() -> Status.intakeGamepadable = true, 100);
             }
         }
 
