@@ -24,7 +24,6 @@ public class Spindexer {
     public boolean pause;
     public boolean clockwise;
     private PIDF spindexerPIDF;
-    private ElapsedTime beamTimer = new ElapsedTime();
     private ElapsedTime jamTimer = new ElapsedTime();
     private ElapsedTime jamTimerIntake = new ElapsedTime();
     private ElapsedTime unjamTimer = new ElapsedTime();
@@ -40,7 +39,6 @@ public class Spindexer {
         this.targetAngle = 0;
         this.lastPosition = 0;
         this.pause = false;
-        this.beamTimer.reset();
         this.spindexerError = 0;
         this.slotZeroAngle = 0;
 
@@ -48,7 +46,6 @@ public class Spindexer {
         spindexerPIDF = new PIDF(robotContainer, Constants.Spindexer.KP, Constants.Spindexer.KI, Constants.Spindexer.KD, Constants.Spindexer.KF);
     }
 
-    // TODO: Change to -180 to 180 instead of 0 - 360
     public void update(boolean teleop) {
         if (Status.waitToShoot && !teleop) {
             return;
@@ -72,9 +69,9 @@ public class Spindexer {
             clockwise = false;
         }
 
-        if (robotContainer.beamBreakToggleButton.wasJustReleased() || robotContainer.beamBreakToggleButton.isHeldForAtLeast(0.25)) {
-            robotContainer.delayedActionManager.schedule(() -> function2(), Constants.Spindexer.TIME_BETWEEN_BEAM_BREAK_AND_COLOR_SENSOR);
-            beamTimer.reset();
+        if (robotContainer.beamBreakToggleButton.isPressed() || robotContainer.gamepadEx1.rightTriggerRaw() > 0.1) {
+            function2();
+            // robotContainer.delayedActionManager.schedule(() -> function2(), Constants.Spindexer.TIME_BETWEEN_BEAM_BREAK_AND_COLOR_SENSOR);
         }
 
         if (this.pause) {
@@ -170,12 +167,12 @@ public class Spindexer {
     }
 
     public void function2() {
-        if (colorSensor.getDistance() < Constants.Spindexer.DIST_TOLERANCE && Math.abs(robotContainer.spindexer.spindexerError) < 20) {
+        if (colorSensor.getDistance() < Constants.Spindexer.DIST_TOLERANCE && Math.abs(robotContainer.spindexer.spindexerError) < 30) {
             slotColor[getCurrentIntakeSlot()] = getArtifactColor(colorSensor.updateBlue(), colorSensor.updateGreen());
             robotContainer.spindexer.moveIntakeSlotClockwise();
-            slotsFilled ++;
-            robotContainer.gamepadEx1.rumble(100);
-            robotContainer.gamepadEx2.rumble(100);
+            slotsFilled++;
+            robotContainer.gamepadEx1.rumble(150);
+            robotContainer.gamepadEx2.rumble(150);
         }
     }
 
