@@ -69,9 +69,12 @@ public class Spindexer {
             clockwise = false;
         }
 
-        if (robotContainer.beamBreakToggleButton.isPressed() || robotContainer.gamepadEx1.rightTriggerRaw() > 0.1) {
+        if (robotContainer.intake.power > 0.1) {
             function2();
-            // robotContainer.delayedActionManager.schedule(() -> function2(), Constants.Spindexer.TIME_BETWEEN_BEAM_BREAK_AND_COLOR_SENSOR);
+
+            if (!teleop) {
+                robotContainer.delayedActionManager.schedule(() -> function2(), Constants.Spindexer.TIME_BETWEEN_BEAM_BREAK_AND_COLOR_SENSOR);
+            }
         }
 
         if (this.pause) {

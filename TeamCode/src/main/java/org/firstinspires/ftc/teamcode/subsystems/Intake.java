@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.main.RobotContainer;
 public class Intake {
     private RobotContainer robotContainer;
     private BetterDcMotor intakeMotor;
+    public double power;
 
 
     public Intake(RobotContainer robotContainer, BetterDcMotor intakeMotor) {
@@ -17,6 +18,7 @@ public class Intake {
     }
 
     public void setPower(double power) {
+        this.power = power;
         intakeMotor.updateSetPower(power);
     }
 
