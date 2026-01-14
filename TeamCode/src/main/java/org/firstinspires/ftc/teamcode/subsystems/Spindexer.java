@@ -106,6 +106,14 @@ public class Spindexer {
                 robotContainer.spindexer.moveIntakeSlotClockwise();
             }
 
+            if (robotContainer.gamepadEx2.cross.wasJustPressed()) {
+                robotContainer.spindexer.shootAllMotifOrder(true);
+            }
+
+            if (robotContainer.gamepadEx2.square.wasJustPressed()) {
+                robotContainer.spindexer.shootAllMotifOrder(false);
+            }
+
             if (robotContainer.gamepadEx2.dpadUp.wasJustPressed()) {
                 Status.flywheelToggle = true;
             }
@@ -335,7 +343,7 @@ public class Spindexer {
         }
 
         if (onlyMotif) {
-            shootSlot(firstSlot);
+            shootSlot(firstSlot, false);
             return -1;
         }
 
@@ -374,9 +382,9 @@ public class Spindexer {
             setTargetAngle(Constants.Spindexer.BEFORE_TRANSFER_SLOT_ANGLES[firstSlotIndex]);
             robotContainer.delayedActionManager.schedule(() -> setTargetAngle(Constants.Spindexer.AFTER_TRANSFER_SLOT_ANGLES[thirdSlotIndex]), () -> Math.abs(getError()) < 5);
         } else {
-            shootSlot(firstSlotIndex);
-            shootSlot(secondSlotIndex);
-            shootSlot(thirdSlotIndex);
+            shootSlot(firstSlotIndex, false);
+            shootSlot(secondSlotIndex, true);
+            shootSlot(thirdSlotIndex, true);
         }
     }
 
@@ -385,14 +393,14 @@ public class Spindexer {
             setTargetAngle(Constants.Spindexer.BEFORE_TRANSFER_SLOT_ANGLES[firstSlotIndex]);
             robotContainer.delayedActionManager.schedule(() -> setTargetAngle(Constants.Spindexer.AFTER_TRANSFER_SLOT_ANGLES[secondSlotIndex]), () -> Math.abs(getError()) < 5);
         } else {
-            shootSlot(firstSlotIndex);
-            shootSlot(secondSlotIndex);
+            shootSlot(firstSlotIndex, false);
+            shootSlot(secondSlotIndex, true);
         }
     }
 
-    public void shootSlot(int slotIndex) {
+    public void shootSlot(int slotIndex, boolean waitForPreviousAction) {
         setTargetAngle(Constants.Spindexer.BEFORE_TRANSFER_SLOT_ANGLES[slotIndex]);
-        robotContainer.delayedActionManager.schedule(() -> setTargetAngle(Constants.Spindexer.AFTER_TRANSFER_SLOT_ANGLES[slotIndex]), () -> Math.abs(getError()) < 5);
+        robotContainer.delayedActionManager.schedule(() -> setTargetAngle(Constants.Spindexer.AFTER_TRANSFER_SLOT_ANGLES[slotIndex]), () -> Math.abs(getError()) < 5, true);
     }
 
     private Constants.Game.ARTIFACT_COLOR[] getMotifColors(Constants.Game.MOTIF motif) {

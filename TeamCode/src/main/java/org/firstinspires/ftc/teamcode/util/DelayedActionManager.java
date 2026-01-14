@@ -36,6 +36,10 @@ public class DelayedActionManager {
         delayedActions.add(new DelayedAction(robotContainer, action, condition));
     }
 
+    public void schedule(Runnable action, BooleanSupplier condition, boolean waitForPreviousAction) {
+        delayedActions.add(new DelayedAction(robotContainer, action, condition, waitForPreviousAction, delayedActions.size() - 1));
+    }
+
     public void schedule(Runnable action, BooleanSupplier condition, int delayMs) {
         delayedActions.add(new DelayedAction(robotContainer, action, condition, delayMs));
     }
@@ -118,6 +122,8 @@ public class DelayedActionManager {
         public boolean executed = false;
         public boolean cancelled = false;
         public boolean enabled = true;
+        public boolean waitForPreviousAction = false;
+        public int previousActionIndex = 0;
 
         public double pauseTime = 0;
         public double accumulatedPausedTime = 0;
@@ -175,6 +181,15 @@ public class DelayedActionManager {
             this.delayMs = -1;
         }
 
+        public DelayedAction(RobotContainer robotContainer, Runnable action, BooleanSupplier condition, boolean waitForPreviousAction, int previousActionIndex) {
+            this.robotContainer = robotContainer;
+            this.action = action;
+            this.condition = condition;
+            this.delayMs = -1;
+            this.waitForPreviousAction = waitForPreviousAction;
+            this.previousActionIndex = previousActionIndex;
+        }
+
         public DelayedAction(RobotContainer robotContainer, Runnable action, BooleanSupplier condition, int delayMs) {
             this.robotContainer = robotContainer;
             this.action = action;
@@ -184,7 +199,7 @@ public class DelayedActionManager {
 
         @Override
         public boolean shouldExecute() {
-            if (executed || cancelled || !enabled) return false;
+            if (executed || cancelled || !enabled || (waitForPreviousAction && !robotContainer.delayedActionManager.delayedActions.get(previousActionIndex).executed)) return false;
 
             double currentTime = timer.milliseconds() - accumulatedPausedTime;
 
