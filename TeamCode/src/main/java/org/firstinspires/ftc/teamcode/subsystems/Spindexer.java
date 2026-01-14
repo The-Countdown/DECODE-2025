@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.util.LinkedServos;
 import org.firstinspires.ftc.teamcode.util.PIDF;
 
 import java.util.Arrays;
+import java.util.function.BooleanSupplier;
 
 public class Spindexer {
     private final RobotContainer robotContainer;
@@ -22,6 +23,7 @@ public class Spindexer {
     public double lastPosition;
     private double spindexerError;
     public boolean pause;
+    public boolean shootingMotif;
     public boolean clockwise;
     private PIDF spindexerPIDF;
     private ElapsedTime jamTimer = new ElapsedTime();
@@ -39,6 +41,7 @@ public class Spindexer {
         this.targetAngle = 0;
         this.lastPosition = 0;
         this.pause = false;
+        this.shootingMotif = false;
         this.spindexerError = 0;
         this.slotZeroAngle = 0;
 
@@ -64,9 +67,16 @@ public class Spindexer {
             } else {
                 spindexerServo.setPower(servoPower);
             }
-        } else if (!this.pause) {
+        } else if (!this.pause && !shootingMotif) {
             spindexerServo.setPower(0);
             clockwise = false;
+        } else if (shootingMotif) {
+            if (spindexerError > 10) {
+                spindexerServo.setPower(-Math.abs(servoPower));
+                // spindexerServo.setPower(Math.abs(servoPower));
+            } else {
+                spindexerServo.setPower(servoPower);
+            }
         }
 
         if (robotContainer.intake.power > 0.1) {
@@ -288,6 +298,7 @@ public class Spindexer {
 
     public void shootAllMotifOrder(boolean onlyMotif) {
         shootToggle(true);
+        shootingMotif = true;
 
         int closestSlot = (getCurrentTransferSlot() + 1) % 3;
         int secondClosestSlot = getCurrentTransferSlot();
@@ -310,6 +321,8 @@ public class Spindexer {
         if (thirdSlot == -1) return;
 
         shootSlots(firstSlot, secondSlot, thirdSlot);
+        robotContainer.addEventTelemetry("slot order", firstSlot + "|" + secondSlot + "|" + thirdSlot);
+        shootingMotif = false;
     }
 
 
@@ -379,8 +392,11 @@ public class Spindexer {
 
     public void shootSlots(int firstSlotIndex, int secondSlotIndex, int thirdSlotIndex) {
         if ((firstSlotIndex + 1) % 3 == secondSlotIndex && (secondSlotIndex + 1) % 3 == thirdSlotIndex) {
-            setTargetAngle(Constants.Spindexer.BEFORE_TRANSFER_SLOT_ANGLES[firstSlotIndex]);
-            robotContainer.delayedActionManager.schedule(() -> setTargetAngle(Constants.Spindexer.AFTER_TRANSFER_SLOT_ANGLES[thirdSlotIndex]), () -> Math.abs(getError()) < 5);
+            BooleanSupplier truth = () -> true;
+            robotContainer.delayedActionManager.schedule(() -> shootingMotif = true, truth, false);
+            robotContainer.delayedActionManager.schedule(() -> setTargetAngle(Constants.Spindexer.BEFORE_TRANSFER_SLOT_ANGLES[firstSlotIndex]), truth, true);
+            robotContainer.delayedActionManager.schedule(() -> setTargetAngle(Constants.Spindexer.AFTER_TRANSFER_SLOT_ANGLES[thirdSlotIndex]), () -> Math.abs(getError()) < 5, true);
+            robotContainer.delayedActionManager.schedule(() -> shootingMotif = false, truth, true);
         } else {
             shootSlot(firstSlotIndex, false);
             shootSlot(secondSlotIndex, true);
@@ -390,8 +406,11 @@ public class Spindexer {
 
     public void shootSlots(int firstSlotIndex, int secondSlotIndex) {
         if ((firstSlotIndex + 1) % 3 == secondSlotIndex) {
-            setTargetAngle(Constants.Spindexer.BEFORE_TRANSFER_SLOT_ANGLES[firstSlotIndex]);
-            robotContainer.delayedActionManager.schedule(() -> setTargetAngle(Constants.Spindexer.AFTER_TRANSFER_SLOT_ANGLES[secondSlotIndex]), () -> Math.abs(getError()) < 5);
+            BooleanSupplier truth = () -> true;
+            robotContainer.delayedActionManager.schedule(() -> shootingMotif = true, truth, false);
+            robotContainer.delayedActionManager.schedule(() -> setTargetAngle(Constants.Spindexer.BEFORE_TRANSFER_SLOT_ANGLES[firstSlotIndex]), truth, true);
+            robotContainer.delayedActionManager.schedule(() -> setTargetAngle(Constants.Spindexer.AFTER_TRANSFER_SLOT_ANGLES[secondSlotIndex]), () -> Math.abs(getError()) < 5, true);
+            robotContainer.delayedActionManager.schedule(() -> shootingMotif = false, truth, true);
         } else {
             shootSlot(firstSlotIndex, false);
             shootSlot(secondSlotIndex, true);
@@ -399,8 +418,11 @@ public class Spindexer {
     }
 
     public void shootSlot(int slotIndex, boolean waitForPreviousAction) {
-        setTargetAngle(Constants.Spindexer.BEFORE_TRANSFER_SLOT_ANGLES[slotIndex]);
+        BooleanSupplier truth = () -> true;
+        robotContainer.delayedActionManager.schedule(() -> shootingMotif = true, truth, waitForPreviousAction);
+        robotContainer.delayedActionManager.schedule(() -> setTargetAngle(Constants.Spindexer.BEFORE_TRANSFER_SLOT_ANGLES[slotIndex]), truth, true);
         robotContainer.delayedActionManager.schedule(() -> setTargetAngle(Constants.Spindexer.AFTER_TRANSFER_SLOT_ANGLES[slotIndex]), () -> Math.abs(getError()) < 5, true);
+        robotContainer.delayedActionManager.schedule(() -> shootingMotif = false, truth, true);
     }
 
     private Constants.Game.ARTIFACT_COLOR[] getMotifColors(Constants.Game.MOTIF motif) {
