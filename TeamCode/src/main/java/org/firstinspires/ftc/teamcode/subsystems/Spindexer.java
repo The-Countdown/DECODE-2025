@@ -50,9 +50,9 @@ public class Spindexer {
     }
 
     public void update(boolean teleop) {
-        if (Status.waitToShoot && !teleop) {
-            return;
-        }
+//        if (Status.waitToShoot && !teleop) {
+//            return;
+//        }
         spindexerPIDF = spindexerPIDF.updateValues(robotContainer, Constants.Spindexer.KP, Constants.Spindexer.KI, Constants.Spindexer.KD, Constants.Spindexer.KF);
 
         spindexerError = getError();
@@ -63,27 +63,28 @@ public class Spindexer {
         if (Math.abs(spindexerError) > 5 && !this.pause) {
             if (clockwise && spindexerError < -20) {
                 spindexerServo.setPower(-Math.abs(servoPower));
-                // spindexerServo.setPower(Math.abs(servoPower));
             } else {
                 spindexerServo.setPower(servoPower);
             }
         } else if (!this.pause && !shootingMotif) {
             spindexerServo.setPower(0);
-            clockwise = false;
+//            clockwise = false;
         } else if (shootingMotif) {
+            clockwise = false;
             if (spindexerError > 10) {
-                spindexerServo.setPower(-Math.abs(servoPower));
-                // spindexerServo.setPower(Math.abs(servoPower));
+                spindexerServo.setPower(Math.abs(servoPower));
             } else {
                 spindexerServo.setPower(servoPower);
             }
+        } else {
+            clockwise = false;
         }
 
-        if (robotContainer.intake.power > 0.1) {
-            function2();
-
+        if (robotContainer.intake.power > 0.1 && slotsFilled < 3) {
             if (!teleop) {
                 robotContainer.delayedActionManager.schedule(() -> function2(), Constants.Spindexer.TIME_BETWEEN_BEAM_BREAK_AND_COLOR_SENSOR);
+            } else {
+                function2();
             }
         }
 
@@ -224,7 +225,7 @@ public class Spindexer {
     }
     public void shootAll(boolean matchMotif) {
         shootToggle(true);
-        Status.waitToShoot = false;
+//        Status.waitToShoot = false;
         if (matchMotif) {
             shootAll(Status.motif);
         } else {

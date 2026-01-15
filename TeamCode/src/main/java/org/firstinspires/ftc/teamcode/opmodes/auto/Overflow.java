@@ -21,7 +21,7 @@ public class Overflow extends OpMode {
     private final ElapsedTime pathTimer = new ElapsedTime();
     
     // Positions
-    public static double TO_WALL_Y = 160;
+    public static double TO_WALL_Y = 152;
     public static double INTAKE_BACKUP_Y = 110;
     public static double HALFWAY_HEADING = 135;
     public static double INTAKE_HEADING = 90;

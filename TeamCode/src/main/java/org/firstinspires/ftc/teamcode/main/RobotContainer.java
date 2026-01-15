@@ -303,7 +303,7 @@ public class RobotContainer {
                         new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
 
         RobotContainer.HardwareDevices.limelight.start(); // IDK what this does
-        Status.waitToShoot = true;
+//        Status.waitToShoot = true;
 
         // Start the required threads
         telemetryLogger = new TelemetryLogger(this);
