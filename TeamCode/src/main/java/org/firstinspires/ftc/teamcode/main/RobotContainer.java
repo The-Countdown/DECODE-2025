@@ -658,7 +658,7 @@ public class RobotContainer {
         // Stuff also in competition mode
         addDataLog("Alliance", Status.alliance, true);
         telemetry.addLine();
-        addDataLog("Spindexer Slot Colors", null, true);
+        addDataLog("Spindexer Slot Colors", spindexer.slotColor[0].toString() + spindexer.slotColor[1].toString() + spindexer.slotColor[2].toString(), true);
         telemetry.addLine();
         addDataLog("OpMode Avg Loop Time", (int) getRollingAverageLoopTime(opMode) + " ms", true);
         addDataLog("DriveTrain Avg Loop Time", (int) drivetrainUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms", true);

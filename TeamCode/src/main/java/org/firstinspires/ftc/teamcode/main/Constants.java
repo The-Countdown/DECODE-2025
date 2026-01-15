@@ -339,8 +339,8 @@ public class Constants {
         public static double ANGLE_OFFSET = 45;
         public static double JAM_TIME_THRESHOLD = 1;
         public static double[] INTAKE_SLOT_ANGLES = {120, 240, 360};
-        public static double[] BEFORE_TRANSFER_SLOT_ANGLES = {0, 0, 0};
-        public static double[] AFTER_TRANSFER_SLOT_ANGLES = {0, 0, 0};
+        public static double[] BEFORE_TRANSFER_SLOT_ANGLES = {350, 110, 230};
+        public static double[] AFTER_TRANSFER_SLOT_ANGLES = {230, 350, 110};
         public static int TIME_BETWEEN_BEAM_BREAK_AND_COLOR_SENSOR = 75;
         public static double TIME_BEAM_BREAK_TRUE_BEFORE_COLOR_SENSOR_CHECK = 0.1;
         public static double KP = 0.0043;
