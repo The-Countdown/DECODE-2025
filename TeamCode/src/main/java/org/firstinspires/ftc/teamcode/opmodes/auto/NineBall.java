@@ -24,7 +24,7 @@ public class NineBall extends OpMode {
     // 91.44
     // 30.48
     public static double BEFORE_TAPE = 84;
-    public static double AFTER_TAPE = 163;
+    public static double AFTER_TAPE = 162;
     public static double TAPE_LOW = -97;
     public static double TAPE_MID = -37;
     public static double TAPE_HIGH = 25;
