@@ -61,8 +61,9 @@ public class Spindexer {
 
         double servoPower = calculate();
         if (Math.abs(spindexerError) > 5 && !this.pause) {
-            if (spindexerError < 0) {
+            if (clockwise && spindexerError < -20) {
                 spindexerServo.setPower(-Math.abs(servoPower));
+                // spindexerServo.setPower(Math.abs(servoPower));
             } else {
                 spindexerServo.setPower(servoPower);
             }
