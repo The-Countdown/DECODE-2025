@@ -13,6 +13,7 @@ public class DelayedActionManager {
     private final List<Action> delayedActions = new ArrayList<>();
     volatile boolean enabled;
     public static int currentPose;
+    private long updateCycle = 0;
 
     public DelayedActionManager(RobotContainer robotContainer) {
         this.robotContainer = robotContainer;
@@ -37,7 +38,7 @@ public class DelayedActionManager {
     }
 
     public void schedule(Runnable action, BooleanSupplier condition, boolean waitForPreviousAction) {
-        delayedActions.add(new DelayedAction(robotContainer, action, condition, waitForPreviousAction, delayedActions.size() - 1));
+        delayedActions.add(new DelayedAction(robotContainer, action, condition, waitForPreviousAction, delayedActions.isEmpty() ? null : delayedActions.get(delayedActions.size() - 1)));
     }
 
     public void schedule(Runnable action, BooleanSupplier condition, int delayMs) {
@@ -73,9 +74,9 @@ public class DelayedActionManager {
     }
 
     public synchronized void update() {
-        List<Action> actions = delayedActions;
+        updateCycle++;
         if (enabled) {
-            for (int i = 0; i < actions.toArray().length; i++) {
+            for (int i = 0; i < delayedActions.toArray().length; i++) {
                 Action delayedAction = delayedActions.get(i);
                 if (delayedAction.shouldExecute()) {
                     delayedAction.execute();
@@ -123,7 +124,8 @@ public class DelayedActionManager {
         public boolean cancelled = false;
         public boolean enabled = true;
         public boolean waitForPreviousAction = false;
-        public int previousActionIndex = 0;
+        public long executedAtLoop = -1;
+        public Action previousAction = null;
 
         public double pauseTime = 0;
         public double accumulatedPausedTime = 0;
@@ -135,6 +137,7 @@ public class DelayedActionManager {
             if (!executed && !cancelled) {
                 action.run();
                 executed = true;
+                executedAtLoop = robotContainer.delayedActionManager.updateCycle;
             }
         }
 
@@ -181,13 +184,13 @@ public class DelayedActionManager {
             this.delayMs = -1;
         }
 
-        public DelayedAction(RobotContainer robotContainer, Runnable action, BooleanSupplier condition, boolean waitForPreviousAction, int previousActionIndex) {
+        public DelayedAction(RobotContainer robotContainer, Runnable action, BooleanSupplier condition, boolean waitForPreviousAction, Action previousAction) {
             this.robotContainer = robotContainer;
             this.action = action;
             this.condition = condition;
             this.delayMs = -1;
             this.waitForPreviousAction = waitForPreviousAction;
-            this.previousActionIndex = previousActionIndex;
+            this.previousAction = previousAction;
         }
 
         public DelayedAction(RobotContainer robotContainer, Runnable action, BooleanSupplier condition, int delayMs) {
@@ -199,14 +202,21 @@ public class DelayedActionManager {
 
         @Override
         public boolean shouldExecute() {
-            if (executed || cancelled || !enabled || (waitForPreviousAction && !robotContainer.delayedActionManager.delayedActions.get(previousActionIndex).executed)) return false;
+            if (executed || cancelled || !enabled) return false;
+            if (waitForPreviousAction && previousAction != null) {
+                if (!previousAction.isExecuted()) return false;
+                if (previousAction.executedAtLoop == robotContainer.delayedActionManager.updateCycle)
+                    return false;
+            }
 
             double currentTime = timer.milliseconds() - accumulatedPausedTime;
 
+            boolean delaySatisfied = delayMs < 0 || (timer != null && currentTime >= delayMs);
+
             if (condition != null) {
-                return condition.getAsBoolean() || (timer != null && currentTime >= delayMs);
+                return delaySatisfied && condition.getAsBoolean();
             } else {
-                return timer != null && currentTime >= delayMs;
+                return delaySatisfied;
             }
         }
     }
