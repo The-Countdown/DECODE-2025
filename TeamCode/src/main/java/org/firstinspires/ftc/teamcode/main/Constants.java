@@ -48,16 +48,14 @@ public class Constants {
             NONE,
             UNKNOWN
         }
+        public static double GRAVITY = 9.811;
+        public static double GOAL_HEIGHT = 1.016;
     }
 
     @Config
     public static class Robot {
         public static boolean[] SWERVE_MOTORS_ENABLED = {true, true, true, true};
         public static boolean[] SWERVE_SERVOS_ENABLED = {true, true, true, true};
-
-
-
-
         public static double CORRECTION_DEGREES_MULTIPLIER = 5;
         public static int MOTOR_UPDATE_TIME = 50;
         public static int SERVO_UPDATE_TIME = 100;
@@ -307,6 +305,8 @@ public class Constants {
 
     @Config
     public static class Turret {
+        public static double FLYWHEEL_HEIGHT = 0.3048;
+        public static double DESIRED_MAX_HEIGHT = 1.25;
         public static double TURRET_MAX = 0.78;
         public static double TURRET_NEUTRAL = 0.495;
         public static double TURRET_MIN = 0.215;
