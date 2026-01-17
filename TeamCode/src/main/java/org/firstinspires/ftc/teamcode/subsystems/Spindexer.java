@@ -126,8 +126,7 @@ public class Spindexer {
                 shootPurple();
             }
 
-            if (robotContainer.gamepadEx2.dpadUp.wasJustPressed()) {
->>>>>>> 312b7f5a0d23dde4415008a09cfcbcb6337b0226
+            if (robotContainer.gamepadEx2.rightTrigger.wasJustPressed()) {
                 Status.flywheelToggle = true;
             }
 
