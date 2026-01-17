@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.main.RobotContainer;
 public class Intake {
     private RobotContainer robotContainer;
     private BetterDcMotor intakeMotor;
+    public double power;
 
 
     public Intake(RobotContainer robotContainer, BetterDcMotor intakeMotor) {
@@ -17,6 +18,7 @@ public class Intake {
     }
 
     public void setPower(double power) {
+        this.power = power;
         intakeMotor.updateSetPower(power);
     }
 
@@ -29,7 +31,7 @@ public class Intake {
     }
 
     public void function3() {
-        if (robotContainer.spindexer.slotsFilled == 3) {
+        if (robotContainer.spindexer.slotsFilled >= 3) {
             robotContainer.intake.setPower(-Constants.Intake.BEST_INTAKE_SPEED);
         } else {
             robotContainer.intake.setPower(Constants.Intake.BEST_INTAKE_SPEED);

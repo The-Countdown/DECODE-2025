@@ -76,9 +76,11 @@ public class PathPlanner {
             }
         } else if (poses.get(index) instanceof SleepPose) {
             timeoutCheck.reset();
+            Status.targetPose = Status.currentPose;
             return poses.get(index).getDone();
         } else if (poses.get(index) instanceof ActionPose) {
             timeoutCheck.reset();
+            Status.targetPose = Status.currentPose;
             return poses.get(index).runActions();
         }
         return false;

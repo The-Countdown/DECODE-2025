@@ -303,7 +303,7 @@ public class RobotContainer {
                         new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
 
         RobotContainer.HardwareDevices.limelight.start(); // IDK what this does
-        Status.waitToShoot = true;
+//        Status.waitToShoot = true;
 
         // Start the required threads
         telemetryLogger = new TelemetryLogger(this);
@@ -658,7 +658,7 @@ public class RobotContainer {
         // Stuff also in competition mode
         addDataLog("Alliance", Status.alliance, true);
         telemetry.addLine();
-        addDataLog("Spindexer Slot Colors", null, true);
+        addDataLog("Spindexer Slot Colors", spindexer.slotColor[0].toString() + spindexer.slotColor[1].toString() + spindexer.slotColor[2].toString(), true);
         telemetry.addLine();
         addDataLog("OpMode Avg Loop Time", (int) getRollingAverageLoopTime(opMode) + " ms", true);
         addDataLog("DriveTrain Avg Loop Time", (int) drivetrainUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms", true);

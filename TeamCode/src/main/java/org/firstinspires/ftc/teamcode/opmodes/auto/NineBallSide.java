@@ -20,7 +20,7 @@ public class NineBallSide extends OpMode {
     private RobotContainer robotContainer;
     private final ElapsedTime pathTimer = new ElapsedTime();
     public static double BEFORE_TAPE = 84;
-    public static double AFTER_TAPE = 163;
+    public static double AFTER_TAPE = 162;
     public static double TAPE_LOW = -97;
 
     @Override

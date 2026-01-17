@@ -16,7 +16,7 @@ public class Status {
     public static Pose2D targetPose = new Pose2D(DistanceUnit.CM,0,0, AngleUnit.DEGREES,0);
     public static Pose2D currentPose = new Pose2D(DistanceUnit.CM,0,0, AngleUnit.DEGREES,0);
     public static double currentHeading = 0;
-    public static Constants.Game.MOTIF  motif = Constants.Game.MOTIF.UNKNOWN;
+    public static Constants.Game.MOTIF  motif = Constants.Game.MOTIF.GPP;
     public static Constants.Game.ALLIANCE alliance = Constants.Game.ALLIANCE.RED;
     public static boolean competitionMode = false;
     public static boolean loggingToFile = true;
