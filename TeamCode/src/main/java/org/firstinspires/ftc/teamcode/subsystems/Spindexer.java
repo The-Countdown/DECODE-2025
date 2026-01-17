@@ -103,7 +103,7 @@ public class Spindexer {
                 robotContainer.spindexer.moveIntakeSlotClockwise();
             }
 
-            if (robotContainer.gamepadEx2.dpadUp.wasJustPressed()) {
+            if (robotContainer.gamepadEx2.rightTrigger.wasJustPressed()) {
                 Status.flywheelToggle = true;
             }
 
@@ -119,7 +119,7 @@ public class Spindexer {
                 this.pause = true;
             }
 
-            if (robotContainer.gamepadEx2.dpadUp.wasJustReleased()) {
+            if (robotContainer.gamepadEx2.rightTrigger.wasJustReleased()) {
                 Status.flywheelToggle = false;
             }
 
