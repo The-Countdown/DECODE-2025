@@ -215,7 +215,7 @@ public class Turret extends RobotContainer.HardwareDevices {
             }
             double angleToFaceGoal = Math.atan2(yDiff, xDiff);
             double initialVel = Math.sqrt(Math.pow((verticalVel), 2) * Math.pow((horizonalVel), 2));
-            double rpm = initialVel * (2000 / 10.44);
+            double rpm = initialVel * (2000 / 5.14);
             targetVelocity = (rpm / 60) * Constants.Swerve.MOTOR_TICKS_PER_REVOLUTION;
         }
 
