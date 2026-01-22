@@ -41,6 +41,7 @@ public class NineBall extends OpMode {
     public void init() {
         robotContainer = new RobotContainer(this);
         robotContainer.init();
+        Status.waitToShoot = true;
         blackboard.put("pose", Status.currentPose);
 
         Status.startingPose = Status.alliance == Constants.Game.ALLIANCE.RED ? new Pose2D(DistanceUnit.CM, Constants.Robot.STARTING_X, Constants.Robot.STARTING_Y, AngleUnit.DEGREES, Constants.Robot.STARTING_HEADING) :
