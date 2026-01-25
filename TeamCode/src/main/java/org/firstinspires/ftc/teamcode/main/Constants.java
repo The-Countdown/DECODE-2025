@@ -325,6 +325,7 @@ public class Constants {
         public static double FLYWHEEL_KI = 0;
         public static double FLYWHEEL_KD = 0.0033;
         public static double FLYWHEEL_KF = 0;
+        public static double LIMELIGHT_TX_MULTIPLIER = 1;
     }
 
     @Config
