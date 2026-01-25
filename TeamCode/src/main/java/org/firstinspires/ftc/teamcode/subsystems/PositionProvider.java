@@ -45,8 +45,10 @@ public class PositionProvider {
         double rh = Math.toRadians(RobotContainer.HardwareDevices.betterIMU.getAngle() - odPose.getHeading(AngleUnit.DEGREES)); // First angle is the yaw
         double newX = rx * Math.cos(-rh) - ry * Math.sin(-rh);
         double newY = ry * Math.cos(-rh) + rx * Math.sin(-rh);
-        double rHeading = RobotContainer.HardwareDevices.betterIMU.getAngle(); // First angle is the yaw
-        return new Pose2D(DistanceUnit.CM, newX, newY, AngleUnit.DEGREES, rHeading);
+//        double rHeading = RobotContainer.HardwareDevices.betterIMU.getAngle();
+        double rHeading = RobotContainer.HardwareDevices.pinpoint.getHeading(AngleUnit.DEGREES);
+//        return new Pose2D(DistanceUnit.CM, newX, newY, AngleUnit.DEGREES, rHeading);
+        return new Pose2D(DistanceUnit.CM, rx, ry, AngleUnit.DEGREES, rHeading);
     }
 
     public Pose2D getVisionOffsetPose() {

@@ -29,7 +29,11 @@ public class NineBallOpenGate extends OpMode {
 
     @Override
     public void init() {
-        robotContainer = new RobotContainer(this);
+        try {
+            robotContainer = new RobotContainer(this);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         robotContainer.init();
         Status.waitToShoot = true;
         blackboard.put("pose", Status.currentPose);
