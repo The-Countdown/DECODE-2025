@@ -263,6 +263,9 @@ public class Constants {
         public static double MAX_HEADING_VELOCITY_DEG_SEC = 688;
         public static double MAX_HEADING_VELOCITY_WHILE_MOVING = 0;
         public static double MAX_LINEAR_VELOCITY_WHILE_ROTATING = 0;
+        public static double X_OFFSET_FOR_AUTO = 12;
+        public static double Y_OFFSET_FOR_AUTO = 12;
+
     }
 
     @Config
