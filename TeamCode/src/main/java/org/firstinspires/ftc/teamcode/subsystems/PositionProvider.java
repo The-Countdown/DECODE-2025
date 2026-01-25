@@ -42,10 +42,10 @@ public class PositionProvider {
         // double ry = (odPose.getY(DistanceUnit.CM) + visionOffsetPose.getY(DistanceUnit.CM)) * 0.998610856289;
         double rx = (odPose.getX(DistanceUnit.CM)) * 0.9914129;
         double ry = (odPose.getY(DistanceUnit.CM)) * 0.998610856289;
-        double rh = visionOffsetPose.getHeading(AngleUnit.RADIANS);
+        double rh = Math.toRadians(RobotContainer.HardwareDevices.betterIMU.getAngularOrientation().firstAngle - odPose.getHeading(AngleUnit.DEGREES)); // First angle is the yaw
         double newX = rx * Math.cos(-rh) - ry * Math.sin(-rh);
         double newY = ry * Math.cos(-rh) + rx * Math.sin(-rh);
-        double rHeading = (odPose.getHeading(AngleUnit.DEGREES) + visionOffsetPose.getHeading(AngleUnit.DEGREES));
+        double rHeading = RobotContainer.HardwareDevices.betterIMU.getAngularOrientation().firstAngle; // First angle is the yaw
         return new Pose2D(DistanceUnit.CM, rx, ry, AngleUnit.DEGREES, rHeading);
     }
 

@@ -16,6 +16,8 @@ import com.qualcomm.robotcore.hardware.DcMotorImplEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
+import com.qualcomm.hardware.adafruit.AdafruitBNO055IMU;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.ReadWriteFile;
 
@@ -56,6 +58,7 @@ import org.firstinspires.ftc.teamcode.util.LimeLightInfo;
 import org.firstinspires.ftc.teamcode.util.LinkedMotors;
 import org.firstinspires.ftc.teamcode.util.LinkedServos;
 import org.firstinspires.ftc.teamcode.util.TelemetryLogger;
+import org.firstinspires.ftc.teamcode.hardware.BetterIMU;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -124,11 +127,14 @@ public class RobotContainer {
     public double CURRENT_LOOP_TIME_MS;
     public double PREV_LOOP_TIME_MS;
 
+    public static BNO055IMU.Parameters betterIMUP = new BNO055IMU.Parameters();
+
     public static class HardwareDevices {
         public static List<LynxModule> allHubs;
         public static LynxModule controlHub;
         public static LynxModule expansionHub;
         public static IMU imu;
+        public static AdafruitBNO055IMU betterIMU;
 
         public static GoBildaPinpointDriver pinpoint;
         public static Limelight3A limelight;
@@ -181,6 +187,16 @@ public class RobotContainer {
 
         HardwareDevices.imu = getHardwareDevice(IMU.class, "imu");
         HardwareDevices.imu.initialize(Constants.Robot.IMU_PARAMETERS);
+
+        HardwareDevices.betterIMU = getHardwareDevice(AdafruitBNO055IMU.class, "betterIMU");
+        betterIMUP.mode = BNO055IMU.SensorMode.IMU;
+        betterIMUP.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        betterIMUP.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        betterIMUP.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample OpMode
+        betterIMUP.loggingEnabled      = true;
+        betterIMUP.loggingTag          = "IMU";
+
+        HardwareDevices.betterIMU.initialize(betterIMUP);
 
         HardwareDevices.pinpoint = getHardwareDevice(GoBildaPinpointDriver.class, "pinpoint");
         HardwareDevices.pinpoint.setOffsets(Constants.Pathing.PINPOINT_X_OFFSET_MM, Constants.Pathing.PINPOINT_Y_OFFSET_MM, DistanceUnit.MM);
@@ -668,6 +684,10 @@ public class RobotContainer {
         addDataLog("Pinpoint Y", Status.currentPose.getY(DistanceUnit.CM) + " cm", true);
         addDataLog("Pinpoint Heading", Status.currentHeading + "°", true);
         addDataLog("Logging to file", Status.loggingToFile, true);
+
+        addDataLog("BetterIMU Temp", HardwareDevices.betterIMU.getTemperature().temperature, true);
+        addDataLog("BetterIMU Yaw", HardwareDevices.betterIMU.getAngularOrientation().firstAngle, true); // First angle is the yaw
+        addDataLog("BetterIMU Position", HardwareDevices.betterIMU.getPosition().toString(), true);
 
         if (!Status.competitionMode) {
 
