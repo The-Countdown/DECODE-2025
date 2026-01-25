@@ -14,36 +14,22 @@ import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 
-@Autonomous(name="NineBall", group="Robot")
+@Autonomous(name="NineBallOpenGate", group="Robot")
 @Config
-public class NineBall extends OpMode {
+public class NineBallOpenGate extends OpMode {
     private RobotContainer robotContainer;
     private final ElapsedTime pathTimer = new ElapsedTime();
 
-    // 102.22
-    // 91.44
-    // 30.48
     public static double BEFORE_TAPE = 84;
     public static double AFTER_TAPE = 162;
     public static double TAPE_LOW = -97;
     public static double TAPE_MID = -37;
-    public static double TAPE_HIGH = 25;
-    public static double MIDPOINT = 18;
-    public static double MIDDLE = 20;
+    public static double GATE = 0;
 
-    public static Pose2D
-            RED_MIDDLE = new Pose2D(DistanceUnit.INCH, MIDDLE, -MIDDLE, AngleUnit.DEGREES, -135),
-            RED_MIDPOINT = new Pose2D(DistanceUnit.INCH, 0, -MIDPOINT, AngleUnit.DEGREES, -112.5),
-            BLUE_MIDDLE = new Pose2D(DistanceUnit.INCH, MIDDLE, MIDDLE, AngleUnit.DEGREES, 135),
-            BLUE_MIDPOINT = new Pose2D(DistanceUnit.INCH, 0, MIDPOINT, AngleUnit.DEGREES, 112.5);
 
     @Override
     public void init() {
-        try {
-            robotContainer = new RobotContainer(this);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        robotContainer = new RobotContainer(this);
         robotContainer.init();
         Status.waitToShoot = true;
         blackboard.put("pose", Status.currentPose);
@@ -98,9 +84,6 @@ public class NineBall extends OpMode {
                 () -> Constants.Pathing.HEADING_PID_TOLERANCE_DEGREES *= 2
         );
 
-//        ActionPose  = new ActionPose(robotContainer,
-//
-//        );
 
         if (Status.alliance == Constants.Game.ALLIANCE.BLUE) {
             robotContainer.pathPlanner.addPose(Status.startingPose);
@@ -121,6 +104,8 @@ public class NineBall extends OpMode {
             robotContainer.pathPlanner.addActionPose(intake);
             robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, TAPE_MID, AFTER_TAPE, AngleUnit.DEGREES, 90), 4500);
             robotContainer.pathPlanner.addActionPose(endOfIntake);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, TAPE_MID, BEFORE_TAPE, AngleUnit.DEGREES, 90), 2000);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, GATE, AFTER_TAPE, AngleUnit.DEGREES, 90), 1000);
             robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 10, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)), 3250);
             robotContainer.pathPlanner.addActionPose(shoot);
             robotContainer.pathPlanner.addSleepPose(2000);
@@ -145,6 +130,8 @@ public class NineBall extends OpMode {
             robotContainer.pathPlanner.addActionPose(intake);
             robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, TAPE_MID, -AFTER_TAPE, AngleUnit.DEGREES, -90), 4500);
             robotContainer.pathPlanner.addActionPose(endOfIntake);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, TAPE_MID, -BEFORE_TAPE, AngleUnit.DEGREES, -90), 2000);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, GATE, -AFTER_TAPE, AngleUnit.DEGREES, -90), 2000);
             robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, Status.startingPose.getX(DistanceUnit.CM) + 10, Status.startingPose.getY(DistanceUnit.CM), AngleUnit.DEGREES, Status.startingPose.getHeading(AngleUnit.DEGREES)), 3250);
             robotContainer.pathPlanner.addActionPose(shoot);
             robotContainer.pathPlanner.addSleepPose(2000);
@@ -197,7 +184,6 @@ public class NineBall extends OpMode {
 
         blackboard.put("pose", Status.currentPose);
     }
-    //3.4 -6.8
 
     @Override
     public void stop() {

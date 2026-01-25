@@ -50,9 +50,9 @@ public class Spindexer {
     }
 
     public void update(boolean teleop) {
-//        if (Status.waitToShoot && !teleop) {
-//            return;
-//        }
+        if (Status.waitToShoot && !teleop) {
+            return;
+        }
         spindexerPIDF = spindexerPIDF.updateValues(robotContainer, Constants.Spindexer.KP, Constants.Spindexer.KI, Constants.Spindexer.KD, Constants.Spindexer.KF);
 
         spindexerError = getError();
@@ -226,7 +226,7 @@ public class Spindexer {
     }
     public void shootAll(boolean matchMotif) {
         shootToggle(true);
-//        Status.waitToShoot = false;
+        Status.waitToShoot = false;
         if (matchMotif) {
             shootAll(Status.motif);
         } else {

@@ -229,5 +229,22 @@ public class LimelightLogic {
         //ID 24 RED
 
     }
+
+    public void pointAtGoal() {
+        if (Status.alliance == Constants.Game.ALLIANCE.RED) {
+            limelight.pipelineSwitch(0);
+        } else {
+            limelight.pipelineSwitch(1);
+        }
+        LLResult results = limelight.getLatestResult();
+
+        if (results != null) {
+            double tx = results.getTx();
+
+            robotContainer.turret.setTargetAngle((tx * Constants.Turret.LIMELIGHT_TX_MULTIPLIER) + RobotContainer.HardwareDevices.betterIMU.getAngle());
+        } else {
+            robotContainer.turret.pointAtGoal();
+        }
+    }
 }
 
