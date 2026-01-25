@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 
 import org.firstinspires.ftc.robotcore.external.Const;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -34,7 +35,11 @@ public class TeleOp extends OpMode {
 
     @Override
     public void init() {
-        robotContainer = new RobotContainer(this);
+        try {
+            robotContainer = new RobotContainer(this);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         robotContainer.init();
 
         // Get the blackboard pose that was set during auto or if it was not set set the starting pose to 0.
@@ -76,6 +81,11 @@ public class TeleOp extends OpMode {
         // Gamepad 1
         robotContainer.drivetrain.controlUpdate(); // For controller driving
 
+        if (robotContainer.gamepadEx1.cross.wasJustPressed()) {
+            BNO055IMU.CalibrationData data = RobotContainer.HardwareDevices.betterIMU.readCalibrationData();
+            robotContainer.telemetry.addData("Calibration data ", String.valueOf(data.dxGyro));
+        }
+
         if (robotContainer.gamepadEx2.triangle.wasJustPressed()) {
             Status.manualControl = !Status.manualControl;
         }
@@ -100,6 +110,7 @@ public class TeleOp extends OpMode {
                 RobotContainer.HardwareDevices.pinpoint.setPosition(new Pose2D(DistanceUnit.CM, -155, -160, AngleUnit.DEGREES, 0));
             }
             pinpointTimer.reset();
+            RobotContainer.HardwareDevices.betterIMU.resetAngle();
             robotContainer.gamepadEx1.rumble(300);
             robotContainer.positionProvider.reset();
         }

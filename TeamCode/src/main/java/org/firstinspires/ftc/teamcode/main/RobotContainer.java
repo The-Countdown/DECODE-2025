@@ -134,7 +134,7 @@ public class RobotContainer {
         public static LynxModule controlHub;
         public static LynxModule expansionHub;
         public static IMU imu;
-        public static AdafruitBNO055IMU betterIMU;
+        public static BetterIMU betterIMU;
 
         public static GoBildaPinpointDriver pinpoint;
         public static Limelight3A limelight;
@@ -178,7 +178,7 @@ public class RobotContainer {
         public static RevTouchSensor beamBreak;
     }
 
-    public RobotContainer(OpMode opMode) {
+    public RobotContainer(OpMode opMode) throws InterruptedException {
         this.opMode = opMode;
         this.hardwareMap = opMode.hardwareMap;
         this.telemetry = new MultipleTelemetry(opMode.telemetry, FtcDashboard.getInstance().getTelemetry());
@@ -188,15 +188,13 @@ public class RobotContainer {
         HardwareDevices.imu = getHardwareDevice(IMU.class, "imu");
         HardwareDevices.imu.initialize(Constants.Robot.IMU_PARAMETERS);
 
-        HardwareDevices.betterIMU = getHardwareDevice(AdafruitBNO055IMU.class, "betterIMU");
+        HardwareDevices.betterIMU = new BetterIMU(getHardwareDevice(AdafruitBNO055IMU.class, "betterIMU"));
         betterIMUP.mode = BNO055IMU.SensorMode.IMU;
-        betterIMUP.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        betterIMUP.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        betterIMUP.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample OpMode
-        betterIMUP.loggingEnabled      = true;
-        betterIMUP.loggingTag          = "IMU";
+        betterIMUP.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        betterIMUP.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
 
         HardwareDevices.betterIMU.initialize(betterIMUP);
+        Thread.sleep(800); // Ensure that the IMU has some still time so that it will auto calibrate at zero.
 
         HardwareDevices.pinpoint = getHardwareDevice(GoBildaPinpointDriver.class, "pinpoint");
         HardwareDevices.pinpoint.setOffsets(Constants.Pathing.PINPOINT_X_OFFSET_MM, Constants.Pathing.PINPOINT_Y_OFFSET_MM, DistanceUnit.MM);
@@ -320,6 +318,9 @@ public class RobotContainer {
 
         RobotContainer.HardwareDevices.limelight.start(); // IDK what this does
 //        Status.waitToShoot = true;
+//
+        // Reset the IMU angle
+        HardwareDevices.betterIMU.resetAngle();
 
         // Start the required threads
         telemetryLogger = new TelemetryLogger(this);
@@ -685,9 +686,7 @@ public class RobotContainer {
         addDataLog("Pinpoint Heading", Status.currentHeading + "°", true);
         addDataLog("Logging to file", Status.loggingToFile, true);
 
-        addDataLog("BetterIMU Temp", HardwareDevices.betterIMU.getTemperature().temperature, true);
-        addDataLog("BetterIMU Yaw", HardwareDevices.betterIMU.getAngularOrientation().firstAngle, true); // First angle is the yaw
-        addDataLog("BetterIMU Position", HardwareDevices.betterIMU.getPosition().toString(), true);
+        addDataLog("BetterIMU Yaw", HardwareDevices.betterIMU.getAngle(), true); // First angle is the yaw
 
         if (!Status.competitionMode) {
 

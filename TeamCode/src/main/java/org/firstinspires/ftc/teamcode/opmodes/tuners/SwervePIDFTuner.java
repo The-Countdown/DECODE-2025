@@ -17,7 +17,11 @@ public class SwervePIDFTuner extends OpMode {
 
     @Override
     public void init() {
-        robotContainer = new RobotContainer(this);
+        try {
+            robotContainer = new RobotContainer(this);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         robotContainer.isRunning = true;
         robotContainer.init();
         robotContainer.indicatorLightFront.setColor(Constants.LED.COLOR.RED);
