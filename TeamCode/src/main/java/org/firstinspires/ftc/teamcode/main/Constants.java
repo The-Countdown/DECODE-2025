@@ -214,6 +214,7 @@ public class Constants {
     @Config
     public static class Control {
         public static double JOYSTICK_SCALER_EXPONENT = 1.3;
+        public static double JOYSTICK_ROTATION_SCALER_EXPONENT = 0.8;
 
         //power per second
         public static double MAX_DRIVE_ACCELERATION = 5;
