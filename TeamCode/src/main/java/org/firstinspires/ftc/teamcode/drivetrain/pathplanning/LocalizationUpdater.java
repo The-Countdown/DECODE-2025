@@ -33,7 +33,8 @@ public class LocalizationUpdater extends Thread {
         while (Status.opModeIsActive) {
             RobotContainer.HardwareDevices.pinpoint.update();
 //            Status.currentPose = RobotContainer.HardwareDevices.pinpoint.getPosition();
-            Status.currentHeading = Status.currentPose.getHeading(AngleUnit.DEGREES);
+            // Status.currentHeading = Status.currentPose.getHeading(AngleUnit.DEGREES);
+            Status.currentHeading = RobotContainer.HardwareDevices.betterIMU.getAngle();
             CURRENT_LOOP_TIME_MS = robotContainer.updateLoopTime("pinpointUpdater");
             CURRENT_LOOP_TIME_AVG_MS = robotContainer.getRollingAverageLoopTime("pinpointUpdater");
             if (Status.isDrivingActive) {

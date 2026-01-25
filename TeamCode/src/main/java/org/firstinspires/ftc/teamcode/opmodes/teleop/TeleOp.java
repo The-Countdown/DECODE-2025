@@ -117,8 +117,9 @@ public class TeleOp extends OpMode {
 
         if (robotContainer.gamepadEx1.circle.wasJustPressed()) {
             Status.isDrivingActive = false;
-            RobotContainer.HardwareDevices.pinpoint.setPosition(Status.cornerResetPose);
+            RobotContainer.HardwareDevices.pinpoint.setPosition(new Pose2D(DistanceUnit.CM, 0, 0, AngleUnit.DEGREES, 0));
             pinpointTimer.reset();
+            RobotContainer.HardwareDevices.betterIMU.resetAngle();
             robotContainer.gamepadEx1.rumble(300);
         }
 

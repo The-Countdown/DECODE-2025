@@ -18,6 +18,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.hardware.adafruit.AdafruitBNO055IMU;
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.util.AndroidSerialNumberNotFoundException;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.ReadWriteFile;
 
@@ -683,14 +684,15 @@ public class RobotContainer {
         telemetry.addLine();
         addDataLog("Pinpoint X", Status.currentPose.getX(DistanceUnit.CM) + " cm", true);
         addDataLog("Pinpoint Y", Status.currentPose.getY(DistanceUnit.CM) + " cm", true);
-        addDataLog("Pinpoint Heading", Status.currentHeading + "°", true);
+        addDataLog("Robot Heading", Status.currentHeading + "°", true);
         addDataLog("Logging to file", Status.loggingToFile, true);
 
         addDataLog("BetterIMU Yaw", HardwareDevices.betterIMU.getAngle(), true); // First angle is the yaw
+        addDataLog("Pinpoint Yaw", HardwareDevices.pinpoint.getHeading(AngleUnit.DEGREES), true); // First angle is the yaw
 
         if (!Status.competitionMode) {
 
-            // Stuff not in competition mode
+            // Stuff not in competition mode.
             
             // Get current and voltage for telemetry
             controlHubVoltage = getVoltage(Constants.Robot.CONTROL_HUB_INDEX);
