@@ -41,6 +41,10 @@ public class DelayedActionManager {
         delayedActions.add(new DelayedAction(robotContainer, action, condition, waitForPreviousAction, delayedActions.isEmpty() ? null : delayedActions.get(delayedActions.size() - 1)));
     }
 
+    public void schedule(Runnable action, BooleanSupplier condition, int delay, boolean waitForPreviousAction) {
+        delayedActions.add(new DelayedAction(robotContainer, action, condition, delay, waitForPreviousAction, delayedActions.isEmpty() ? null : delayedActions.get(delayedActions.size() - 1)));
+    }
+
     public void schedule(Runnable action, BooleanSupplier condition, int delayMs) {
         delayedActions.add(new DelayedAction(robotContainer, action, condition, delayMs));
     }
@@ -81,6 +85,8 @@ public class DelayedActionManager {
                 if (delayedAction.shouldExecute()) {
                     delayedAction.execute();
                 }
+                robotContainer.telemetry.addData(i + "shouldExecute", delayedAction.shouldExecute());
+                robotContainer.telemetry.addData(i + "executed", delayedAction.executed);
             }
         }
     }
@@ -193,6 +199,15 @@ public class DelayedActionManager {
             this.previousAction = previousAction;
         }
 
+        public DelayedAction(RobotContainer robotContainer, Runnable action, BooleanSupplier condition, int delayMs, boolean waitForPreviousAction, Action previousAction) {
+            this.robotContainer = robotContainer;
+            this.action = action;
+            this.condition = condition;
+            this.delayMs = delayMs;
+            this.waitForPreviousAction = waitForPreviousAction;
+            this.previousAction = previousAction;
+        }
+
         public DelayedAction(RobotContainer robotContainer, Runnable action, BooleanSupplier condition, int delayMs) {
             this.robotContainer = robotContainer;
             this.action = action;
@@ -204,17 +219,22 @@ public class DelayedActionManager {
         public boolean shouldExecute() {
             if (executed || cancelled || !enabled) return false;
             if (waitForPreviousAction && previousAction != null) {
-                if (!previousAction.isExecuted()) return false;
-                if (previousAction.executedAtLoop == robotContainer.delayedActionManager.updateCycle)
+                if (!previousAction.isExecuted()) {
+                    timer.reset();
                     return false;
+                }
+                if (previousAction.executedAtLoop == robotContainer.delayedActionManager.updateCycle) {
+                    timer.reset();
+                    return false;
+                }
             }
 
             double currentTime = timer.milliseconds() - accumulatedPausedTime;
 
-            boolean delaySatisfied = delayMs < 0 || (timer != null && currentTime >= delayMs);
+            boolean delaySatisfied = delayMs < 1 || (timer != null && currentTime >= delayMs);
 
             if (condition != null) {
-                return delaySatisfied && condition.getAsBoolean();
+                return delaySatisfied || condition.getAsBoolean();
             } else {
                 return delaySatisfied;
             }

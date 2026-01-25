@@ -30,7 +30,11 @@ public class ThreeBallBigTriangle extends OpMode {
 
     @Override
     public void init() {
-        robotContainer = new RobotContainer(this);
+        try {
+            robotContainer = new RobotContainer(this);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         robotContainer.init();
         blackboard.put("pose", Status.currentPose);
 

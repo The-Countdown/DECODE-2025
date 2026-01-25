@@ -17,7 +17,11 @@ public class PathPlannerTuner extends OpMode {
 
     @Override
     public void init() {
-        robotContainer = new RobotContainer(this);
+        try {
+            robotContainer = new RobotContainer(this);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         robotContainer.init();
         Status.opModeIsActive = true;
         Status.startingPose = new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);

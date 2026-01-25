@@ -18,7 +18,11 @@ public class MaxSpeedTuner extends OpMode {
 
     @Override
     public void init() {
-        robotContainer = new RobotContainer(this);
+        try {
+            robotContainer = new RobotContainer(this);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         robotContainer.init();
         for (int i = 0; i < Constants.Swerve.NUM_SERVOS; i++) {
             robotContainer.swerveModules[i].servo.setTargetAngle(90);

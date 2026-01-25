@@ -76,8 +76,6 @@ public class Spindexer {
             } else {
                 spindexerServo.setPower(servoPower);
             }
-        } else {
-            clockwise = false;
         }
 
         if (robotContainer.intake.power > 0.1 && slotsFilled < 3) {
@@ -118,14 +116,17 @@ public class Spindexer {
             }
 
             if (robotContainer.gamepadEx2.cross.wasJustPressed()) {
-                robotContainer.spindexer.shootAllMotifOrder(true);
+//                robotContainer.spindexer.shootAllMotifOrder(true);
+                shootGreen();
+
             }
 
             if (robotContainer.gamepadEx2.square.wasJustPressed()) {
-                robotContainer.spindexer.shootAllMotifOrder(false);
+//                robotContainer.spindexer.shootAllMotifOrder(false);
+                shootPurple();
             }
 
-            if (robotContainer.gamepadEx2.dpadUp.wasJustPressed()) {
+            if (robotContainer.gamepadEx2.rightTrigger.wasJustPressed()) {
                 Status.flywheelToggle = true;
             }
 
@@ -141,7 +142,7 @@ public class Spindexer {
                 this.pause = true;
             }
 
-            if (robotContainer.gamepadEx2.dpadUp.wasJustReleased()) {
+            if (robotContainer.gamepadEx2.rightTrigger.wasJustReleased()) {
                 Status.flywheelToggle = false;
             }
 
@@ -297,6 +298,38 @@ public class Spindexer {
        }
     }
 
+    public void shootPurple() {
+        if (slotColor[0] == Constants.Game.ARTIFACT_COLOR.PURPLE) {
+            shootSlot(0, false);
+            slotColor[0] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;
+            slotsFilled--;
+        } else if (slotColor[1] == Constants.Game.ARTIFACT_COLOR.PURPLE) {
+            shootSlot(1, false);
+            slotColor[1] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;
+            slotsFilled--;
+        } else if (slotColor[2] == Constants.Game.ARTIFACT_COLOR.PURPLE) {
+            shootSlot(2, false);
+            slotColor[2] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;
+            slotsFilled--;
+        }
+    }
+
+    public void shootGreen() {
+        if (slotColor[0] == Constants.Game.ARTIFACT_COLOR.GREEN) {
+            shootSlot(0, false);
+            slotColor[0] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;
+            slotsFilled--;
+        } else if (slotColor[1] == Constants.Game.ARTIFACT_COLOR.GREEN) {
+            shootSlot(1, false);
+            slotColor[1] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;
+            slotsFilled--;
+        } else if (slotColor[2] == Constants.Game.ARTIFACT_COLOR.GREEN) {
+            shootSlot(2, false);
+            slotColor[2] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;
+            slotsFilled--;
+        }
+    }
+
     public void shootAllMotifOrder(boolean onlyMotif) {
         shootToggle(true);
         shootingMotif = true;
@@ -321,9 +354,8 @@ public class Spindexer {
         int thirdSlot = pickThirdSlot(firstSlot, secondSlot, slots, slotColors, motifColors, onlyMotif);
         if (thirdSlot == -1) return;
 
-        shootSlots(firstSlot, secondSlot, thirdSlot);
+        robotContainer.delayedActionManager.schedule(() -> shootSlots(firstSlot, secondSlot, thirdSlot), 2500);
         robotContainer.addEventTelemetry("slot order", firstSlot + "|" + secondSlot + "|" + thirdSlot);
-        shootingMotif = false;
     }
 
 
@@ -332,8 +364,8 @@ public class Spindexer {
 
         if (Status.motif == Constants.Game.MOTIF.UNKNOWN || (slotColors[0] != firstColor && slotColors[1] != firstColor && slotColors[2] != firstColor)) {
             if (!onlyMotif) {
-                robotContainer.delayedActionManager.schedule(() -> this.pause = true, () -> robotContainer.turret.flywheel.atTargetVelocity());
-                robotContainer.delayedActionManager.schedule(() -> this.pause = false, () -> robotContainer.turret.flywheel.atTargetVelocity(), Constants.Spindexer.FULL_EMPTY_SPINTIME);
+                robotContainer.delayedActionManager.schedule(() -> this.pause = true, 2500);
+                robotContainer.delayedActionManager.schedule(() -> this.pause = false, Constants.Spindexer.FULL_EMPTY_SPINTIME);
             }
             return -1;
         }
@@ -357,7 +389,7 @@ public class Spindexer {
         }
 
         if (onlyMotif) {
-            shootSlot(firstSlot, false);
+            robotContainer.delayedActionManager.schedule(() -> shootSlot(firstSlot, false), 2500);
             return -1;
         }
 
@@ -379,7 +411,7 @@ public class Spindexer {
         }
 
         if (onlyMotif) {
-            shootSlots(firstSlot, secondSlot);
+            robotContainer.delayedActionManager.schedule(() -> shootSlots(firstSlot, secondSlot), 2500);
             return -1;
         }
 
@@ -394,9 +426,10 @@ public class Spindexer {
     public void shootSlots(int firstSlotIndex, int secondSlotIndex, int thirdSlotIndex) {
         if ((firstSlotIndex + 1) % 3 == secondSlotIndex && (secondSlotIndex + 1) % 3 == thirdSlotIndex) {
             BooleanSupplier truth = () -> true;
-            robotContainer.delayedActionManager.schedule(() -> shootingMotif = true, truth, false);
+            robotContainer.delayedActionManager.schedule(() -> clockwise = true, truth, false);
             robotContainer.delayedActionManager.schedule(() -> setTargetAngle(Constants.Spindexer.BEFORE_TRANSFER_SLOT_ANGLES[firstSlotIndex]), truth, true);
-            robotContainer.delayedActionManager.schedule(() -> setTargetAngle(Constants.Spindexer.AFTER_TRANSFER_SLOT_ANGLES[thirdSlotIndex]), () -> Math.abs(getError()) < 5, true);
+            robotContainer.delayedActionManager.schedule(() -> shootingMotif = true, truth, true);
+            robotContainer.delayedActionManager.schedule(() -> setTargetAngle(Constants.Spindexer.AFTER_TRANSFER_SLOT_ANGLES[thirdSlotIndex]), () -> Math.abs(getError()) < 8, 400, true);
             robotContainer.delayedActionManager.schedule(() -> shootingMotif = false, truth, true);
         } else {
             shootSlot(firstSlotIndex, false);
@@ -408,9 +441,10 @@ public class Spindexer {
     public void shootSlots(int firstSlotIndex, int secondSlotIndex) {
         if ((firstSlotIndex + 1) % 3 == secondSlotIndex) {
             BooleanSupplier truth = () -> true;
-            robotContainer.delayedActionManager.schedule(() -> shootingMotif = true, truth, false);
+            robotContainer.delayedActionManager.schedule(() -> clockwise = true, truth, false);
             robotContainer.delayedActionManager.schedule(() -> setTargetAngle(Constants.Spindexer.BEFORE_TRANSFER_SLOT_ANGLES[firstSlotIndex]), truth, true);
-            robotContainer.delayedActionManager.schedule(() -> setTargetAngle(Constants.Spindexer.AFTER_TRANSFER_SLOT_ANGLES[secondSlotIndex]), () -> Math.abs(getError()) < 5, true);
+            robotContainer.delayedActionManager.schedule(() -> shootingMotif = true, truth, true);
+            robotContainer.delayedActionManager.schedule(() -> setTargetAngle(Constants.Spindexer.AFTER_TRANSFER_SLOT_ANGLES[secondSlotIndex]), () -> Math.abs(getError()) < 8, 400, true);
             robotContainer.delayedActionManager.schedule(() -> shootingMotif = false, truth, true);
         } else {
             shootSlot(firstSlotIndex, false);
@@ -420,9 +454,10 @@ public class Spindexer {
 
     public void shootSlot(int slotIndex, boolean waitForPreviousAction) {
         BooleanSupplier truth = () -> true;
-        robotContainer.delayedActionManager.schedule(() -> shootingMotif = true, truth, waitForPreviousAction);
+        robotContainer.delayedActionManager.schedule(() -> clockwise = true, truth, waitForPreviousAction);
         robotContainer.delayedActionManager.schedule(() -> setTargetAngle(Constants.Spindexer.BEFORE_TRANSFER_SLOT_ANGLES[slotIndex]), truth, true);
-        robotContainer.delayedActionManager.schedule(() -> setTargetAngle(Constants.Spindexer.AFTER_TRANSFER_SLOT_ANGLES[slotIndex]), () -> Math.abs(getError()) < 5, true);
+        robotContainer.delayedActionManager.schedule(() -> shootingMotif = true, truth, true);
+        robotContainer.delayedActionManager.schedule(() -> setTargetAngle(Constants.Spindexer.AFTER_TRANSFER_SLOT_ANGLES[slotIndex]), () -> Math.abs(getError()) < 8, 400, true);
         robotContainer.delayedActionManager.schedule(() -> shootingMotif = false, truth, true);
     }
 

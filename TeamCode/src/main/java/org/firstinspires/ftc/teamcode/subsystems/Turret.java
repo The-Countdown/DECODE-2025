@@ -23,6 +23,7 @@ public class Turret extends RobotContainer.HardwareDevices {
     private double targetPositionDegrees;
     private double manualTurretPos;
     private double turretAngleOffset;
+    private double turretAngleOffsetFar;
     private GamepadWrapper.ButtonReader backFieldButton = new GamepadWrapper.ButtonReader();
 
     public Turret(RobotContainer robotContainer, LinkedMotors flyWheelMotors, BetterServo hoodServo, LinkedServos turretServos) {
@@ -34,6 +35,7 @@ public class Turret extends RobotContainer.HardwareDevices {
         this.targetPosition = 0;
         this.manualTurretPos = 0;
         this.turretAngleOffset = 0;
+        this.turretAngleOffsetFar = 0;
     }
 
     public void update(boolean teleop) {
@@ -56,10 +58,16 @@ public class Turret extends RobotContainer.HardwareDevices {
             // Change this to change the Status.change degree whatever to rotate the robot pose, but this will need to be changed in the robot
             // So some though will be required
             if (robotContainer.gamepadEx2.dpadLeft.wasJustReleased()) {
+                if (Status.currentPose.getX(DistanceUnit.CM) < -75) {
+                    turretAngleOffsetFar -= 3;
+                }
                 turretAngleOffset -= 3;
             }
 
             if (robotContainer.gamepadEx2.dpadRight.wasJustReleased()) {
+                if (Status.currentPose.getX(DistanceUnit.CM) < -75) {
+                    turretAngleOffsetFar += 3;
+                }
                 turretAngleOffset += 3;
             }
 
@@ -122,7 +130,11 @@ public class Turret extends RobotContainer.HardwareDevices {
 
     public void setTargetAngle(double angleInDegrees) { // angleInDegrees should be between -180 and 180
         targetPositionDegrees = angleInDegrees;
-        angleInDegrees = HelperFunctions.normalizeAngle(angleInDegrees + turretAngleOffset);
+        if (Status.currentPose.getX(DistanceUnit.CM) < -75) {
+            angleInDegrees = HelperFunctions.normalizeAngle(angleInDegrees + turretAngleOffsetFar);
+        } else {
+            angleInDegrees = HelperFunctions.normalizeAngle(angleInDegrees + turretAngleOffset);
+        }
         if (angleInDegrees < Constants.Turret.TURRET_LIMIT_MIN_ANGLE || angleInDegrees > Constants.Turret.TURRET_LIMIT_MAX_ANGLE) {
             return;
         }
