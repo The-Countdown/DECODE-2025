@@ -12,7 +12,6 @@ import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 import org.firstinspires.ftc.teamcode.util.LinkedMotors;
 import org.firstinspires.ftc.teamcode.util.LinkedServos;
-import org.firstinspires.ftc.teamcode.util.PIDF;
 
 public class Turret extends RobotContainer.HardwareDevices {
     private final RobotContainer robotContainer;
@@ -210,6 +209,26 @@ public class Turret extends RobotContainer.HardwareDevices {
             double higherSpeed = Constants.Turret.FLYWHEEL_SPEED_TABLE[higherPointIndex];
 
             return HelperFunctions.interpolate(lowerSpeed, higherSpeed, (disToGoal-lowerPoint)/(higherPoint-lowerPoint));
+        }
+
+        public void updateLaunchValues(double distToGoal){
+            double verticalVel = Math.sqrt(2 * Constants.Game.GRAVITY * (Constants.Turret.DESIRED_MAX_HEIGHT - Constants.Turret.FLYWHEEL_HEIGHT));
+            double estimatedTime = (verticalVel + Math.sqrt(verticalVel - 2 * (Constants.Game.GRAVITY) * (Constants.Game.GOAL_HEIGHT - Constants.Turret.FLYWHEEL_HEIGHT))) / Constants.Game.GRAVITY;
+            double horizonalVel = distToGoal / estimatedTime;
+            double hoodAngle = Math.atan(verticalVel / horizonalVel);
+            double xDiff;
+            double yDiff;
+            if (Status.alliance == Constants.Game.ALLIANCE.BLUE){
+                 xDiff = -Status.goalPose.getX(DistanceUnit.INCH) - Status.currentPose.getX(DistanceUnit.INCH);
+                 yDiff = Status.goalPose.getY(DistanceUnit.INCH) - Status.currentPose.getY(DistanceUnit.INCH);
+            } else {
+                 xDiff = Status.goalPose.getX(DistanceUnit.INCH) - Status.currentPose.getX(DistanceUnit.INCH);
+                 yDiff = -Status.goalPose.getY(DistanceUnit.INCH) - Status.currentPose.getY(DistanceUnit.INCH);
+            }
+            double angleToFaceGoal = Math.atan2(yDiff, xDiff);
+            double initialVel = Math.sqrt(Math.pow((verticalVel), 2) * Math.pow((horizonalVel), 2));
+            double rpm = initialVel * (2000 / 5.14);
+            targetVelocity = (rpm / 60) * Constants.Swerve.MOTOR_TICKS_PER_REVOLUTION;
         }
 
         public boolean atTargetVelocity() {
