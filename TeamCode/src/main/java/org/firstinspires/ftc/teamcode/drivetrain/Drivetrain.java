@@ -46,7 +46,7 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
 
         double x = joystickScaler(-robotContainer.gamepadEx1.leftStickX());
         double y = joystickScaler(robotContainer.gamepadEx1.leftStickY());
-        double rX = joystickScaler(-robotContainer.gamepadEx1.rightStickX());
+        double rX = joystickRotationScaler(-robotContainer.gamepadEx1.rightStickX());
         double rotationalMagnitude = Math.abs(rX);
 
         if (robotContainer.gamepadEx1.cross.wasJustPressed()) {
@@ -319,6 +319,10 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
      */
     public double joystickScaler(double input) {
         return Math.pow(Math.abs(input), Constants.Control.JOYSTICK_SCALER_EXPONENT) * input;
+    }
+
+    public double joystickRotationScaler(double input) {
+        return Math.pow(Math.abs(input), Constants.Control.JOYSTICK_ROTATION_SCALER_EXPONENT) * input;
     }
 
     public enum ServoStatus {
