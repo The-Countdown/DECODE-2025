@@ -689,6 +689,7 @@ public class RobotContainer {
 
         addDataLog("BetterIMU Yaw", HardwareDevices.betterIMU.getAngle(), true); // First angle is the yaw
         addDataLog("Pinpoint Yaw", HardwareDevices.pinpoint.getHeading(AngleUnit.DEGREES), true); // First angle is the yaw
+        addDataLog("Use Better IMU", Constants.USE_BETTER_IMU, true);
 
         if (!Status.competitionMode) {
 

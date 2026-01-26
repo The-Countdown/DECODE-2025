@@ -82,8 +82,7 @@ public class TeleOp extends OpMode {
         robotContainer.drivetrain.controlUpdate(); // For controller driving
 
         if (robotContainer.gamepadEx1.cross.wasJustPressed()) {
-            BNO055IMU.CalibrationData data = RobotContainer.HardwareDevices.betterIMU.readCalibrationData();
-            robotContainer.telemetry.addData("Calibration data ", String.valueOf(data.dxGyro));
+            Constants.USE_BETTER_IMU = !Constants.USE_BETTER_IMU;
         }
 
         if (robotContainer.gamepadEx2.triangle.wasJustPressed()) {
