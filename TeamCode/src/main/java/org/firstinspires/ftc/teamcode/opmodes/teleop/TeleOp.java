@@ -81,7 +81,7 @@ public class TeleOp extends OpMode {
         // Gamepad 1
         robotContainer.drivetrain.controlUpdate(); // For controller driving
 
-        if (robotContainer.gamepadEx1.cross.wasJustPressed()) {
+        if (robotContainer.gamepadEx2.circle.wasJustPressed()) {
             Constants.USE_BETTER_IMU = !Constants.USE_BETTER_IMU;
         }
 
