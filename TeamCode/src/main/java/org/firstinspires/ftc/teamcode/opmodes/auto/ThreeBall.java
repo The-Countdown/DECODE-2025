@@ -28,6 +28,7 @@ public class ThreeBall extends OpMode {
             throw new RuntimeException(e);
         }
         robotContainer.init();
+        RobotContainer.HardwareDevices.betterIMU.setAngleOffset(180);
         blackboard.put("pose", Status.currentPose);
 
         Status.startingPose = Status.alliance == Constants.Game.ALLIANCE.RED ? new Pose2D(DistanceUnit.CM, Constants.Robot.STARTING_X, Constants.Robot.STARTING_Y, AngleUnit.DEGREES, Constants.Robot.STARTING_HEADING) :

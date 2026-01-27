@@ -35,6 +35,10 @@ public class BetterIMU {
         this.angleOffset = imu.getAngularOrientation().firstAngle;
     }
 
+    public void setAngleOffset(double offsetAngle) {
+        this.angleOffset = imu.getAngularOrientation().firstAngle - offsetAngle;
+    }
+
     public void initialize(BNO055IMU.Parameters params) {
         imu.initialize(params);
     }

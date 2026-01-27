@@ -39,9 +39,9 @@ public class ThreeBallBigTriangle extends OpMode {
         blackboard.put("pose", Status.currentPose);
 
         if (Status.alliance == Constants.Game.ALLIANCE.BLUE){
-            Status.startingPose = new Pose2D(DistanceUnit.INCH, 43.02125, 160.9725, AngleUnit.DEGREES, 0);
+            Status.startingPose = new Pose2D(DistanceUnit.INCH, 60, 60, AngleUnit.DEGREES, 0);
         } else {
-            Status.startingPose = new Pose2D(DistanceUnit.INCH, -43.02125, 160.9725, AngleUnit.DEGREES, 0);
+            Status.startingPose = new Pose2D(DistanceUnit.INCH, -60, 60, AngleUnit.DEGREES, 0);
         }
 
         Status.targetPose = Status.startingPose;

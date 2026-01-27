@@ -289,6 +289,10 @@ public class RobotContainer {
             // hub.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
             // hub.setBulkCachingMode(LynxModule.BulkCachingMode.OFF);
         }
+
+        // Reset the IMU angle
+        HardwareDevices.betterIMU.resetAngle();
+
         if (Status.competitionMode) {
             telemetry.setMsTransmissionInterval(Constants.System.TELEMETRY_COMP_UPDATE_INTERVAL_MS);
         } else {
@@ -318,10 +322,6 @@ public class RobotContainer {
                         new Pose2D(DistanceUnit.INCH, 0, 0, AngleUnit.DEGREES, 0);
 
         RobotContainer.HardwareDevices.limelight.start(); // IDK what this does
-//        Status.waitToShoot = true;
-//
-        // Reset the IMU angle
-        HardwareDevices.betterIMU.resetAngle();
 
         // Start the required threads
         telemetryLogger = new TelemetryLogger(this);

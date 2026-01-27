@@ -45,6 +45,7 @@ public class NineBall extends OpMode {
             throw new RuntimeException(e);
         }
         robotContainer.init();
+        RobotContainer.HardwareDevices.betterIMU.setAngleOffset(180);
         Status.waitToShoot = true;
         blackboard.put("pose", Status.currentPose);
 
