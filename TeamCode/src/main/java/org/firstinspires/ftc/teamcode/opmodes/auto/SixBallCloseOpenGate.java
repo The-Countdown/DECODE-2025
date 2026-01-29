@@ -117,7 +117,7 @@ public class SixBallCloseOpenGate extends OpMode {
             robotContainer.pathPlanner.addSleepPose(1000);
             robotContainer.pathPlanner.addActionPose(endOfIntake);
 
-            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, GATE, BEFORE_TAPE, AngleUnit.DEGREES, 90), 2000);
+            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, TAPE_HIGH, BEFORE_TAPE, AngleUnit.DEGREES, 90), 2000);
             robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, GATE, AFTER_TAPE - 15, AngleUnit.DEGREES, 90), 2000);
             robotContainer.pathPlanner.addSleepPose(2000);
 

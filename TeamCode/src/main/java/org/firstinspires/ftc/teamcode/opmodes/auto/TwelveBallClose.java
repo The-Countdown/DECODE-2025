@@ -14,23 +14,77 @@ import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 
-@Autonomous(name="SixBallClose", group="Robot")
+@Autonomous(name="TwelveBallClose", group="Robot")
 @Config
-public class SixBallClose extends OpMode {
+public class TwelveBallClose extends OpMode {
     private RobotContainer robotContainer;
     private final ElapsedTime pathTimer = new ElapsedTime();
 
-    public static double BEFORE_TAPE = 84;
-    public static double AFTER_TAPE = 147;
-    public static double TAPE_HIGH = 25;
-    public static double MIDPOINT = 18;
-    public static double MIDDLE = 20;
-    public static Pose2D
-            RED_MIDDLE = new Pose2D(DistanceUnit.INCH, MIDDLE, -MIDDLE, AngleUnit.DEGREES, -135),
-            RED_MIDPOINT = new Pose2D(DistanceUnit.INCH, 0, -MIDPOINT, AngleUnit.DEGREES, -112.5),
-            BLUE_MIDDLE = new Pose2D(DistanceUnit.INCH, MIDDLE, MIDDLE, AngleUnit.DEGREES, 135),
-            BLUE_MIDPOINT = new Pose2D(DistanceUnit.INCH, 0, MIDPOINT, AngleUnit.DEGREES, 112.5);
+    // Positions
+    public static double
+            SHOOTING_FAR_Y = 43,
+            BEFORE_TAPE_Y = 80,
+            AFTER_TAPE_Y = 157,
+            TO_WALL_Y = 157,
+            GATE_Y = 145,
+            INTAKE_BACKUP_Y = 110,
+            MIDPOINT_Y = 18,
+            SHOOTING_FAR_X = -151,
+            HUMAN_PLAYER_STATION_X = -161,
+            TAPE_LOW_X = -97,
+            TAPE_MID_X = -37,
+            TAPE_HIGH_X = 25,
+            GATE_X = 0,
+            MIDDLE_XY = 20;
 
+    // Headings
+    public static double
+            INTAKE_HEADING = 90,
+            HALFWAY_HEADING = 135;
+
+    // Timeouts
+    public static int
+            INTAKE_TIME = 4500,
+            GO_TO_INTAKE_TIME = 2000,
+            SHIFTING_INTAKE_TIME = 1000,
+            SHORT_SHIFTING_INTAKE_TIME = 750;
+
+    // Sleep Poses
+    public static int
+            SHOOT_TIME = 1300;
+
+    // Poses
+    public static Pose2D
+        // Shooting Poses
+            RED_SHOOTING_CLOSE = new Pose2D(DistanceUnit.INCH, MIDDLE_XY, -MIDDLE_XY, AngleUnit.DEGREES, -HALFWAY_HEADING),
+            BLUE_SHOOTING_CLOSE = new Pose2D(DistanceUnit.INCH, MIDDLE_XY, MIDDLE_XY, AngleUnit.DEGREES, HALFWAY_HEADING),
+
+        // Tape Poses
+            // Red
+            RED_BEFORE_LOW_TAPE = new Pose2D(DistanceUnit.CM,TAPE_LOW_X, -BEFORE_TAPE_Y, AngleUnit.DEGREES, -INTAKE_HEADING),
+            RED_AFTER_LOW_TAPE = new Pose2D(DistanceUnit.CM,TAPE_LOW_X, -AFTER_TAPE_Y, AngleUnit.DEGREES, -INTAKE_HEADING),
+            RED_BEFORE_MID_TAPE = new Pose2D(DistanceUnit.CM,TAPE_MID_X, -BEFORE_TAPE_Y, AngleUnit.DEGREES, -INTAKE_HEADING),
+            RED_AFTER_MID_TAPE = new Pose2D(DistanceUnit.CM,TAPE_MID_X, -AFTER_TAPE_Y, AngleUnit.DEGREES, -INTAKE_HEADING),
+            RED_BEFORE_HIGH_TAPE = new Pose2D(DistanceUnit.CM,TAPE_HIGH_X, -BEFORE_TAPE_Y, AngleUnit.DEGREES, -INTAKE_HEADING),
+            RED_AFTER_HIGH_TAPE = new Pose2D(DistanceUnit.CM,TAPE_HIGH_X, -AFTER_TAPE_Y + 15, AngleUnit.DEGREES, -INTAKE_HEADING),
+
+        // Blue
+            BLUE_BEFORE_LOW_TAPE = new Pose2D(DistanceUnit.CM,TAPE_LOW_X, BEFORE_TAPE_Y, AngleUnit.DEGREES, INTAKE_HEADING),
+            BLUE_AFTER_LOW_TAPE = new Pose2D(DistanceUnit.CM,TAPE_LOW_X, AFTER_TAPE_Y, AngleUnit.DEGREES, INTAKE_HEADING),
+            BLUE_BEFORE_MID_TAPE = new Pose2D(DistanceUnit.CM,TAPE_MID_X, BEFORE_TAPE_Y, AngleUnit.DEGREES, INTAKE_HEADING),
+            BLUE_AFTER_MID_TAPE = new Pose2D(DistanceUnit.CM,TAPE_MID_X, AFTER_TAPE_Y, AngleUnit.DEGREES, INTAKE_HEADING),
+            BLUE_BEFORE_HIGH_TAPE = new Pose2D(DistanceUnit.CM,TAPE_HIGH_X, BEFORE_TAPE_Y, AngleUnit.DEGREES, INTAKE_HEADING),
+            BLUE_AFTER_HIGH_TAPE = new Pose2D(DistanceUnit.CM,TAPE_HIGH_X, AFTER_TAPE_Y - 15, AngleUnit.DEGREES, INTAKE_HEADING),
+    // Gate Poses
+            RED_GATE_BEFORE = new Pose2D(DistanceUnit.CM, GATE_X, -BEFORE_TAPE_Y, AngleUnit.DEGREES, -INTAKE_HEADING),
+            RED_GATE_AFTER = new Pose2D(DistanceUnit.CM, GATE_X, -GATE_Y, AngleUnit.DEGREES, -INTAKE_HEADING),
+
+            BLUE_GATE_BEFORE = new Pose2D(DistanceUnit.CM, GATE_X, BEFORE_TAPE_Y, AngleUnit.DEGREES, INTAKE_HEADING),
+            BLUE_GATE_AFTER = new Pose2D(DistanceUnit.CM, GATE_X, GATE_Y, AngleUnit.DEGREES, INTAKE_HEADING),
+
+        // End Poses
+            RED_END_CLOSE = new Pose2D(DistanceUnit.INCH, 0, -MIDPOINT_Y, AngleUnit.DEGREES, -112.5),
+            BLUE_END_CLOSE = new Pose2D(DistanceUnit.INCH, 0, MIDPOINT_Y, AngleUnit.DEGREES, 112.5);
     @Override
     public void init() {
         try {
@@ -97,7 +151,7 @@ public class SixBallClose extends OpMode {
                 () -> Constants.Pathing.LATITUDE_KP *= 2,
                 () -> Constants.Pathing.HEADING_KP *= 2,
                 () -> robotContainer.intake.setPower(-Constants.Intake.BEST_INTAKE_SPEED),
-                () -> robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setPower(0.0), 100),
+                () -> robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setPower(0.0), 200),
                 () -> robotContainer.spindexer.shootToggle(true),
                 () -> Constants.Pathing.LONGITUDE_PID_TOLERANCE_CM *= 1.5,
                 () -> Constants.Pathing.LATITUDE_PID_TOLERANCE_CM *= 1.5,
@@ -106,36 +160,69 @@ public class SixBallClose extends OpMode {
 
         if (Status.alliance == Constants.Game.ALLIANCE.BLUE) {
             robotContainer.pathPlanner.addActionPose(start);
-            robotContainer.pathPlanner.addPoseTimeout(BLUE_MIDDLE, 3000);
+            robotContainer.pathPlanner.addPoseTimeout(BLUE_SHOOTING_CLOSE, 750);
             robotContainer.pathPlanner.addActionPose(shoot);
-            robotContainer.pathPlanner.addSleepPose(4000);
+            robotContainer.pathPlanner.addSleepPose(SHOOT_TIME);
             robotContainer.pathPlanner.addActionPose(goToIntake);
-            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, TAPE_HIGH, BEFORE_TAPE, AngleUnit.DEGREES, 90), 2000);
+            robotContainer.pathPlanner.addPoseTimeout(BLUE_BEFORE_HIGH_TAPE, 1750);
             robotContainer.pathPlanner.addActionPose(intake);
-            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, TAPE_HIGH, AFTER_TAPE, AngleUnit.DEGREES, 90), 2000);
-            robotContainer.pathPlanner.addSleepPose(1000);
+            robotContainer.pathPlanner.addPoseTimeout(BLUE_AFTER_HIGH_TAPE, 2000);
             robotContainer.pathPlanner.addActionPose(endOfIntake);
-            robotContainer.pathPlanner.addPoseTimeout(BLUE_MIDDLE, 3000);
+            robotContainer.pathPlanner.addPoseTimeout(BLUE_SHOOTING_CLOSE, 1250);
             robotContainer.pathPlanner.addActionPose(shoot);
-            robotContainer.pathPlanner.addSleepPose(4000);
+            robotContainer.pathPlanner.addSleepPose(SHOOT_TIME);
+            robotContainer.pathPlanner.addActionPose(goToIntake);
+            robotContainer.pathPlanner.addPoseTimeout(BLUE_BEFORE_MID_TAPE, 1500);
+            robotContainer.pathPlanner.addActionPose(intake);
+            robotContainer.pathPlanner.addPoseTimeout(BLUE_AFTER_MID_TAPE, 2500);
+            robotContainer.pathPlanner.addActionPose(endOfIntake);
+            robotContainer.pathPlanner.addPoseTimeout(BLUE_END_CLOSE, 750);
+            robotContainer.pathPlanner.addPoseTimeout(BLUE_SHOOTING_CLOSE, 1250);
+            robotContainer.pathPlanner.addActionPose(shoot);
+            robotContainer.pathPlanner.addSleepPose(SHOOT_TIME);
+            robotContainer.pathPlanner.addActionPose(goToIntake);
+            robotContainer.pathPlanner.addPoseTimeout(BLUE_BEFORE_LOW_TAPE, 2000);
+            robotContainer.pathPlanner.addActionPose(intake);
+            robotContainer.pathPlanner.addPoseTimeout(BLUE_AFTER_LOW_TAPE, 2500);
+            robotContainer.pathPlanner.addActionPose(endOfIntake);
+            robotContainer.pathPlanner.addPoseTimeout(BLUE_SHOOTING_CLOSE, 2500);
+            robotContainer.pathPlanner.addActionPose(shoot);
+            robotContainer.pathPlanner.addSleepPose(SHOOT_TIME);
             robotContainer.pathPlanner.addActionPose(goToEnd);
-            robotContainer.pathPlanner.addPose(BLUE_MIDPOINT);
-
+            robotContainer.pathPlanner.addPose(BLUE_END_CLOSE);
         } else {
             robotContainer.pathPlanner.addActionPose(start);
-            robotContainer.pathPlanner.addPoseTimeout(RED_MIDDLE, 3000);
+            robotContainer.pathPlanner.addPoseTimeout(RED_SHOOTING_CLOSE, 750);
             robotContainer.pathPlanner.addActionPose(shoot);
-            robotContainer.pathPlanner.addSleepPose(4000);
+            robotContainer.pathPlanner.addSleepPose(SHOOT_TIME);
             robotContainer.pathPlanner.addActionPose(goToIntake);
-            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, TAPE_HIGH, -BEFORE_TAPE, AngleUnit.DEGREES, -90), 2000);
+            robotContainer.pathPlanner.addPoseTimeout(RED_BEFORE_HIGH_TAPE, 1750);
             robotContainer.pathPlanner.addActionPose(intake);
-            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, TAPE_HIGH, -AFTER_TAPE, AngleUnit.DEGREES, -90), 2000);
+            robotContainer.pathPlanner.addPoseTimeout(RED_AFTER_HIGH_TAPE, 2000);
             robotContainer.pathPlanner.addActionPose(endOfIntake);
-            robotContainer.pathPlanner.addPoseTimeout(RED_MIDDLE, 3000);
+            robotContainer.pathPlanner.addPoseTimeout(RED_SHOOTING_CLOSE, 1250);
             robotContainer.pathPlanner.addActionPose(shoot);
-            robotContainer.pathPlanner.addSleepPose(4000);
+            robotContainer.pathPlanner.addSleepPose(SHOOT_TIME);
+            robotContainer.pathPlanner.addActionPose(goToIntake);
+            robotContainer.pathPlanner.addPoseTimeout(RED_BEFORE_MID_TAPE, 1500);
+            robotContainer.pathPlanner.addActionPose(intake);
+            robotContainer.pathPlanner.addPoseTimeout(RED_AFTER_MID_TAPE, 2500);
+            robotContainer.pathPlanner.addActionPose(endOfIntake);
+            robotContainer.pathPlanner.addPoseTimeout(RED_END_CLOSE, 750);
+            robotContainer.pathPlanner.addPoseTimeout(RED_SHOOTING_CLOSE, 1250);
+            robotContainer.pathPlanner.addActionPose(shoot);
+            robotContainer.pathPlanner.addSleepPose(SHOOT_TIME);
+            robotContainer.pathPlanner.addActionPose(goToIntake);
+            robotContainer.pathPlanner.addPoseTimeout(RED_BEFORE_LOW_TAPE, 2000);
+            robotContainer.pathPlanner.addActionPose(intake);
+            robotContainer.pathPlanner.addPoseTimeout(RED_AFTER_LOW_TAPE, 2500);
+            robotContainer.pathPlanner.addActionPose(endOfIntake);
+            robotContainer.pathPlanner.addPoseTimeout(RED_SHOOTING_CLOSE, 2500);
+            robotContainer.pathPlanner.addActionPose(shoot);
+            robotContainer.pathPlanner.addSleepPose(SHOOT_TIME);
             robotContainer.pathPlanner.addActionPose(goToEnd);
-            robotContainer.pathPlanner.addPose(RED_MIDPOINT);
+            robotContainer.pathPlanner.addPose(RED_END_CLOSE);
+
         }
     }
 

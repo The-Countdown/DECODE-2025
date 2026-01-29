@@ -39,9 +39,9 @@ public class ThreeBallClose extends OpMode {
         blackboard.put("pose", Status.currentPose);
 
         if (Status.alliance == Constants.Game.ALLIANCE.BLUE){
-            Status.startingPose = new Pose2D(DistanceUnit.INCH, 49, 48, AngleUnit.DEGREES, -90);
+            Status.startingPose = new Pose2D(DistanceUnit.INCH, 48, 52, AngleUnit.DEGREES, 180);
         } else {
-            Status.startingPose = new Pose2D(DistanceUnit.INCH, 49, -48, AngleUnit.DEGREES, -90);
+            Status.startingPose = new Pose2D(DistanceUnit.INCH, 48, -52, AngleUnit.DEGREES, 180);
         }
         RobotContainer.HardwareDevices.betterIMU.setAngleOffset(Status.startingPose.getHeading(AngleUnit.DEGREES));
 

@@ -182,7 +182,8 @@ public class RobotContainer {
     public RobotContainer(OpMode opMode) throws InterruptedException {
         this.opMode = opMode;
         this.hardwareMap = opMode.hardwareMap;
-        this.telemetry = new MultipleTelemetry(opMode.telemetry, FtcDashboard.getInstance().getTelemetry());
+//        this.telemetry = new MultipleTelemetry(opMode.telemetry, FtcDashboard.getInstance().getTelemetry());
+        this.telemetry = opMode.telemetry;
         this.telemetryCache = new HashMap<>();
         this.telemetryHeaderList = new ArrayList<>();
 
