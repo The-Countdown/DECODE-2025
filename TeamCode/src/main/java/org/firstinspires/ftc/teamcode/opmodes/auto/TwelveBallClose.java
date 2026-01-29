@@ -23,7 +23,7 @@ public class TwelveBallClose extends OpMode {
     // Positions
     public static double
             SHOOTING_FAR_Y = 43,
-            BEFORE_TAPE_Y = 80,
+            BEFORE_TAPE_Y = 75,
             AFTER_TAPE_Y = 157,
             TO_WALL_Y = 157,
             GATE_Y = 145,
@@ -40,7 +40,7 @@ public class TwelveBallClose extends OpMode {
     // Headings
     public static double
             INTAKE_HEADING = 90,
-            HALFWAY_HEADING = 135;
+            HALFWAY_HEADING = 155;
 
     // Timeouts
     public static int
