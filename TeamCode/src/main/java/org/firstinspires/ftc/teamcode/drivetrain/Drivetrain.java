@@ -322,6 +322,11 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
     }
 
     public double joystickRotationScaler(double input) {
+//        if (Math.signum(Constants.Control.JOYSTICK_ROTATION_SCALER_EXPONENT) == -1) {
+//            return 1 / (Math.pow(Math.abs(input), -Constants.Control.JOYSTICK_ROTATION_SCALER_EXPONENT)) * input;
+//        } else {
+//            return Math.pow(Math.abs(input), Constants.Control.JOYSTICK_ROTATION_SCALER_EXPONENT) * input;
+//        }
         return Math.pow(Math.abs(input), Constants.Control.JOYSTICK_ROTATION_SCALER_EXPONENT) * input;
     }
 
