@@ -14,9 +14,9 @@ import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 
-@Autonomous(name="TwelveBallCloseOpenGate", group="Robot")
+@Autonomous(name="TwelveBallCloseGate", group="Robot")
 @Config
-public class TwelveBallCloseOpenGate extends OpMode {
+public class TwelveBallCloseGate extends OpMode {
     private RobotContainer robotContainer;
     private final ElapsedTime pathTimer = new ElapsedTime();
 
