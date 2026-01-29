@@ -154,7 +154,7 @@ public class TwelveBallClose extends OpMode {
 
         if (Status.alliance == Constants.Game.ALLIANCE.BLUE) {
             robotContainer.pathPlanner.addActionPose(start);
-            robotContainer.pathPlanner.addPoseTimeout(BLUE_SHOOTING_CLOSE, 750);
+            robotContainer.pathPlanner.addPoseTimeout(BLUE_SHOOTING_CLOSE, 1250);
             robotContainer.pathPlanner.addActionPose(shoot);
             robotContainer.pathPlanner.addSleepPose(SHOOT_TIME);
             robotContainer.pathPlanner.addActionPose(goToIntake);
@@ -186,7 +186,7 @@ public class TwelveBallClose extends OpMode {
             robotContainer.pathPlanner.addPose(BLUE_END_CLOSE);
         } else {
             robotContainer.pathPlanner.addActionPose(start);
-            robotContainer.pathPlanner.addPoseTimeout(RED_SHOOTING_CLOSE, 750);
+            robotContainer.pathPlanner.addPoseTimeout(RED_SHOOTING_CLOSE, 1250);
             robotContainer.pathPlanner.addActionPose(shoot);
             robotContainer.pathPlanner.addSleepPose(SHOOT_TIME);
             robotContainer.pathPlanner.addActionPose(goToIntake);

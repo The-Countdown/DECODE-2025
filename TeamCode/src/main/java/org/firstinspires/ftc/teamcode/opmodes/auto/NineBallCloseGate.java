@@ -49,8 +49,6 @@ public class NineBallCloseGate extends OpMode {
 
         // Tape Poses
             // Red
-            RED_BEFORE_LOW_TAPE = new Pose2D(DistanceUnit.CM,TAPE_LOW_X, -BEFORE_TAPE_Y, AngleUnit.DEGREES, -INTAKE_HEADING),
-            RED_AFTER_LOW_TAPE = new Pose2D(DistanceUnit.CM,TAPE_LOW_X, -AFTER_TAPE_Y, AngleUnit.DEGREES, -INTAKE_HEADING),
             RED_BEFORE_MID_TAPE = new Pose2D(DistanceUnit.CM,TAPE_MID_X, -BEFORE_TAPE_Y, AngleUnit.DEGREES, -INTAKE_HEADING),
             RED_AFTER_MID_TAPE = new Pose2D(DistanceUnit.CM,TAPE_MID_X, -AFTER_TAPE_Y, AngleUnit.DEGREES, -INTAKE_HEADING),
             RED_BEFORE_HIGH_TAPE = new Pose2D(DistanceUnit.CM,TAPE_HIGH_X, -BEFORE_TAPE_Y, AngleUnit.DEGREES, -INTAKE_HEADING),
@@ -146,7 +144,7 @@ public class NineBallCloseGate extends OpMode {
 
         if (Status.alliance == Constants.Game.ALLIANCE.BLUE) {
             robotContainer.pathPlanner.addActionPose(start);
-            robotContainer.pathPlanner.addPoseTimeout(BLUE_SHOOTING_CLOSE, 750);
+            robotContainer.pathPlanner.addPoseTimeout(BLUE_SHOOTING_CLOSE, 1250);
             robotContainer.pathPlanner.addActionPose(shoot);
             robotContainer.pathPlanner.addSleepPose(SHOOT_TIME);
             robotContainer.pathPlanner.addActionPose(goToIntake);
@@ -171,7 +169,7 @@ public class NineBallCloseGate extends OpMode {
             robotContainer.pathPlanner.addPose(BLUE_END_CLOSE);
         } else {
             robotContainer.pathPlanner.addActionPose(start);
-            robotContainer.pathPlanner.addPoseTimeout(RED_SHOOTING_CLOSE, 750);
+            robotContainer.pathPlanner.addPoseTimeout(RED_SHOOTING_CLOSE, 1250);
             robotContainer.pathPlanner.addActionPose(shoot);
             robotContainer.pathPlanner.addSleepPose(SHOOT_TIME);
             robotContainer.pathPlanner.addActionPose(goToIntake);
