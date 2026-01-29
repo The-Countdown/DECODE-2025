@@ -75,12 +75,6 @@ public class TwelveBallClose extends OpMode {
             BLUE_AFTER_MID_TAPE = new Pose2D(DistanceUnit.CM,TAPE_MID_X, AFTER_TAPE_Y, AngleUnit.DEGREES, INTAKE_HEADING),
             BLUE_BEFORE_HIGH_TAPE = new Pose2D(DistanceUnit.CM,TAPE_HIGH_X, BEFORE_TAPE_Y, AngleUnit.DEGREES, INTAKE_HEADING),
             BLUE_AFTER_HIGH_TAPE = new Pose2D(DistanceUnit.CM,TAPE_HIGH_X, AFTER_TAPE_Y - 15, AngleUnit.DEGREES, INTAKE_HEADING),
-    // Gate Poses
-            RED_GATE_BEFORE = new Pose2D(DistanceUnit.CM, GATE_X, -BEFORE_TAPE_Y, AngleUnit.DEGREES, -INTAKE_HEADING),
-            RED_GATE_AFTER = new Pose2D(DistanceUnit.CM, GATE_X, -GATE_Y, AngleUnit.DEGREES, -INTAKE_HEADING),
-
-            BLUE_GATE_BEFORE = new Pose2D(DistanceUnit.CM, GATE_X, BEFORE_TAPE_Y, AngleUnit.DEGREES, INTAKE_HEADING),
-            BLUE_GATE_AFTER = new Pose2D(DistanceUnit.CM, GATE_X, GATE_Y, AngleUnit.DEGREES, INTAKE_HEADING),
 
         // End Poses
             RED_END_CLOSE = new Pose2D(DistanceUnit.INCH, 0, -MIDPOINT_Y, AngleUnit.DEGREES, -112.5),

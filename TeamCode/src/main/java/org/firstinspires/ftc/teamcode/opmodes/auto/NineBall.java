@@ -94,18 +94,18 @@ public class NineBall extends OpMode {
             BLUE_MIDDLE_OF_FAR_SHOOT_AND_HUMAN_PLAYER_STATION = new Pose2D(DistanceUnit.CM, HUMAN_PLAYER_STATION_X + 15, INTAKE_BACKUP_Y, AngleUnit.DEGREES, INTAKE_HEADING),
 
         // Gate Poses
-            RED_GATE_BEFORE = new Pose2D(DistanceUnit.CM, GATE_X, -BEFORE_TAPE_Y, AngleUnit.DEGREES, -INTAKE_HEADING),
+            RED_GATE_BEFORE = new Pose2D(DistanceUnit.CM, TAPE_MID_X, -130, AngleUnit.DEGREES, -INTAKE_HEADING),
             RED_GATE_AFTER = new Pose2D(DistanceUnit.CM, GATE_X, -GATE_Y, AngleUnit.DEGREES, -INTAKE_HEADING),
 
-            BLUE_GATE_BEFORE = new Pose2D(DistanceUnit.CM, GATE_X, BEFORE_TAPE_Y, AngleUnit.DEGREES, INTAKE_HEADING),
+            BLUE_GATE_BEFORE = new Pose2D(DistanceUnit.CM, TAPE_MID_X, 130, AngleUnit.DEGREES, INTAKE_HEADING),
             BLUE_GATE_AFTER = new Pose2D(DistanceUnit.CM, GATE_X, GATE_Y, AngleUnit.DEGREES, INTAKE_HEADING),
 
         // End Poses
             RED_END_CLOSE = new Pose2D(DistanceUnit.INCH, 0, -MIDPOINT_Y, AngleUnit.DEGREES, 0),
-            RED_END_FAR = new Pose2D(DistanceUnit.INCH, Status.startingPose.getX(DistanceUnit.INCH) + 20, Status.startingPose.getY(DistanceUnit.INCH) - 5, AngleUnit.DEGREES, 180),
+            RED_END_FAR = new Pose2D(DistanceUnit.CM,  -110, -56, AngleUnit.DEGREES, 180),
 
-            BLUE_END_CLOSE = new Pose2D(DistanceUnit.INCH, 0, MIDPOINT_Y, AngleUnit.DEGREES, 0),
-            BLUE_END_FAR = new Pose2D(DistanceUnit.INCH, Status.startingPose.getX(DistanceUnit.INCH) + 20, Status.startingPose.getY(DistanceUnit.INCH) + 5, AngleUnit.DEGREES, 180);
+            BLUE_END_CLOSE = new Pose2D(DistanceUnit.CM, 0, MIDPOINT_Y, AngleUnit.DEGREES, 0),
+            BLUE_END_FAR = new Pose2D(DistanceUnit.CM, -110,  56, AngleUnit.DEGREES, 180);
 
     @Override
     public void init() {

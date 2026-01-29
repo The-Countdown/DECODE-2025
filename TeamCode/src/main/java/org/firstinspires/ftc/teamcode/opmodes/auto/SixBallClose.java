@@ -22,9 +22,17 @@ public class SixBallClose extends OpMode {
 
     public static double BEFORE_TAPE = 84;
     public static double AFTER_TAPE = 147;
-    public static double TAPE_HIGH = 25;
     public static double MIDPOINT = 18;
     public static double MIDDLE = 20;
+    public static double TAPE_HIGH_X = 25;
+    public static double INTAKE_HEADING = 90;
+
+    public static Pose2D
+    RED_BEFORE_HIGH_TAPE = new Pose2D(DistanceUnit.CM,TAPE_HIGH_X, -BEFORE_TAPE, AngleUnit.DEGREES, -INTAKE_HEADING),
+    RED_AFTER_HIGH_TAPE = new Pose2D(DistanceUnit.CM,TAPE_HIGH_X, -AFTER_TAPE, AngleUnit.DEGREES, -INTAKE_HEADING),
+
+    BLUE_BEFORE_HIGH_TAPE = new Pose2D(DistanceUnit.CM,TAPE_HIGH_X, BEFORE_TAPE, AngleUnit.DEGREES, INTAKE_HEADING),
+    BLUE_AFTER_HIGH_TAPE = new Pose2D(DistanceUnit.CM,TAPE_HIGH_X, AFTER_TAPE, AngleUnit.DEGREES, INTAKE_HEADING);
     public static Pose2D
             RED_MIDDLE = new Pose2D(DistanceUnit.INCH, MIDDLE, -MIDDLE, AngleUnit.DEGREES, -135),
             RED_MIDPOINT = new Pose2D(DistanceUnit.INCH, 0, -MIDPOINT, AngleUnit.DEGREES, -112.5),
@@ -110,10 +118,10 @@ public class SixBallClose extends OpMode {
             robotContainer.pathPlanner.addActionPose(shoot);
             robotContainer.pathPlanner.addSleepPose(4000);
             robotContainer.pathPlanner.addActionPose(goToIntake);
-            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, TAPE_HIGH, BEFORE_TAPE, AngleUnit.DEGREES, 90), 2000);
+            robotContainer.pathPlanner.addPoseTimeout(BLUE_BEFORE_HIGH_TAPE, 2000);
             robotContainer.pathPlanner.addActionPose(intake);
-            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, TAPE_HIGH, AFTER_TAPE, AngleUnit.DEGREES, 90), 2000);
-            robotContainer.pathPlanner.addSleepPose(1000);
+            robotContainer.pathPlanner.addPoseTimeout(BLUE_AFTER_HIGH_TAPE, 2500);
+            robotContainer.pathPlanner.addSleepPose(500);
             robotContainer.pathPlanner.addActionPose(endOfIntake);
             robotContainer.pathPlanner.addPoseTimeout(BLUE_MIDDLE, 3000);
             robotContainer.pathPlanner.addActionPose(shoot);
@@ -127,9 +135,10 @@ public class SixBallClose extends OpMode {
             robotContainer.pathPlanner.addActionPose(shoot);
             robotContainer.pathPlanner.addSleepPose(4000);
             robotContainer.pathPlanner.addActionPose(goToIntake);
-            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, TAPE_HIGH, -BEFORE_TAPE, AngleUnit.DEGREES, -90), 2000);
+            robotContainer.pathPlanner.addPoseTimeout(RED_BEFORE_HIGH_TAPE, 2000);
             robotContainer.pathPlanner.addActionPose(intake);
-            robotContainer.pathPlanner.addPoseTimeout(new Pose2D(DistanceUnit.CM, TAPE_HIGH, -AFTER_TAPE, AngleUnit.DEGREES, -90), 2000);
+            robotContainer.pathPlanner.addPoseTimeout(RED_AFTER_HIGH_TAPE, 2500);
+            robotContainer.pathPlanner.addSleepPose(500);
             robotContainer.pathPlanner.addActionPose(endOfIntake);
             robotContainer.pathPlanner.addPoseTimeout(RED_MIDDLE, 3000);
             robotContainer.pathPlanner.addActionPose(shoot);

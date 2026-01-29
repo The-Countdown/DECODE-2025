@@ -73,8 +73,8 @@ public class NineBallSide extends OpMode {
             BLUE_MIDDLE_OF_FAR_SHOOT_AND_HUMAN_PLAYER_STATION = new Pose2D(DistanceUnit.CM, HUMAN_PLAYER_STATION_X + 15, INTAKE_BACKUP_Y, AngleUnit.DEGREES, INTAKE_HEADING),
 
         // End Poses
-            RED_END_FAR = new Pose2D(DistanceUnit.INCH, Status.startingPose.getX(DistanceUnit.INCH) + 20, Status.startingPose.getY(DistanceUnit.INCH) - 5, AngleUnit.DEGREES, 180),
-            BLUE_END_FAR = new Pose2D(DistanceUnit.INCH, Status.startingPose.getX(DistanceUnit.INCH) + 20, Status.startingPose.getY(DistanceUnit.INCH) + 5, AngleUnit.DEGREES, 180);
+            RED_END_FAR = new Pose2D(DistanceUnit.CM,  -110, -56, AngleUnit.DEGREES, 180),
+            BLUE_END_FAR = new Pose2D(DistanceUnit.CM, -110,  56, AngleUnit.DEGREES, 180);
 
     @Override
     public void init() {
