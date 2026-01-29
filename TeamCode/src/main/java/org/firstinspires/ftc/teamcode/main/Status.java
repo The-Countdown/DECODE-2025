@@ -18,8 +18,8 @@ public class Status {
     public static double currentHeading = 0;
     public static Constants.Game.MOTIF  motif = Constants.Game.MOTIF.GPP;
     public static Constants.Game.ALLIANCE alliance = Constants.Game.ALLIANCE.RED;
-    public static boolean competitionMode = false;
-    public static boolean loggingToFile = true;
+    public static boolean competitionMode = true;
+    public static boolean loggingToFile = false;
 
     public static Pose2D cornerResetPose;
     public static Pose2D goalPose;
@@ -36,7 +36,7 @@ public class Status {
     public static Constants.LED.COLOR currentLightColor;
 
     public static boolean isDrivingActive = false;
-    public static boolean fieldOriented = false;
+    public static boolean fieldOriented = true;
 
     public static boolean intakeGamepadable = false;
     public static final GamepadWrapper.ButtonReader turretToggleButton = new GamepadWrapper.ButtonReader();
