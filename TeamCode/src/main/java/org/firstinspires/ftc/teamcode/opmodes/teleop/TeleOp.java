@@ -106,9 +106,9 @@ public class TeleOp extends OpMode {
         if (robotContainer.gamepadEx1.triangle.wasJustPressed()) {
             Status.isDrivingActive = false;
             if (Status.alliance == Constants.Game.ALLIANCE.RED) {
-                RobotContainer.HardwareDevices.pinpoint.setPosition(new Pose2D(DistanceUnit.CM, -155, 160, AngleUnit.DEGREES, 0));
+                RobotContainer.HardwareDevices.pinpoint.setPosition(new Pose2D(DistanceUnit.CM, -164, 155, AngleUnit.DEGREES, 0));
             } else if (Status.alliance == Constants.Game.ALLIANCE.BLUE) {
-                RobotContainer.HardwareDevices.pinpoint.setPosition(new Pose2D(DistanceUnit.CM, -155, -160, AngleUnit.DEGREES, 0));
+                RobotContainer.HardwareDevices.pinpoint.setPosition(new Pose2D(DistanceUnit.CM, -164, -155, AngleUnit.DEGREES, 0));
             }
             pinpointTimer.reset();
             RobotContainer.HardwareDevices.betterIMU.resetAngle();
