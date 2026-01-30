@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.main.Status;
 
 import java.util.ArrayList;
 
+@Disabled
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "HeadingPowerScaleTuner", group = "Auto")
 public class HeadingPowerScaleTuner extends OpMode {
     private RobotContainer robotContainer;

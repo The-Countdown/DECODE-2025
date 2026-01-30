@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 
+@Disabled
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "PathPlannerTuner", group = "TeleOp")
 public class PathPlannerTuner extends OpMode {
     private RobotContainer robotContainer;
