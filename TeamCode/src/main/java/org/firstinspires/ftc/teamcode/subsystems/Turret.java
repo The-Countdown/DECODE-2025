@@ -59,16 +59,18 @@ public class Turret extends RobotContainer.HardwareDevices {
             // So some though will be required
             if (robotContainer.gamepadEx2.dpadLeft.wasJustReleased()) {
                 if (Status.currentPose.getX(DistanceUnit.CM) < -75) {
+                    turretAngleOffset -= 3;
+                } else {
                     turretAngleOffsetFar -= 3;
                 }
-                turretAngleOffset -= 3;
             }
 
             if (robotContainer.gamepadEx2.dpadRight.wasJustReleased()) {
                 if (Status.currentPose.getX(DistanceUnit.CM) < -75) {
+                    turretAngleOffset += 3;
+                } else {
                     turretAngleOffsetFar += 3;
                 }
-                turretAngleOffset += 3;
             }
 
             if (robotContainer.gamepadEx2.dpadDown.wasJustPressed()) {
