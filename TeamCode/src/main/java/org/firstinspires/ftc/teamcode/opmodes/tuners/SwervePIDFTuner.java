@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.main.Status;
 
 import java.util.Objects;
 
+@Disabled
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "SwervePIDFTuner", group = "Tuner")
 public class SwervePIDFTuner extends OpMode {
     private RobotContainer robotContainer;

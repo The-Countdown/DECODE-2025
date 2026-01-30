@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.main.Status;
 import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
 
+@Disabled
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "MaxRotationTuner", group = "TeleOp")
 public class MaxRotationTuner extends OpMode {
     private RobotContainer robotContainer;

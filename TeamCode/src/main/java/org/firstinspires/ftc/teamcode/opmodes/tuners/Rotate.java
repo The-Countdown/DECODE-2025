@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.main.Status;
 
 import java.util.Arrays;
 
+@Disabled
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "Rotate", group = "Auto")
 public class Rotate extends OpMode {
     private RobotContainer robotContainer;

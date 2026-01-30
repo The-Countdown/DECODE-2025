@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.main.Status;
 
 import java.util.ArrayList;
 
+@Disabled
 @com.qualcomm.robotcore.eventloop.opmode.Autonomous(name = "AccelerationTuner", group = "Auto")
 public class AccelerationTuner extends OpMode {
     private RobotContainer robotContainer;

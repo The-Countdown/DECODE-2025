@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.main.Status;
 
 import java.util.Objects;
 
+@Disabled
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Forward", group = "Tuner")
 public class Forward extends OpMode {
     public static double CURRENT_LOOP_TIME_AVG_MS;
