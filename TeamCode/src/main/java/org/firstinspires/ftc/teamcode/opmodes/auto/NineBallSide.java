@@ -32,8 +32,7 @@ public class NineBallSide extends OpMode {
 
     // Headings
     public static double
-            INTAKE_HEADING = 90,
-            HALFWAY_HEADING = 135;
+            INTAKE_HEADING = 90;
 
     // Timeouts
     public static int
@@ -125,29 +124,13 @@ public class NineBallSide extends OpMode {
                 () -> robotContainer.intake.setPower(Constants.Intake.BEST_INTAKE_SPEED)
         );
 
-        ActionPose sideGoToAndIntake = new ActionPose(robotContainer,
-                () -> robotContainer.spindexer.shootToggle(false),
-                () -> robotContainer.delayedActionManager.schedule(() -> Constants.Pathing.LATITUDE_KP /= 1.25, 2500),
-                () -> robotContainer.delayedActionManager.schedule(() -> Constants.Pathing.LATITUDE_KP /= 1.25,  2500),
-                () -> robotContainer.delayedActionManager.schedule(() -> Constants.Pathing.LATITUDE_KP *= 1.25, 3250),
-                () -> robotContainer.delayedActionManager.schedule(() -> Constants.Pathing.LATITUDE_KP *= 1.25,  3250),
-                () -> robotContainer.intake.setPower(Constants.Intake.BEST_INTAKE_SPEED)
-        );
-
-        ActionPose endOfSideIntake = new ActionPose(robotContainer,
-                () -> robotContainer.intake.setPower(-Constants.Intake.BEST_INTAKE_SPEED),
-                () -> robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setPower(0.0), 100),
-                () -> robotContainer.spindexer.shootToggle(true),
-                () -> Constants.Pathing.LONGITUDE_PID_TOLERANCE_CM *= 1.5,
-                () -> Constants.Pathing.LATITUDE_PID_TOLERANCE_CM *= 1.5
-        );
-
         ActionPose endOfIntake = new ActionPose(robotContainer,
                 () -> Constants.Pathing.LONGITUDE_KP *= 2,
                 () -> Constants.Pathing.LATITUDE_KP *= 2,
                 () -> Constants.Pathing.HEADING_KP *= 2,
                 () -> robotContainer.intake.setPower(-Constants.Intake.BEST_INTAKE_SPEED),
-                () -> robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setPower(0.0), 100),
+                () -> robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setPower(-Constants.Intake.BEST_INTAKE_SPEED), 500),
+                () -> robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setPower(0.0), 700),
                 () -> robotContainer.spindexer.shootToggle(true),
                 () -> Constants.Pathing.LONGITUDE_PID_TOLERANCE_CM *= 1.5,
                 () -> Constants.Pathing.LATITUDE_PID_TOLERANCE_CM *= 1.5,

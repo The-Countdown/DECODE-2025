@@ -115,6 +115,8 @@ public class TwelveBallSide extends OpMode {
         ActionPose start = new ActionPose(robotContainer,
                 () -> Constants.Pathing.LATITUDE_KP *= 1.5,
                 () -> Constants.Pathing.LONGITUDE_KP *= 1.5,
+                () -> Constants.Pathing.LATITUDE_KP *= 1.5,
+                () -> Constants.Pathing.LONGITUDE_KP *= 1.5,
                 () -> robotContainer.spindexer.shootToggle(true),
                 () -> Constants.Pathing.LONGITUDE_PID_TOLERANCE_CM *= 1,
                 () -> Constants.Pathing.LATITUDE_PID_TOLERANCE_CM *= 1
@@ -146,7 +148,8 @@ public class TwelveBallSide extends OpMode {
                 () -> Constants.Pathing.LATITUDE_KP *= 1.5,
                 () -> Constants.Pathing.HEADING_KP *= 1.5,
                 () -> robotContainer.intake.setPower(-Constants.Intake.BEST_INTAKE_SPEED),
-                () -> robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setPower(0.0), 100),
+                () -> robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setPower(-Constants.Intake.BEST_INTAKE_SPEED), 500),
+                () -> robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setPower(0.0), 700),
                 () -> robotContainer.spindexer.shootToggle(true),
                 () -> Constants.Pathing.LONGITUDE_PID_TOLERANCE_CM *= 1.5,
                 () -> Constants.Pathing.LATITUDE_PID_TOLERANCE_CM *= 1.5,
