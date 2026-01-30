@@ -91,6 +91,18 @@ public class TeleOp extends OpMode {
             Status.manualControl = !Status.manualControl;
         }
 
+        // Auto drive to baseing position
+        if (robotContainer.gamepadEx1.square.wasJustPressed()) {
+            Status.isDrivingActive = false;
+            robotContainer.pathPlanner.clearPoses();
+            if (Status.alliance == Constants.Game.ALLIANCE.BLUE) {
+                robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, -97, -84, AngleUnit.DEGREES, 180));
+            } else {
+                robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, -97, 84, AngleUnit.DEGREES, 180));
+            }
+            robotContainer.pathingUpdater.start();
+        }
+
         if (robotContainer.gamepadEx1.triangle.wasJustPressed()) {
             Status.isDrivingActive = false;
             if (Status.alliance == Constants.Game.ALLIANCE.RED) {
@@ -115,7 +127,6 @@ public class TeleOp extends OpMode {
         if (pinpointTimer.milliseconds() > 300 && !robotContainer.gamepadEx1.square.isPressed()) {
             Status.isDrivingActive = true;
         }
-
         if (robotContainer.gamepadEx1.square.isHeld()) {
             if (robotContainer.pathPlanner.driveUsingPID(0)) {
                 Status.isDrivingActive = true;
