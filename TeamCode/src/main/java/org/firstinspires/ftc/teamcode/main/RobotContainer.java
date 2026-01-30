@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.main;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.qualcomm.hardware.dfrobot.HuskyLens;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 import com.qualcomm.hardware.lynx.LynxModule;
@@ -18,7 +17,6 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.hardware.adafruit.AdafruitBNO055IMU;
 import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.util.AndroidSerialNumberNotFoundException;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.ReadWriteFile;
 
@@ -46,7 +44,6 @@ import org.firstinspires.ftc.teamcode.hardware.BetterColorSensor;
 import org.firstinspires.ftc.teamcode.hardware.BetterDcMotor;
 import org.firstinspires.ftc.teamcode.hardware.BetterServo;
 import org.firstinspires.ftc.teamcode.other.IndicatorLighting;
-import org.firstinspires.ftc.teamcode.subsystems.HuskyLensLogic;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.LimelightLogic;
 import org.firstinspires.ftc.teamcode.subsystems.PositionProvider;
@@ -103,8 +100,6 @@ public class RobotContainer {
     public FeedForward feedForward;
     public LimelightLogic limelightLogic;
     public PositionProvider positionProvider;
-    public HuskyLensLogic huskyLensLogic1;
-    public HuskyLensLogic huskyLensLogic2;
     public DelayedActionManager delayedActionManager = new DelayedActionManager(this);
     public Drivetrain drivetrain;
     public HeadingPID headingPID;
@@ -139,8 +134,6 @@ public class RobotContainer {
 
         public static GoBildaPinpointDriver pinpoint;
         public static Limelight3A limelight;
-        public static HuskyLens huskyLens1;
-        public static HuskyLens huskyLens2;
 
         // Gobilda RGB indicator light
         public static ServoImplEx indicatorLightFront;
@@ -165,7 +158,6 @@ public class RobotContainer {
         public static BetterServo hoodServo;
 
         // Spindexer
-        public static BetterDcMotor spindexerEncoder;
         public static BetterCRServo spindexerServoMaster;
         public static BetterCRServo spindexerServoSlave;
         public static LinkedServos spindexerServos;
@@ -204,8 +196,6 @@ public class RobotContainer {
         HardwareDevices.pinpoint.setEncoderDirections(Constants.Pathing.PINPOINT_X_ENCODER_DIRECTION, Constants.Pathing.PINPOINT_Y_ENCODER_DIRECTION);
 
         HardwareDevices.limelight = getHardwareDevice(Limelight3A.class, "limelight");
-        HardwareDevices.huskyLens1 = getHardwareDevice(HuskyLens.class, "huskyLens1");
-        HardwareDevices.huskyLens2 = getHardwareDevice(HuskyLens.class, "huskyLens2");
 
         HardwareDevices.indicatorLightFront = getHardwareDevice(ServoImplEx.class, "indicatorLightFront");
         HardwareDevices.indicatorLightBack = getHardwareDevice(ServoImplEx.class, "indicatorLightBack");
@@ -231,7 +221,6 @@ public class RobotContainer {
         HardwareDevices.turretServoMaster = new BetterServo(getHardwareDevice(ServoImplEx.class, "turretServoMaster"), Constants.Robot.SERVO_UPDATE_TIME);
         HardwareDevices.turretServoSlave = new BetterServo(getHardwareDevice(ServoImplEx.class, "turretServoSlave"), Constants.Robot.SERVO_UPDATE_TIME);
         HardwareDevices.hoodServo = new BetterServo(getHardwareDevice(ServoImplEx.class, "hoodServo"), Constants.Robot.SERVO_UPDATE_TIME);
-        HardwareDevices.spindexerEncoder = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "spindexEncoder"), Constants.Robot.MOTOR_UPDATE_TIME);
         HardwareDevices.spindexerServoMaster = new BetterCRServo(getHardwareDevice(CRServoImplEx.class, "spindexerServoMaster"), Constants.Robot.SERVO_UPDATE_TIME);
         HardwareDevices.spindexerServoSlave = new BetterCRServo(getHardwareDevice(CRServoImplEx.class, "spindexerServoSlave"), Constants.Robot.SERVO_UPDATE_TIME);
         HardwareDevices.spindexerAnalog = new BetterAnalogInput(getHardwareDevice(AnalogInput.class, "spindexerAnalog"), Constants.Robot.ANALOG_UPDATE_TIME);
@@ -253,8 +242,6 @@ public class RobotContainer {
         feedForward = new FeedForward();
         limelightLogic = new LimelightLogic(this, telemetry, HardwareDevices.limelight);
         positionProvider = new PositionProvider(this, limelightLogic, HardwareDevices.pinpoint);
-        huskyLensLogic1 = new HuskyLensLogic(this, RobotContainer.HardwareDevices.huskyLens1);
-        huskyLensLogic2 = new HuskyLensLogic(this, RobotContainer.HardwareDevices.huskyLens2);
         turret = new Turret(this, flyWheelMotors, HardwareDevices.hoodServo, turretServos);
         HardwareDevices.intakeMotor.setDirection(DcMotor.Direction.REVERSE);
         intake = new Intake(this, HardwareDevices.intakeMotor);

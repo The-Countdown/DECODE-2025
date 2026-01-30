@@ -46,7 +46,7 @@ public class TwelveBallCloseGate extends OpMode {
 
     // Sleep Poses
     public static int
-            SHOOT_TIME = 1300;
+            SHOOT_TIME = 1400;
 
     // Poses
     public static Pose2D
@@ -72,14 +72,14 @@ public class TwelveBallCloseGate extends OpMode {
             BLUE_AFTER_HIGH_TAPE = new Pose2D(DistanceUnit.CM,TAPE_HIGH_X, AFTER_TAPE_Y - 15, AngleUnit.DEGREES, INTAKE_HEADING),
 
     // Gate Poses
-    RED_GATE_BEFORE = new Pose2D(DistanceUnit.CM, TAPE_MID_X, -130, AngleUnit.DEGREES, -INTAKE_HEADING),
+    RED_GATE_BEFORE = new Pose2D(DistanceUnit.CM, TAPE_MID_X, -120, AngleUnit.DEGREES, -INTAKE_HEADING),
             RED_GATE_AFTER = new Pose2D(DistanceUnit.CM, GATE_X, -GATE_Y, AngleUnit.DEGREES, -INTAKE_HEADING),
 
-    BLUE_GATE_BEFORE = new Pose2D(DistanceUnit.CM, TAPE_MID_X, 130, AngleUnit.DEGREES, INTAKE_HEADING),
+    BLUE_GATE_BEFORE = new Pose2D(DistanceUnit.CM, TAPE_MID_X, 120, AngleUnit.DEGREES, INTAKE_HEADING),
             BLUE_GATE_AFTER = new Pose2D(DistanceUnit.CM, GATE_X, GATE_Y, AngleUnit.DEGREES, INTAKE_HEADING),
     // End Poses
-    RED_END_CLOSE = new Pose2D(DistanceUnit.INCH, 0, -MIDPOINT_Y, AngleUnit.DEGREES, -112.5),
-            BLUE_END_CLOSE = new Pose2D(DistanceUnit.INCH, 0, MIDPOINT_Y, AngleUnit.DEGREES, 112.5);
+    RED_END_CLOSE = new Pose2D(DistanceUnit.INCH, 30, -MIDPOINT_Y, AngleUnit.DEGREES, -112.5),
+            BLUE_END_CLOSE = new Pose2D(DistanceUnit.INCH, 30, MIDPOINT_Y, AngleUnit.DEGREES, 112.5);
     @Override
     public void init() {
         try {
@@ -135,16 +135,14 @@ public class TwelveBallCloseGate extends OpMode {
         );
 
         ActionPose intake = new ActionPose(robotContainer,
-                () -> Constants.Pathing.LONGITUDE_KP /= 2,
-                () -> Constants.Pathing.LATITUDE_KP /= 2,
-                () -> Constants.Pathing.HEADING_KP /= 2,
+                () -> Constants.Pathing.LONGITUDE_KP /= 1.5,
+                () -> Constants.Pathing.LATITUDE_KP /= 1.5,
                 () -> robotContainer.intake.setPower(Constants.Intake.BEST_INTAKE_SPEED)
         );
 
         ActionPose endOfIntake = new ActionPose(robotContainer,
                 () -> Constants.Pathing.LONGITUDE_KP *= 2,
                 () -> Constants.Pathing.LATITUDE_KP *= 2,
-                () -> Constants.Pathing.HEADING_KP *= 2,
                 () -> robotContainer.intake.setPower(-Constants.Intake.BEST_INTAKE_SPEED),
                 () -> robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setPower(-Constants.Intake.BEST_INTAKE_SPEED), 500),
                 () -> robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setPower(0.0), 700),
