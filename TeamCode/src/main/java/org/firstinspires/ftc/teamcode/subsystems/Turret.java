@@ -71,6 +71,11 @@ public class Turret extends RobotContainer.HardwareDevices {
                 turretAngleOffset += 3;
             }
 
+            if (robotContainer.gamepadEx2.dpadDown.wasJustPressed()) {
+                turretAngleOffset = 0;
+                turretAngleOffsetFar = 0;
+            }
+
             // Manual turret hood
             if (Status.currentPose.getX(DistanceUnit.CM) < -75) {
                 robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[1]);
@@ -130,7 +135,7 @@ public class Turret extends RobotContainer.HardwareDevices {
 
     public void setTargetAngle(double angleInDegrees) { // angleInDegrees should be between -180 and 180
         targetPositionDegrees = angleInDegrees;
-        if (Status.currentPose.getX(DistanceUnit.CM) < -75) {
+        if (Status.currentPose.getX(DistanceUnit.CM) > -75) {
             angleInDegrees = HelperFunctions.normalizeAngle(angleInDegrees + turretAngleOffsetFar);
         } else {
             angleInDegrees = HelperFunctions.normalizeAngle(angleInDegrees + turretAngleOffset);
