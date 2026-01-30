@@ -319,14 +319,14 @@ public class Constants {
         public static int FLYWHEEL_MAX_VELOCITY = 1720;
         public static int FLYWHEEL_MAX_POWER_ERROR = 200;
         public static double FLYWHEEL_CURVE = 4;
-        public static double[] FLYWHEEL_SPEED_TABLE = {0.57, 0.6, 0.67, 0.69, 0.7, 0.83, 0.85};
+        public static double[] FLYWHEEL_SPEED_TABLE = {0.57, 0.6, 0.66, 0.67, 0.7, 0.83, 0.85};
         public static double[] FLYWHEEL_SPEED_TABLE_DISTANCES = {40, 56, 90, 95, 103, 127, 152};
         public static int FLYWHEEL_SPINUP_MS = 1500;
         public static double TRACK_GOAL_P = -0.2;
         public static double[] HOOD_PRESETS = {0.52, 0.07, 0.18};
         public static double TURRET_LIMIT_MIN_ANGLE = -90;
         public static double TURRET_LIMIT_MAX_ANGLE = 125;
-        public static double FLYWHEEL_KP = 0.0002;
+        public static double FLYWHEEL_KP = 0.0003;
         public static double FLYWHEEL_KI = 0;
         public static double FLYWHEEL_KD = 0.0033;
         public static double FLYWHEEL_KF = 0;

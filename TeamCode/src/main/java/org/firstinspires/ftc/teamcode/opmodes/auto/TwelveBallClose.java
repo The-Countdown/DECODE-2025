@@ -40,7 +40,7 @@ public class TwelveBallClose extends OpMode {
     // Headings
     public static double
             INTAKE_HEADING = 90,
-            HALFWAY_HEADING = 155;
+            HALFWAY_HEADING = 150;
 
     // Timeouts
     public static int
@@ -105,8 +105,8 @@ public class TwelveBallClose extends OpMode {
 
         //Actions
         ActionPose start = new ActionPose(robotContainer,
-            () -> Constants.Pathing.LATITUDE_KP *= 1.2,
-            () -> Constants.Pathing.LONGITUDE_KP *= 1.2,
+            () -> Constants.Pathing.LATITUDE_KP *= 1.3,
+            () -> Constants.Pathing.LONGITUDE_KP *= 1.3,
             () -> robotContainer.spindexer.shootToggle(true),
             () -> Constants.Pathing.LONGITUDE_PID_TOLERANCE_CM *= 1,
             () -> Constants.Pathing.LATITUDE_PID_TOLERANCE_CM *= 1
@@ -145,7 +145,8 @@ public class TwelveBallClose extends OpMode {
                 () -> Constants.Pathing.LATITUDE_KP *= 2,
                 () -> Constants.Pathing.HEADING_KP *= 2,
                 () -> robotContainer.intake.setPower(-Constants.Intake.BEST_INTAKE_SPEED),
-                () -> robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setPower(0.0), 200),
+                () -> robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setPower(-Constants.Intake.BEST_INTAKE_SPEED), 500),
+                () -> robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setPower(0.0), 700),
                 () -> robotContainer.spindexer.shootToggle(true),
                 () -> Constants.Pathing.LONGITUDE_PID_TOLERANCE_CM *= 1.5,
                 () -> Constants.Pathing.LATITUDE_PID_TOLERANCE_CM *= 1.5,
@@ -162,7 +163,7 @@ public class TwelveBallClose extends OpMode {
             robotContainer.pathPlanner.addActionPose(intake);
             robotContainer.pathPlanner.addPoseTimeout(BLUE_AFTER_HIGH_TAPE, 2000);
             robotContainer.pathPlanner.addActionPose(endOfIntake);
-            robotContainer.pathPlanner.addPoseTimeout(BLUE_SHOOTING_CLOSE, 1250);
+            robotContainer.pathPlanner.addPoseTimeout(BLUE_SHOOTING_CLOSE, 1500);
             robotContainer.pathPlanner.addActionPose(shoot);
             robotContainer.pathPlanner.addSleepPose(SHOOT_TIME);
             robotContainer.pathPlanner.addActionPose(goToIntake);
@@ -194,7 +195,7 @@ public class TwelveBallClose extends OpMode {
             robotContainer.pathPlanner.addActionPose(intake);
             robotContainer.pathPlanner.addPoseTimeout(RED_AFTER_HIGH_TAPE, 2000);
             robotContainer.pathPlanner.addActionPose(endOfIntake);
-            robotContainer.pathPlanner.addPoseTimeout(RED_SHOOTING_CLOSE, 1250);
+            robotContainer.pathPlanner.addPoseTimeout(RED_SHOOTING_CLOSE, 1500);
             robotContainer.pathPlanner.addActionPose(shoot);
             robotContainer.pathPlanner.addSleepPose(SHOOT_TIME);
             robotContainer.pathPlanner.addActionPose(goToIntake);

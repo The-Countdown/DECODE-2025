@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.opmodes.auto;
 
-import android.widget.TableRow;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -24,10 +22,10 @@ public class Overflow extends OpMode {
 
     // Positions
     public static double
-        SHOOTING_FAR_Y = 43,
+        SHOOTING_FAR_Y = 50,
         TO_WALL_Y = 157,
         INTAKE_BACKUP_Y = 110,
-        SHOOTING_FAR_X = -151,
+        SHOOTING_FAR_X = -145,
         HUMAN_PLAYER_STATION_X = -161;
 
     // Headings
@@ -37,20 +35,21 @@ public class Overflow extends OpMode {
 
     // Timeouts
     public static int
-        GO_TO_INTAKE_TIME = 2250,
+        GO_TO_INTAKE_TIME = 1250,
         SHIFTING_INTAKE_TIME = 1000,
         SHORT_SHIFTING_INTAKE_TIME = 750,
+        GO_TO_SHOOT_TIME = 1750,
         GO_TO_START_TIME = 1250;
 
     // Sleep Poses
     public static int
-            SHOOT_TIME = 1500;
+            SHOOT_TIME = 1300;
 
     // Poses
     public static Pose2D
         // Shooting Poses
-            RED_SHOOTING_FAR_TURNED = new Pose2D(DistanceUnit.CM, SHOOTING_FAR_X, SHOOTING_FAR_Y, AngleUnit.DEGREES, -HALFWAY_HEADING),
-            BLUE_SHOOTING_FAR_TURNED = new Pose2D(DistanceUnit.CM, SHOOTING_FAR_X, -SHOOTING_FAR_Y, AngleUnit.DEGREES, HALFWAY_HEADING),
+            RED_SHOOTING_FAR_TURNED = new Pose2D(DistanceUnit.CM, SHOOTING_FAR_X, -SHOOTING_FAR_Y, AngleUnit.DEGREES, -HALFWAY_HEADING),
+            BLUE_SHOOTING_FAR_TURNED = new Pose2D(DistanceUnit.CM, SHOOTING_FAR_X, SHOOTING_FAR_Y, AngleUnit.DEGREES, HALFWAY_HEADING),
 
         // Human Player Station Poses
             RED_HUMAN_PLAYER_STATION_WALL = new Pose2D(DistanceUnit.CM, HUMAN_PLAYER_STATION_X, -TO_WALL_Y, AngleUnit.DEGREES, -INTAKE_HEADING),
@@ -60,8 +59,8 @@ public class Overflow extends OpMode {
             BLUE_HUMAN_PLAYER_STATION_BACKUP = new Pose2D(DistanceUnit.CM, HUMAN_PLAYER_STATION_X, INTAKE_BACKUP_Y, AngleUnit.DEGREES, INTAKE_HEADING),
 
         // In-Between Poses
-            RED_MIDDLE_OF_FAR_SHOOT_AND_HUMAN_PLAYER_STATION = new Pose2D(DistanceUnit.CM, HUMAN_PLAYER_STATION_X + 15, -INTAKE_BACKUP_Y, AngleUnit.DEGREES, -INTAKE_HEADING),
-            BLUE_MIDDLE_OF_FAR_SHOOT_AND_HUMAN_PLAYER_STATION = new Pose2D(DistanceUnit.CM, HUMAN_PLAYER_STATION_X + 15, INTAKE_BACKUP_Y, AngleUnit.DEGREES, INTAKE_HEADING),
+            RED_MIDDLE_OF_FAR_SHOOT_AND_HUMAN_PLAYER_STATION = new Pose2D(DistanceUnit.CM, HUMAN_PLAYER_STATION_X + 12, -INTAKE_BACKUP_Y, AngleUnit.DEGREES, -INTAKE_HEADING),
+            BLUE_MIDDLE_OF_FAR_SHOOT_AND_HUMAN_PLAYER_STATION = new Pose2D(DistanceUnit.CM, HUMAN_PLAYER_STATION_X + 12, INTAKE_BACKUP_Y, AngleUnit.DEGREES, INTAKE_HEADING),
 
         // End Poses
             RED_END_FAR = new Pose2D(DistanceUnit.CM,  -110, -56, AngleUnit.DEGREES, 180),
@@ -117,6 +116,8 @@ public class Overflow extends OpMode {
 
         ActionPose endOfIntake = new ActionPose(robotContainer,
             () -> robotContainer.intake.function3(),
+            () -> robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setPower(-Constants.Intake.BEST_INTAKE_SPEED), 200),
+            () -> robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setPower(0.0), 400),
             () -> Constants.Pathing.LATITUDE_KP *= 1.5,
             () -> Constants.Pathing.LONGITUDE_KP *= 1.5,
             () -> robotContainer.spindexer.shootToggle(true)
@@ -139,7 +140,7 @@ public class Overflow extends OpMode {
             robotContainer.pathPlanner.addSleepPose(SHOOT_TIME);
 
             robotContainer.pathPlanner.addActionPose(intake);
-            robotContainer.pathPlanner.addPoseTimeout(BLUE_MIDDLE_OF_FAR_SHOOT_AND_HUMAN_PLAYER_STATION, SHORT_SHIFTING_INTAKE_TIME);
+            robotContainer.pathPlanner.addPoseTimeout(BLUE_MIDDLE_OF_FAR_SHOOT_AND_HUMAN_PLAYER_STATION, SHIFTING_INTAKE_TIME);
             robotContainer.pathPlanner.addPoseTimeout(BLUE_HUMAN_PLAYER_STATION_WALL, GO_TO_INTAKE_TIME);
             robotContainer.pathPlanner.addActionPose(speedUp);
             robotContainer.pathPlanner.addPoseTimeout(BLUE_HUMAN_PLAYER_STATION_BACKUP, SHORT_SHIFTING_INTAKE_TIME);
@@ -147,12 +148,12 @@ public class Overflow extends OpMode {
             robotContainer.pathPlanner.addPoseTimeout(BLUE_HUMAN_PLAYER_STATION_WALL, SHIFTING_INTAKE_TIME);
             robotContainer.pathPlanner.addActionPose(endOfIntake);
             robotContainer.pathPlanner.addPoseTimeout(BLUE_MIDDLE_OF_FAR_SHOOT_AND_HUMAN_PLAYER_STATION, SHORT_SHIFTING_INTAKE_TIME);
-            robotContainer.pathPlanner.addPoseTimeout(BLUE_SHOOTING_FAR_TURNED, GO_TO_START_TIME);
+            robotContainer.pathPlanner.addPoseTimeout(BLUE_SHOOTING_FAR_TURNED, GO_TO_SHOOT_TIME);
             robotContainer.pathPlanner.addActionPose(shoot);
             robotContainer.pathPlanner.addSleepPose(SHOOT_TIME);
 
             robotContainer.pathPlanner.addActionPose(intake);
-            robotContainer.pathPlanner.addPoseTimeout(BLUE_MIDDLE_OF_FAR_SHOOT_AND_HUMAN_PLAYER_STATION, SHORT_SHIFTING_INTAKE_TIME);
+            robotContainer.pathPlanner.addPoseTimeout(BLUE_MIDDLE_OF_FAR_SHOOT_AND_HUMAN_PLAYER_STATION, SHIFTING_INTAKE_TIME);
             robotContainer.pathPlanner.addPoseTimeout(BLUE_HUMAN_PLAYER_STATION_WALL, GO_TO_INTAKE_TIME);
             robotContainer.pathPlanner.addActionPose(speedUp);
             robotContainer.pathPlanner.addPoseTimeout(BLUE_HUMAN_PLAYER_STATION_BACKUP, SHORT_SHIFTING_INTAKE_TIME);
@@ -160,12 +161,12 @@ public class Overflow extends OpMode {
             robotContainer.pathPlanner.addPoseTimeout(BLUE_HUMAN_PLAYER_STATION_WALL, SHIFTING_INTAKE_TIME);
             robotContainer.pathPlanner.addActionPose(endOfIntake);
             robotContainer.pathPlanner.addPoseTimeout(BLUE_MIDDLE_OF_FAR_SHOOT_AND_HUMAN_PLAYER_STATION, SHORT_SHIFTING_INTAKE_TIME);
-            robotContainer.pathPlanner.addPoseTimeout(BLUE_SHOOTING_FAR_TURNED, GO_TO_START_TIME);
+            robotContainer.pathPlanner.addPoseTimeout(BLUE_SHOOTING_FAR_TURNED, GO_TO_SHOOT_TIME);
             robotContainer.pathPlanner.addActionPose(shoot);
             robotContainer.pathPlanner.addSleepPose(SHOOT_TIME);
 
             robotContainer.pathPlanner.addActionPose(intake);
-            robotContainer.pathPlanner.addPoseTimeout(BLUE_MIDDLE_OF_FAR_SHOOT_AND_HUMAN_PLAYER_STATION, SHORT_SHIFTING_INTAKE_TIME);
+            robotContainer.pathPlanner.addPoseTimeout(BLUE_MIDDLE_OF_FAR_SHOOT_AND_HUMAN_PLAYER_STATION, SHIFTING_INTAKE_TIME);
             robotContainer.pathPlanner.addPoseTimeout(BLUE_HUMAN_PLAYER_STATION_WALL, GO_TO_INTAKE_TIME);
             robotContainer.pathPlanner.addActionPose(speedUp);
             robotContainer.pathPlanner.addPoseTimeout(BLUE_HUMAN_PLAYER_STATION_BACKUP, SHORT_SHIFTING_INTAKE_TIME);
@@ -173,7 +174,7 @@ public class Overflow extends OpMode {
             robotContainer.pathPlanner.addPoseTimeout(BLUE_HUMAN_PLAYER_STATION_WALL, SHIFTING_INTAKE_TIME);
             robotContainer.pathPlanner.addActionPose(endOfIntake);
             robotContainer.pathPlanner.addPoseTimeout(BLUE_MIDDLE_OF_FAR_SHOOT_AND_HUMAN_PLAYER_STATION, SHORT_SHIFTING_INTAKE_TIME);
-            robotContainer.pathPlanner.addPoseTimeout(BLUE_SHOOTING_FAR_TURNED, GO_TO_START_TIME);
+            robotContainer.pathPlanner.addPoseTimeout(BLUE_SHOOTING_FAR_TURNED, GO_TO_SHOOT_TIME);
             robotContainer.pathPlanner.addActionPose(shoot);
             robotContainer.pathPlanner.addSleepPose(SHOOT_TIME);
 
@@ -186,7 +187,7 @@ public class Overflow extends OpMode {
             robotContainer.pathPlanner.addSleepPose(SHOOT_TIME);
 
             robotContainer.pathPlanner.addActionPose(intake);
-            robotContainer.pathPlanner.addPoseTimeout(RED_MIDDLE_OF_FAR_SHOOT_AND_HUMAN_PLAYER_STATION, SHORT_SHIFTING_INTAKE_TIME);
+            robotContainer.pathPlanner.addPoseTimeout(RED_MIDDLE_OF_FAR_SHOOT_AND_HUMAN_PLAYER_STATION, SHIFTING_INTAKE_TIME);
             robotContainer.pathPlanner.addPoseTimeout(RED_HUMAN_PLAYER_STATION_WALL, GO_TO_INTAKE_TIME);
             robotContainer.pathPlanner.addActionPose(speedUp);
             robotContainer.pathPlanner.addPoseTimeout(RED_HUMAN_PLAYER_STATION_BACKUP, SHORT_SHIFTING_INTAKE_TIME);
@@ -194,12 +195,12 @@ public class Overflow extends OpMode {
             robotContainer.pathPlanner.addPoseTimeout(RED_HUMAN_PLAYER_STATION_WALL, SHIFTING_INTAKE_TIME);
             robotContainer.pathPlanner.addActionPose(endOfIntake);
             robotContainer.pathPlanner.addPoseTimeout(RED_MIDDLE_OF_FAR_SHOOT_AND_HUMAN_PLAYER_STATION, SHORT_SHIFTING_INTAKE_TIME);
-            robotContainer.pathPlanner.addPoseTimeout(RED_SHOOTING_FAR_TURNED, GO_TO_START_TIME);
+            robotContainer.pathPlanner.addPoseTimeout(RED_SHOOTING_FAR_TURNED, GO_TO_SHOOT_TIME);
             robotContainer.pathPlanner.addActionPose(shoot);
             robotContainer.pathPlanner.addSleepPose(SHOOT_TIME);
 
             robotContainer.pathPlanner.addActionPose(intake);
-            robotContainer.pathPlanner.addPoseTimeout(RED_MIDDLE_OF_FAR_SHOOT_AND_HUMAN_PLAYER_STATION, SHORT_SHIFTING_INTAKE_TIME);
+            robotContainer.pathPlanner.addPoseTimeout(RED_MIDDLE_OF_FAR_SHOOT_AND_HUMAN_PLAYER_STATION, SHIFTING_INTAKE_TIME);
             robotContainer.pathPlanner.addPoseTimeout(RED_HUMAN_PLAYER_STATION_WALL, GO_TO_INTAKE_TIME);
             robotContainer.pathPlanner.addActionPose(speedUp);
             robotContainer.pathPlanner.addPoseTimeout(RED_HUMAN_PLAYER_STATION_BACKUP, SHORT_SHIFTING_INTAKE_TIME);
@@ -207,12 +208,12 @@ public class Overflow extends OpMode {
             robotContainer.pathPlanner.addPoseTimeout(RED_HUMAN_PLAYER_STATION_WALL, SHIFTING_INTAKE_TIME);
             robotContainer.pathPlanner.addActionPose(endOfIntake);
             robotContainer.pathPlanner.addPoseTimeout(RED_MIDDLE_OF_FAR_SHOOT_AND_HUMAN_PLAYER_STATION, SHORT_SHIFTING_INTAKE_TIME);
-            robotContainer.pathPlanner.addPoseTimeout(RED_SHOOTING_FAR_TURNED, GO_TO_START_TIME);
+            robotContainer.pathPlanner.addPoseTimeout(RED_SHOOTING_FAR_TURNED, GO_TO_SHOOT_TIME);
             robotContainer.pathPlanner.addActionPose(shoot);
             robotContainer.pathPlanner.addSleepPose(SHOOT_TIME);
 
             robotContainer.pathPlanner.addActionPose(intake);
-            robotContainer.pathPlanner.addPoseTimeout(RED_MIDDLE_OF_FAR_SHOOT_AND_HUMAN_PLAYER_STATION, SHORT_SHIFTING_INTAKE_TIME);
+            robotContainer.pathPlanner.addPoseTimeout(RED_MIDDLE_OF_FAR_SHOOT_AND_HUMAN_PLAYER_STATION, SHIFTING_INTAKE_TIME);
             robotContainer.pathPlanner.addPoseTimeout(RED_HUMAN_PLAYER_STATION_WALL, GO_TO_INTAKE_TIME);
             robotContainer.pathPlanner.addActionPose(speedUp);
             robotContainer.pathPlanner.addPoseTimeout(RED_HUMAN_PLAYER_STATION_BACKUP, SHORT_SHIFTING_INTAKE_TIME);
@@ -220,7 +221,7 @@ public class Overflow extends OpMode {
             robotContainer.pathPlanner.addPoseTimeout(RED_HUMAN_PLAYER_STATION_WALL, SHIFTING_INTAKE_TIME);
             robotContainer.pathPlanner.addActionPose(endOfIntake);
             robotContainer.pathPlanner.addPoseTimeout(RED_MIDDLE_OF_FAR_SHOOT_AND_HUMAN_PLAYER_STATION, SHORT_SHIFTING_INTAKE_TIME);
-            robotContainer.pathPlanner.addPoseTimeout(RED_SHOOTING_FAR_TURNED, GO_TO_START_TIME);
+            robotContainer.pathPlanner.addPoseTimeout(RED_SHOOTING_FAR_TURNED, GO_TO_SHOOT_TIME);
             robotContainer.pathPlanner.addActionPose(shoot);
             robotContainer.pathPlanner.addSleepPose(SHOOT_TIME);
 

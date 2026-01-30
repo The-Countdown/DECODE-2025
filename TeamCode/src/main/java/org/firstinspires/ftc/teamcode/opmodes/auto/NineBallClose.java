@@ -35,7 +35,7 @@ public class NineBallClose extends OpMode {
     // Headings
     public static double
             INTAKE_HEADING = 90,
-            HALFWAY_HEADING = 135;
+            HALFWAY_HEADING = 150;
 
     // Sleep Poses
     public static int
@@ -52,13 +52,13 @@ public class NineBallClose extends OpMode {
             RED_BEFORE_MID_TAPE = new Pose2D(DistanceUnit.CM,TAPE_MID_X, -BEFORE_TAPE_Y, AngleUnit.DEGREES, -INTAKE_HEADING),
             RED_AFTER_MID_TAPE = new Pose2D(DistanceUnit.CM,TAPE_MID_X, -AFTER_TAPE_Y, AngleUnit.DEGREES, -INTAKE_HEADING),
             RED_BEFORE_HIGH_TAPE = new Pose2D(DistanceUnit.CM,TAPE_HIGH_X, -BEFORE_TAPE_Y, AngleUnit.DEGREES, -INTAKE_HEADING),
-            RED_AFTER_HIGH_TAPE = new Pose2D(DistanceUnit.CM,TAPE_HIGH_X, -AFTER_TAPE_Y + 15, AngleUnit.DEGREES, -INTAKE_HEADING),
+            RED_AFTER_HIGH_TAPE = new Pose2D(DistanceUnit.CM,TAPE_HIGH_X, -AFTER_TAPE_Y + 10, AngleUnit.DEGREES, -INTAKE_HEADING),
 
             // Blue
             BLUE_BEFORE_MID_TAPE = new Pose2D(DistanceUnit.CM,TAPE_MID_X, BEFORE_TAPE_Y, AngleUnit.DEGREES, INTAKE_HEADING),
             BLUE_AFTER_MID_TAPE = new Pose2D(DistanceUnit.CM,TAPE_MID_X, AFTER_TAPE_Y, AngleUnit.DEGREES, INTAKE_HEADING),
             BLUE_BEFORE_HIGH_TAPE = new Pose2D(DistanceUnit.CM,TAPE_HIGH_X, BEFORE_TAPE_Y, AngleUnit.DEGREES, INTAKE_HEADING),
-            BLUE_AFTER_HIGH_TAPE = new Pose2D(DistanceUnit.CM,TAPE_HIGH_X, AFTER_TAPE_Y - 15, AngleUnit.DEGREES, INTAKE_HEADING),
+            BLUE_AFTER_HIGH_TAPE = new Pose2D(DistanceUnit.CM,TAPE_HIGH_X, AFTER_TAPE_Y - 10, AngleUnit.DEGREES, INTAKE_HEADING),
 
         // End Poses
             RED_END_CLOSE = new Pose2D(DistanceUnit.INCH, 0, -MIDPOINT_Y, AngleUnit.DEGREES, -112.5),
@@ -128,8 +128,8 @@ public class NineBallClose extends OpMode {
                 () -> Constants.Pathing.LONGITUDE_KP *= 2,
                 () -> Constants.Pathing.LATITUDE_KP *= 2,
                 () -> Constants.Pathing.HEADING_KP *= 2,
-                () -> robotContainer.intake.setPower(-Constants.Intake.BEST_INTAKE_SPEED),
-                () -> robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setPower(0.0), 200),
+                () -> robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setPower(-Constants.Intake.BEST_INTAKE_SPEED), 500),
+                () -> robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setPower(0.0), 700),
                 () -> robotContainer.spindexer.shootToggle(true),
                 () -> Constants.Pathing.LONGITUDE_PID_TOLERANCE_CM *= 1.5,
                 () -> Constants.Pathing.LATITUDE_PID_TOLERANCE_CM *= 1.5,
@@ -146,7 +146,7 @@ public class NineBallClose extends OpMode {
             robotContainer.pathPlanner.addActionPose(intake);
             robotContainer.pathPlanner.addPoseTimeout(BLUE_AFTER_HIGH_TAPE, 2000);
             robotContainer.pathPlanner.addActionPose(endOfIntake);
-            robotContainer.pathPlanner.addPoseTimeout(BLUE_SHOOTING_CLOSE, 1250);
+            robotContainer.pathPlanner.addPoseTimeout(BLUE_SHOOTING_CLOSE, 1500);
             robotContainer.pathPlanner.addActionPose(shoot);
             robotContainer.pathPlanner.addSleepPose(SHOOT_TIME);
             robotContainer.pathPlanner.addActionPose(goToIntake);
@@ -169,7 +169,7 @@ public class NineBallClose extends OpMode {
             robotContainer.pathPlanner.addActionPose(intake);
             robotContainer.pathPlanner.addPoseTimeout(RED_AFTER_HIGH_TAPE, 2000);
             robotContainer.pathPlanner.addActionPose(endOfIntake);
-            robotContainer.pathPlanner.addPoseTimeout(RED_SHOOTING_CLOSE, 1250);
+            robotContainer.pathPlanner.addPoseTimeout(RED_SHOOTING_CLOSE, 1500);
             robotContainer.pathPlanner.addActionPose(shoot);
             robotContainer.pathPlanner.addSleepPose(SHOOT_TIME);
             robotContainer.pathPlanner.addActionPose(goToIntake);

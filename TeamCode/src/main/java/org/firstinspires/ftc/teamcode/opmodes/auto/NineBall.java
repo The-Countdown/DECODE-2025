@@ -184,7 +184,7 @@ public class NineBall extends OpMode {
             robotContainer.pathPlanner.addActionPose(shoot);
             robotContainer.pathPlanner.addSleepPose(SHOOT_TIME);
             robotContainer.pathPlanner.addActionPose(goToIntake);
-            robotContainer.pathPlanner.addPoseTimeout(BLUE_AFTER_MID_TAPE, GO_TO_INTAKE_TIME);
+            robotContainer.pathPlanner.addPoseTimeout(BLUE_BEFORE_MID_TAPE, GO_TO_INTAKE_TIME);
             robotContainer.pathPlanner.addActionPose(intake);
             robotContainer.pathPlanner.addPoseTimeout(BLUE_AFTER_MID_TAPE, INTAKE_TIME);
             robotContainer.pathPlanner.addActionPose(endOfIntake);
@@ -208,7 +208,7 @@ public class NineBall extends OpMode {
             robotContainer.pathPlanner.addActionPose(shoot);
             robotContainer.pathPlanner.addSleepPose(SHOOT_TIME);
             robotContainer.pathPlanner.addActionPose(goToIntake);
-            robotContainer.pathPlanner.addPoseTimeout(RED_AFTER_MID_TAPE, GO_TO_INTAKE_TIME);
+            robotContainer.pathPlanner.addPoseTimeout(RED_BEFORE_MID_TAPE, GO_TO_INTAKE_TIME);
             robotContainer.pathPlanner.addActionPose(intake);
             robotContainer.pathPlanner.addPoseTimeout(RED_AFTER_MID_TAPE, INTAKE_TIME);
             robotContainer.pathPlanner.addActionPose(endOfIntake);
