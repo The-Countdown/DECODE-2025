@@ -96,9 +96,9 @@ public class TeleOp extends OpMode {
             Status.isDrivingActive = false;
             robotContainer.pathPlanner.clearPoses();
             if (Status.alliance == Constants.Game.ALLIANCE.BLUE) {
-                robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, -97, -84, AngleUnit.DEGREES, 180));
+                robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, -103, -82, AngleUnit.DEGREES, 180));
             } else {
-                robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, -97, 84, AngleUnit.DEGREES, 180));
+                robotContainer.pathPlanner.addPose(new Pose2D(DistanceUnit.CM, -103, 82, AngleUnit.DEGREES, 180));
             }
             robotContainer.pathingUpdater.start();
         }
