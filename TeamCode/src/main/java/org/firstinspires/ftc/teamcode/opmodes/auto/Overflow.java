@@ -24,7 +24,7 @@ public class Overflow extends OpMode {
     public static double
         SHOOTING_FAR_Y = 50,
         TO_WALL_Y = 157,
-        INTAKE_BACKUP_Y = 110,
+        INTAKE_BACKUP_Y = 120,
         SHOOTING_FAR_X = -145,
         HUMAN_PLAYER_STATION_X = -161;
 
@@ -59,8 +59,8 @@ public class Overflow extends OpMode {
             BLUE_HUMAN_PLAYER_STATION_BACKUP = new Pose2D(DistanceUnit.CM, HUMAN_PLAYER_STATION_X, INTAKE_BACKUP_Y, AngleUnit.DEGREES, INTAKE_HEADING),
 
         // In-Between Poses
-            RED_MIDDLE_OF_FAR_SHOOT_AND_HUMAN_PLAYER_STATION = new Pose2D(DistanceUnit.CM, HUMAN_PLAYER_STATION_X + 12, -INTAKE_BACKUP_Y, AngleUnit.DEGREES, -INTAKE_HEADING),
-            BLUE_MIDDLE_OF_FAR_SHOOT_AND_HUMAN_PLAYER_STATION = new Pose2D(DistanceUnit.CM, HUMAN_PLAYER_STATION_X + 12, INTAKE_BACKUP_Y, AngleUnit.DEGREES, INTAKE_HEADING),
+            RED_MIDDLE_OF_FAR_SHOOT_AND_HUMAN_PLAYER_STATION = new Pose2D(DistanceUnit.CM, HUMAN_PLAYER_STATION_X + 10, -INTAKE_BACKUP_Y, AngleUnit.DEGREES, -INTAKE_HEADING),
+            BLUE_MIDDLE_OF_FAR_SHOOT_AND_HUMAN_PLAYER_STATION = new Pose2D(DistanceUnit.CM, HUMAN_PLAYER_STATION_X + 10, INTAKE_BACKUP_Y, AngleUnit.DEGREES, INTAKE_HEADING),
 
         // End Poses
             RED_END_FAR = new Pose2D(DistanceUnit.CM,  -110, -56, AngleUnit.DEGREES, 180),
