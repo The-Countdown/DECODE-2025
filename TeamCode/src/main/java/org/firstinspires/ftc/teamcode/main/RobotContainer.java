@@ -144,7 +144,7 @@ public class RobotContainer {
             public static String[] motorNames = new String[Constants.Swerve.NUM_MOTORS];
 
         // Axon Mini+
-        public static BetterCRServo[] swerveServos = new BetterCRServo[Constants.Swerve.NUM_SERVOS];
+        public static BetterServo[] swerveServos = new BetterServo[Constants.Swerve.NUM_SERVOS];
             public static String[] servoNames = new String[Constants.Swerve.NUM_SERVOS];
 
         public static BetterAnalogInput[] swerveAnalogs = new BetterAnalogInput[Constants.Swerve.NUM_ANALOGS];
@@ -204,7 +204,7 @@ public class RobotContainer {
             HardwareDevices.motorNames[i] = "swerveMotor" + (i);
             HardwareDevices.swerveMotors[i] = new BetterDcMotor(hardwareMap.get(DcMotorImplEx.class, HardwareDevices.motorNames[i]), Constants.Robot.SWERVE_MOTOR_UPDATE_TIME);
             HardwareDevices.servoNames[i] = "swerveServo" + (i);
-            HardwareDevices.swerveServos[i] = new BetterCRServo(hardwareMap.get(CRServoImplEx.class, HardwareDevices.servoNames[i]), Constants.Robot.SWERVE_SERVO_UPDATE_TIME);
+            HardwareDevices.swerveServos[i] = new BetterServo(hardwareMap.get(ServoImplEx.class, HardwareDevices.servoNames[i]), Constants.Robot.SWERVE_SERVO_UPDATE_TIME);
             HardwareDevices.analogNames[i] = "swerveAnalog" + (i);
             HardwareDevices.swerveAnalogs[i] = new BetterAnalogInput(hardwareMap.get(AnalogInput.class, HardwareDevices.analogNames[i]), Constants.Robot.SWERVE_ANALOG_UPDATE_TIME);
 
@@ -770,10 +770,10 @@ public class RobotContainer {
             addDataLog("Servo Hood", HardwareDevices.hoodServo.getPosition(), true);
             addDataLog("Servo Turret 1", HardwareDevices.turretServoMaster.getPosition(), true);
             addDataLog("Servo Turret 2", HardwareDevices.turretServoSlave.getPosition(), true);
-            addDataLog("Servo Swerve 1", HardwareDevices.swerveServos[0].getPower(), true);
-            addDataLog("Servo Swerve 2", HardwareDevices.swerveServos[1].getPower(), true);
-            addDataLog("Servo Swerve 3", HardwareDevices.swerveServos[2].getPower(), true);
-            addDataLog("Servo Swerve 4", HardwareDevices.swerveServos[3].getPower(), true);
+            addDataLog("Servo Swerve 1", HardwareDevices.swerveServos[0].getPosition(), true);
+            addDataLog("Servo Swerve 2", HardwareDevices.swerveServos[1].getPosition(), true);
+            addDataLog("Servo Swerve 3", HardwareDevices.swerveServos[2].getPosition(), true);
+            addDataLog("Servo Swerve 4", HardwareDevices.swerveServos[3].getPosition(), true);
             addDataLog("Servo Spindexer 1", HardwareDevices.spindexerServoMaster.getPower(), true);
             addDataLog("Servo Spindexer 2", HardwareDevices.spindexerServoSlave.getPower(), true);
 

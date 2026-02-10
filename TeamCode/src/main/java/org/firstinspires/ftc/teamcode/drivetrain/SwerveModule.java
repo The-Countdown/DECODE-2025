@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.drivetrain;
 import org.firstinspires.ftc.teamcode.hardware.BetterAnalogInput;
 import org.firstinspires.ftc.teamcode.hardware.BetterCRServo;
 import org.firstinspires.ftc.teamcode.hardware.BetterDcMotor;
+import org.firstinspires.ftc.teamcode.hardware.BetterServo;
 import org.firstinspires.ftc.teamcode.main.Constants;
 import org.firstinspires.ftc.teamcode.main.RobotContainer;
 import org.firstinspires.ftc.teamcode.util.HelperFunctions;
@@ -27,7 +28,7 @@ import org.firstinspires.ftc.teamcode.util.HelperFunctions;
 public class SwerveModule {
     private final RobotContainer robotContainer;
     private final BetterDcMotor drivingMotor;
-    private final BetterCRServo turningServo;
+    private final BetterServo turningServo;
     private final BetterAnalogInput analogEncoder;
     private final double powerMultiplier;
     public final int moduleIndex;
@@ -43,7 +44,7 @@ public class SwerveModule {
      * @param powerMultiplier A multiplier to maintain constant velocity for all modules despite differences in friction between modules.
      * @param moduleIndex   The index of the module.
      */
-    public SwerveModule(RobotContainer robotContainer, BetterDcMotor motor, BetterCRServo turningServo, SwervePDF servoPDF, BetterAnalogInput analogEncoder, double powerMultiplier, int moduleIndex) {
+    public SwerveModule(RobotContainer robotContainer, BetterDcMotor motor, BetterServo turningServo, SwervePDF servoPDF, BetterAnalogInput analogEncoder, double powerMultiplier, int moduleIndex) {
         this.robotContainer = robotContainer;
         this.drivingMotor = motor;
         this.turningServo = turningServo;
@@ -83,9 +84,13 @@ public class SwerveModule {
             servoPDF.setTargetAngle(angle);
         }
 
-        public void setPower(double power) {
-            turningServo.updateSetPower(power);
+        public void setAngle(double angle) {
+            turningServo.updateSetPosition(angle/355);
         }
+
+//        public void setPower(double power) {
+//            turningServo.updateSetPower(power);
+//        }
     }
 
     public class Motor {
