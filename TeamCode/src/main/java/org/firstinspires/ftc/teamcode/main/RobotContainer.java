@@ -186,6 +186,10 @@ public class RobotContainer {
         betterIMUP.mode = BNO055IMU.SensorMode.IMU;
         betterIMUP.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         betterIMUP.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        betterIMUP.calibrationDataFile = "AdafruitIMUCalibration.json";
+        // parameters.loggingEnabled      = true;
+        // parameters.loggingTag          = "IMU";
+        // parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
 
         HardwareDevices.betterIMU.initialize(betterIMUP);
         Thread.sleep(800); // Ensure that the IMU has some still time so that it will auto calibrate at zero.
