@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.other;
+package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.hardware.ServoImplEx;
 import com.qualcomm.robotcore.util.ElapsedTime;

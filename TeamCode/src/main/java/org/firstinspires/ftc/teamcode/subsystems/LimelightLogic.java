@@ -39,8 +39,13 @@ public class LimelightLogic {
 //             if (Status.alliance == null) findAlliance();
 //             if (Status.motif != null) {
 //                 result.getFiducialResults().removeIf(tag -> tag.getFiducialId() == 21 || tag.getFiducialId() == 22 || tag.getFiducialId() == 23);
-// //                RobotContainer.HardwareDevices.pinpoint.setPosition(HelperFunctions.to2D(result.getBotpose()));
-//             }
+
+                // Limelight position Updater
+//                 RobotContainer.HardwareDevices.pinpoint.setPosition(logicBotPoseCM().pose);
+
+                // Turret tracking fallback
+//                 pointAtGoal();
+//
         }
     }
 
@@ -123,18 +128,6 @@ public class LimelightLogic {
     }
 
     @Deprecated
-    public double disToGoal() {
-        if (result != null) {
-            Pose2D botPose = limelightBotPose();
-            double xDiff = Status.goalPose.getX(DistanceUnit.INCH) - botPose.getX(DistanceUnit.INCH);
-            double yDiff = Status.goalPose.getY(DistanceUnit.INCH) - botPose.getY(DistanceUnit.INCH);
-            return Math.sqrt(Math.pow(xDiff, 2) + Math.pow(yDiff, 2));
-        } else {
-            return 0;
-        }
-    }
-
-    @Deprecated
     public Constants.Game.MOTIF checkMotif(LLResultTypes.FiducialResult aprilTag) {
         if (aprilTag.getFiducialId() == 21) {
             return Constants.Game.MOTIF.GPP;
@@ -192,22 +185,6 @@ public class LimelightLogic {
                 robotContainer.addEventTelemetry("Alliance Found", checkAlliance(tag));
             }
         }
-    }
-
-    public double getRequiredFlywheelSpeed() {
-        // variable
-        double dist = disToGoal();
-        double turretSpeed = 0;
-        if (dist == 0) {
-            return 0;
-        } else {
-            if (dist < 100) {
-                turretSpeed = HelperFunctions.interpolate(Constants.Turret.FLYWHEEL_SPEED_TABLE[0], Constants.Turret.FLYWHEEL_SPEED_TABLE[1], (dist - 50) / (100 - 50));
-            } else {
-                turretSpeed = HelperFunctions.interpolate(Constants.Turret.FLYWHEEL_SPEED_TABLE[1], Constants.Turret.FLYWHEEL_SPEED_TABLE[2], (dist - 100) / (160 - 100));
-            }
-        }
-        return turretSpeed;
     }
 
     public void limelightLocalization() {
