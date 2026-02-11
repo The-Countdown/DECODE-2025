@@ -265,6 +265,7 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
             targetPowers = scalePowers(targetPowers);
         }
 
+        // Put a angle offset for each
         for (int i = 0; i < swerveServos.length; i++) {
             double currentAngle = robotContainer.swerveModules[i].servo.getAngle();
             double error = targetAngles[i] - currentAngle;
@@ -283,6 +284,7 @@ public class Drivetrain extends RobotContainer.HardwareDevices {
                 robotContainer.swerveModules[i].motor.setTargetPower(targetPowers[i]);
             }
 
+            // robotContainer.swerveModules[i].servo.setTargetAngle(targetAngles[i] + Constants.Swerve.SERVO_ANGLE_OFFSET[i]);
             robotContainer.swerveModules[i].servo.setTargetAngle(targetAngles[i]);
             Constants.Swerve.MODULE_FLIPPED[i] = false;
         }

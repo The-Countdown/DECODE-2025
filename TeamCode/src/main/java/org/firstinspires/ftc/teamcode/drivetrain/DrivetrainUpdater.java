@@ -78,6 +78,7 @@ public class DrivetrainUpdater extends Thread {
                 if (Math.abs(robotContainer.swerveServosPDF[i].getError()) <= Constants.Swerve.SERVO_PIDF_TOLERANCE_DEGREES) {
                     robotContainer.drivetrain.swerveServoStatus[i] = ServoStatus.TARGET_REACHED;
                     if (Constants.Robot.SWERVE_SERVOS_ENABLED[i]) {
+                        // robotContainer.swerveModules[i].servo.setAngle((robotContainer.swerveServosPDF[i].getTargetAngle() + Constants.Swerve.SERVO_ANGLE_OFFSET[i]));
                         robotContainer.swerveModules[i].servo.setAngle((robotContainer.swerveServosPDF[i].getTargetAngle()));
                     }
 
@@ -87,6 +88,7 @@ public class DrivetrainUpdater extends Thread {
                 } else {
                     if (Constants.Robot.SWERVE_SERVOS_ENABLED[i]) {
 //                        robotContainer.swerveModules[i].servo.setPower(robotContainer.swerveServosPDF[i].calculate() * (1 - (Math.abs(acceleratedMotorPower) * Constants.Swerve.SERVO_PIDF_SCALER)));
+                        // robotContainer.swerveModules[i].servo.setAngle((robotContainer.swerveServosPDF[i].getTargetAngle() + Constants.Swerve.SERVO_ANGLE_OFFSET[i]));
                         robotContainer.swerveModules[i].servo.setAngle((robotContainer.swerveServosPDF[i].getTargetAngle()));
                     }
                     robotContainer.drivetrain.swerveServoStatus[i] = ServoStatus.MOVING;

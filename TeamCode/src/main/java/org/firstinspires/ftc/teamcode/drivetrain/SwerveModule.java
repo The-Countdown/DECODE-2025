@@ -73,7 +73,8 @@ public class SwerveModule {
 
             double angle = (analogEncoder.updateGetVoltage() / Constants.System.ANALOG_MAX_VOLTAGE) * 360;
 
-            angle += Constants.Swerve.SERVO_ANGLE_OFFSET[moduleIndex];
+            // Commented out for set position testing
+            // angle += Constants.Swerve.SERVO_ANGLE_OFFSET[moduleIndex];
 
             angle = HelperFunctions.normalizeAngle(angle);
 
@@ -85,7 +86,7 @@ public class SwerveModule {
         }
 
         public void setAngle(double angle) {
-            turningServo.updateSetPosition(angle/355);
+            turningServo.updateSetPosition(((angle + Constants.Swerve.SERVO_ANGLE_OFFSET[moduleIndex]) / 322)); 
         }
 
 //        public void setPower(double power) {
@@ -103,7 +104,7 @@ public class SwerveModule {
         * Sets the velocity of the motor from 0-1, because it is specific to this swerve motor so the value will be consistent with the multiplier.
          */
         public void setVelocity(double velocity) {
-            drivingMotor.updateSetVelocity(velocity * Constants.Swerve.MOTOR_MAX_VELOCITY_TICKS_PER_SECOND);
+            drivingMotor.updateSetVelocity(velocity * Constants.Swerve.MOTOR_MAX_VELOCITY_TICKS_PER_SECOND * Constants.Swerve.MOTOR_POWER_REVERSE[moduleIndex]);
         }
 
         public double getVelocity() {
