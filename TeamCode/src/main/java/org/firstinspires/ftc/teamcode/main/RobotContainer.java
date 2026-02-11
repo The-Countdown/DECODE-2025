@@ -43,7 +43,7 @@ import org.firstinspires.ftc.teamcode.hardware.BetterCRServo;
 import org.firstinspires.ftc.teamcode.hardware.BetterColorSensor;
 import org.firstinspires.ftc.teamcode.hardware.BetterDcMotor;
 import org.firstinspires.ftc.teamcode.hardware.BetterServo;
-import org.firstinspires.ftc.teamcode.other.IndicatorLighting;
+import org.firstinspires.ftc.teamcode.subsystems.IndicatorLighting;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.LimelightLogic;
 import org.firstinspires.ftc.teamcode.subsystems.PositionProvider;

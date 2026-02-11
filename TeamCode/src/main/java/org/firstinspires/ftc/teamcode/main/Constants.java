@@ -106,6 +106,7 @@ public class Constants {
     @Config
     public static class Swerve {
         public static boolean SERVO_ANALOG_ACTIVE = true;
+        public static boolean AUTO_STOP_ENABLED = false;
 
         public static final int
                 NUM_MOTORS = 4,
