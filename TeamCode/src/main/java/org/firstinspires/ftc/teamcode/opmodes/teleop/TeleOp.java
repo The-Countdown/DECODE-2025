@@ -103,6 +103,16 @@ public class TeleOp extends OpMode {
             robotContainer.pathingUpdater.start();
         }
 
+        // Toggle Auto Stop
+        if (robotContainer.gamepadEx1.dpadDown.wasJustPressed()){
+            Constants.Swerve.AUTO_STOP_ENABLED = !Constants.Swerve.AUTO_STOP_ENABLED;
+        }
+
+        // Auto X formation when in far shooting zone
+        if (Constants.Swerve.AUTO_STOP_ENABLED && Status.currentPose.getX(DistanceUnit.CM) < -150 && -50 < Status.currentPose.getY(DistanceUnit.CM)  && Status.currentPose.getY(DistanceUnit.CM) < 50) {
+            robotContainer.drivetrain.setTargets(Constants.Swerve.STOP_FORMATION, Constants.Swerve.NO_POWER);
+        }
+
         if (robotContainer.gamepadEx1.triangle.wasJustPressed()) {
             Status.isDrivingActive = false;
             if (Status.alliance == Constants.Game.ALLIANCE.RED) {

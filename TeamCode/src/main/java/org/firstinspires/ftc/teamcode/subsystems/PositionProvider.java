@@ -71,7 +71,7 @@ public class PositionProvider {
     public void update(boolean LimeLight) {
         if (LimeLight) {
             Pose2D odPose = RobotContainer.HardwareDevices.pinpoint.getPosition();
-            if (robotContainer.gamepadEx1.dpadDown.isHeld() || robotContainer.gamepadEx2.rightTrigger.isHeld()) {
+            if (robotContainer.gamepadEx2.rightTrigger.isHeld()) {
                 LimeLightInfo visionInfo = getGoodLimeLightInfo();
 
                 if (visionInfo != null) {

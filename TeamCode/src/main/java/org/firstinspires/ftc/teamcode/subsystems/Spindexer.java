@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.hardware.BetterAnalogInput;
 import org.firstinspires.ftc.teamcode.hardware.BetterColorSensor;
 import org.firstinspires.ftc.teamcode.main.Constants;
@@ -160,6 +161,13 @@ public class Spindexer {
                 spindexerServo.setPower(0);
                 this.pause = false;
                 robotContainer.spindexer.goToFirstIntakeSlot();
+            }
+
+            if (isFull()) {
+                Status.flywheelToggle = true;
+                if (Status.currentPose.getX(DistanceUnit.CM) < -150 && -50 < Status.currentPose.getY(DistanceUnit.CM)  && Status.currentPose.getY(DistanceUnit.CM) < 50) {
+                    shootAll(false);
+                }
             }
         }
         this.lastPosition = getAngle();
