@@ -86,7 +86,7 @@ public class SwerveModule {
         }
 
         public void setAngle(double angle) {
-            turningServo.updateSetPosition(((angle + Constants.Swerve.SERVO_ANGLE_OFFSET[moduleIndex]) / 322)); 
+            turningServo.updateSetPosition(((angle + Constants.Swerve.SERVO_ANGLE_OFFSET[moduleIndex]) / 322));
         }
 
 //        public void setPower(double power) {

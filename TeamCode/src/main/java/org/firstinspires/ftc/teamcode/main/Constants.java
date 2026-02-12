@@ -126,7 +126,7 @@ public class Constants {
          * Index 4 is global, and the rest are in order (module 0, 1, 2, 3) see {@link SwerveModule}.
          */
         // public static double[] SERVO_ANGLE_OFFSET = {225, 17, 13, 58}; // For constant rotation servos
-        public static double[] SERVO_ANGLE_OFFSET = {20, 50, 60, 10};
+        public static double[] SERVO_ANGLE_OFFSET = {20, 65, 60, 10};
         public static double[] MOTOR_POWER_REVERSE = {1, -1, -1, -1};
 
         /**
