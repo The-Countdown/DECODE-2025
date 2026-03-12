@@ -31,7 +31,6 @@ public class TeleOp extends OpMode {
     private double htopSpeed = 0;
     private double topSpeed = 0;
     private double hvelocity = 0;
-    private final ElapsedTime spinTimer = new ElapsedTime();
 
     @Override
     public void init() {
@@ -61,19 +60,14 @@ public class TeleOp extends OpMode {
         Status.lightsOn = true;
         Status.intakeGamepadable = true;
         Status.flywheelToggle = false;
-        robotContainer.spindexer.slotColor[0] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;
-        robotContainer.spindexer.slotColor[1] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;
-        robotContainer.spindexer.slotColor[2] = Constants.Game.ARTIFACT_COLOR.UNKNOWN;
         Status.isDrivingActive = true;
         robotContainer.start(this, true);
-        robotContainer.spindexer.goToFirstIntakeSlot(); // This should likely be in robotcontainer start
         robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[0]); // This should likely be in the robotcontainer start
         robotContainer.gamepadEx1.gamepad.setLedColor(1,0,1,Gamepad.LED_DURATION_CONTINUOUS);
         List<FeedForward.TrajectoryPoint> path = robotContainer.feedForward.generatePath(new Pose2D(DistanceUnit.CM, 0, 0, AngleUnit.DEGREES, 0), new Pose2D(DistanceUnit.CM, 100, 100, AngleUnit.DEGREES, 0), 0.02);
         robotContainer.addEventTelemetry("FeedForward Pose", path.get(path.size() - 1).pose.toString());
         robotContainer.addEventTelemetry("FeedForward Time", path.get(path.size() - 1).time);
         robotContainer.addEventTelemetry("FeedForward Velocity", path.get(path.size() - 1).velocity);
-        spinTimer.reset();
     }
 
     @Override
@@ -169,37 +163,6 @@ public class TeleOp extends OpMode {
             double power = robotContainer.gamepadEx1.rightTriggerRaw() - (robotContainer.gamepadEx1.leftTriggerRaw());
             robotContainer.intake.setPower(Math.signum(power) * Math.min(Math.abs(power), Constants.Intake.TOP_SPEED));
         }
-
-//        robotContainer.telemetry.addData("heading", RobotContainer.HardwareDevices.pinpoint.getHeading(UnnormalizedAngleUnit.DEGREES));
-//        currentHeading = Status.currentHeading;
-//
-//        if (currentHeading >= lastHeading - 3) {
-//            if (!robotContainer.gamepadEx1.atRest.isHeld()) {
-//                hvelocity = (Math.abs(currentHeading) - Math.abs(lastHeading)) / spinTimer.seconds();
-//            }
-//        } else {
-//            if (!robotContainer.gamepadEx1.atRest.isHeld()) {
-//                hvelocity = (currentHeading + (360 - lastHeading)) / spinTimer.seconds();
-//            }
-//        }
-//
-//        if (hvelocity > htopSpeed) {
-//            htopSpeed = hvelocity;
-//        }
-//
-//        currentDist = Math.sqrt(Math.pow(Status.currentPose.getX(DistanceUnit.CM), 2) + Math.pow(Status.currentPose.getY(DistanceUnit.CM), 2));
-//        currentSpeed = (Math.abs(currentDist) - Math.abs(lastDist)) / spinTimer.seconds();
-//
-//        if (currentSpeed > topSpeed){
-//            topSpeed = currentSpeed;
-//        }
-//
-//        robotContainer.telemetry.addData("Max Heading Speed", htopSpeed);
-//        robotContainer.telemetry.addData("Max Speed", topSpeed);
-//
-//        spinTimer.reset();
-//        lastHeading = currentHeading;
-//        lastDist = currentDist;
 
         Thread.yield();
     }

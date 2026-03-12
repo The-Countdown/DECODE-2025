@@ -92,7 +92,6 @@ public class Overflow extends OpMode {
             () -> Constants.Pathing.LONGITUDE_KP *= 1.5,
             () -> Constants.Pathing.LATITUDE_KP *= 1.5,
             () -> Constants.Pathing.LONGITUDE_KP *= 1.5,
-            () -> robotContainer.spindexer.shootToggle(true),
             () -> Constants.Pathing.LONGITUDE_PID_TOLERANCE_CM *= 1,
             () -> Constants.Pathing.LATITUDE_PID_TOLERANCE_CM *= 1
         );
@@ -100,18 +99,15 @@ public class Overflow extends OpMode {
         ActionPose shoot = new ActionPose(robotContainer,
             () -> robotContainer.intake.setPower(0.0),
             () -> Constants.Pathing.LATITUDE_KP /= 1.5,
-            () -> Constants.Pathing.LONGITUDE_KP /= 1.5,
-            () -> robotContainer.spindexer.shootAll(false)
+            () -> Constants.Pathing.LONGITUDE_KP /= 1.5
         );
 
         ActionPose goToEnd = new ActionPose(robotContainer,
-            () -> robotContainer.intake.setPower(0.0),
-            () -> robotContainer.spindexer.shootToggle(false)
+            () -> robotContainer.intake.setPower(0.0)
         );
 
         ActionPose intake = new ActionPose(robotContainer,
-            () -> robotContainer.intake.setPower(Constants.Intake.BEST_INTAKE_SPEED),
-            () -> robotContainer.spindexer.shootToggle(false)
+            () -> robotContainer.intake.setPower(Constants.Intake.BEST_INTAKE_SPEED)
         );
 
         ActionPose endOfIntake = new ActionPose(robotContainer,
@@ -119,8 +115,7 @@ public class Overflow extends OpMode {
             () -> robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setPower(-Constants.Intake.BEST_INTAKE_SPEED), 200),
             () -> robotContainer.delayedActionManager.schedule(() -> robotContainer.intake.setPower(0.0), 400),
             () -> Constants.Pathing.LATITUDE_KP *= 1.5,
-            () -> Constants.Pathing.LONGITUDE_KP *= 1.5,
-            () -> robotContainer.spindexer.shootToggle(true)
+            () -> Constants.Pathing.LONGITUDE_KP *= 1.5
         );
 
         ActionPose speedUp = new ActionPose(robotContainer,
@@ -236,15 +231,11 @@ public class Overflow extends OpMode {
         Status.lightsOn = true;
         Status.isDrivingActive = false;
         robotContainer.start(this, false);
-        robotContainer.spindexer.shootToggle(true);
         robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[0]);
 
         if (Status.wentBackToStart) {
             Status.startingPose = (Pose2D) blackboard.getOrDefault("pose", Status.startingPose);
         }
-        robotContainer.spindexer.slotColor[0] = Constants.Game.ARTIFACT_COLOR.PURPLE;
-        robotContainer.spindexer.slotColor[1] = Constants.Game.ARTIFACT_COLOR.PURPLE;
-        robotContainer.spindexer.slotColor[2] = Constants.Game.ARTIFACT_COLOR.PURPLE;
         robotContainer.pathingUpdater.timer.reset();
     }
 
@@ -265,7 +256,6 @@ public class Overflow extends OpMode {
         robotContainer.telemetry.addData("Current Pose", Status.currentPose);
         robotContainer.telemetry.addData("At target", PoseMath.isAtPos());
         robotContainer.telemetry.addData("Timeout", robotContainer.pathPlanner.timeoutCheck);
-        robotContainer.telemetry.addData("spindex colors", robotContainer.spindexer.slotColor[0].toString(), robotContainer.spindexer.slotColor[1].toString(), robotContainer.spindexer.slotColor[2].toString());
         robotContainer.telemetry.update();
 
         blackboard.put("pose", Status.currentPose);

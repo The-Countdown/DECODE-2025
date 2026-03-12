@@ -47,7 +47,6 @@ import org.firstinspires.ftc.teamcode.subsystems.IndicatorLighting;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.LimelightLogic;
 import org.firstinspires.ftc.teamcode.subsystems.PositionProvider;
-import org.firstinspires.ftc.teamcode.subsystems.Spindexer;
 import org.firstinspires.ftc.teamcode.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.util.DelayedActionManager;
 import org.firstinspires.ftc.teamcode.util.GamepadWrapper;
@@ -110,7 +109,6 @@ public class RobotContainer {
     public IndicatorLighting.Group allIndicatorLights;
     public Turret turret;
     public Intake intake;
-    public Spindexer spindexer;
     public double controlHubVoltage;
     public double expansionHubVoltage;
     public double controlHubCurrent;
@@ -156,12 +154,6 @@ public class RobotContainer {
         public static BetterServo turretServoMaster;
         public static BetterServo turretServoSlave;
         public static BetterServo hoodServo;
-
-        // Spindexer
-        public static BetterCRServo spindexerServoMaster;
-        public static BetterCRServo spindexerServoSlave;
-        public static LinkedServos spindexerServos;
-        public static BetterAnalogInput spindexerAnalog;
 
         // Intake
         public static BetterDcMotor intakeMotor;
@@ -225,9 +217,6 @@ public class RobotContainer {
         HardwareDevices.turretServoMaster = new BetterServo(getHardwareDevice(ServoImplEx.class, "turretServoMaster"), Constants.Robot.SERVO_UPDATE_TIME);
         HardwareDevices.turretServoSlave = new BetterServo(getHardwareDevice(ServoImplEx.class, "turretServoSlave"), Constants.Robot.SERVO_UPDATE_TIME);
         HardwareDevices.hoodServo = new BetterServo(getHardwareDevice(ServoImplEx.class, "hoodServo"), Constants.Robot.SERVO_UPDATE_TIME);
-        HardwareDevices.spindexerServoMaster = new BetterCRServo(getHardwareDevice(CRServoImplEx.class, "spindexerServoMaster"), Constants.Robot.SERVO_UPDATE_TIME);
-        HardwareDevices.spindexerServoSlave = new BetterCRServo(getHardwareDevice(CRServoImplEx.class, "spindexerServoSlave"), Constants.Robot.SERVO_UPDATE_TIME);
-        HardwareDevices.spindexerAnalog = new BetterAnalogInput(getHardwareDevice(AnalogInput.class, "spindexerAnalog"), Constants.Robot.ANALOG_UPDATE_TIME);
         HardwareDevices.intakeMotor = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "intakeMotor"), Constants.Robot.MOTOR_UPDATE_TIME);
         HardwareDevices.flyWheelMotorMaster = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "flyWheelMotorMaster"), Constants.Robot.MOTOR_UPDATE_TIME);
         HardwareDevices.flyWheelMotorSlave = new BetterDcMotor(getHardwareDevice(DcMotorImplEx.class, "flyWheelMotorSlave"), Constants.Robot.MOTOR_UPDATE_TIME);
@@ -249,8 +238,6 @@ public class RobotContainer {
         turret = new Turret(this, flyWheelMotors, HardwareDevices.hoodServo, turretServos);
         HardwareDevices.intakeMotor.setDirection(DcMotor.Direction.REVERSE);
         intake = new Intake(this, HardwareDevices.intakeMotor);
-        HardwareDevices.spindexerServos = new LinkedServos(HardwareDevices.spindexerServoMaster, HardwareDevices.spindexerServoSlave);
-        spindexer = new Spindexer(this, HardwareDevices.spindexerServos, HardwareDevices.spindexerAnalog, HardwareDevices.colorSensor);
 
         indicatorLightFront = new IndicatorLighting.Light(this, HardwareDevices.indicatorLightFront);
         indicatorLightBack = new IndicatorLighting.Light(this, HardwareDevices.indicatorLightBack);
@@ -385,7 +372,6 @@ public class RobotContainer {
         allIndicatorLights.lightsUpdate();
 
         turret.update(teleop);
-        spindexer.update(teleop);
         positionProvider.update(true);
 
         // Update the breamBreak state
@@ -668,8 +654,6 @@ public class RobotContainer {
         // Stuff also in competition mode
         addDataLog("Alliance", Status.alliance, true);
         telemetry.addLine();
-        addDataLog("Spindexer Slot Colors", spindexer.slotColor[0].toString() + spindexer.slotColor[1].toString() + spindexer.slotColor[2].toString(), true);
-        telemetry.addLine();
         addDataLog("OpMode Avg Loop Time", (int) getRollingAverageLoopTime(opMode) + " ms", true);
         addDataLog("DriveTrain Avg Loop Time", (int) drivetrainUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms", true);
         addDataLog("Pinpoint Avg Loop Time", (int) localizationUpdater.CURRENT_LOOP_TIME_AVG_MS + " ms", true);
@@ -698,10 +682,6 @@ public class RobotContainer {
             addDataLog("Expansion Hub Current", expansionHubCurrent + " A", true);
             addDataLog("Total Amps", controlHubCurrent + expansionHubCurrent + " A", true);
             telemetry.addLine();
-            addDataLog("Spindexer Angle", spindexer.getAngle(), true);
-            addDataLog("Spindexer Intake Slot", spindexer.getCurrentIntakeSlot(), true);
-            addDataLog("Spindexer Target Angle", spindexer.targetAngle, true);
-            addDataLog("Spindexer Error Angle", spindexer.getError(), true);
             addDataLog("Flywheel Target Velocity", turret.flywheel.targetVelocity, true);
             addDataLog("Flywheel Current Velocity", HardwareDevices.flyWheelMotorMaster.getVelocity(), true);
             addDataLog("Flywheel Main Motor Current mA", HardwareDevices.flyWheelMotorMaster.getCurrent(CurrentUnit.MILLIAMPS), true);
@@ -774,12 +754,6 @@ public class RobotContainer {
             addDataLog("Servo Hood", HardwareDevices.hoodServo.getPosition(), true);
             addDataLog("Servo Turret 1", HardwareDevices.turretServoMaster.getPosition(), true);
             addDataLog("Servo Turret 2", HardwareDevices.turretServoSlave.getPosition(), true);
-            addDataLog("Servo Swerve 1", HardwareDevices.swerveServos[0].getPower(), true);
-            addDataLog("Servo Swerve 2", HardwareDevices.swerveServos[1].getPower(), true);
-            addDataLog("Servo Swerve 3", HardwareDevices.swerveServos[2].getPower(), true);
-            addDataLog("Servo Swerve 4", HardwareDevices.swerveServos[3].getPower(), true);
-            addDataLog("Servo Spindexer 1", HardwareDevices.spindexerServoMaster.getPower(), true);
-            addDataLog("Servo Spindexer 2", HardwareDevices.spindexerServoSlave.getPower(), true);
 
             telemetry.addLine();
             displayEventTelemetry();

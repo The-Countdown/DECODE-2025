@@ -56,24 +56,19 @@ public class ThreeBallClose extends OpMode {
         ActionPose start = new ActionPose(robotContainer,
                 () -> Constants.Pathing.LATITUDE_KP *= 1.2,
                 () -> Constants.Pathing.LONGITUDE_KP *= 1.2,
-                () -> robotContainer.spindexer.shootToggle(true),
                 () -> Constants.Pathing.LONGITUDE_PID_TOLERANCE_CM *= 1,
                 () -> Constants.Pathing.LATITUDE_PID_TOLERANCE_CM *= 1
         );
 
         ActionPose shoot = new ActionPose(robotContainer,
                 () -> robotContainer.intake.setPower(Constants.Intake.BEST_INTAKE_SPEED),
-                () -> robotContainer.spindexer.pause(),
-                () -> robotContainer.spindexer.shootAll(false),
-                () -> robotContainer.delayedActionManager.schedule(() -> robotContainer.spindexer.unpause(),  Constants.Spindexer.FULL_EMPTY_SPINTIME),
                 () -> Constants.Pathing.LONGITUDE_PID_TOLERANCE_CM /= 1.5,
                 () -> Constants.Pathing.LATITUDE_PID_TOLERANCE_CM /= 1.5
         );
 
         ActionPose goToEnd = new ActionPose(robotContainer,
                 () -> robotContainer.intake.setPower(0.0),
-                () -> Constants.Pathing.HEADING_PID_TOLERANCE_DEGREES /= 2,
-                () -> robotContainer.spindexer.shootToggle(false)
+                () -> Constants.Pathing.HEADING_PID_TOLERANCE_DEGREES /= 2
         );
 
         if (Status.alliance == Constants.Game.ALLIANCE.BLUE) {
@@ -99,15 +94,11 @@ public class ThreeBallClose extends OpMode {
         Status.lightsOn = true;
         Status.isDrivingActive = false;
         robotContainer.start(this, false);
-        robotContainer.spindexer.shootToggle(true);
         robotContainer.turret.hood.setPos(Constants.Turret.HOOD_PRESETS[0]);
 
         if (Status.wentBackToStart) {
             Status.startingPose = (Pose2D) blackboard.getOrDefault("pose", Status.startingPose);
         }
-        robotContainer.spindexer.slotColor[0] = Constants.Game.ARTIFACT_COLOR.PURPLE;
-        robotContainer.spindexer.slotColor[1] = Constants.Game.ARTIFACT_COLOR.PURPLE;
-        robotContainer.spindexer.slotColor[2] = Constants.Game.ARTIFACT_COLOR.PURPLE;
         robotContainer.pathingUpdater.timer.reset();
     }
 
@@ -123,7 +114,6 @@ public class ThreeBallClose extends OpMode {
         robotContainer.telemetry.addData("Intake Toggle: ", Status.intakeGamepadable);
         robotContainer.telemetry.addData("Intake Velocity: ", robotContainer.intake.getVelocity());
         robotContainer.telemetry.addData("Flywheel Velocity: ", RobotContainer.HardwareDevices.flyWheelMotorMaster.getVelocity());
-        robotContainer.telemetry.addData("Pause", robotContainer.spindexer.pause);
         robotContainer.telemetry.addData("heading", robotContainer.headingPID.calculate());
         robotContainer.telemetry.addData("longitude", robotContainer.longitudePID.calculate());
         robotContainer.telemetry.addData("latitude", robotContainer.latitudePID.calculate());

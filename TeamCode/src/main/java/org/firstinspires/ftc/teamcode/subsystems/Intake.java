@@ -31,10 +31,6 @@ public class Intake {
     }
 
     public void function3() {
-        if (robotContainer.spindexer.slotsFilled >= 3) {
-            robotContainer.intake.setPower(-Constants.Intake.BEST_INTAKE_SPEED);
-        } else {
-            robotContainer.intake.setPower(Constants.Intake.BEST_INTAKE_SPEED);
-        }
+        robotContainer.intake.setPower(-Constants.Intake.BEST_INTAKE_SPEED);
     }
 }

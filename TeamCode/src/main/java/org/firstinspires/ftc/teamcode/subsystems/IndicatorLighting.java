@@ -79,17 +79,7 @@ public class IndicatorLighting {
 
         public void lightsUpdate() {
             if (lightTimer.milliseconds() > 0) { // I changed this to 0 as a test because I think the rule of 2hz is intended to limit constantly flashing lights
-                if (robotContainer.beamBreakToggleButton.releaseDuration() < 0.4 && robotContainer.spindexer.slotColor[robotContainer.spindexer.getCurrentIntakeSlot()] == Constants.Game.ARTIFACT_COLOR.PURPLE) {
-                    if (Status.currentLightColor != Constants.LED.COLOR.VIOLET) {
-                        robotContainer.allIndicatorLights.setColor(Constants.LED.COLOR.VIOLET);
-                        lightTimer.reset();
-                    }
-                } else if (robotContainer.beamBreakToggleButton.releaseDuration() < 0.4 && robotContainer.spindexer.slotColor[robotContainer.spindexer.getCurrentIntakeSlot()] == Constants.Game.ARTIFACT_COLOR.GREEN) {
-                    if (Status.currentLightColor != Constants.LED.COLOR.GREEN) {
-                        robotContainer.allIndicatorLights.setColor(Constants.LED.COLOR.GREEN);
-                        lightTimer.reset();
-                    }
-                } else if (Status.flywheelAtTargetSpeed && Status.flywheelToggle) {
+                if (Status.flywheelAtTargetSpeed && Status.flywheelToggle) {
                     if (Status.currentLightColor != Constants.LED.COLOR.AZURE) {
                         robotContainer.allIndicatorLights.setColor(Constants.LED.COLOR.AZURE);
                         lightTimer.reset();

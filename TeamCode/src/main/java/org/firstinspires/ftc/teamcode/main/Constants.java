@@ -341,24 +341,6 @@ public class Constants {
     }
 
     @Config
-    public static class Spindexer {
-        public static int NUM_SLOTS = 3;
-        public static double ANGLE_OFFSET = 45;
-        public static double JAM_TIME_THRESHOLD = 1;
-        public static double[] INTAKE_SLOT_ANGLES = {120, 240, 360};
-        public static double[] BEFORE_TRANSFER_SLOT_ANGLES = {340, 100, 220};
-        public static double[] AFTER_TRANSFER_SLOT_ANGLES = {220, 340, 100};
-        public static int TIME_BETWEEN_BEAM_BREAK_AND_COLOR_SENSOR = 0;
-        public static double TIME_BEAM_BREAK_TRUE_BEFORE_COLOR_SENSOR_CHECK = 0.1;
-        public static double KP = 0.0043;
-        public static double KI = 0;
-        public static double KD = 0.001;
-        public static double KF = 0;
-        public static double DIST_TOLERANCE = 5;
-        public static int FULL_EMPTY_SPINTIME = 2200;
-    }
-
-    @Config
     public static class Intake {
         public static double TOP_SPEED = 1;
         public static double BEST_INTAKE_SPEED = 1;
